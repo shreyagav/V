@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Models;
 using Services.Data;
 
 namespace Web
@@ -29,7 +28,7 @@ namespace Web
                     Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            var secretes = Configuration.Get<Secretes>();
+           
             services.AddAuthentication().AddFacebook(fbOptions=> {
                 fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
