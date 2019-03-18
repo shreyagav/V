@@ -762,7 +762,6 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
 /* wrappers */
 .lm-wrapper {
     width: 100%;
-    min-width: calc(600px - 2rem);
     display: flex;
     flex-wrap: nowrap;
     background-color: inherit;
