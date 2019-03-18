@@ -15,9 +15,6 @@ namespace UnitTests
         public UserServiceTest()
         {
             var services = new ServiceCollection();
-            services.AddDbContext<ApplicationDbContext>(options =>
-                            options.UseSqlServer(
-                                Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Web")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserService, UserService>();
