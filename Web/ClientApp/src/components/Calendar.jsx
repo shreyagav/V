@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
-import NatureLocationSVG from '../svg/NatureLocationSVG';
+//import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
 import ChapterList from './ChapterList';
 
-export class Calendar extends Component {
-    static displayName = Calendar.name;
+import { withStore } from './store';
 
+class Calendar extends Component {
+    static displayName = Calendar.name;
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -23,6 +25,12 @@ export class Calendar extends Component {
         this.todayMonth = null;
         this.todayDate = null;
         this.setFocusToRef = null;
+
+        this.calendarBodyRef = null;
+        this.initialX = null;
+        this.initialY = null;
+        this.longTouch = false;
+        this.narrowScreen = false;
     }
 
     componentWillMount() {
@@ -31,6 +39,8 @@ export class Calendar extends Component {
         this.todayMonth = today.getMonth();
         this.todayDate = today.getDate();
         this.createCalendar(this.todayYear, this.todayMonth);
+        this.narrowScreen = this.checkIfNarrowScreen();
+        if (this.narrowScreen) {this.props.store.set("sideBarIsHidden", true);}
     }
 
     componentDidMount(){
@@ -45,11 +55,74 @@ export class Calendar extends Component {
       .then(function(jjson){
         component.setState({events: jjson})
       });
+
+      if (this.sideBarRef !== null){
+        window.addEventListener("touchstart", (e) => this.startTouch(e), false);
+        window.addEventListener("touchmove", (e) => this.moveTouch(e), false);
+        window.addEventListener("resize", () => {this.narrowScreen = this.checkIfNarrowScreen()}, false);
+      }
   }
 
-    componentDidUpdate() {
-        this.setFocus();
+  componentDidUpdate() {
+    this.setFocus();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("touchstart", (e) => this.startTouch(e), false);
+    window.removeEventListener("touchmove", (e) => this.moveTouch(e), false);
+    window.removeEventListener("resize", () => {this.narrowScreen = this.checkIfNarrowScreen()}, false);
+  }
+
+  checkIfNarrowScreen() {
+    if (window.innerWidth < 1000) {this.props.store.set('narrowScreen', true); return true;}
+    else {this.props.store.set('narrowScreen', false); return false;}
+  }
+
+  startTouch(e) {
+    this.initialX = e.touches[0].clientX;
+    this.initialY = e.touches[0].clientY;
+    this.longTouch = false;
+    setTimeout(() => {this.longTouch = true;}, 200);
+  };
+ 
+  moveTouch(e) {
+    if (!this.narrowScreen) {return;}
+    if (this.initialX === null) {return;} 
+    if (this.initialY === null) {return;} 
+    let currentX = e.touches[0].clientX;
+    let currentY = e.touches[0].clientY; 
+    let diffX = this.initialX - currentX;
+    let diffY = this.initialY - currentY;
+ 
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      // sliding horizontally
+        if (diffX > 0) {
+        // swiped left
+        if(this.sideBarRef.contains(e.target) && !this.longTouch){
+          //this.setState(() => ({sideBarTransform: 'translate3d(-260px,0,0)'}));
+          this.props.store.set("sideBarIsHidden", true);
+        }
+      } else {
+        // swiped right
+        if(this.calendarBodyRef.contains(e.target) && this.initialX < 100 && this.props.store.sideBarIsHidden && !this.longTouch ){
+          //this.setState(() => ({sideBarTransform: 'translate3d(0px,0,0)'}));
+          this.props.store.set("sideBarIsHidden", false);
+        }
+      }  
     }
+    /*else {
+      // sliding vertically
+      if (diffY > 0) {
+        // swiped up
+        console.log("swiped up");
+      } else {
+        // swiped down
+        console.log("swiped down");
+      }  
+    } */
+    this.initialX = null;
+    this.initialY = null; 
+  };
 
     setFocus() {
         if (this.setFocusToRef !== null) {
@@ -224,21 +297,19 @@ export class Calendar extends Component {
         var maxWidth = {};
         if (!this.state.regularCalendar) {maxWidth = {'maxWidth' : '500px'}};
         return (
-          <div className='lm-wrapper'>
-            <div>
+          <div className={'lm-wrapper'} >
+            <div ref={el => this.sideBarRef = el} style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-260px"} : {"left":"0px"}} >
               <div style={{"paddingRight": '0.9rem', "paddingLeft": '0.9rem'}}>
                 <button className='big-blue-button mt-1'>National Event Calendar</button>
                 <h3>Event calendar By Regions and chapters:</h3>
               </div>
               <ChapterList chapterList={this.state.chapters}/>
             </div>
-            <div className='flex-nowrap flex-flow-column align-center cw-100'>
+            <div className = {(this.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
+            <div ref={el => this.calendarBodyRef = el} style={this.props.store.narrowScreen ? {"paddingLeft": "1rem"} : {"paddingLeft":"260px"}} className='flex-nowrap flex-flow-column align-center cw-100'>
                 <div className='flex-nowrap justify-space-between align-end'>
-                    <h1 className='h2 uppercase-text'><strong>Event calendar</strong></h1>
+                    <h1 className='h2 uppercase-text'><strong>Event Calendar</strong></h1>
                     <span>
-                    {/*<a className='round-button big-round-button grey-outline-button' href='./event'>
-                      <PlusSVG href='./event'/>
-                    </a>*/}
                     {
                         !(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
                         <button
@@ -257,7 +328,7 @@ export class Calendar extends Component {
                     <button className='grey-SVG-button' onClick={() => this.onArrowClick(false)}>
                       <ArrowUpSVG />
                     </button>
-                    <button className='h1' onClick={() => this.toggleCalendar()}>
+                    <button className='h1' onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}>
                         {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
                     </button>
                     <button className='grey-SVG-button' onClick={() => this.onArrowClick(true)}>
@@ -340,4 +411,4 @@ export class Calendar extends Component {
     }
 }
 
-export default Calendar;
+export default withStore(Calendar);

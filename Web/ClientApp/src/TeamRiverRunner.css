@@ -10,16 +10,23 @@
     font-variant: normal;
     color: #666666;
 }
+
 label {margin: 0rem;}
 ul {list-style: none; margin: 0px !important;}
 li {list-style-type:none; }
-a:hover {text-decoration: none;}
+a {text-decoration: none;}
+a:hover {cursor: pointer;}
 :focus {outline: none;}
+
 
 header {
     position: sticky;
     top: 0;
     z-index: 1071;
+}
+
+body {
+    padding-top: 50px;
 }
 
 p {
@@ -218,7 +225,7 @@ button {
     border-radius: 3px;
 }
 button:focus {border: 1.5px solid #0099cc; outline: none;}
-button:hover {cursor: pointer;}
+button:not(:disabled):hover {cursor: pointer;}
 button > :nth-child(n) {color: inherit;}
 
 /* BUTTONS & ICONS */
@@ -327,8 +334,7 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     ul.main-nav a:focus div {border-color: #0099cc;}
     ul.main-nav a:focus {outline: none;}
 }
-ul.main-nav > li {font-size: 0.8rem;}
-ul.main-nav > :nth-child(n) {padding: 0.5rem; display: flex; align-items: center;}
+ul.main-nav > li {font-size: 0.8rem; padding: 0.5rem; display: flex; align-items: center;}
 ul.main-nav a {display: flex; flex-wrap: nowrap; align-items: center;}
 ul.main-nav span {white-space: nowrap; font-weight: 600; font-size: 0.8rem;}
 ul.main-nav > li:not(:last-child) span {text-transform: uppercase;}
@@ -346,8 +352,8 @@ ul.main-nav .SVG,
     fill: #cccccc;
 }
 
-ul.main-nav a:hover .SVG,
-ul.main-nav a:focus .SVG,
+.main-nav-wrapper a:hover .SVG,
+.main-nav-wrapper a:focus .SVG,
 .light-grey-outline-button:hover .SVG,
 .light-grey-outline-button:focus .SVG,
 .grey-outline-button:hover .SVG,
@@ -355,14 +361,14 @@ ul.main-nav a:focus .SVG,
     fill: #0099cc;
 }
 
-ul.main-nav a:hover > :nth-child(n),
-ul.main-nav a:focus > :nth-child(n),
+.main-nav-wrapper a:hover > :nth-child(n),
+.main-nav-wrapper a:focus > :nth-child(n),
 .light-grey-outline-button:hover,
 .light-grey-outline-button:focus,
 .grey-outline-button:hover,
 .grey-outline-button:focus {
     color: #0099cc !important;
-    fill: #0099cc;
+    /* fill: #0099cc; */
     border-color: #0099cc;
 }
 
@@ -508,19 +514,6 @@ ul.tab-component > li.selected:focus::after,
     position: relative;
 }
 
-.calendar-grid > li:focus::after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -4px;
-    bottom: -4px;
-    left: -4px;
-    right: -4px;
-    border: 4px solid #0099cc;
-    opacity: 0.5;
-    z-index: 100;
-}
-
 .calendar-grid > li > div {
     display: flex;
     flex-flow: column;
@@ -571,11 +564,13 @@ ul.calendar-content > li > div > :first-child {
     align-items: center;
 }
 
+/* square cells */
 ul.calendar-content > li:before {
     content: "";
 	display: block;
     padding-top: 100%;
 }
+
 /*
 ul.calendar-content > li > div{
 	position:  absolute;
@@ -600,9 +595,10 @@ ul.calendar-content > li.today > div {
     background: #e5f6f9;
 }
 
-ul.calendar-content > li:focus > div {
-    border: 1.5px solid #0099cc !important;
-    outline: none !important;
+ul.calendar-content > li:focus > div,
+ul.calendar-content > li:hover > div {
+    outline: 1.5px solid #0099cc !important;
+    z-index: 100;
 }
 
 ul.calendar-content > li > div.next-month,
@@ -651,7 +647,8 @@ ul.calendar-events-list > li {
     width: 4rem;
 }
 
-.month-picker > button:focus,
+.month-picker > button:not(:disabled):focus,
+.month-picker > button:not(:disabled):hover,
 button.grey-SVG-button:focus {
     border: 1px solid transparent;
     outline: none;
@@ -765,6 +762,7 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
 /* wrappers */
 .lm-wrapper {
     width: 100%;
+    min-width: calc(600px - 2rem);
     display: flex;
     flex-wrap: nowrap;
     background-color: inherit;
@@ -778,6 +776,37 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
     bottom: 0px;
     left: 0rem;
     z-index: 2000;
+    background-color: #ffffff;
+
+    transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out; 
+      -o-transition: all 1s ease-out; 
+ -webkit-transition: all 1s ease-out;
+     -ms-transition: all 1s ease-out;
+}
+
+.black-layer-visible, .black-layer-invisible {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #666666;
+    z-index: 1999;
+}
+
+.black-layer-visible {
+    display: block;
+    opacity: 0.8;
+    transition: opacity 2s linear 5s; /* no visible effect */
+    -webkit-transition: opacity 2s linear 5s; /* no visible effect */
+}
+
+.black-layer-invisible {
+    display: none;
+    opacity: 0;
+    transition-delay: 3s, 0s; /* no visible effect */
+    transition-property: opacity, display; /* no visible effect */
 }
 
 .lm-wrapper > :last-child {
@@ -787,22 +816,20 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
     padding-top: 3rem;
 }
 
-@media screen and (max-width: 1000px){
+@media screen and (max-width: 999px){ 
     .lm-wrapper > :first-child {
         top: 0px;
         border-right: 1px solid #cccccc;
-        background-color: #ffffff;
     }
-
-    .lm-wrapper > :last-child {
-        padding-left: 1rem;
-    }
+    .lm-wrapper > :last-child {padding-left: 1rem;}
 }
 
 /* navbar */
 
-.navbar {
-    position: relative;
+.main-nav-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: nowrap;
