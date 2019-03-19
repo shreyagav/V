@@ -21,7 +21,7 @@ class ChapterList extends React.Component {
 
     componentWillMount(){
         document.addEventListener('wheel', this.handleWheel, false);
-        //window.addEventListener("resize", this.setHeight);
+        window.addEventListener("resize", () => this.setHeight());
     }
 
     componentDidMount(){
@@ -47,7 +47,7 @@ class ChapterList extends React.Component {
 
     componentWillUnmount(){
         document.removeEventListener('wheel', this.handleWheel, false);
-        //window.removeEventListener("resize", this.setHeight);
+        window.removeEventListener("resize", () => this.setHeight());
     }
 
     setHeight(){
@@ -115,6 +115,7 @@ class ChapterList extends React.Component {
     }
 
     onChapterCheckBoxChecked(index, innerIndex){
+        debugger;
         let chapterList = this.state.chapterList;
         chapterList[index].chapters[innerIndex].checked = !chapterList[index].chapters[innerIndex].checked;
         if(!chapterList[index].chapters[innerIndex].checked && chapterList[index].state.checked){
@@ -140,11 +141,7 @@ class ChapterList extends React.Component {
     }
 
     setUpRef(el, index){
-        console.log(this.lastOpenState);
-        console.log(index);
-        if (this.lastOpenState === index) {
-            this.openStateRef = el;
-        }
+        if (this.lastOpenState === index) {this.openStateRef = el;}
     }
 
     render() { 

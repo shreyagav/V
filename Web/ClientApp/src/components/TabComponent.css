@@ -1,0 +1,73 @@
+/* Tab Component */
+
+ul.tab-component {
+    border: 1px solid #666666;
+    border-radius:999px;
+    background-color: inherit;
+    color: inherit;
+    display: flex;
+    flex-wrap: nowrap;
+    text-transform: uppercase;
+    font-size: inherit;
+    position: relative; 
+    height: 100%;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
+}
+
+ul.tab-component > li {
+    margin: -1px;
+    border-radius:999px;
+    padding: 0.8em;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap; 
+    font-weight: 600;
+    font-size: inherit;;
+    width: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ul.tab-component > li:first-child {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    visibility: hidden;
+}
+
+ul.tab-component > li:not(:first-child):not(:nth-child(2)) {
+    margin-left: -0.2rem;
+}
+
+ul.tab-component > li:hover:not(.selected),
+ul.tab-component > li:focus:not(.selected) {
+    color: #0099cc;
+    cursor: pointer;
+}
+
+ul.tab-component > li.selected {
+    background-color: #666666;
+    color: #ffffff;
+}
+
+ul.tab-component > li.selected:focus::after, 
+.round-button:focus::after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    left: -3px;
+    right: -3px;
+    border-radius: 999px;
+    border: 3px solid #0099cc;
+    opacity: 0.5;
+  } 

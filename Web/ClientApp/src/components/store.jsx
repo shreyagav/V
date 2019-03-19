@@ -7,6 +7,7 @@ const createStore = WrappedComponent => {
     state = {
       sideBarIsHidden: false,
       narrowScreen: false,
+      tableStileView: true,
       get: key => {
         return this.state[key]
       },

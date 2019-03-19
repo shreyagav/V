@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Navbar} from 'reactstrap';
-import './NavMenu.css';
 import EventSVG from '../svg/EventSVG';
 import ChaptersSVG from '../svg/ChaptersSVG';
 import MembersSVG from '../svg/MembersSVG';
@@ -30,7 +28,21 @@ class NavMenu extends Component {
       <header className="main-nav-wrapper">
         {this.props.store.narrowScreen 
           ? 
-          <MenuSVG onClick={() => this.toggleChapters()}/>
+          <ul className="flex-nowrap main-nav">
+            <li>
+              <MenuSVG onClick={() => this.toggleChapters()}/>
+            </li>
+            <li>
+              <TabComponent 
+                  fontSize='inherit'
+                  height='100%'
+                  tabList={["table", "list"]}
+                  proceedInOrder={false}
+                  tabEqualWidth={false}
+                  wasSelected={(index) => {if(index===0){this.props.store.set('tableStileView',true)} else {this.props.store.set('tableStileView', false)}}}
+              />
+            </li>
+          </ul>
             :
           <a href="/" style={{"width":"240px","display":"flex","justifyContent":"center","alignItems":"center"}}>
             <LogoSVG /> 

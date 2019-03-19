@@ -17,6 +17,7 @@ li {list-style-type:none; }
 a {text-decoration: none;}
 a:hover {cursor: pointer;}
 :focus {outline: none;}
+button {background: #ffffff;}
 
 
 header {
@@ -42,7 +43,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: inherit;
     font-weight: 300;
     color: inherit;
-    line-height: 1em;
+    line-height: 1;
 }
 
 h1, .h1 {font-size: 3.5rem;}
@@ -50,7 +51,7 @@ h2, .h2 {font-size: 1.5rem;}
 h3, .h3 {
     font-size: 1rem;
     font-weight: 600;
-    line-height: 1rem;
+    line-height: 1;
     text-transform: uppercase;
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -80,22 +81,23 @@ h3, .h3 {
 .pb-2 {padding-bottom: 2rem !important;}
 .pb-3 {padding-bottom: 3rem !important;}
 .pr-1 {padding-right: 1rem !important}
+.pl-1 {padding-left: 1rem !important}
 .mr-1 {margin-right: 1rem !important}
 
 b, strong {font-weight: 700 !important; font-size: inherit; color: inherit;}
 
 small {
-    font-size: 1rem;
+    font-size: 0.8em;
     line-height: 1;
     color: inherit;
-    font-weight: 400;
+    font-weight: inherit;
 }
 
 /* input & checkbox */
 input[type=checkbox] {
     width: 1.5rem;
     height: 1.5rem;
-    border: 1.5px solid #666666;
+    border: 1px solid #666666;
     background: white;
 }
 
@@ -103,7 +105,7 @@ input,
 .buttonlike-checkbox label > span {
     width: 100%;
     height: 2.5rem;
-    border: 1.5px solid #666666;
+    border: 1px solid #666666;
     background: white;
     padding: 0.5rem;
     font-weight: 600;
@@ -163,7 +165,7 @@ input[type="checkbox"] + span {position: relative;}
 input[type="checkbox"] + svg {
     width: 1.2rem;
     height: 1.2rem;
-    border: 1.5px solid #999999;
+    border: 1px solid #999999;
     display: block;
     padding: 0.1rem;
 }
@@ -221,10 +223,10 @@ svg > .static-svg {
 
 button {
     background-color: inherit !important;
-    border: 1.5px solid transparent;
+    border: 1px solid transparent;
     border-radius: 3px;
 }
-button:focus {border: 1.5px solid #0099cc; outline: none;}
+button:focus {border: 1px solid #0099cc; outline: none;}
 button:not(:disabled):hover {cursor: pointer;}
 button > :nth-child(n) {color: inherit;}
 
@@ -244,7 +246,7 @@ button.big-blue-button {
 button.medium-static-button {
     width: 8rem;
     height: 3rem;
-    border: 1.5px solid #666666;
+    border: 1px solid #666666;
     color: #666666;
     border-radius: 999px;
     font-weight: 600;
@@ -259,7 +261,7 @@ button.medium-static-button + button.medium-static-button {
 }
 
 button.medium-static-button:hover {
-    border: 1.5px solid #0099cc;
+    border: 1px solid #0099cc;
     color: #0099cc;
 }
 
@@ -276,7 +278,7 @@ button.default-button:hover {
 div.round-icon, div.round-button {margin-right: 0.5rem;}
 .round-button,
 .round-icon {
-    border: 1.5px solid;
+    border: 1px solid;
     border-radius: 999px;
     font-weight: 400;
     text-transform: uppercase;
@@ -308,12 +310,17 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     min-width: 1.5rem;
 }
 
-.medium-round-button > :first-child,
-.medium-round-icon > :first-child {
+.medium-round-button > span,
+.medium-round-icon > span {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
+}
+
+.medium-round-button > svg,
+.medium-round-icon > svg {
+    padding: 0.25rem;
 }
 
 .big-round-button,
@@ -421,252 +428,17 @@ ul.input-fields label {margin-bottom: 0.2rem;}
 ul.input-fields > li > :last-child{width: 100%;}
 ul.input-fields  li {width: 100%;}
 
-/* Tab Component */
 
-ul.tab-component {
-    border: 1.5px solid #666666;
-    border-radius:999px;
-    background-color: inherit;
-    color: inherit;
-    display: flex;
-    flex-wrap: nowrap;
-    text-transform: uppercase;
-    font-size: inherit;
-    position: relative; 
-    height: 100%;
-
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
-}
-
-ul.tab-component > li {
-    margin: -1px;
-    border-radius:999px;
-    padding: 0.5em;
-    flex: 1;
-    text-align: center;
-    white-space: nowrap; 
-    font-weight: 600;
-    font-size: inherit;;
-    width: auto;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-ul.tab-component > li:first-child {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    visibility: hidden;
-}
-
-ul.tab-component > li:not(:first-child):not(:nth-child(2)) {
-    margin-left: -0.2rem;
-}
-
-ul.tab-component > li:hover:not(.selected),
-ul.tab-component > li:focus:not(.selected) {
-    color: #0099cc;
-    cursor: pointer;
-}
-
-ul.tab-component > li.selected {
-    background-color: #666666;
-    color: #ffffff;
-}
-
-ul.tab-component > li.selected:focus::after, 
-.round-button:focus::after{
-    content: '';
-    display: block;
-    position: absolute;
-    top: -4px;
-    bottom: -4px;
-    left: -4px;
-    right: -4px;
-    border-radius: 999px;
-    border: 4px solid #0099cc;
-    opacity: 0.5;
-  } 
-
-/* Calendar Grid */
-
-.calendar-grid {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.calendar-grid > li {
-    -webkit-flex-basis: 14%;
-    flex-basis: 14%;
-    flex-grow: 1;
-    flex-shrink: 1;
-    border: 1px solid transparent;
-    display: flex;
-    flex-wrap: wrap;
-    position: relative;
-}
-
-.calendar-grid > li > div {
-    display: flex;
-    flex-flow: column;
-    padding: 0.25rem;
-}
-
-.month-calendar-grid > li {
-    flex-basis: 25%;
-}
-
-.month-calendar-grid {
-    max-width: 500px;
-}
-
-
-ul.calendar-header > li {
-    justify-content: center;
-    color: inherit;
-}
-
-ul.calendar-content {
-    border-right: 1px solid #cccccc !important;
-    border-bottom: 1px solid #cccccc !important;
-}
-
-ul.calendar-content > li {
-    border: 0px !important;
-    border-left: 1px solid #cccccc !important;
-    border-top: 1px solid #cccccc !important;
-    justify-content: left;
-    color: inherit;
-    position: relative;
-}
-
-ul.calendar-content > li > div {
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    font-weight: 600;
-    line-height: 1rem;
-    border: 1.5px solid transparent;
-}
-
-ul.calendar-content > li > div > :first-child {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* square cells */
-ul.calendar-content > li:before {
-    content: "";
-	display: block;
-    padding-top: 100%;
-}
-
-/*
-ul.calendar-content > li > div{
-	position:  absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-    right: 0;
-    border: 1px solid transparent;
-} */
-
-ul.calendar-content > li > div> span > :first-child{
-    font-size: 1.2rem;
-    line-height: 1;
-}
-
-ul.calendar-content > li:hover > div {
-    background: #cdeefc !important;
-    cursor: pointer;
-}
-
-ul.calendar-content > li.today > div {
-    background: #e5f6f9;
-}
-
-ul.calendar-content > li:focus > div,
-ul.calendar-content > li:hover > div {
-    outline: 1.5px solid #0099cc !important;
-    z-index: 100;
-}
-
-ul.calendar-content > li > div.next-month,
-ul.calendar-content > li > div.last-month {
-    background-color: #eaeaea;
-    color: #999999;
-}
-
-ul.calendar-content > li.next-month,
-ul.calendar-content > li.last-month {
-    border: 1px solid #eaeaea;
-}
-
-ul.calendar-events-list> li > :first-child {
-    border-radius: 10px;
-    color: #ffffff;
-    padding: 0rem 0.2rem 0rem 0.2rem;
-    align-content: stretch;
-    font-size: 0.75rem;
-    padding: 0px 4px 1px 4px;
-    margin-right: 0.25rem;
-}
-ul.calendar-events-list> li > :last-child {
-    font-size: 0.9rem;
-    white-space: wrap;
-}
-
-ul.calendar-events-list > li {
-   margin-top: 0.5rem;
-   display: flex;
-   flex-wrap: wrap;
-}
-
-.month-picker {
-    background: inherit;
-    display: flex;
-    flex-wrap: nowrap;
-    align-content: center;
-    width: 100%;
-    max-width: 600px;
-}
-
-.month-picker > button {
-    text-transform: uppercase;
-    height: 4rem;
-    width: 4rem;
-}
-
-.month-picker > button:not(:disabled):focus,
-.month-picker > button:not(:disabled):hover,
-button.grey-SVG-button:focus {
-    border: 1px solid transparent;
-    outline: none;
-    color: #0099cc;
-}
 /* ????????????????? grey-SVG-button */
 button.grey-SVG-button:focus .svg {fill: #0099cc;}
 button.grey-SVG-button .svg {fill: #cccccc;}
 button.grey-SVG-button:hover > svg > .svg {fill: #0099cc;}
 button.grey-SVG-button:hover {color: #0099cc;}
 button.grey-SVG-button:hover > span {color: #0099cc !important;}
-
-.month-picker > button:nth-child(2) {
-    flex-grow: 1;
-    flex-shrink: 0;
-    padding: 0rem 0.5rem 0.2rem 0.5rem;
-    text-align: center;
-    position: relative;
+button.grey-SVG-button:focus {
+    border: 1px solid transparent;
+    outline: none;
+    color: #0099cc;
 }
 
 /* list of Chapters */
@@ -679,13 +451,13 @@ ul.list-of-chapters > li ul.list-of-chapters > li {
     display: flex; 
     justify-content: left;
     align-items: center;
-    min-height: 2.5rem;
+    min-height: 2.75rem;
 }
 ul.list-of-chapters > li span {
-    color: #999999;
+    color: #666666;
     text-transform: uppercase;
     font-weight: 600;
-    line-height: 1rem;
+    line-height: 1;
     text-align: left;
 }
 
@@ -702,7 +474,7 @@ ul.list-of-chapters > li label:focus-within svg {
 /* woraround for EDGE */
 ul.list-of-chapters > li label:hover > svg,
 ul.list-of-chapters input:focus + svg {
-    border: 1.5px solid #0099cc;
+    border: 1px solid #0099cc;
 }
 /* woraround for EDGE ends */
 
@@ -733,7 +505,7 @@ ul.list-of-chapters > li label:hover::after{
 ul.list-of-chapters > li.openChapter span {color: #666666;}
 ul.list-of-chapters > li.openChapter svg {border-color: #666666;}
  ul.list-of-chapters > li.openChapter input[type=checkbox]:checked + svg > .svg {fill: #666666 !important;}
-ul.list-of-chapters ul.list-of-chapters > li span {color: #666666; font-size: 0.9rem;line-height: 0.9rem;}
+ul.list-of-chapters ul.list-of-chapters > li span {color: #666666; font-size: 0.9rem;line-height: 0.9;}
 ul.list-of-chapters > li:not(:last-child) {border-bottom: 1px solid #cccccc;}
 ul.list-of-chapters > li{
     display: flex;
@@ -776,12 +548,13 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
     left: 0rem;
     z-index: 2000;
     background-color: #ffffff;
-
+    /*
     transition: all 1s ease-out;
     -moz-transition: all 1s ease-out; 
       -o-transition: all 1s ease-out; 
  -webkit-transition: all 1s ease-out;
      -ms-transition: all 1s ease-out;
+    */
 }
 
 .black-layer-visible, .black-layer-invisible {

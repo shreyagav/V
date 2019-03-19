@@ -3,8 +3,8 @@ import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
 import ChapterList from './ChapterList';
-
 import { withStore } from './store';
+import './Calendar.css'
 
 class Calendar extends Component {
     static displayName = Calendar.name;
@@ -195,7 +195,6 @@ class Calendar extends Component {
         }
         else {
             this.setState(() => ({calendar: calendar, currentYear: year, currentMonth: month, regularCalendar: true, setFocusTo: -1}));}
-        console.log(calendar);
     }
 
     incrementMonth(){
@@ -292,7 +291,18 @@ class Calendar extends Component {
         }
     }
 
+    calendarUpdate = () => {
+      if (this.props.store.tableStileView) {
+        return this.state.calendar;
+      }
+      else {
+        let newCalendar = this.state.calendar.filter(element => {return element.className === 'current-month'});
+        return newCalendar;
+      }
+    };
+
     render() {
+        const calendar = this.calendarUpdate();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         var maxWidth = {};
         if (!this.state.regularCalendar) {maxWidth = {'maxWidth' : '500px'}};
@@ -306,8 +316,8 @@ class Calendar extends Component {
               <ChapterList chapterList={this.state.chapters}/>
             </div>
             <div className = {(this.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
-            <div ref={el => this.calendarBodyRef = el} style={this.props.store.narrowScreen ? {"paddingLeft": "1rem"} : {"paddingLeft":"260px"}} className='flex-nowrap flex-flow-column align-center cw-100'>
-                <div className='flex-nowrap justify-space-between align-end'>
+            <div ref={el => this.calendarBodyRef = el} style={this.props.store.narrowScreen ? {"paddingLeft": "0rem", "paddingRight": "0rem"} : {"paddingLeft":"260px","paddingRight": "1rem"}} className='flex-nowrap flex-flow-column align-center cw-100'>
+                <div className='flex-nowrap justify-space-between align-end pl-1 pr-1'>
                     <h1 className='h2 uppercase-text'><strong>Event Calendar</strong></h1>
                     <span>
                     {
@@ -322,7 +332,7 @@ class Calendar extends Component {
                     }
                     </span>
                 </div>
-                <span className='mb-1 light-grey-text'><strong>Alabama,</strong> San Diego, California, <strong>Alabama,</strong> San Diego, California</span>
+                <span className='mb-1 pl-1 pr-1 light-grey-text'><strong>Alabama,</strong> San Diego, California, <strong>Alabama,</strong> San Diego, California</span>
 
                 <div className='month-picker mb-1 align-center' style={maxWidth}>
                     <button className='grey-SVG-button' onClick={() => this.onArrowClick(false)}>
@@ -336,7 +346,7 @@ class Calendar extends Component {
                     </button>
                 </div>
 
-                {this.state.regularCalendar &&
+                {this.state.regularCalendar && this.props.store.tableStileView &&
                     <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>
                         <li>Su</li>
                         <li>Mo</li>
@@ -349,17 +359,18 @@ class Calendar extends Component {
                 }
                 {this.state.regularCalendar &&
                     <ul className='calendar-grid calendar-content dark-grey-text'>
-                        {this.state.calendar.map((element, index) =>
+                        {calendar.map((element, index) =>
                         {
                           let eventKey = element.date.getMonth().toString()+'-'+element.date.getDate().toString();
                             return (
                             <li 
                                 key={index} 
-                                className={element.className} 
+                                className={this.props.store.tableStileView ? element.className : element.className + ' listStyleView'} 
                                 tabIndex='0'
                                 onKeyDown={(e) => this.calendarKeyDownHandler(e, index)}
                                 ref={el => {if (index === this.state.setFocusTo) {this.setFocusToRef = el}}}
-                            >
+                            > 
+                              {this.props.store.tableStileView ?
                               <div className={element.className}>
                                 <span>
                                   <strong>{element.label}</strong>
@@ -370,13 +381,32 @@ class Calendar extends Component {
                                 {this.state.events[eventKey] !== undefined &&
                                   <ul className='calendar-events-list'>{this.state.events[eventKey].map((event, index) => 
                                     <li key={index}>
-                                      <span style={{'backgroundColor':event.color}}>{('0'+ event.hours.toString()).slice(-2)+':'+('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
-                                      <span style={{'color':event.color}}>{event.name}</span>
+                                      <span style={{'backgroundColor':event.color}}>{event.hours.toString() + ':' + ('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
+                                      <span style={this.props.store.narrowScreen ? {'color':event.color, "maxHeight":"2.2em"} : {'color':event.color}}>{event.name}</span>
                                     </li>
                                     )}
                                   </ul>
                                 }
                               </div>
+                              :
+                              <div className={element.className}>
+                                <div>
+                                  <strong>{element.label}</strong>
+                                  {this.state.events[eventKey] !== undefined &&
+                                    <ul className='calendar-events-list'>{this.state.events[eventKey].map((event, index) => 
+                                      <li key={index}>
+                                        <span style={{'backgroundColor':event.color}}>{event.hours.toString() + ':' + ('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
+                                        <span style={this.props.store.narrowScreen ? {'color':event.color, "maxHeight":"2.2em"} : {'color':event.color}}>{event.name}</span>
+                                      </li>
+                                      )}
+                                    </ul>
+                                  }
+                                </div>
+                                <a className='round-button medium-round-button light-grey-outline-button' href='./event'>
+                                  <PlusSVG />
+                                </a>
+                              </div>
+                              }
                             </li>
                           );
                         }

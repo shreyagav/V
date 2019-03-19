@@ -20,12 +20,10 @@ class App extends Component {
 
   render () {
       return (
-        
           <div>
             <NavMenu/>
-            <Calendar />
-            {/*<Route exact path='/' component={Calendar} />
-            <Route path='/event' component={Event} />*/}
+            <Route exact path='/' component={Calendar} />
+            <Route path='/event' component={Event} />
           </div>
 
       );
