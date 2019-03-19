@@ -301,7 +301,15 @@ class Calendar extends Component {
       }
     };
 
+    mainLevelStyleUpdate = () => {
+      if (this.props.store.narrowScreen){
+        if(this.props.store.sideBarIsHidden){return {"paddingLeft": "0rem", "paddingRight": "0rem"};}
+        else return {"paddingLeft": "0rem", "paddingRight": "0rem", "position":"fixed"};}
+      else {return {"paddingLeft":"260px","paddingRight": "1rem"};}
+    }
+
     render() {
+        const mainLevelStyle = this.mainLevelStyleUpdate();
         const calendar = this.calendarUpdate();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         var maxWidth = {};
@@ -316,7 +324,11 @@ class Calendar extends Component {
               <ChapterList chapterList={this.state.chapters}/>
             </div>
             <div className = {(this.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
-            <div ref={el => this.calendarBodyRef = el} style={this.props.store.narrowScreen ? {"paddingLeft": "0rem", "paddingRight": "0rem"} : {"paddingLeft":"260px","paddingRight": "1rem"}} className='flex-nowrap flex-flow-column align-center cw-100'>
+            <div 
+              ref={el => this.calendarBodyRef = el} 
+              style={mainLevelStyle} 
+              className='flex-nowrap flex-flow-column align-center cw-100'
+            >
                 <div className='flex-nowrap justify-space-between align-end pl-1 pr-1'>
                     <h1 className='h2 uppercase-text'><strong>Event Calendar</strong></h1>
                     <span>
@@ -327,7 +339,7 @@ class Calendar extends Component {
                             className='round-button medium-round-button grey-outline-button' 
                             onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
                         >
-                            <span>to Current Month</span>
+                            <span>today</span>
                         </button>
                     }
                     </span>
