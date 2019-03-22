@@ -1,0 +1,87 @@
+.drop-down {
+    border: 1px solid #666666;
+    background: white;
+    font-weight: 600;
+    position: relative;
+    min-height: 2.5rem;
+    width: 100%;
+}
+
+.drop-down-header {
+    min-height: 40px;
+    display: flex;
+    align-items: stretch;
+    padding: 0.25rem;
+}
+
+.drop-down-header > :first-child {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    max-width: 100%;
+    align-self: center;
+}
+
+.drop-down-header > :last-child {
+    flex: 0 0 auto;
+}
+
+.drop-down-header > span:first-child {
+    padding: 0px 0px 3px 0.75rem;
+    text-transform: uppercase;
+}
+
+.drop-down-header > ul > li {
+    border: 1px solid #666666;
+    border-radius: 3px;
+    padding: 0.15rem;
+    margin: 0.15rem;
+    display: flex;
+    align-items: center;
+}
+
+.drop-down-header > ul > li.inverted {
+    background-color: #666666;
+    color: #ffffff;
+}
+
+.drop-down-header > ul > li > span {
+    line-height: 1;
+    white-space: nowrap;
+    padding: 0 0 2px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+.drop-down-header > ul > li > button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0.2em;
+}
+
+.drop-down-header-button {
+    height: 2rem;
+    width: 2.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.drop-down-header button svg {
+    height: 0.8rem;
+    width: 0.8rem;
+    fill: #666666;
+}
+
+.drop-down-header button:hover svg,
+.drop-down-header button:focus svg {
+    fill: #0099cc;
+}
+
+.drop-down-header button:hover,
+.drop-down-header button:focus {
+    outline: none;
+    border-color: transparent;
+}

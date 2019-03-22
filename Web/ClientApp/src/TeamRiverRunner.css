@@ -80,7 +80,9 @@ h3, .h3 {
 .pb-1 {padding-bottom: 1rem !important;}
 .pb-2 {padding-bottom: 2rem !important;}
 .pb-3 {padding-bottom: 3rem !important;}
+.pr-025 {padding-right: 0.25rem !important}
 .pr-1 {padding-right: 1rem !important}
+.pl-025 {padding-left: 0.25rem !important}
 .pl-1 {padding-left: 1rem !important}
 .mr-1 {margin-right: 1rem !important}
 
@@ -101,7 +103,7 @@ input[type=checkbox] {
     background: white;
 }
 
-input, 
+input,
 .buttonlike-checkbox label > span {
     width: 100%;
     height: 2.5rem;
@@ -393,15 +395,14 @@ ul.input-fields {
     width: 100%;
     max-width: 600px;
     font-weight: 600;
-    padding: 3rem 0rem 3rem 0rem;
 }
 
-ul.input-fields li{
+ul.input-fields > li{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
-ul.input-fields > li > :first-child{
+ul.first-child-text-120 > li > :first-child{
     flex: 0 0 120px;
     text-align: right;
 }
@@ -409,25 +410,23 @@ ul.input-fields > li > :first-child{
 ul.input-fields p {
     text-transform: uppercase;
     white-space: nowrap;
+    margin-top: 0.8rem;
 }
 
-ul.input-fields  input,
-ul.input-fields p,
+ul.input-fields > li > :last-child:not(label),
 ul.input-fields .add-margin {
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+    margin-left: 1rem !important;
+    margin-bottom: 1rem !important;
 }
-
+ul.input-fields > li > :first-child,
+ul.input-fields > li > :only-child,
 ul.input-fields > li > p:first-child {
     margin-left: 0rem !important;
+    margin-bottom: 1rem !important;
 }
 
 ul.input-fields label:not(:last-child) {margin-right: 0.2rem;}
 ul.input-fields label {margin-bottom: 0.2rem;}
-
-ul.input-fields > li > :last-child{width: 100%;}
-ul.input-fields  li {width: 100%;}
-
 
 /* ????????????????? grey-SVG-button */
 button.grey-SVG-button:focus .svg {fill: #0099cc;}
@@ -442,10 +441,10 @@ button.grey-SVG-button:focus {
 }
 
 /* list of Chapters */
-ul.list-of-chapters > li {margin-right: 0.9rem; margin-left: 0.9rem;}
-ul.list-of-chapters > li ul.list-of-chapters > li {margin-right: 0rem; margin-left: 0rem;}
-ul.list-of-chapters > li > div,
-ul.list-of-chapters > li ul.list-of-chapters > li {
+ul.drop-down-list > li {margin-right: 0.9rem; margin-left: 0.9rem;}
+ul.drop-down-list > li ul.drop-down-list > li {margin-right: 0rem; margin-left: 0rem;}
+ul.drop-down-list > li > div,
+ul.drop-down-list > li ul.drop-down-list > li {
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
     display: flex; 
@@ -453,7 +452,7 @@ ul.list-of-chapters > li ul.list-of-chapters > li {
     align-items: center;
     min-height: 2.75rem;
 }
-ul.list-of-chapters > li span {
+ul.drop-down-list > li span {
     color: #666666;
     text-transform: uppercase;
     font-weight: 600;
@@ -461,24 +460,24 @@ ul.list-of-chapters > li span {
     text-align: left;
 }
 
-ul.list-of-chapters > li label {
+ul.drop-down-list > li label {
     position: relative;
     margin-right: 0.5rem;
     margin-left: 3px;
 }
-ul.list-of-chapters > li label:hover svg,
-ul.list-of-chapters > li label:focus-within svg {
+ul.drop-down-list > li label:hover svg,
+ul.drop-down-list > li label:focus-within svg {
     border-color: #0099cc !important;
 }
 
 /* woraround for EDGE */
-ul.list-of-chapters > li label:hover > svg,
-ul.list-of-chapters input:focus + svg {
+ul.drop-down-list > li label:hover > svg,
+ul.drop-down-list input:focus + svg {
     border: 1px solid #0099cc;
 }
 /* woraround for EDGE ends */
 
-ul.list-of-chapters > li label:focus-within::after {
+ul.drop-down-list > li label:focus-within::after {
     content: '';
     position: absolute;
     top: -3px;
@@ -490,7 +489,7 @@ ul.list-of-chapters > li label:focus-within::after {
     opacity: 0.5;
 }
 
-ul.list-of-chapters > li label:hover::after{
+ul.drop-down-list > li label:hover::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -502,33 +501,33 @@ ul.list-of-chapters > li label:hover::after{
     opacity: 0.5;
 }
 
-ul.list-of-chapters > li.openChapter span {color: #666666;}
-ul.list-of-chapters > li.openChapter svg {border-color: #666666;}
- ul.list-of-chapters > li.openChapter input[type=checkbox]:checked + svg > .svg {fill: #666666 !important;}
-ul.list-of-chapters ul.list-of-chapters > li span {color: #666666; font-size: 0.9rem;line-height: 0.9;}
-ul.list-of-chapters > li:not(:last-child) {border-bottom: 1px solid #cccccc;}
-ul.list-of-chapters > li{
+ul.drop-down-list > li.openChapter span {color: #666666;}
+ul.drop-down-list > li.openChapter svg {border-color: #666666;}
+ ul.drop-down-list > li.openChapter input[type=checkbox]:checked + svg > .svg {fill: #666666 !important;}
+ul.drop-down-list ul.drop-down-list > li span {color: #666666; font-size: 0.9rem;line-height: 0.9;}
+ul.drop-down-list > li:not(:last-child) {border-bottom: 1px solid #cccccc;}
+ul.drop-down-list > li{
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
 }
 
-ul.list-of-chapters > li > div > :first-child{flex: 0 0 1rem;}
-ul.list-of-chapters > li > div > :last-child {flex: 1 1 100px; display: flex; justify-content: space-between; align-items: center;}
-ul.list-of-chapters > li > div > :last-child > :last-child {flex: 0 0 0.8rem;}
-ul.list-of-chapters > li > div > :last-child svg {height: 0.8rem;}
-ul.list-of-chapters > li  ul.list-of-chapters {border-top: 1px solid #ededed;}
-ul.list-of-chapters > li  ul.list-of-chapters > li {
+ul.drop-down-list > li > div > :first-child{flex: 0 0 1rem;}
+ul.drop-down-list > li > div > :last-child {flex: 1 1 100px; display: flex; justify-content: space-between; align-items: center;}
+ul.drop-down-list > li > div > :last-child > :last-child {flex: 0 0 0.8rem;}
+ul.drop-down-list > li > div > :last-child svg {height: 0.8rem;}
+ul.drop-down-list > li  ul.drop-down-list {border-top: 1px solid #ededed;}
+ul.drop-down-list > li  ul.drop-down-list > li {
     padding-left: 2rem;
     flex-flow: row;
     flex-wrap: nowrap;
 }
-ul.list-of-chapters > li ul.list-of-chapters > li:not(:last-child) {border-bottom: 1px solid #ededed;}
-ul.list-of-chapters button:focus {border-color:transparent;}
-ul.list-of-chapters button:focus .svg, ul.list-of-chapters button:hover .svg {fill: #0099cc;}
-ul.list-of-chapters button .svg {fill: #cccccc;}
-ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span {color: #0099cc !important;}
+ul.drop-down-list > li ul.drop-down-list > li:not(:last-child) {border-bottom: 1px solid #ededed;}
+ul.drop-down-list button:focus {border-color:transparent;}
+ul.drop-down-list button:focus .svg, ul.drop-down-list button:hover .svg {fill: #0099cc;}
+ul.drop-down-list button .svg {fill: #cccccc;}
+ul.drop-down-list button:hover > span, ul.drop-down-list button:focus > span {color: #0099cc !important;}
 
 /* navbar */
 
@@ -544,7 +543,7 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
     align-items: center;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     border-bottom: 1px solid #cccccc !important;
     background-color: #ffffff;
     /* shadow */
@@ -556,7 +555,6 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
 .flex-nowrap {display: flex; flex-wrap: nowrap;}
 .flex-wrap {display: flex; flex-wrap: wrap;}
 .fit-content > :nth-child(n) {flex-basis: content; white-space: nowrap;}
-.fit-content > :nth-child(n):not(:last-child) {margin-right: 1rem;}
 .flex-flow-column {flex-flow: column}
 .align-center {align-items: center;}
 .align-end {align-items: flex-end;}

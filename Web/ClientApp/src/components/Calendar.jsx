@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
-import ChapterList from './ChapterList';
+import DropDownList from './DropDownList';
 import { withStore } from './store';
 import './Calendar.css'
+import { createDropDownStore } from './DropDownStore';
+import DropDownHeader from './DropDownHeader';
 
 class Calendar extends Component {
     static displayName = Calendar.name;
@@ -45,11 +47,6 @@ class Calendar extends Component {
 
     componentDidMount(){
       var component = this;
-      fetch('/Chapters.json')
-      .then(function(data){return data.json();})
-      .then(function(jjson){
-        component.setState({chapters: jjson})
-      });
       fetch('/Events.json')
       .then(function(data){return data.json();})
       .then(function(jjson){
@@ -321,7 +318,7 @@ class Calendar extends Component {
                 <button className='big-blue-button mt-1'>National Event Calendar</button>
                 <h3>Event calendar By Regions and chapters:</h3>
               </div>
-              <ChapterList chapterList={this.state.chapters}/>
+              <DropDownList />
             </div>
             <div className = {(this.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
             <div 
@@ -329,8 +326,11 @@ class Calendar extends Component {
               style={mainLevelStyle} 
               className='flex-nowrap flex-flow-column align-center cw-100'
             >
-                <div className='flex-nowrap justify-space-between align-end pl-1 pr-1'>
-                    <h1 className='h2 uppercase-text'><strong>Event Calendar</strong></h1>
+                <div className='flex-nowrap justify-space-between align-center pr-1'>
+                  <div className='flex-wrap justify-left align-center pr-1'>
+                    <h1 className='h2 uppercase-text pl-025'><strong>Event Calendar</strong></h1>
+                    <DropDownHeader />
+                  </div>
                     <span>
                     {
                         !(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
@@ -344,9 +344,7 @@ class Calendar extends Component {
                     }
                     </span>
                 </div>
-                <span className='mb-1 pl-1 pr-1 light-grey-text'><strong>Alabama,</strong> San Diego, California, <strong>Alabama,</strong> San Diego, California</span>
-
-                <div className='month-picker mb-1 align-center' style={maxWidth}>
+                <div className='month-picker mb-1 mt-1 align-center' style={maxWidth}>
                     <button className='grey-SVG-button' onClick={() => this.onArrowClick(false)}>
                       <ArrowUpSVG />
                     </button>
@@ -453,4 +451,4 @@ class Calendar extends Component {
     }
 }
 
-export default withStore(Calendar);
+export default withStore(createDropDownStore(Calendar));

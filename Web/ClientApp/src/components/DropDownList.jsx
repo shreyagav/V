@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import CheckBoxSVG from '../svg/CheckBoxSVG';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
+import { withDropDownStore } from './DropDownStore';
 
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
-class ChapterList extends React.Component {
+class DropDownList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             openStateIndex: [],
-            chapterList: [],
         };
         this.lastOpenState = null;
         this.simpleBarRef = null;
+        this.simpleBarWrapperRef = null;
         this.simpleBarHeight = '100%';
         this.openStateRef = null;
     }
@@ -41,21 +42,22 @@ class ChapterList extends React.Component {
         }
     }
 
-    componentWillReceiveProps(props){
-        this.setState(() => ({chapterList: props.chapterList}));
-    }
-
     componentWillUnmount(){
         document.removeEventListener('wheel', this.handleWheel, false);
         window.removeEventListener("resize", () => this.setHeight());
     }
 
     setHeight(){
-        if(this.simpleBarRef !== null){
+        if(this.simpleBarWrapperRef !== null){
             let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            let top = this.simpleBarRef.getBoundingClientRect().top;
+            let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
             let toBottom = windowHeight - top;
-            this.simpleBarHeight = toBottom.toString() + 'px';
+            if (this.props.toggleable) {
+                this.simpleBarHeight = ((Math.floor((toBottom - 16)/45))*45-1).toString() + 'px';
+            }
+            else {
+                this.simpleBarHeight = (Math.floor(toBottom)).toString() + 'px';
+            }
         }
     }
 
@@ -100,62 +102,23 @@ class ChapterList extends React.Component {
         this.setState(()=>({openStateIndex: openStateIndex}));
     }
 
-    onStateCheckBoxChecked(index){
-        let chapterList = this.state.chapterList;
-        chapterList[index].state.checked = !chapterList[index].state.checked;
-        if(chapterList[index].state.checked) {
-            chapterList[index].chapters.forEach(element => {
-                element.checked = true;
-            });
-        }
-        else {
-            chapterList[index].chapters.forEach(element => element.checked = false)
-        }
-        this.setState(()=>({chapterList: chapterList}));
-    }
-
-    onChapterCheckBoxChecked(index, innerIndex){
-        debugger;
-        let chapterList = this.state.chapterList;
-        chapterList[index].chapters[innerIndex].checked = !chapterList[index].chapters[innerIndex].checked;
-        if(!chapterList[index].chapters[innerIndex].checked && chapterList[index].state.checked){
-            chapterList[index].state.checked = false;
-        }
-        if(chapterList[index].chapters[innerIndex].checked){
-            if(chapterList[index].chapters.length === 1){
-                chapterList[index].state.checked = true;
-            }
-            else {
-                let marker = true;
-                for(let i=0; i<chapterList[index].chapters.length; i++){
-                    if (!chapterList[index].chapters[i].checked) {
-                        marker = false;
-                    }
-                }
-                if(marker) {
-                    chapterList[index].state.checked = true;
-                }
-            }
-        }
-        this.setState(()=>({chapterList: chapterList}));
-    }
-
     setUpRef(el, index){
         if (this.lastOpenState === index) {this.openStateRef = el;}
     }
 
     render() { 
         return (
-            <SimpleBar style={{'height':this.simpleBarHeight}}>
-            <ul className='list-of-chapters' ref={el => this.simpleBarRef=el} style={{'height':this.simpleBarHeight}}>
-                {this.state.chapterList.map((element, index) =>
+            <div ref={el => this.simpleBarWrapperRef=el}>
+            <SimpleBar style={this.props.toggleable && !this.props.store.isOpen ? {"display":"none"} : {'height':this.simpleBarHeight}}>
+            <ul className='drop-down-list' ref={el => this.simpleBarRef=el} style={{'height':this.simpleBarHeight}}>
+                {this.props.store.modifiedList.map((element, index) =>
                 {
                     let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
                     return(
                     <li key={index} className={isOpen ? 'openChapter' : ''}>
                         <div>
                             <label>
-                                <input type="checkbox" checked={element.state.checked} onChange={() => this.onStateCheckBoxChecked(index)}/>
+                                <input type="checkbox" checked={element.state.checked} onChange={() => this.props.store.onCheckBoxChange(index, -1)}/>
                                 <CheckBoxSVG />
                             </label>
                             <button onClick={() => this.toggler(index)}>
@@ -164,11 +127,11 @@ class ChapterList extends React.Component {
                             </button>
                         </div>
                         {isOpen && 
-                            <ul className='list-of-chapters' ref={(el) => this.setUpRef(el,index)}>
+                            <ul className='drop-down-list' ref={(el) => this.setUpRef(el,index)}>
                                 {element.chapters.map((el, innerIndex) =>
                                     <li key={el.name} className='openChapter'>
                                         <label>
-                                            <input type="checkbox" checked={el.checked} onChange={() => this.onChapterCheckBoxChecked(index, innerIndex)}/>
+                                            <input type="checkbox" checked={el.checked} onChange={() => this.props.store.onCheckBoxChange(index, innerIndex)}/>
                                             <CheckBoxSVG />
                                         </label>
                                         <span>{el.name}</span>
@@ -180,7 +143,8 @@ class ChapterList extends React.Component {
                 )}
             </ul>
             </SimpleBar>
+            </div>
         )
     }
 }
-export default ChapterList;
+export default withDropDownStore(DropDownList);

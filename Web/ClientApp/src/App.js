@@ -3,7 +3,7 @@ import { Route } from 'react-router';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
-import { Event } from './components/Event.jsx';
+import  Event from './components/Event.jsx';
 
 import './TeamRiverRunner.css'
 import React, { Component } from 'react'
@@ -17,6 +17,11 @@ import { createStore } from './components/store'
 
 class App extends Component {
   static displayName = App.name;
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
   render () {
       return (

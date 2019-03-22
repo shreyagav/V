@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TabComponent from './TabComponent';
+import DropDown from './DropDown';
 
 export class Event extends Component {
 
@@ -19,14 +20,14 @@ export class Event extends Component {
                     proceedInOrder={true}
                     tabEqualWidth={true}
                 />
-                <ul className='input-fields'>
+                <ul className='input-fields first-child-text-120 mt-3 mb-3'>
                     <li>
                         <p>Event Title:</p>
                         <input placeholder=''></input>
                     </li>
                     <li>
                         <p>Chapter:</p>
-                        <input placeholder='National'></input>
+                        <DropDown />
                     </li>
                     <li>
                         <p>Start Date:</p>
@@ -34,7 +35,7 @@ export class Event extends Component {
                     </li>
                     <li>
                         <p></p>
-                        <ul>
+                        <ul className='input-fields'>
                             <li><p>For repeated events</p></li>
                             <li className='flex-wrap align-center'>
                                 <span className='fb-11auto flex-nowrap align-center'>

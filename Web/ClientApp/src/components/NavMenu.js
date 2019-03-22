@@ -44,7 +44,7 @@ class NavMenu extends Component {
             </li>
           </ul>
             :
-          <a href="/" style={{"width":"240px","display":"flex","justifyContent":"center","alignItems":"center"}}>
+          <a href="/" style={{"width":"260px","display":"flex","justifyContent":"center","alignItems":"center"}}>
             <LogoSVG /> 
           </a>
         }

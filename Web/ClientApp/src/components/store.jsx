@@ -8,6 +8,8 @@ const createStore = WrappedComponent => {
       sideBarIsHidden: false,
       narrowScreen: false,
       tableStileView: true,
+      chapterList: [],
+
       get: key => {
         return this.state[key]
       },
@@ -22,6 +24,16 @@ const createStore = WrappedComponent => {
         this.setState(state)
       }
     }
+
+    componentDidMount() {
+      var component = this;
+      fetch('/Chapters.json')
+      .then(function(data){return data.json();})
+      .then(function(jjson){
+        component.setState({chapterList: jjson, modifiedChapterList: jjson})
+      });
+    }
+
     render() {
       return (
         <StoreContext.Provider value={this.state}>
