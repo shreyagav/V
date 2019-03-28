@@ -30,6 +30,7 @@
 ul.calendar-header > li {
     justify-content: center;
     color: inherit;
+    font-size: 0.8rem;
 }
 
 ul.calendar-content {
@@ -42,9 +43,14 @@ ul.calendar-content > li {
     border: 0px !important;
     border-left: 1px solid #cccccc !important;
     border-top: 1px solid #cccccc !important;
-    justify-content: left;
+    justify-content: center;
+    align-items: stretch;
     color: inherit;
     position: relative;
+}
+
+ul.calendar-content > li > strong {
+    align-self: center;
 }
 
 ul.calendar-content > li > div {
@@ -101,19 +107,22 @@ ul.calendar-content > li > div > span > :first-child{
     line-height: 1;
 }
 
-ul.calendar-content > li:hover > div {
+ul.calendar-content > li:hover > div,
+ul.calendar-content > li:focus > div {
     background: #cdeefc !important;
     cursor: pointer;
+    position: relative;
 }
+
 
 ul.calendar-content > li.today > div {background: #e5f6f9;}
-
+/*
 ul.calendar-content > li:focus > div,
 ul.calendar-content > li:hover > div {
-    outline: 1.5px solid #0099cc !important;
+    border: 1px solid #0099cc !important;
     z-index: 100;
 }
-
+*/
 ul.calendar-content > li > div.next-month,
 ul.calendar-content > li > div.last-month {
     background-color: #eaeaea;
@@ -158,7 +167,7 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
     padding: 0em;
 }
 
-@media screen and (max-width: 500px){ 
+@media screen and (max-width: 560px){ 
     ul.calendar-content > li:not(.listStyleView) > div {font-size: 0.8em;}
     li:not(.listStyleView) ul.calendar-events-list> li > :last-child {font-size: 0.75em;}
     li:not(.listStyleView) ul.calendar-events-list> li > :first-child {font-size: 0.65em;}

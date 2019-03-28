@@ -1,0 +1,48 @@
+.time-picker {
+    min-width: 160px;
+}
+
+.number-picker {
+    min-width: 80px;
+    max-width: 80px;
+}
+
+.time-number-picker-drop-down {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-picker:hover, .number-picker:hover {cursor: pointer;}
+.time-picker:focus, .number-picker:focus {border: 1px solid #0099cc;}
+.time-picker:focus .drop-down-header-button svg,
+.number-picker:focus .drop-down-header-button svg {fill: #0099cc;}
+
+.time-number-picker-drop-down > div {
+    display: flex;
+    flex-flow: column;
+    align-content: center;
+    margin: 0px !important;
+}
+
+.time-number-picker-drop-down span {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.time-number-picker-drop-down span:hover,
+.time-number-picker-drop-down span:focus {
+    color: #0099cc;
+}
+
+.time-number-picker-drop-down > div:last-child {
+    margin-left: 0.5rem;
+}
+
+@media screen and (min-width: 561px){
+    .time-fields > :first-child, .time-fields > :last-child {flex: 1 1 160px;}
+    .time-fields > :nth-child(2) {flex: 0 0 auto;}
+    .time-fields > :nth-child(2) > p {margin-left: 1rem;}
+}
+

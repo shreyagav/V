@@ -23,14 +23,10 @@ const createDropDownStore = WrappedComponent => {
         delete state[key]
         this.setState(state)
       },
-      toggle: () => {
-        let isOpen = this.state.isOpen;
-        this.setState({isOpen: !isOpen});
-      },
       onCheckBoxChange: (index, innerIndex) => {
         this.checkBoxChange(index, innerIndex);
       },
-      unselect: (element) => {
+      unselect: (e, element) => {
         let filteredList = this.state.filteredList;
         let modifiedList = this.state.modifiedList;
         let index = -1;
@@ -46,7 +42,9 @@ const createDropDownStore = WrappedComponent => {
         }
         this.checkBoxChange(index, innerIndex);
         this.setState({filteredList, filteredList});
+        e.stopPropagation();
       },
+      toggle: () => {this.setState(() => ({isOpen: !this.state.isOpen}));},
     }
 
     componentDidMount() {
@@ -127,10 +125,12 @@ const createDropDownStore = WrappedComponent => {
         });
     }
 
+    chaptersPickerRef = null;
+
     render() {
       return (
         <DropDownStoreContext.Provider value={this.state}>
-          <WrappedComponent {...this.props} />
+          <WrappedComponent {...this.props} ref={el => this.chaptersPickerRef = el}/>
         </DropDownStoreContext.Provider>
       )
     }

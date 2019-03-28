@@ -9,19 +9,22 @@ class DropDown extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            isOpen: false,
-        };
+        this.state = {};
+        this.dropDownRef = null;
     }
 
     render() {
         return (
-            <div className='drop-down'>
+            <div className='drop-down' ref={el => this.dropDownRef = el}>
                 <DropDownHeader 
-                    toggle = {()=> this.toggle()}
                     toggleable = {true}
+                    onKeyDown={this.props.onKeyDown}
                 />
-                <DropDownList toggleable = {true}/>
+                <DropDownList
+                    ref={el => this.dropDownListRef = el}
+                    toggleable = {true}
+                    onKeyDown={this.props.onKeyDown}
+                />
             </div>
         )
     }

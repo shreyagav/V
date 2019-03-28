@@ -53,7 +53,6 @@ class DropDownList extends React.Component {
     }
 
     setFocus(){
-        //debugger
         if(this.setFocusToRef !== null){
             var list = this.simpleBarRef;
             var parentTop = list.parentElement.getBoundingClientRect().top;
@@ -63,10 +62,9 @@ class DropDownList extends React.Component {
             if(parentTop>elemTop){
                 this.simpleBarRef.parentElement.scrollTop = elemTop - top;
             }
-            //let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
             let bottom = this.setFocusToRef.getBoundingClientRect().bottom;
-            let parentBottom = list.parentElement.getBoundingClientRect().bottom;
-            if(bottom > parentBottom){
+            if(bottom > windowHeight){
                 this.setFocusToRef.scrollIntoView(false);
             }
             this.setFocusToRef.focus({preventScroll: true});
@@ -120,14 +118,12 @@ class DropDownList extends React.Component {
         let openStateIndex = this.state.openStateIndex;
         if (openStateIndex['_'+index.toString()] === true){
             delete openStateIndex['_'+index.toString()];
-            this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: -1}));
         }
         else { 
             openStateIndex['_'+index.toString()]=true;
-            this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: 0}));
             this.lastOpenState = index;
         }
-        this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});
+        this.setState(()=>({openStateIndex: openStateIndex}));
     }
 
     setUpRef(el, index){
@@ -135,7 +131,7 @@ class DropDownList extends React.Component {
     }
 
     keyDownHandler(e, index, innerIndex){
-        //debugger
+        debugger
         switch (e.keyCode){
             case 13: //ENTER
                 this.toggler(index);
@@ -150,16 +146,19 @@ class DropDownList extends React.Component {
                 //this.dropDownHeader.focus();
                 break;
             case 38: //Up Arrow
+                //debugger
                 e.preventDefault();
                 if(innerIndex > -1) {
                     // IT IS CHAPTER
                     if(innerIndex > 0) {
                         // NOT FIRST CHAPTER
                         this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: (innerIndex-1)}));
+                        return;
                     }
                     else {
                         // FIRST CHAPTER
                         this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
+                        return;
                     }
                 }
                 else {
@@ -167,41 +166,37 @@ class DropDownList extends React.Component {
                     if(this.state.openStateIndex["_"+(index-1).toString()] === true){
                         //previous state is open
                         this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: this.props.store.modifiedList[index-1].chapters.length-1}));
+                        return;
                     }
                     else{
                         //previous state is closed
                         this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: -1}));
+                        return;
                     }
                 }
                 break;
             case 40: //Down Arrow
                 e.preventDefault();
                 if(this.state.openStateIndex["_"+index.toString()] === true){
-                    // STATE IS OPEN
-                    if (innerIndex > -1){
-                        // IT IS CHAPTER
+                    // STATE OPEN
+                    if (innerIndex > -1){ 
                         if (innerIndex < this.props.store.modifiedList[index].chapters.length-1){ 
                             // NOT LAST CHAPTER
-                            this.setState({setFocusToIndex: index, setFocusToInnerIndex: innerIndex+1});
+                            this.setState({setFocusToInnerIndex: this.state.setFocusToInnerIndex+1});
                         }
                         else {
-                            // LAST CHAPTER
                             if (index < this.props.store.modifiedList.length-1) {
                                 //NOT LAST STATE
-                                this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
+                                this.setState({setFocusToIndex: this.state.setFocusToIndex+1});
                             }
                         }
                     }
-                    else {
-                        // IT IS STATE 
-                        this.setState({setFocusToIndex: index, setFocusToInnerIndex: 0});
-                    }
+                    else(this.setState({setFocusToInnerIndex: 0}));
                 }
                 else {
-                    // STATE IS CLOSED
                     if (index < this.props.store.modifiedList.length-1) {
                         //NOT LAST STATE
-                        this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
+                        this.setState({setFocusToIndex: this.state.setFocusToIndex+1});
                     }
                 }
                 break;
@@ -258,7 +253,7 @@ class DropDownList extends React.Component {
                                         className='openChapter'
                                     >
                                         <div
-                                            ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
+                                            ref={el => {if(innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
                                             tabIndex='0'
                                             onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex);}}
                                         >
