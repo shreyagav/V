@@ -237,7 +237,7 @@ class DropDownList extends React.Component {
                                 <input 
                                     type="checkbox" 
                                     checked={element.state.checked} 
-                                    onChange={() => this.props.store.onCheckBoxChange(index, -1)} /* */
+                                    onChange={() => {this.props.store.onCheckBoxChange(index, -1); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});}} /* */
                                     /* onKeyDown = {(e) => this.keyDownHandler(e, index, -1)}  */
                                 />
                                 <CheckBoxSVG />
@@ -266,7 +266,7 @@ class DropDownList extends React.Component {
                                             <input 
                                                 type="checkbox" 
                                                 checked={el.checked} 
-                                                onChange={() => this.props.store.onCheckBoxChange(index, innerIndex)}
+                                                onChange={() => {this.props.store.onCheckBoxChange(index, innerIndex); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});}}
                                             />
                                             <CheckBoxSVG />
                                         </label>
