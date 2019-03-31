@@ -21,11 +21,21 @@ class DropDownList extends React.Component {
         this.simpleBarHeight = '100%';
         this.openStateRef = null;
         this.setFocusToRef = null;
+        this.simpleList = false;
+
+        this.setHeight = this.setHeight.bind(this);
+        this.handleWheel = this.handleWheel.bind(this);
+        this.className = '';
+        this.style = {};
     }
 
     componentWillMount(){
         document.addEventListener('wheel', this.handleWheel, false);
-        window.addEventListener("resize", () => this.setHeight());
+        window.addEventListener("resize", this.setHeight);
+    }
+
+    componentWillUpdate(){
+        this.setHeight();
     }
 
     componentDidMount(){
@@ -34,7 +44,6 @@ class DropDownList extends React.Component {
     }
 
     componentDidUpdate(){
-        this.setHeight();
         this.setFocus();
         /*scroll last openned object into view */
         if(this.openStateRef !== null){
@@ -49,11 +58,10 @@ class DropDownList extends React.Component {
 
     componentWillUnmount(){
         document.removeEventListener('wheel', this.handleWheel, false);
-        window.removeEventListener("resize", () => this.setHeight());
+        window.removeEventListener("resize", this.setHeight);
     }
 
     setFocus(){
-        //debugger
         if(this.setFocusToRef !== null){
             var list = this.simpleBarRef;
             var parentTop = list.parentElement.getBoundingClientRect().top;
@@ -76,19 +84,51 @@ class DropDownList extends React.Component {
     setHeight(){
         if(this.simpleBarWrapperRef !== null){
             let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            let dropDownHeaderHeight = 0;
+            if(this.props.dropDownStore.dropDownHeaderRef !== null){
+                dropDownHeaderHeight = this.props.dropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
+            }
             let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
-            let toBottom = windowHeight - top;
-            let regularHeight = 45*this.props.store.modifiedList.length;
+            let bottom = top + dropDownHeaderHeight;
+            let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
+            let toBottom = windowHeight - bottom + dropDownHeaderHeight;
+            let regularHeight = 45*this.props.dropDownStore.modifiedList.length;
             let simpleBarHeight = 0;
-            if (this.props.toggleable) {simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;}
-            else {simpleBarHeight = Math.floor(toBottom);}
-            if (simpleBarHeight > regularHeight) {simpleBarHeight = regularHeight;}
-            this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+            if (this.props.toggleable) {
+                if (toTop > toBottom){
+                    //* OPENS UP *//
+                    //simpleBarHeight = (Math.floor(toTop/45))*45-1;
+                    simpleBarHeight = Math.floor(toTop);
+                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                    this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+                    this.className = "drop-down-list-wrapper";
+                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight+1).toString()+'px', "borderBottom":"0px solid #666666"};
+                }
+                else {
+                    /* OPENS DOWN */
+                    //simpleBarHeight = (Math.floor(toBottom/45))*45-1;
+                    simpleBarHeight = Math.floor(toBottom);
+                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                    this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+                    this.className = "drop-down-list-wrapper";
+                    this.style = {"height":this.simpleBarHeight, "top": "1px", "borderTop":"0px solid #666666"};
+                }
+                //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
+            }
+            else {
+                simpleBarHeight = Math.floor(toBottom);
+                if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+                this.style = {"height":this.simpleBarHeight};
+            }
         }
     }
 
     handleWheel = (e) => {
-        if (!this.simpleBarRef.contains(e.target)) {return;}
+        if (!this.simpleBarRef.contains(e.target)) {
+            if (this.props.dropDownStore.isOpen) {this.props.dropDownStore.toggle();}
+            return;
+        }
         var cancelScrollEvent = function(e){
             e.stopImmediatePropagation();
             e.preventDefault();
@@ -116,16 +156,18 @@ class DropDownList extends React.Component {
         }
     }
 
-    toggler(index) {
-        let openStateIndex = this.state.openStateIndex;
-        if (openStateIndex['_'+index.toString()] === true){
-            delete openStateIndex['_'+index.toString()];
-            this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: -1}));
-        }
-        else { 
-            openStateIndex['_'+index.toString()]=true;
-            this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: 0}));
-            this.lastOpenState = index;
+    toggler(index, multiLevelList) {
+        if(multiLevelList){
+            let openStateIndex = this.state.openStateIndex;
+            if (openStateIndex['_'+index.toString()] === true){
+                delete openStateIndex['_'+index.toString()];
+                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: -1}));
+            }
+            else { 
+                openStateIndex['_'+index.toString()]=true;
+                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: 0}));
+                this.lastOpenState = index;
+            }
         }
         this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});
     }
@@ -134,19 +176,22 @@ class DropDownList extends React.Component {
         if (this.lastOpenState === index) {this.openStateRef = el;}
     }
 
-    keyDownHandler(e, index, innerIndex){
-        //debugger
+    keyDownHandler(e, index, innerIndex, multiLevelList, element){
         switch (e.keyCode){
             case 13: //ENTER
-                this.toggler(index);
+                if(multiLevelList){this.toggler(index, multiLevelList);}
+                else{
+                    this.props.dropDownStore.set("value", element);
+                    this.props.dropDownStore.toggle();
+                }
                 break;
             case 32: //Space
-                this.props.store.onCheckBoxChange(index, innerIndex);
+                this.props.dropDownStore.onCheckBoxChange(index, innerIndex);
                 e.preventDefault();
                 break;
             case 27://ESC
                 this.setState({setFocusToIndex: 0, setFocusToInnerIndex: 0});
-                this.props.store.toggle();
+                this.props.dropDownStore.toggle();
                 //this.dropDownHeader.focus();
                 break;
             case 38: //Up Arrow
@@ -166,7 +211,7 @@ class DropDownList extends React.Component {
                     // IT IS STATE
                     if(this.state.openStateIndex["_"+(index-1).toString()] === true){
                         //previous state is open
-                        this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: this.props.store.modifiedList[index-1].chapters.length-1}));
+                        this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: this.props.dropDownStore.modifiedList[index-1].chapters.length-1}));
                     }
                     else{
                         //previous state is closed
@@ -180,13 +225,13 @@ class DropDownList extends React.Component {
                     // STATE IS OPEN
                     if (innerIndex > -1){
                         // IT IS CHAPTER
-                        if (innerIndex < this.props.store.modifiedList[index].chapters.length-1){ 
+                        if (innerIndex < this.props.dropDownStore.modifiedList[index].chapters.length-1){ 
                             // NOT LAST CHAPTER
                             this.setState({setFocusToIndex: index, setFocusToInnerIndex: innerIndex+1});
                         }
                         else {
                             // LAST CHAPTER
-                            if (index < this.props.store.modifiedList.length-1) {
+                            if (index < this.props.dropDownStore.modifiedList.length-1) {
                                 //NOT LAST STATE
                                 this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
                             }
@@ -199,7 +244,7 @@ class DropDownList extends React.Component {
                 }
                 else {
                     // STATE IS CLOSED
-                    if (index < this.props.store.modifiedList.length-1) {
+                    if (index < this.props.dropDownStore.modifiedList.length-1) {
                         //NOT LAST STATE
                         this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
                     }
@@ -212,74 +257,92 @@ class DropDownList extends React.Component {
         }
     }
 
-    render() { 
+    render() {
         return (
-            <div 
-                ref={el => this.simpleBarWrapperRef=el} 
-                style={this.props.toggleable && this.props.store.isOpen ? {"border":"1px solid #0099cc", "borderTop":"0px solid #666666"} : {}}
+            <div ref={el => this.simpleBarWrapperRef=el} style={{"position":"relative"}}>
+            <div
+                className={this.className}
+                style={this.props.dropDownStore.isOpen || !this.props.toggleable ? this.style : {"display":"none"}}
             >
-            <SimpleBar style={this.props.toggleable && !this.props.store.isOpen ? {"display":"none"} : {'height':this.simpleBarHeight}}>
-            <ul className='drop-down-list' ref={el => this.simpleBarRef=el} style={{'height':this.simpleBarHeight}}>
-                {this.props.store.modifiedList.map((element, index) =>
-                {
-                    let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
-                    return(
-                    <li 
-                        key={index} 
-                        className={isOpen ? 'openChapter' : ''} 
-                    >
-                        <div
-                            ref={el => {if(index === this.state.setFocusToIndex){this.setFocusToRef = el}}}
-                            tabIndex='0'
-                            onKeyDown = {(e) => this.keyDownHandler(e, index, -1)}
+                <SimpleBar >
+                <ul className='drop-down-list' 
+                    ref={el => this.simpleBarRef=el} 
+                    style={{'height':this.simpleBarHeight}}
+                >
+                    {this.props.dropDownStore.modifiedList.map((element, index) =>
+                    {   
+                        let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
+                        let multiLeveElement = element.hasOwnProperty("state");
+                        return(
+                        <li 
+                            key={index} 
+                            className={isOpen ? 'openChapter' : ''} 
                         >
-                            <label>
-                                <input 
-                                    type="checkbox" 
-                                    checked={element.state.checked} 
-                                    onChange={() => {this.props.store.onCheckBoxChange(index, -1); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});}} /* */
-                                    /* onKeyDown = {(e) => this.keyDownHandler(e, index, -1)}  */
-                                />
-                                <CheckBoxSVG />
-                            </label>
-                            <button 
-                                onClick={() => this.toggler(index)}
-                                /* onKeyDown = {(e) => this.keyDownHandler(e, index, -1)} */
+                            <div
+                                ref={el => {if(index === this.state.setFocusToIndex){this.setFocusToRef = el}}}
+                                tabIndex='0'
+                                onKeyDown = {(e) => this.keyDownHandler(e, index, -1, multiLeveElement, element)}
                             >
-                                <span>{element.state.name}</span>
-                                <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>
-                            </button>
-                        </div>
-                        {isOpen && 
-                            <ul className='drop-down-list' ref={(el) => this.setUpRef(el,index)}>
-                                {element.chapters.map((el, innerIndex) =>
-                                    <li 
-                                        key={el.name} 
-                                        className='openChapter'
-                                    >
-                                        <div
-                                            ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
-                                            tabIndex='0'
-                                            onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex);}}
+                                {multiLeveElement &&
+                                    <label>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={element.state.checked} 
+                                            onChange={() => {this.props.dropDownStore.onCheckBoxChange(index, -1); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1})}} /* */
+                                        />
+                                        <CheckBoxSVG />
+                                    </label>
+                                }
+                                <button 
+                                    style={multiLeveElement ? {"justifyContent":"space-between"}:{}}
+                                    onClick={() => {
+                                        if (multiLeveElement) {
+                                            this.toggler(index, true)
+                                        }
+                                        else {
+                                            this.props.dropDownStore.set("value", element);
+                                            this.props.dropDownStore.toggle();
+                                        }
+                                    }}
+                                >   
+                                    {element.color !== undefined && 
+                                        <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>
+                                    }
+                                    <span>{multiLeveElement ? element.state.name : element.name}</span>
+                                    {multiLeveElement && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
+                                </button>
+                            </div>
+                            {isOpen && 
+                                <ul className='drop-down-list' ref={(el) => this.setUpRef(el,index)}>
+                                    {element.chapters.map((el, innerIndex) =>
+                                        <li 
+                                            key={el.name} 
+                                            className='openChapter'
                                         >
-                                        <label>
-                                            <input 
-                                                type="checkbox" 
-                                                checked={el.checked} 
-                                                onChange={() => {this.props.store.onCheckBoxChange(index, innerIndex); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});}}
-                                            />
-                                            <CheckBoxSVG />
-                                        </label>
-                                        <span>{el.name}</span>
-                                        </div>
-                                    </li>
-                                )}
-                            </ul>
-                        }
-                    </li>)}
-                )}
-            </ul>
-            </SimpleBar>
+                                            <div
+                                                ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
+                                                tabIndex='0'
+                                                onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, true, element);}}
+                                            >
+                                            <label>
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={el.checked} 
+                                                    onChange={() => {this.props.dropDownStore.onCheckBoxChange(index, innerIndex); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});}}
+                                                />
+                                                <CheckBoxSVG />
+                                            </label>
+                                            <span>{el.name}</span>
+                                            </div>
+                                        </li>
+                                    )}
+                                </ul>
+                            }
+                        </li>)}
+                    )}
+                </ul>
+                </SimpleBar>
+            </div>
             </div>
         )
     }

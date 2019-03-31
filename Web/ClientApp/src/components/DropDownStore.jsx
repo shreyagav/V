@@ -8,7 +8,11 @@ const createDropDownStore = WrappedComponent => {
       list: [],
       modifiedList: [],
       filteredList: [],
+      defaultValue: {},
+      value: {},
       isOpen: false,
+      multiLevelList: false,
+      dropDownHeaderRef: null,
 
       get: key => {
         return this.state[key]
@@ -44,16 +48,35 @@ const createDropDownStore = WrappedComponent => {
         this.setState({filteredList, filteredList});
         e.stopPropagation();
       },
-      toggle: () => {this.setState(() => ({isOpen: !this.state.isOpen}));},
+      toggle: () => {
+        let isOpenWas = this.state.isOpen;
+        this.setState(() => ({isOpen: !this.state.isOpen}));
+        if(isOpenWas){this.state.dropDownHeaderRef.focus();}
+      },
     }
 
-    componentDidMount() {
-      var component = this;
-      fetch('/Chapters.json')
-      .then(function(data){return data.json();})
-      .then(function(jjson){
-        component.setState({list: jjson, modifiedList: jjson})
-      });
+    componentWillMount() {
+      this.setState({value: this.props.defaultValue});
+    }
+
+    componentWillReceiveProps(props){
+      let multiLevelList = false;
+      if(props.list !== undefined){
+        if(props.list[0].hasOwnProperty("state")) {
+          multiLevelList = true;
+        }
+        if(props.defaultValue !== undefined){
+          this.setState({modifiedList: props.list, multiLevelList: multiLevelList, defaultValue: props.defaultValue});
+        }
+        else {this.setState({modifiedList: props.list, multiLevelList: multiLevelList});}
+      }
+      else {
+        if(props.store.chapterList !== undefined){
+          console.log("PROPS chapterList")
+          console.log(props.store.chapterList);
+          this.setState({modifiedList: props.store.chapterList, multiLevelList: true});
+        }
+      }
     }
 
     checkBoxChange = (index, innerIndex) => {
@@ -142,7 +165,7 @@ const withDropDownStore = WrappedComponent => {
     render() {
       return (
         <DropDownStoreContext.Consumer>
-          {context => <WrappedComponent store={context} {...this.props} />}
+          {context => <WrappedComponent dropDownStore={context} {...this.props} />}
         </DropDownStoreContext.Consumer>
       )
     }

@@ -27,6 +27,7 @@
     max-width: 100%;
     align-self: center;
     margin-left: 0.6rem;
+    align-items: center;
 }
 
 .drop-down-header > :last-child {
@@ -39,13 +40,24 @@
 }
 
 .drop-down-header > ul > li {
+    display: flex;
+    align-items: center;
+}
+
+.drop-down-header > ul.multi-level-list > li {
     border: 1px solid #666666;
     border-radius: 3px;
     padding: 0.15rem;
     margin: 0.15rem;
-    display: flex;
-    align-items: center;
 }
+
+.simple-list {
+    margin-left: 0.7rem !important;
+    color: #666666;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1;
+    text-align: left;}
 
 .drop-down-header > ul > li.inverted {
     background-color: #666666;
@@ -94,6 +106,8 @@
 }
 
 /* list of Chapters */
+.drop-down-list-wrapper {position: absolute; display: block; left: 0px; right: 0px; background: #ffffff; z-index: 999; border: 1px solid #0099cc;}
+
 ul.drop-down-list > li {margin-right: 0.9rem; margin-left: 0.9rem; text-transform: uppercase;}
 ul.drop-down-list > li ul.drop-down-list > li {margin-right: 0rem; margin-left: 0rem;}
 ul.drop-down-list > li > div,
@@ -186,7 +200,7 @@ ul.drop-down-list > li:hover > div, ul.drop-down-list > li:hover > div > span,
 ul.drop-down-list > li:focus > div, ul.drop-down-list > li:focus > div > span {cursor: pointer; color: #0099cc;}
 ul.drop-down-list > li:focus > div {color: #0099cc;}
 ul.drop-down-list > li > div > :first-child{flex: 0 0 1rem;}
-ul.drop-down-list > li > div > :last-child {flex: 1 1 100px; display: flex; justify-content: space-between; align-items: center;}
+ul.drop-down-list > li > div > :last-child {flex: 1 1 100px; display: flex; align-items: center;}
 ul.drop-down-list > li > div > :last-child > :last-child {flex: 0 0 0.8rem;}
 ul.drop-down-list > li > div > :last-child svg {height: 0.8rem;}
 ul.drop-down-list > li  ul.drop-down-list {border-top: 1px solid #ededed;}

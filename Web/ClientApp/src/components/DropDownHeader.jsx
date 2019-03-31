@@ -12,75 +12,88 @@ class DropDownHeader extends React.Component {
         this.dropDownHeaderRef = null;
     }
 
+    componentDidMount(){
+        this.props.dropDownStore.set('dropDownHeaderRef', this.dropDownHeaderRef);
+    }
+
     headerClickHandler(e) {
         if (e.target === this.headerRef){
-            this.props.store.toggle();
+            this.props.dropDownStore.toggle();
         }
     }
 
     headerKeyDownHandler(e, element){
         switch (e.keyCode){
             case 13: //enter
-                if(e.target.className === 'unselectButton'){this.props.store.unselect(e, element);}
-                if(e.target.className === 'drop-down-header'){this.props.store.toggle();}
+                if(e.target.className === 'unselectButton'){this.props.dropDownStore.unselect(e, element);}
+                if(e.target.className === 'drop-down-header'){this.props.dropDownStore.toggle();}
                 this.dropDownHeaderRef.focus();
                 break;
             case 27://ESC
                 if(this.state.isOpen){
-                    this.props.store.toggle();
+                    this.props.dropDownStore.toggle();
                     this.dropDownHeaderRef.focus();
                 }
                 break;
             case 38: //Up Arrow
                 e.preventDefault();
-                if(!this.state.isOpen){this.props.store.toggle();}
+                if(!this.state.isOpen){this.props.dropDownStore.toggle();}
                 break;
             case 40: //Down Arrow
                 e.preventDefault();
-                if(!this.state.isOpen){this.props.store.toggle();}
+                if(!this.state.isOpen){this.props.dropDownStore.toggle();}
                 break;
             default: break;
         }
     }
 
     render() {
-        let style = {};
-        if (this.props.toggleable){
-            if(this.props.store.isOpen){
-                style = {"border":"1px solid #0099cc"};
+        console.log('STORE');
+        console.log(this.props.dropDownStore.value.color);
+        const setStyle = () => {
+            if (this.props.toggleable){
+                if(this.props.dropDownStore.isOpen){return {"border":"1px solid #0099cc"}}
             }
+            else return {"border":"0px solid"}
         }
-        else {
-            style = {"border":"0px solid"};
-        }
+        let style = setStyle();
+
         return (
             <div
                 ref={el => this.dropDownHeaderRef = el}
                 tabIndex={this.props.toggleable ? '0':'-1'} 
-                className='drop-down-header' 
+                className='drop-down-header'
                 style={style}
-                onClick={() => this.props.store.toggle()}
+                onClick={() => this.props.dropDownStore.toggle()}
                 onKeyDown={(e) => this.headerKeyDownHandler(e)}
             >
-                <ul ref={e => this.headerRef = e} onClick={(e) => this.headerClickHandler(e)}>
-                    {this.props.store.filteredList.length > 0 && this.props.store.filteredList.map(element => 
-                        <li key={element}>
-                            <span>{element}</span>
-                            <button className='unselectButton'
-                                onClick={(e) => this.props.store.unselect(e, element)}
-                                onKeyDown={(e) => this.headerKeyDownHandler(e, element)}
-                                //onKeyDown={(e) => {if(e.keyDown === 13){this.props.store.unselect(e, element); this.dropDownHeaderRef.focus();}}}
-                            >
-                                <CloseSVG /></button>
-                        </li>
-                    )}
-                    {this.props.store.filteredList.length === 0 && 
-                        <li className='inverted'><span>National</span></li>
-                    }
+                <ul 
+                    ref={e => this.headerRef = e} 
+                    onClick={(e) => this.headerClickHandler(e)}
+                    className={this.props.dropDownStore.multiLevelList ? "multi-level-list" : "simple-list"}
+                >
+                        {this.props.dropDownStore.filteredList.length > 0 && this.props.dropDownStore.filteredList.map(element => 
+                            <li key={element}>
+                                <span>{element}</span>
+                                <button className='unselectButton'
+                                    onClick={(e) => this.props.dropDownStore.unselect(e, element)}
+                                    onKeyDown={(e) => this.headerKeyDownHandler(e, element)}
+                                >
+                                    <CloseSVG /></button>
+                            </li>
+                        )}
+                        {this.props.dropDownStore.filteredList.length === 0 && 
+                            <li className={this.props.dropDownStore.multiLevelList ? 'inverted' : ''}>
+                                {this.props.dropDownStore.value.color !== undefined && 
+                                    <span className='colorIndicator' style={{"backgroundColor": this.props.dropDownStore.value.color, "marginRight":"0.5rem"}}></span>
+                                }
+                                <span>{this.props.dropDownStore.value.name}</span>
+                            </li>
+                        }
                 </ul>
                 {this.props.toggleable &&
                     <button disabled className='drop-down-header-button' >
-                        <ArrowUpSVG svgClassName={this.props.store.isOpen ? 'flip90' : 'flip270'}/>
+                        <ArrowUpSVG svgClassName={this.props.dropDownStore.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                 }
             </div>

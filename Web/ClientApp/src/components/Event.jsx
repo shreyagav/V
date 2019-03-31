@@ -5,8 +5,9 @@ import DatePicker from './DatePicker';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 import DropDownSimple from './DropDownSimple';
 import TimePicker from './TimePicker';
+import { withStore } from './store';
 
-export class Event extends Component {
+class Event extends Component {
 
     constructor(props) {
         super(props);
@@ -28,8 +29,8 @@ export class Event extends Component {
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     handleClick(e) {
-        if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.dropDownSimpleRef.contains(e.target)) {
-            this.colorDropDownRef.toggle();
+        if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
+            this.colorDropDownRef.state.toggle();
         }
         if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.dropDownSimpleRef.contains(e.target)){
             this.dayDropDownRef.toggle();
@@ -78,6 +79,8 @@ export class Event extends Component {
                         <p>Chapter:</p>
                         <DropDown 
                             ref={el => this.chaptersDropDownRef = el}
+                            list={this.props.store.chapterList}
+                            defaultValue={{name:'National'}}
                         />
                     </li>
                     <li>
@@ -180,10 +183,10 @@ export class Event extends Component {
                     </li>
                     <li>
                         <p>Color:</p>
-                        <DropDownSimple 
+                        <DropDown
                             ref={el => this.colorDropDownRef = el}
-                            list={[{value: 'blue', color: '#0099cc'}, {value: 'orange', color: '#ff9933'}, {value: 'green', color: '#669933'}, {value: 'purple', color: '#9252a0'}, {value: 'grey', color: '#666666'}, {value: 'mint', color: '#33cc99'}]} 
-                            defaultValue={[{value: 'green', color: '#669933'}]}
+                            list={[{name: 'blue', color: '#0099cc'}, {name: 'orange', color: '#ff9933'}, {name: 'green', color: '#669933'}, {name: 'purple', color: '#9252a0'}, {name: 'grey', color: '#666666'}, {name: 'mint', color: '#33cc99'}]} 
+                            defaultValue={{name: 'green', color: '#669933'}}
                         />
                     </li>
                 </ul>
@@ -196,4 +199,4 @@ export class Event extends Component {
     }
 }
 
-export default Event;
+export default withStore(Event);

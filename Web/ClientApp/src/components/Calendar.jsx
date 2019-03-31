@@ -318,7 +318,7 @@ class Calendar extends Component {
                 <button className='big-blue-button mt-1'>National Event Calendar</button>
                 <h3>Event calendar By Regions and chapters:</h3>
               </div>
-              <DropDownList />
+              <DropDownList list={this.props.store.chapterList} />
             </div>
             <div className = {(this.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
             <div 
@@ -329,7 +329,7 @@ class Calendar extends Component {
                 <div className='flex-nowrap justify-space-between align-center pr-1'>
                   <div className='flex-wrap justify-left align-center pr-1'>
                     <h1 className='h2 uppercase-text pl-025'><strong>Event Calendar</strong></h1>
-                    <DropDownHeader />
+                    <DropDownHeader toggleable={false} defaultValue={{name:'National'}}/>
                   </div>
                     <span>
                     {
