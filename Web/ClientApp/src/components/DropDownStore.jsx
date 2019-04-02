@@ -51,12 +51,10 @@ const createDropDownStore = WrappedComponent => {
       toggle: () => {
         let isOpenWas = this.state.isOpen;
         this.setState(() => ({isOpen: !this.state.isOpen}));
-        if(isOpenWas){this.state.dropDownHeaderRef.focus();}
+        if(isOpenWas){
+          this.state.dropDownHeaderRef.focus();
+        }
       },
-    }
-
-    componentWillMount() {
-      this.setState({value: this.props.defaultValue});
     }
 
     componentWillReceiveProps(props){
@@ -72,8 +70,6 @@ const createDropDownStore = WrappedComponent => {
       }
       else {
         if(props.store.chapterList !== undefined){
-          console.log("PROPS chapterList")
-          console.log(props.store.chapterList);
           this.setState({modifiedList: props.store.chapterList, multiLevelList: true});
         }
       }

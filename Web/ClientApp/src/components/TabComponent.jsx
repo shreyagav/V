@@ -14,6 +14,12 @@ class TabComponent extends React.Component {
         this.width = {};
     }
 
+    componentWillReceiveProps(props){
+        if(props.activeTabIndex !== undefined) {
+            this.setState({selected: props.activeTabIndex});
+        }
+    }
+
     componentWillMount(){
         let maxLength = 0;
         let index = 0;
@@ -50,7 +56,7 @@ class TabComponent extends React.Component {
                         key={index} 
                         className={index === this.state.selected ? 'selected' : ''} 
                         onClick={() => {this.setState({selected: index}); this.props.wasSelected(index)}}
-                        onKeyDown={(e) => {if (e.keyCode === 13) {this.setState({selected: index})}}}
+                        onKeyDown={(e) => {if (e.keyCode === 13) {this.setState({selected: index}); this.props.wasSelected(index)}}}
                     >
                         <p style={this.width}>{element}</p>
                     </li>

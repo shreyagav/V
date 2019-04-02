@@ -12,6 +12,10 @@ class DropDownHeader extends React.Component {
         this.dropDownHeaderRef = null;
     }
 
+    componentWillMount() {
+        this.props.dropDownStore.set("value", this.props.defaultValue);
+      }
+
     componentDidMount(){
         this.props.dropDownStore.set('dropDownHeaderRef', this.dropDownHeaderRef);
     }

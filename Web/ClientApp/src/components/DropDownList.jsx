@@ -5,6 +5,7 @@ import { withDropDownStore } from './DropDownStore';
 
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import { combineReducers } from 'redux';
 
 class DropDownList extends React.Component {
 
@@ -19,6 +20,7 @@ class DropDownList extends React.Component {
         this.simpleBarRef = null;
         this.simpleBarWrapperRef = null;
         this.simpleBarHeight = '100%';
+        this.opensDown = true;
         this.openStateRef = null;
         this.setFocusToRef = null;
         this.simpleList = false;
@@ -57,7 +59,7 @@ class DropDownList extends React.Component {
     }
 
     componentWillUnmount(){
-        document.removeEventListener('wheel', this.handleWheel, false);
+        document.removeEventListener('wheel', this.handleWheel, true);
         window.removeEventListener("resize", this.setHeight);
     }
 
@@ -65,19 +67,18 @@ class DropDownList extends React.Component {
         if(this.setFocusToRef !== null){
             var list = this.simpleBarRef;
             var parentTop = list.parentElement.getBoundingClientRect().top;
-            var top = list.getBoundingClientRect().top;
+            //var top = list.getBoundingClientRect().top;
             var elem = this.setFocusToRef;
             var elemTop = elem.getBoundingClientRect().top;
-            if(parentTop>elemTop){
-                this.simpleBarRef.parentElement.scrollTop = elemTop - top;
+            var elemBottom = elem.getBoundingClientRect().bottom;
+            var parentBottom = list.parentElement.getBoundingClientRect().bottom;
+            if(parentTop > elemTop){
+                list.parentElement.scrollTop = list.parentElement.scrollTop - (parentTop - elemTop);
             }
-            //let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            let bottom = this.setFocusToRef.getBoundingClientRect().bottom;
-            let parentBottom = list.parentElement.getBoundingClientRect().bottom;
-            if(bottom > parentBottom){
-                this.setFocusToRef.scrollIntoView(false);
+            if(elemBottom > parentBottom){
+                list.parentElement.scrollTop = elemBottom - parentBottom + list.parentElement.scrollTop;
             }
-            this.setFocusToRef.focus({preventScroll: true});
+            elem.focus({preventScroll: true});
         }
     }
 
@@ -97,8 +98,9 @@ class DropDownList extends React.Component {
             if (this.props.toggleable) {
                 if (toTop > toBottom){
                     //* OPENS UP *//
-                    //simpleBarHeight = (Math.floor(toTop/45))*45-1;
-                    simpleBarHeight = Math.floor(toTop);
+                    this.opensDown = false;
+                    //simpleBarHeight = Math.floor(toTop);
+                    simpleBarHeight = (Math.floor(toTop/45))*45-1;
                     if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
                     this.simpleBarHeight = simpleBarHeight.toString() + 'px';
                     this.className = "drop-down-list-wrapper";
@@ -106,8 +108,9 @@ class DropDownList extends React.Component {
                 }
                 else {
                     /* OPENS DOWN */
-                    //simpleBarHeight = (Math.floor(toBottom/45))*45-1;
-                    simpleBarHeight = Math.floor(toBottom);
+                    this.opensDown = true;
+                    //simpleBarHeight = Math.floor(toBottom);
+                    simpleBarHeight = (Math.floor(toBottom/45))*45-1;
                     if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
                     this.simpleBarHeight = simpleBarHeight.toString() + 'px';
                     this.className = "drop-down-list-wrapper";
@@ -125,7 +128,7 @@ class DropDownList extends React.Component {
     }
 
     handleWheel = (e) => {
-        if (!this.simpleBarRef.contains(e.target)) {
+        if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {
             if (this.props.dropDownStore.isOpen) {this.props.dropDownStore.toggle();}
             return;
         }
@@ -182,6 +185,7 @@ class DropDownList extends React.Component {
                 if(multiLevelList){this.toggler(index, multiLevelList);}
                 else{
                     this.props.dropDownStore.set("value", element);
+                    this.setState({setFocusToIndex: 0});
                     this.props.dropDownStore.toggle();
                 }
                 break;
@@ -190,11 +194,12 @@ class DropDownList extends React.Component {
                 e.preventDefault();
                 break;
             case 27://ESC
-                this.setState({setFocusToIndex: 0, setFocusToInnerIndex: 0});
+                this.setState({setFocusToIndex: 0, setFocusToInnerIndex: 0, setFocusToInnerIndex: -1});
                 this.props.dropDownStore.toggle();
                 //this.dropDownHeader.focus();
                 break;
             case 38: //Up Arrow
+            //debugger
                 e.preventDefault();
                 if(innerIndex > -1) {
                     // IT IS CHAPTER
@@ -264,7 +269,7 @@ class DropDownList extends React.Component {
                 className={this.className}
                 style={this.props.dropDownStore.isOpen || !this.props.toggleable ? this.style : {"display":"none"}}
             >
-                <SimpleBar >
+                <SimpleBar>
                 <ul className='drop-down-list' 
                     ref={el => this.simpleBarRef=el} 
                     style={{'height':this.simpleBarHeight}}

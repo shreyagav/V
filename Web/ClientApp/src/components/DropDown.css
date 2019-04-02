@@ -119,7 +119,9 @@ ul.drop-down-list > li ul.drop-down-list > li {
     align-items: center;
     min-height: 2.75rem;
 }
+
 ul.drop-down-list > li span {
+    display: block;
     color: #666666;
     text-transform: uppercase;
     font-weight: 600;
@@ -201,7 +203,7 @@ ul.drop-down-list > li:focus > div, ul.drop-down-list > li:focus > div > span {c
 ul.drop-down-list > li:focus > div {color: #0099cc;}
 ul.drop-down-list > li > div > :first-child{flex: 0 0 1rem;}
 ul.drop-down-list > li > div > :last-child {flex: 1 1 100px; display: flex; align-items: center;}
-ul.drop-down-list > li > div > :last-child > :last-child {flex: 0 0 0.8rem;}
+ul.drop-down-list > li > div > :last-child > button:last-child {flex: 0 0 0.8rem;}
 ul.drop-down-list > li > div > :last-child svg {height: 0.8rem;}
 ul.drop-down-list > li  ul.drop-down-list {border-top: 1px solid #ededed;}
 ul.drop-down-list > li  ul.drop-down-list > li {

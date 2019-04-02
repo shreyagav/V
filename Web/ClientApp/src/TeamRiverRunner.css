@@ -99,6 +99,15 @@ small {
 }
 
 /* input & checkbox */
+textarea {
+    width: 100%;
+    border: 1px solid #666666;
+    background: white;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: #666666;
+}
+
 input[type=checkbox] {
     width: 1.5rem;
     height: 1.5rem;
@@ -143,7 +152,7 @@ input:focus::after {
     opacity: 0.5;
   } 
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
     font-weight: 400;
     font-style: italic;
     color: #999999;
@@ -509,6 +518,50 @@ button.grey-SVG-button:focus {
     -webkit-box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
 }
+/* drop-down relative - absolute relationships */
+.position-wrapper {
+    position: relative;
+}
+
+.absolute-drop-down{
+    position: absolute;
+    top: 42px;
+    left: 0px;
+    right: 0px;
+    z-index: 999;
+    background: #ffffff;
+}
+
+/* table-element */
+.table-element { width: 100%; }
+.table-element-content, .table-element-header {
+    border: 1px solid #666666;
+}
+.table-element-content { border-top: 0px solid #666666; }
+.table-element-content > li, .table-element-header > li { padding: 0.5rem; }
+.table-element-content > li:not(:first-child), .table-element-header > li:not(:first-child) { border-left: 1px solid #666666; }
+.table-element-member {
+    display: grid;
+    grid-template-columns: minmax(100px, 0.5fr) 50px 110px minmax(120px, 1fr) 30px;
+}
+.table-element-member > li {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    font-size: 1rem;
+}
+
+.table-element-header > li {font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+
+@media screen and (max-width: 499px) {
+    .table-element-member > li {
+        font-size: 3vw;
+    }
+    .table-element-member {
+        display: grid;
+        grid-template-columns: minmax(20vw, 0.5fr) 10vw 22vw minmax(20vw, 1fr) 8vw;
+    }
+}
 
 /* flexbox */
 .flex-nowrap {display: flex; flex-wrap: nowrap;}
@@ -534,6 +587,9 @@ button.grey-SVG-button:focus {
 .fb-00100px {flex: 0 0 100px;}
 .fb-1050px {flex: 1 0 50px;}
 .fb-11auto {flex: 1 1 auto;}
+
+/*  */
+
 
 /* flip */
 

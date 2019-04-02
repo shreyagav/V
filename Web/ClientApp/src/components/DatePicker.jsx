@@ -267,7 +267,7 @@ class DatePicker extends Component {
         const calendar = this.state.calendar;
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         return (
-            <div ref={el => this.datePickerRef = el} className='date-picker' >
+            <div ref={el => this.datePickerRef = el} className='date-picker position-wrapper'>
                 <div
                     ref={el => this.dropDownHeaderRef = el}
                     tabIndex='0' 
@@ -292,7 +292,7 @@ class DatePicker extends Component {
                 {this.state.isOpen &&
                     <div 
                         ref={el => this.calendarBodyRef = el} 
-                        className='flex-nowrap flex-flow-column align-center cw-100'
+                        className='flex-nowrap flex-flow-column align-center cw-100 absolute-drop-down'
                         style={{"border":"1px solid #0099cc", "borderTop":"0px solid #666666"}}
                     >
                         <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>

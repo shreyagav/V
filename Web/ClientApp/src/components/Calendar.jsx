@@ -46,6 +46,7 @@ class Calendar extends Component {
     }
 
     componentDidMount(){
+      
       var component = this;
       fetch('/Events.json')
       .then(function(data){return data.json();})

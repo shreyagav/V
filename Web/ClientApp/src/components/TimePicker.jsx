@@ -171,7 +171,10 @@ export class TimePicker extends Component {
 
     render() { 
         return (
-            <div ref={el => this.timeNumberPickerRef = el} className={this.props.timePickerMode ? 'drop-down time-picker' : 'drop-down number-picker'}>
+            <div 
+                ref={el => this.timeNumberPickerRef = el} 
+                className={this.props.timePickerMode ? 'drop-down time-picker position-wrapper' : 'drop-down number-picker position-wrapper'}
+            >
                 <div 
                     ref={el => this.dropDownHeaderRef = el}
                     tabIndex='0'
@@ -193,7 +196,7 @@ export class TimePicker extends Component {
                 </div>
                 {this.state.isOpen && this.props.timePickerMode &&
                     <div 
-                        className='time-number-picker-drop-down'
+                        className='time-number-picker-drop-down absolute-drop-down'
                         style={{"border":"1px solid #0099cc", "borderTop":"0px solid #666666"}}
                     >
                         <div>
@@ -285,7 +288,7 @@ export class TimePicker extends Component {
                 }
                 {this.state.isOpen && !this.props.timePickerMode &&
                     <div 
-                        className='time-number-picker-drop-down'
+                        className='time-number-picker-drop-down absolute-drop-down'
                         style={{"border":"1px solid #0099cc", "borderTop":"0px solid #666666"}}
                     >
                         <div>
