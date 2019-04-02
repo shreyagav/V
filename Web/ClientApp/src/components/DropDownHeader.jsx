@@ -52,8 +52,6 @@ class DropDownHeader extends React.Component {
     }
 
     render() {
-        console.log('STORE');
-        console.log(this.props.dropDownStore.value.color);
         const setStyle = () => {
             if (this.props.toggleable){
                 if(this.props.dropDownStore.isOpen){return {"border":"1px solid #0099cc"}}

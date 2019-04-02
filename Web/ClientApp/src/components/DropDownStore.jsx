@@ -60,7 +60,7 @@ const createDropDownStore = WrappedComponent => {
     componentWillReceiveProps(props){
       let multiLevelList = false;
       if(props.list !== undefined){
-        if(props.list[0].hasOwnProperty("state")) {
+        if(props.list.length>0 && props.list[0].hasOwnProperty("state")) {
           multiLevelList = true;
         }
         if(props.defaultValue !== undefined){
