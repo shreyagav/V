@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import TabComponent from './TabComponent';
 import DropDown from './DropDown';
 import DatePicker from './DatePicker';
-import ArrowUpSVG from '../svg/ArrowUpSVG';
+import CloseUpSVG from '../svg/CloseUpSVG';
 import TimePicker from './TimePicker';
 import { withStore } from './store';
+import ImageGallery from './ImageGallery';
 
 class Event extends Component {
 
@@ -14,6 +15,8 @@ class Event extends Component {
             repeatedEventsIsOpen: true,
             activeTabIndex: 0,
             members: [],
+            budget: [],
+            pictures: [],
         };
         this.colorDropDownRef = null;
         this.dayDropDownRef = null;
@@ -36,6 +39,16 @@ class Event extends Component {
         .then(function(data){return data.json();})
         .then(function(jjson){
           component.setState({members: jjson})
+        });
+        fetch('/Budget.json')
+        .then(function(data){return data.json();})
+        .then(function(jjson){
+          component.setState({budget: jjson})
+        });
+        fetch('/Pictures.json')
+        .then(function(data){return data.json();})
+        .then(function(jjson){
+          component.setState({pictures: jjson})
         });
     }
 
@@ -75,22 +88,57 @@ class Event extends Component {
         this.setState({repeatedEventsIsOpen: !this.state.repeatedEventsIsOpen});
     }
 
+    formatImageList(pageNumber) {
+        let rowHeight = this.state.rowHeight;
+        let maxWidth = this.imageGalleryRef.getBoundingClientRect().width;
+        let newArray = [];
+        let newImageList = [];
+        let totalWidth = 0;
+        let counter = 0;
+        let tryUntill = 0;
+        let imageList = this.state.pictures;
+        if (pageNumber*this.state.amountPerPage < imageList.length) {
+            tryUntill = pageNumber*this.state.amountPerPage;
+        }
+        else tryUntill = imageList.length;
+        for (let i=(pageNumber-1)*this.state.amountPerPage; i < tryUntill; i++) {
+            totalWidth = totalWidth + (imageList[i].width * rowHeight) / imageList[i].height;
+            counter = counter + 1;
+            newArray.push(imageList[i]);
+            if (totalWidth > maxWidth) {
+                for (let j=0; j < newArray.length; j++){
+                    newArray[j].flexBasis = (((newArray[j].width * rowHeight)/newArray[j].height) /totalWidth)*100*(1 - (10*(counter-1))/maxWidth);
+                }
+                newImageList.push(newArray);
+                counter=0;
+                totalWidth = 0;
+                newArray = []; 
+            }
+        }
+        if (newArray.length > 0) {
+            for (let j=0; j < newArray.length; j++){
+                newArray[j].flexBasis = (((newArray[j].width * rowHeight)/newArray[j].height) /maxWidth)*100*(1 - (10*(counter-1))/maxWidth);
+            }
+            newImageList.push(newArray);
+        }
+        this.setState(() => ({formattedPicturesList: newImageList}));
+    }
+
     render() {
         const members = this.state.members;
+        const budget = this.state.budget;
+        const pictures = this.state.formattedPicturesList;
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2' style={{"margin":"1rem"}}>
+            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
                 <TabComponent 
-                    height={'3rem'}
-                    fontSize={'1rem'}
+                    inheritParentHeight={false}
                     tabList={['info', 'attendees', 'budget', 'pictures']}
-                    //proceedInOrder={true}
-                    tabEqualWidth={true}
                     wasSelected={(index) => this.setState({activeTabIndex: index})}
                     activeTabIndex={this.state.activeTabIndex}
                 />
                 {this.state.activeTabIndex === 0 &&
-                    <ul className='input-fields first-child-text-120 mt-3 mb-3'>
+                    <ul className='input-fields first-child-text-120 mt-3 mb-2 pl-1 pr-1'>
                         <li>
                             <p>Event Title:</p>
                             <input type='text' placeholder=''></input>
@@ -119,7 +167,7 @@ class Event extends Component {
                                             className='arrow-button arrow-button-25square' 
                                             onClick={() => {this.toggleRepeatedEvents();}}
                                         >
-                                            {/*<ArrowUpSVG svgClassName={this.state.repeatedEventsIsOpen ? 'flip90' : 'flip270'}/>*/}
+                                            {/*<CloseUpSVG svgClassName={this.state.repeatedEventsIsOpen ? 'flip90' : 'flip270'}/>*/}
                                         </button>
                                 </div>
                                 {this.state.repeatedEventsIsOpen && 
@@ -221,39 +269,106 @@ class Event extends Component {
                 }
                 {this.state.activeTabIndex === 1 && 
                 <div style={{"width":"100%", "maxWidth":"600px"}}>
-                    <ul className='table-element mt-3 mb-3'>
+                    <div className="flex-wrap align-center justify-center mt-2 mb-2">
+                        <p className='input-label'>ADD ATTENDEES:</p>
+                        <span>
+                            <button disabled className='big-static-button static-button' >
+                                Create New
+                            </button>
+                            <button disabled className='big-static-button static-button' >
+                                Add Member
+                            </button>
+                        </span>
+                    </div>
+                    <ul className='table-element mt-1 mb-2'>
                         <li>
-                            <ul className='table-element-header table-element-member'>
-                                <li >Name</li>
-                                <li >Role</li>
-                                <li >Phone</li>
-                                <li >Email</li>
-                                <li ></li>
+                            <ul className='table-element-header table-element-member table-member'>
+                                <li>Name</li>
+                                <li className='no-break'>Role</li>
+                                <li>Phone</li>
+                                <li>Email</li>
+                                <li></li>
                             </ul>
                         </li>
                         {
                         members.map((element,index) => 
-                            <ul key={index} className='table-element-content table-element-member'>
+                            <ul key={index} className='table-element-content table-element-member table-member'>
                                 <li >{element.firstName + " " + element.lastName}</li>
-                                <li >{element.role}</li>
+                                <li className='no-break'>{element.role}</li>
                                 <li >{element.phone}</li>
                                 <li >{element.email}</li>
-                                <li ></li>
+                                <li className='no-padding'>
+                                <button disabled className='square-button-width'>
+                                    <CloseUpSVG svgClassName='flip90'/>
+                                </button>
+                                </li>
                             </ul>
                             )
                         }
                     </ul>
                 </div>
                 }
-                <div className='flex-wrap mb-3'>
+                {this.state.activeTabIndex === 2 && 
+                <div style={{"width":"100%", "maxWidth":"600px"}}>
+
+                    <ul className='input-fields first-child-text-240 mt-3 mb-1 pl-1 pr-1'>
+                        <li className='number-field'>
+                            <p className='input-label'>Entered Projected Cost:</p>
+                            <input />
+                        </li>
+                        <li className='number-field'>
+                            <p className='input-label'>Calculated Projected Cost:</p>
+                            <input />
+                        </li>
+                    </ul>
+                    <div className="flex-wrap align-center justify-center">
+                        <p className='input-label'>ADD NEW ITEM:</p>
+                        <button disabled className='big-static-button static-button' >Add Item</button>
+                    </div>
+                    <ul className='table-element mt-2 mb-2'>
+                        <li>
+                            <ul className='table-element-header table-element-member table-budget'>
+                                <li>Name</li>
+                                <li>Description</li>
+                                <li>Cost</li>
+                                <li></li>
+                            </ul>
+                        </li>
+                        {
+                        budget.map((element,index) => 
+                            <ul key={index} className='table-element-content table-element-member table-budget'>
+                                <li >{element.name}</li>
+                                <li >{element.description}</li>
+                                <li >{element.cost}</li>
+                                <li className='no-padding'>
+                                    <button disabled className='square-button-width'>
+                                        <CloseUpSVG svgClassName='flip90'/>
+                                    </button>
+                                </li>
+                            </ul>
+                            )
+                        }
+                    </ul>
+                </div>
+                }
+                {this.state.activeTabIndex === 3 && 
+                <div style={{"width":"100%", "maxWidth":"600px"}}>
+                    <div className="flex-wrap align-center justify-center mt-2">
+                        <p className='input-label'>Upload a picture:</p>
+                        <button disabled className='big-static-button static-button' >Browse</button>
+                    </div>
+                    <ImageGallery pictures={this.state.pictures} />
+                </div>
+                }
+                <div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&
-                        <button className='medium-static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
+                        <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button default-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex+1})}>Next</button>
+                        <button className='medium-static-button static-button default-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex+1})}>Next</button>
                     }
                     {this.state.activeTabIndex === 3 &&
-                        <button className='medium-static-button default-button' disabled >Save</button>
+                        <button className='medium-static-button static-button default-button' disabled >Save</button>
                     }
                 </div>
             </div>

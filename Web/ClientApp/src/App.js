@@ -7,9 +7,6 @@ import Calendar from './components/Calendar'
 import NavMenu from './components/NavMenu'
 import { createStore } from './components/store'
 
-//const {Consumer, Provider} = React.createContext();
-//const initialState = {narrowScreen: false};
-
 class App extends Component {
   static displayName = App.name;
 

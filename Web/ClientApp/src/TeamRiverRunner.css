@@ -57,15 +57,11 @@ h3, .h3 {
     padding-bottom: 1rem;
 }
 
-/*
-.display-1 {font-size:3.5rem;}
-.display-2 {font-size:3rem;}
-.display-3 {font-size:2.5rem;} */
-
-@media screen and (max-width: 600px){
-    h1, .h1 {
-        font-size: 8vw;
-    }
+.input-label {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: inherit;
+    color: inherit;
 }
 
 .mb-05 {margin-bottom: 0.5rem !important;}
@@ -86,8 +82,36 @@ h3, .h3 {
 .pr-1 {padding-right: 1rem !important}
 .pl-025 {padding-left: 0.25rem !important}
 .pl-1 {padding-left: 1rem !important}
+.pr-1 {padding-right: 1rem !important}
 .mr-1 {margin-right: 1rem !important}
 .ml-1 {margin-left: 1rem !important}
+
+@media screen and (max-width: 500px){
+    h1, .h1 {
+        font-size: 8vw;
+    }
+    .mb-05 {margin-bottom: 1.6vw !important;}
+    .mb-1 {margin-bottom: 3.2vw !important;}
+    .mb-2 {margin-bottom: 6.4vw !important;}
+    .mb-3 {margin-bottom: 8.4vw !important;}
+    .mt-05 {margin-top: 1.6vw !important;}
+    .mt-1 {margin-top: 3.2vw !important;}
+    .mt-2 {margin-top: 6.4vw !important;}
+    .mt-3 {margin-top: 8.4vw !important;}
+    .pt-1 {padding-top: 3.2vw !important;}
+    .pt-2 {padding-top: 6.4vw !important;}
+    .pt-3 {padding-top: 8.4vw !important;}
+    .pb-1 {padding-bottom: 3.2vw !important;}
+    .pb-2 {padding-bottom: 6.4vw !important;}
+    .pb-3 {padding-bottom: 8.4vw !important;}
+    .pr-025 {padding-right: 0.8vw !important}
+    .pr-1 {padding-right: 3.2vw !important}
+    .pl-025 {padding-left: 0.8vw !important}
+    .pl-1 {padding-left: 3.2vw !important}
+    .pr-1 {padding-right: 3.2vw !important}
+    .mr-1 {margin-right: 3.2vw !important}
+    .ml-1 {margin-left: 3.2vw !important}
+}
 
 b, strong {font-weight: 700 !important; font-size: inherit; color: inherit;}
 
@@ -107,13 +131,13 @@ textarea {
     font-weight: 500;
     color: #666666;
 }
-
-input[type=checkbox] {
+/*
+input[type=checkbox], input[type=radio] {
     width: 1.5rem;
     height: 1.5rem;
     border: 1px solid #666666;
     background: white;
-}
+}*/
 
 input,
 .buttonlike-checkbox label > span {
@@ -126,6 +150,12 @@ input,
     position: relative;
 }
 
+
+.buttonlike-checkbox label {
+    margin-right: 0.2em;
+    margin-bottom: 0.2em;
+}
+
 .buttonlike-checkbox label > span {
     width: 2.5rem;
     margin: 0px !important;
@@ -135,7 +165,8 @@ input,
     justify-content: center;
 }
 
-.buttonlike-checkbox label > input[type="checkbox"]:checked + span {
+.buttonlike-checkbox label > input[type="checkbox"]:checked + span,
+.buttonlike-checkbox label > input[type="radio"]:checked + span {
     overflow: hidden;
 }
 
@@ -160,9 +191,13 @@ input::placeholder, textarea::placeholder {
 
 input.w50px {width:50px;text-align: center;}
 
-.buttonlike-checkbox input[type=checkbox]:focus ~ span {outline:  #00ccff auto 2px;} 
+.buttonlike-checkbox input[type="checkbox"]:focus ~ span,
+.buttonlike-checkbox input[type="radio"]:focus ~ span {
+    outline:  #00ccff auto 2px;
+} 
 
-input[type="checkbox"] {
+input[type="checkbox"], 
+input[type="radio"] {
     /* Hide the browser's default checkbox */
     position: absolute;
     opacity: 0;
@@ -175,19 +210,26 @@ label {
     align-items: center;
     justify-content: flex-start;
 }
-input[type="checkbox"] + span {position: relative;}
-input[type="checkbox"] + svg {
+input[type="checkbox"] + span, input[type="radio"] + span {position: relative;}
+input[type="checkbox"] + svg, input[type="radio"] + svg {
     width: 1.2rem;
     height: 1.2rem;
     border: 1px solid #999999;
     display: block;
     padding: 0.1rem;
 }
-input[type="checkbox"] + svg > .svg {fill: #ffffff !important;}
-input[type="checkbox"]:checked + svg > .svg {fill: #999999 !important;}
+input[type="checkbox"] + svg > .svg, 
+input[type="radio"] + svg > .svg {
+    fill: #ffffff !important;
+}
+input[type="checkbox"]:checked + svg > .svg,
+input[type="radio"]:checked + svg > .svg {
+    fill: #999999 !important;
+}
 
 /* Gleamin Effect */
-.buttonlike-checkbox label > input[type="checkbox"]:not(:disabled):checked + span:before{
+.buttonlike-checkbox label > input[type="checkbox"]:not(:disabled):checked + span:before,
+.buttonlike-checkbox label > input[type="radio"]:not(:disabled):checked + span:before {
     content: "";
     width: 200%;
     height: 200%;
@@ -200,7 +242,8 @@ input[type="checkbox"]:checked + svg > .svg {fill: #999999 !important;}
     background-image: -moz-linear-gradient(135deg, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));  
  }
 
- .buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):checked + span:before{
+ .buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):checked + span:before,
+ .buttonlike-checkbox label:hover > input[type="radio"]:not(:disabled):checked + span:before {
    top: 200%;
    left: 200%;
    opacity: 0;
@@ -212,12 +255,16 @@ input[type="checkbox"]:checked + svg > .svg {fill: #999999 !important;}
  }
 
 .buttonlike-checkbox label:hover > span {border-color: #0099cc; cursor: pointer;}
-.buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):not(:checked) + span {color: #0099cc;}
+
+.buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):not(:checked) + span,
+.buttonlike-checkbox label:hover > input[type="radio"]:not(:disabled):not(:checked) + span {color: #0099cc;}
 
 /* no cursor pointer if input was disabled */
-label:hover > input[type="checkbox"]:disabled + span {cursor: auto !important;}
+label:hover > input[type="checkbox"]:disabled + span,
+label:hover > input[type="radio"]:disabled + span {cursor: auto !important;}
 
-label > input[type="checkbox"]:checked + span {
+label > input[type="checkbox"]:checked + span,
+label > input[type="radio"]:checked + span {
     background: #0099cc;
     border-color: #0099cc;
     color: #ffffff;
@@ -257,26 +304,36 @@ button.big-blue-button {
     font-weight: 600;
 }
 
-button.medium-static-button {
-    width: 8rem;
-    height: 3rem;
+.medium-static-button {
+    width: 8em;
+}
+
+.big-static-button {
+    width: 10em;
+}
+
+button.static-button {
+    height: 3em;
     border: 1px solid #666666;
     color: #666666;
     border-radius: 999px;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 1rem;
+    font-size: 1em;
     line-height: 1;
     position: relative;
+    margin: 0.5em;
 }
 
-button.medium-static-button + button.medium-static-button {
-    margin-left: 1rem;
-}
-
-button.medium-static-button:hover {
+button.static-button:hover {
     border: 1px solid #0099cc;
     color: #0099cc;
+}
+
+@media screen and (max-width: 500px){
+    button.static-button {font-size: 3.2vw; height: 8.4vw;}
+    button.medium-static-button {width: 25.6vw;}
+    button.big-static-button {width: 32vw;}
 }
 
 button.default-button {
@@ -424,6 +481,12 @@ ul.input-fields > li{
         flex: 0 0 120px;
         text-align: right;
     }
+
+    ul.first-child-text-240 > li > :first-child{
+        flex: 0 0 240px;
+        text-align: right;
+    }
+
     ul.input-fields > li > :last-child:not(label),
     ul.input-fields .add-margin {
         margin-left: 1rem !important;
@@ -471,18 +534,12 @@ ul.input-fields > li > p:first-child {
     margin-bottom: 1rem !important;
 }
 
-ul.input-fields label:not(:last-child) {margin-right: 0.3rem;}
-ul.input-fields label {margin-bottom: 0.3rem;}
-
-
 .input-fields-child-ul {
     display: flex;
     flex-wrap: nowrap;
     align-items: flex-start;
     justify-items: stretch;
 }
-
-
 
 /* ????????????????? grey-SVG-button */
 button.grey-SVG-button:focus .svg {fill: #0099cc;}
@@ -533,34 +590,31 @@ button.grey-SVG-button:focus {
 }
 
 /* table-element */
+.table-member { display: grid; grid-template-columns: minmax(100px, 0.5fr) 50px 110px minmax(120px, 0.7fr) 36px; }
+.table-budget { display: grid; grid-template-columns: minmax(100px, 0.5fr) minmax(120px, 0.7fr) 110px 36px; }
+
 .table-element { width: 100%; }
-.table-element-content, .table-element-header {
-    border: 1px solid #666666;
-}
+.table-element-content, .table-element-header {border: 1px solid #666666;}
 .table-element-content { border-top: 0px solid #666666; }
-.table-element-content > li, .table-element-header > li { padding: 0.5rem; }
+.table-element-content > li { font-size: 0.9rem;}
+ .table-element-header > li { font-size: 1rem;}
 .table-element-content > li:not(:first-child), .table-element-header > li:not(:first-child) { border-left: 1px solid #666666; }
-.table-element-member {
-    display: grid;
-    grid-template-columns: minmax(100px, 0.5fr) 50px 110px minmax(120px, 1fr) 30px;
-}
-.table-element-member > li {
+.table-element-member > li:not(.no-break) {
     white-space: pre-wrap;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    font-size: 1rem;
 }
-
-.table-element-header > li {font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+.table-element-member > li:not(.no-padding) {
+    padding: 0.5rem;
+}
+.table-element-header > li {font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
 
 @media screen and (max-width: 499px) {
-    .table-element-member > li {
-        font-size: 3vw;
-    }
-    .table-element-member {
-        display: grid;
-        grid-template-columns: minmax(20vw, 0.5fr) 10vw 22vw minmax(20vw, 1fr) 8vw;
-    }
+    .table-element-content > li {font-size: 2.5vw;}
+    .table-element-header > li {font-size: 2vw;}
+    .table-element-member > li:not(.no-padding) {padding: 1vw;}
+    .table-member {grid-template-columns: minmax(20vw, 0.5fr) 10vw 22vw minmax(20vw, 1fr) 5vw;}
+    .table-budget {grid-template-columns: minmax(20vw, 0.5fr) minmax(20vw, 1fr) 22vw 5vw;}
 }
 
 /* flexbox */
@@ -588,8 +642,50 @@ button.grey-SVG-button:focus {
 .fb-1050px {flex: 1 0 50px;}
 .fb-11auto {flex: 1 1 auto;}
 
-/*  */
+/* NEW BUTTON */
 
+.square-button-width{
+    font-size: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.square-button-width > svg {
+    font-size: inherit;
+    width: 100%;
+    height: auto;
+    padding: 0.5em;
+}
+
+.square-button-width > svg > .svg {fill: #666666;}
+.square-button-width:hover > svg > .svg {fill: #0099cc;}
+
+/* Square BUTTON !!! width depends on font-height of .square-button-height */
+
+.square-button-height{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.square-button-height > svg {
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+    padding: 0.25em;
+}
+
+.square-button-height .svg {
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+}
+
+.square-button-height .svg {fill: #666666;}
+.square-button-height:hover .svg {fill: #0099cc;}
 
 /* flip */
 

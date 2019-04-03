@@ -132,7 +132,6 @@ ul.drop-down-list > li span {
 ul.drop-down-list > li label {
     position: relative;
     margin-right: 0.5rem;
-    margin-left: 3px;
 }
 ul.drop-down-list > li label:hover svg,
 ul.drop-down-list > li label:focus-within svg {

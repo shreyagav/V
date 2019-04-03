@@ -32,7 +32,6 @@ class Calendar extends Component {
         this.initialX = null;
         this.initialY = null;
         this.longTouch = false;
-        this.narrowScreen = false;
     }
 
     componentWillMount() {
@@ -41,12 +40,10 @@ class Calendar extends Component {
         this.todayMonth = today.getMonth();
         this.todayDate = today.getDate();
         this.createCalendar(this.todayYear, this.todayMonth);
-        this.narrowScreen = this.checkIfNarrowScreen();
-        if (this.narrowScreen) {this.props.store.set("sideBarIsHidden", true);}
+        if (this.props.store.narrowScreen) {this.props.store.set("sideBarIsHidden", true);}
     }
 
     componentDidMount(){
-      
       var component = this;
       fetch('/Events.json')
       .then(function(data){return data.json();})
@@ -57,7 +54,6 @@ class Calendar extends Component {
       if (this.sideBarRef !== null){
         window.addEventListener("touchstart", (e) => this.startTouch(e), false);
         window.addEventListener("touchmove", (e) => this.moveTouch(e), false);
-        window.addEventListener("resize", () => {this.narrowScreen = this.checkIfNarrowScreen()}, false);
       }
   }
 
@@ -68,12 +64,6 @@ class Calendar extends Component {
   componentWillUnmount() {
     window.removeEventListener("touchstart", (e) => this.startTouch(e), false);
     window.removeEventListener("touchmove", (e) => this.moveTouch(e), false);
-    window.removeEventListener("resize", () => {this.narrowScreen = this.checkIfNarrowScreen()}, false);
-  }
-
-  checkIfNarrowScreen() {
-    if (window.innerWidth < 1000) {this.props.store.set('narrowScreen', true); return true;}
-    else {this.props.store.set('narrowScreen', false); return false;}
   }
 
   startTouch(e) {
@@ -84,7 +74,7 @@ class Calendar extends Component {
   };
  
   moveTouch(e) {
-    if (!this.narrowScreen) {return;}
+    if (!this.props.store.narrowScreen) {return;}
     if (this.initialX === null) {return;} 
     if (this.initialY === null) {return;} 
     let currentX = e.touches[0].clientX;
@@ -321,7 +311,7 @@ class Calendar extends Component {
               </div>
               <DropDownList list={this.props.store.chapterList} />
             </div>
-            <div className = {(this.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
+            <div className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
             <div 
               ref={el => this.calendarBodyRef = el} 
               style={mainLevelStyle} 
@@ -345,7 +335,30 @@ class Calendar extends Component {
                     }
                     </span>
                 </div>
-                <div className='month-picker mb-1 mt-1 align-center' style={maxWidth}>
+
+                <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
+                  <button className='h1 square-button-height' 
+                    onClick={() => this.onArrowClick(false)}
+                    //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                  >
+                    <ArrowUpSVG svgClassName='flip0'/>
+                  </button>
+                  <button 
+                    className="h1 uppercase-text flex11auto align-self-stretch" 
+                    onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
+                    onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                  >
+                    {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
+                  </button>
+                  <button className='h1 square-button-height'
+                    onClick={() => this.onArrowClick(true)}
+                    //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                  >
+                    <ArrowUpSVG svgClassName='flip180' />
+                  </button>
+                </div>
+
+                {/*<div className='month-picker mb-1 mt-1 align-center' style={maxWidth}>
                     <button className='grey-SVG-button' onClick={() => this.onArrowClick(false)}>
                       <ArrowUpSVG />
                     </button>
@@ -355,7 +368,7 @@ class Calendar extends Component {
                     <button className='grey-SVG-button' onClick={() => this.onArrowClick(true)}>
                       <ArrowUpSVG svgClassName='flip180' />
                     </button>
-                </div>
+                  </div>*/}
 
                 {this.state.regularCalendar && this.props.store.tableStileView &&
                     <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>

@@ -25,6 +25,11 @@ const createStore = WrappedComponent => {
       }
     }
 
+    componentWillMount() {
+      this.checkIfNarrowScreen();
+      window.addEventListener("resize", () => this.checkIfNarrowScreen(), false);
+    }
+
     componentDidMount() {
       var component = this;
       fetch('/Chapters.json')
@@ -32,6 +37,15 @@ const createStore = WrappedComponent => {
       .then(function(jjson){
         component.setState({chapterList: jjson, modifiedChapterList: jjson})
       });
+    }
+
+    componentWillUnmount() {
+      window.removeEventListener("resize", () => this.checkIfNarrowScreen(), false);
+    }
+
+    checkIfNarrowScreen() {
+      if (window.innerWidth < 1000) {this.setState(() => ({narrowScreen: true}))}
+      else {this.setState(() => ({narrowScreen: false}))}
     }
 
     render() {

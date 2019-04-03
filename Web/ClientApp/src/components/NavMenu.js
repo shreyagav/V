@@ -34,11 +34,9 @@ class NavMenu extends Component {
             </li>
             <li>
               <TabComponent 
-                  fontSize='inherit'
-                  height='100%'
+                  inheritParentHeight = {true}
                   tabList={["table", "list"]}
                   proceedInOrder={false}
-                  tabEqualWidth={false}
                   wasSelected={(index) => {if(index===0){this.props.store.set('tableStileView',true)} else {this.props.store.set('tableStileView', false)}}}
               />
             </li>
@@ -49,15 +47,6 @@ class NavMenu extends Component {
           </a>
         }
         <ul className="flex-nowrap main-nav">
-          {/*<li>
-            <TabComponent 
-              fontSize='inherit'
-              height='100%'
-              tabList={["month", "day"]}
-              proceedInOrder={false}
-              tabEqualWidth={false}
-            />
-          </li>*/}
           <li>
             <a href="/chapters">
               <ChaptersSVG />
