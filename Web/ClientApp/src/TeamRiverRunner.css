@@ -1,5 +1,5 @@
 /* clearing default settings */
-* {
+* { 
     box-sizing: border-box;
     padding: 0px;
     margin: 0px;
@@ -10,16 +10,24 @@
     font-variant: normal;
     color: #666666;
 }
+
 label {margin: 0rem;}
 ul {list-style: none; margin: 0px !important;}
 li {list-style-type:none; }
-a:hover {text-decoration: none;}
+a {text-decoration: none;}
+a:hover {cursor: pointer;}
 :focus {outline: none;}
+button {background: #ffffff;}
+
 
 header {
     position: sticky;
     top: 0;
     z-index: 1071;
+}
+
+body {
+    padding-top: 50px;
 }
 
 p {
@@ -35,34 +43,32 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: inherit;
     font-weight: 300;
     color: inherit;
-    line-height: 1em;
+    line-height: 1;
 }
 
 h1, .h1 {font-size: 3.5rem;}
-h2, .h2 {font-size: 1.5rem;}
+h2, .h2 {font-size: 2rem;}
 h3, .h3 {
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    line-height: 1rem;
+    line-height: 1;
     text-transform: uppercase;
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
 
-/*
-.display-1 {font-size:3.5rem;}
-.display-2 {font-size:3rem;}
-.display-3 {font-size:2.5rem;} */
-
-@media screen and (max-width: 600px){
-    h1, .h1 {
-        font-size: 8vw;
-    }
+.input-label {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: inherit;
+    color: inherit;
 }
 
+.mb-05 {margin-bottom: 0.5rem !important;}
 .mb-1 {margin-bottom: 1rem !important;}
 .mb-2 {margin-bottom: 2rem !important;}
 .mb-3 {margin-bottom: 3rem !important;}
+.mt-05 {margin-top: 0.5rem !important;}
 .mt-1 {margin-top: 1rem !important;}
 .mt-2 {margin-top: 2rem !important;}
 .mt-3 {margin-top: 3rem !important;}
@@ -72,35 +78,82 @@ h3, .h3 {
 .pb-1 {padding-bottom: 1rem !important;}
 .pb-2 {padding-bottom: 2rem !important;}
 .pb-3 {padding-bottom: 3rem !important;}
+.pr-025 {padding-right: 0.25rem !important}
+.pr-1 {padding-right: 1rem !important}
+.pl-025 {padding-left: 0.25rem !important}
+.pl-1 {padding-left: 1rem !important}
 .pr-1 {padding-right: 1rem !important}
 .mr-1 {margin-right: 1rem !important}
+.ml-1 {margin-left: 1rem !important}
+
+@media screen and (max-width: 500px){
+    h1, .h1 {
+        font-size: 8vw;
+    }
+    .mb-05 {margin-bottom: 1.6vw !important;}
+    .mb-1 {margin-bottom: 3.2vw !important;}
+    .mb-2 {margin-bottom: 6.4vw !important;}
+    .mb-3 {margin-bottom: 8.4vw !important;}
+    .mt-05 {margin-top: 1.6vw !important;}
+    .mt-1 {margin-top: 3.2vw !important;}
+    .mt-2 {margin-top: 6.4vw !important;}
+    .mt-3 {margin-top: 8.4vw !important;}
+    .pt-1 {padding-top: 3.2vw !important;}
+    .pt-2 {padding-top: 6.4vw !important;}
+    .pt-3 {padding-top: 8.4vw !important;}
+    .pb-1 {padding-bottom: 3.2vw !important;}
+    .pb-2 {padding-bottom: 6.4vw !important;}
+    .pb-3 {padding-bottom: 8.4vw !important;}
+    .pr-025 {padding-right: 0.8vw !important}
+    .pr-1 {padding-right: 3.2vw !important}
+    .pl-025 {padding-left: 0.8vw !important}
+    .pl-1 {padding-left: 3.2vw !important}
+    .pr-1 {padding-right: 3.2vw !important}
+    .mr-1 {margin-right: 3.2vw !important}
+    .ml-1 {margin-left: 3.2vw !important}
+}
 
 b, strong {font-weight: 700 !important; font-size: inherit; color: inherit;}
 
 small {
-    font-size: 1rem;
+    font-size: 0.8em;
     line-height: 1;
     color: inherit;
-    font-weight: 400;
+    font-weight: inherit;
 }
 
 /* input & checkbox */
-input[type=checkbox] {
+textarea {
+    width: 100%;
+    border: 1px solid #666666;
+    background: white;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: #666666;
+}
+/*
+input[type=checkbox], input[type=radio] {
     width: 1.5rem;
     height: 1.5rem;
-    border: 1.5px solid #666666;
+    border: 1px solid #666666;
     background: white;
-}
+}*/
 
-input, 
+input,
 .buttonlike-checkbox label > span {
     width: 100%;
     height: 2.5rem;
-    border: 1.5px solid #666666;
+    border: 1px solid #666666;
     background: white;
-    padding: 0.5rem;
+    padding: 0.5rem 0.85rem;
     font-weight: 600;
     position: relative;
+}
+
+
+.buttonlike-checkbox label {
+    margin-right: 0.2em;
+    margin-bottom: 0.2em;
 }
 
 .buttonlike-checkbox label > span {
@@ -112,7 +165,8 @@ input,
     justify-content: center;
 }
 
-.buttonlike-checkbox label > input[type="checkbox"]:checked + span {
+.buttonlike-checkbox label > input[type="checkbox"]:checked + span,
+.buttonlike-checkbox label > input[type="radio"]:checked + span {
     overflow: hidden;
 }
 
@@ -129,7 +183,7 @@ input:focus::after {
     opacity: 0.5;
   } 
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
     font-weight: 400;
     font-style: italic;
     color: #999999;
@@ -137,9 +191,13 @@ input::placeholder {
 
 input.w50px {width:50px;text-align: center;}
 
-.buttonlike-checkbox input[type=checkbox]:focus ~ span {outline:  #00ccff auto 2px;} 
+.buttonlike-checkbox input[type="checkbox"]:focus ~ span,
+.buttonlike-checkbox input[type="radio"]:focus ~ span {
+    outline:  #00ccff auto 2px;
+} 
 
-input[type="checkbox"] {
+input[type="checkbox"], 
+input[type="radio"] {
     /* Hide the browser's default checkbox */
     position: absolute;
     opacity: 0;
@@ -152,19 +210,26 @@ label {
     align-items: center;
     justify-content: flex-start;
 }
-input[type="checkbox"] + span {position: relative;}
-input[type="checkbox"] + svg {
+input[type="checkbox"] + span, input[type="radio"] + span {position: relative;}
+input[type="checkbox"] + svg, input[type="radio"] + svg {
     width: 1.2rem;
     height: 1.2rem;
-    border: 1.5px solid #999999;
+    border: 1px solid #999999;
     display: block;
     padding: 0.1rem;
 }
-input[type="checkbox"] + svg > .svg {fill: #ffffff !important;}
-input[type="checkbox"]:checked + svg > .svg {fill: #999999 !important;}
+input[type="checkbox"] + svg > .svg, 
+input[type="radio"] + svg > .svg {
+    fill: #ffffff !important;
+}
+input[type="checkbox"]:checked + svg > .svg,
+input[type="radio"]:checked + svg > .svg {
+    fill: #999999 !important;
+}
 
 /* Gleamin Effect */
-.buttonlike-checkbox label > input[type="checkbox"]:not(:disabled):checked + span:before{
+.buttonlike-checkbox label > input[type="checkbox"]:not(:disabled):checked + span:before,
+.buttonlike-checkbox label > input[type="radio"]:not(:disabled):checked + span:before {
     content: "";
     width: 200%;
     height: 200%;
@@ -177,7 +242,8 @@ input[type="checkbox"]:checked + svg > .svg {fill: #999999 !important;}
     background-image: -moz-linear-gradient(135deg, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));  
  }
 
- .buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):checked + span:before{
+ .buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):checked + span:before,
+ .buttonlike-checkbox label:hover > input[type="radio"]:not(:disabled):checked + span:before {
    top: 200%;
    left: 200%;
    opacity: 0;
@@ -189,12 +255,16 @@ input[type="checkbox"]:checked + svg > .svg {fill: #999999 !important;}
  }
 
 .buttonlike-checkbox label:hover > span {border-color: #0099cc; cursor: pointer;}
-.buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):not(:checked) + span {color: #0099cc;}
+
+.buttonlike-checkbox label:hover > input[type="checkbox"]:not(:disabled):not(:checked) + span,
+.buttonlike-checkbox label:hover > input[type="radio"]:not(:disabled):not(:checked) + span {color: #0099cc;}
 
 /* no cursor pointer if input was disabled */
-label:hover > input[type="checkbox"]:disabled + span {cursor: auto !important;}
+label:hover > input[type="checkbox"]:disabled + span,
+label:hover > input[type="radio"]:disabled + span {cursor: auto !important;}
 
-label > input[type="checkbox"]:checked + span {
+label > input[type="checkbox"]:checked + span,
+label > input[type="radio"]:checked + span {
     background: #0099cc;
     border-color: #0099cc;
     color: #ffffff;
@@ -214,11 +284,11 @@ svg > .static-svg {
 
 button {
     background-color: inherit !important;
-    border: 1.5px solid transparent;
+    border: 1px solid transparent;
     border-radius: 3px;
 }
-button:focus {border: 1.5px solid #0099cc; outline: none;}
-button:hover {cursor: pointer;}
+button:focus {border: 1px solid #0099cc; outline: none;}
+button:not(:disabled):hover {cursor: pointer;}
 button > :nth-child(n) {color: inherit;}
 
 /* BUTTONS & ICONS */
@@ -234,26 +304,36 @@ button.big-blue-button {
     font-weight: 600;
 }
 
-button.medium-static-button {
-    width: 8rem;
-    height: 3rem;
-    border: 1.5px solid #666666;
+.medium-static-button {
+    width: 8em;
+}
+
+.big-static-button {
+    width: 10em;
+}
+
+button.static-button {
+    height: 3em;
+    border: 1px solid #666666;
     color: #666666;
     border-radius: 999px;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 1rem;
+    font-size: 1em;
     line-height: 1;
     position: relative;
+    margin: 0.5em;
 }
 
-button.medium-static-button + button.medium-static-button {
-    margin-left: 1rem;
-}
-
-button.medium-static-button:hover {
-    border: 1.5px solid #0099cc;
+button.static-button:hover {
+    border: 1px solid #0099cc;
     color: #0099cc;
+}
+
+@media screen and (max-width: 500px){
+    button.static-button {font-size: 3.2vw; height: 8.4vw;}
+    button.medium-static-button {width: 25.6vw;}
+    button.big-static-button {width: 32vw;}
 }
 
 button.default-button {
@@ -269,7 +349,7 @@ button.default-button:hover {
 div.round-icon, div.round-button {margin-right: 0.5rem;}
 .round-button,
 .round-icon {
-    border: 1.5px solid;
+    border: 1px solid;
     border-radius: 999px;
     font-weight: 400;
     text-transform: uppercase;
@@ -301,12 +381,17 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     min-width: 1.5rem;
 }
 
-.medium-round-button > :first-child,
-.medium-round-icon > :first-child {
+.medium-round-button > span,
+.medium-round-icon > span {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
+}
+
+.medium-round-button > svg,
+.medium-round-icon > svg {
+    padding: 0.25rem;
 }
 
 .big-round-button,
@@ -327,8 +412,7 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     ul.main-nav a:focus div {border-color: #0099cc;}
     ul.main-nav a:focus {outline: none;}
 }
-ul.main-nav > li {font-size: 0.8rem;}
-ul.main-nav > :nth-child(n) {padding: 0.5rem; display: flex; align-items: center;}
+ul.main-nav > li {font-size: 0.8rem; padding: 0.2rem; display: flex; align-items: center;}
 ul.main-nav a {display: flex; flex-wrap: nowrap; align-items: center;}
 ul.main-nav span {white-space: nowrap; font-weight: 600; font-size: 0.8rem;}
 ul.main-nav > li:not(:last-child) span {text-transform: uppercase;}
@@ -346,8 +430,8 @@ ul.main-nav .SVG,
     fill: #cccccc;
 }
 
-ul.main-nav a:hover .SVG,
-ul.main-nav a:focus .SVG,
+.main-nav-wrapper a:hover .SVG,
+.main-nav-wrapper a:focus .SVG,
 .light-grey-outline-button:hover .SVG,
 .light-grey-outline-button:focus .SVG,
 .grey-outline-button:hover .SVG,
@@ -355,14 +439,14 @@ ul.main-nav a:focus .SVG,
     fill: #0099cc;
 }
 
-ul.main-nav a:hover > :nth-child(n),
-ul.main-nav a:focus > :nth-child(n),
+.main-nav-wrapper a:hover > :nth-child(n),
+.main-nav-wrapper a:focus > :nth-child(n),
 .light-grey-outline-button:hover,
 .light-grey-outline-button:focus,
 .grey-outline-button:hover,
 .grey-outline-button:focus {
     color: #0099cc !important;
-    fill: #0099cc;
+    /* fill: #0099cc; */
     border-color: #0099cc;
 }
 
@@ -376,433 +460,106 @@ ul.main-nav a:focus > :nth-child(n),
 
 /* input-fields */
 
+ul.input-fields input[type='text']:focus{border-color: #0099cc}
+
 ul.input-fields {
     width: 100%;
     max-width: 600px;
     font-weight: 600;
-    padding: 3rem 0rem 3rem 0rem;
 }
 
-ul.input-fields li{
+ul.input-fields > li{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
-ul.input-fields > li > :first-child{
-    flex: 0 0 120px;
-    text-align: right;
+@media screen and (min-width: 561px){
+    ul.input-fields > li {
+        flex-flow: row;
+    }
+    ul.first-child-text-120 > li > :first-child{
+        flex: 0 0 120px;
+        text-align: right;
+    }
+
+    ul.first-child-text-240 > li > :first-child{
+        flex: 0 0 240px;
+        text-align: right;
+    }
+
+    ul.input-fields > li > :last-child:not(label),
+    ul.input-fields .add-margin {
+        margin-left: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+}
+
+@media screen and (max-width: 560px){
+    ul.input-fields > li, ul.input-fields-child-ul {
+        flex-flow: column;
+        align-items: stretch;
+    }
+    .number-field {flex-flow: row !important; align-items: flex-start !important;}
+}
+@media screen and (min-width: 561px){
+    .input-fields-child-ul {
+        width: 100%;
+    }
+}
+
+.number-field > :nth-child(n):not(:first-child) {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+ul.input-fields > li > div {
+    width: 100%;
+    flex-wrap: nowrap;
 }
 
 ul.input-fields p {
     text-transform: uppercase;
     white-space: nowrap;
+    margin-top: 0.8rem;
 }
 
-ul.input-fields  input,
-ul.input-fields p,
-ul.input-fields .add-margin {
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+ul.input-fields-child-ul p {
+    margin: 0.8rem 1rem 1rem 0rem;
 }
 
+ul.input-fields > li > :first-child,
+ul.input-fields > li > :only-child,
 ul.input-fields > li > p:first-child {
     margin-left: 0rem !important;
+    margin-bottom: 1rem !important;
 }
 
-ul.input-fields label:not(:last-child) {margin-right: 0.2rem;}
-ul.input-fields label {margin-bottom: 0.2rem;}
-
-ul.input-fields > li > :last-child{width: 100%;}
-ul.input-fields  li {width: 100%;}
-
-/* Tab Component */
-
-ul.tab-component {
-    border: 1.5px solid #666666;
-    border-radius:999px;
-    background-color: inherit;
-    color: inherit;
+.input-fields-child-ul {
     display: flex;
     flex-wrap: nowrap;
-    text-transform: uppercase;
-    font-size: inherit;
-    position: relative; 
-    height: 100%;
-
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
-}
-
-ul.tab-component > li {
-    margin: -1px;
-    border-radius:999px;
-    padding: 0.5em;
-    flex: 1;
-    text-align: center;
-    white-space: nowrap; 
-    font-weight: 600;
-    font-size: inherit;;
-    width: auto;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-ul.tab-component > li:first-child {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    visibility: hidden;
-}
-
-ul.tab-component > li:not(:first-child):not(:nth-child(2)) {
-    margin-left: -0.2rem;
-}
-
-ul.tab-component > li:hover:not(.selected),
-ul.tab-component > li:focus:not(.selected) {
-    color: #0099cc;
-    cursor: pointer;
-}
-
-ul.tab-component > li.selected {
-    background-color: #666666;
-    color: #ffffff;
-}
-
-ul.tab-component > li.selected:focus::after, 
-.round-button:focus::after{
-    content: '';
-    display: block;
-    position: absolute;
-    top: -4px;
-    bottom: -4px;
-    left: -4px;
-    right: -4px;
-    border-radius: 999px;
-    border: 4px solid #0099cc;
-    opacity: 0.5;
-  } 
-
-/* Calendar Grid */
-
-.calendar-grid {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.calendar-grid > li {
-    -webkit-flex-basis: 14%;
-    flex-basis: 14%;
-    flex-grow: 1;
-    flex-shrink: 1;
-    border: 1px solid transparent;
-    display: flex;
-    flex-wrap: wrap;
-    position: relative;
-}
-
-.calendar-grid > li:focus::after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -4px;
-    bottom: -4px;
-    left: -4px;
-    right: -4px;
-    border: 4px solid #0099cc;
-    opacity: 0.5;
-    z-index: 100;
-}
-
-.calendar-grid > li > div {
-    display: flex;
-    flex-flow: column;
-    padding: 0.25rem;
-}
-
-.month-calendar-grid > li {
-    flex-basis: 25%;
-}
-
-.month-calendar-grid {
-    max-width: 500px;
-}
-
-
-ul.calendar-header > li {
-    justify-content: center;
-    color: inherit;
-}
-
-ul.calendar-content {
-    border-right: 1px solid #cccccc !important;
-    border-bottom: 1px solid #cccccc !important;
-}
-
-ul.calendar-content > li {
-    border: 0px !important;
-    border-left: 1px solid #cccccc !important;
-    border-top: 1px solid #cccccc !important;
-    justify-content: left;
-    color: inherit;
-    position: relative;
-}
-
-ul.calendar-content > li > div {
-    width: 100%;
-    display: flex;
     align-items: flex-start;
-    font-weight: 600;
-    line-height: 1rem;
-    border: 1.5px solid transparent;
+    justify-items: stretch;
 }
 
-ul.calendar-content > li > div > :first-child {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-ul.calendar-content > li:before {
-    content: "";
-	display: block;
-    padding-top: 100%;
-}
-/*
-ul.calendar-content > li > div{
-	position:  absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-    right: 0;
-    border: 1px solid transparent;
-} */
-
-ul.calendar-content > li > div> span > :first-child{
-    font-size: 1.2rem;
-    line-height: 1;
-}
-
-ul.calendar-content > li:hover > div {
-    background: #cdeefc !important;
-    cursor: pointer;
-}
-
-ul.calendar-content > li.today > div {
-    background: #e5f6f9;
-}
-
-ul.calendar-content > li:focus > div {
-    border: 1.5px solid #0099cc !important;
-    outline: none !important;
-}
-
-ul.calendar-content > li > div.next-month,
-ul.calendar-content > li > div.last-month {
-    background-color: #eaeaea;
-    color: #999999;
-}
-
-ul.calendar-content > li.next-month,
-ul.calendar-content > li.last-month {
-    border: 1px solid #eaeaea;
-}
-
-ul.calendar-events-list> li > :first-child {
-    border-radius: 10px;
-    color: #ffffff;
-    padding: 0rem 0.2rem 0rem 0.2rem;
-    align-content: stretch;
-    font-size: 0.75rem;
-    padding: 0px 4px 1px 4px;
-    margin-right: 0.25rem;
-}
-ul.calendar-events-list> li > :last-child {
-    font-size: 0.9rem;
-    white-space: wrap;
-}
-
-ul.calendar-events-list > li {
-   margin-top: 0.5rem;
-   display: flex;
-   flex-wrap: wrap;
-}
-
-.month-picker {
-    background: inherit;
-    display: flex;
-    flex-wrap: nowrap;
-    align-content: center;
-    width: 100%;
-    max-width: 600px;
-}
-
-.month-picker > button {
-    text-transform: uppercase;
-    height: 4rem;
-    width: 4rem;
-}
-
-.month-picker > button:focus,
-button.grey-SVG-button:focus {
-    border: 1px solid transparent;
-    outline: none;
-    color: #0099cc;
-}
 /* ????????????????? grey-SVG-button */
 button.grey-SVG-button:focus .svg {fill: #0099cc;}
 button.grey-SVG-button .svg {fill: #cccccc;}
 button.grey-SVG-button:hover > svg > .svg {fill: #0099cc;}
 button.grey-SVG-button:hover {color: #0099cc;}
 button.grey-SVG-button:hover > span {color: #0099cc !important;}
-
-.month-picker > button:nth-child(2) {
-    flex-grow: 1;
-    flex-shrink: 0;
-    padding: 0rem 0.5rem 0.2rem 0.5rem;
-    text-align: center;
-    position: relative;
+button.grey-SVG-button:focus {
+    border: 1px solid transparent;
+    outline: none;
+    color: #0099cc;
 }
 
-/* list of Chapters */
-ul.list-of-chapters > li {margin-right: 0.9rem; margin-left: 0.9rem;}
-ul.list-of-chapters > li ul.list-of-chapters > li {margin-right: 0rem; margin-left: 0rem;}
-ul.list-of-chapters > li > div,
-ul.list-of-chapters > li ul.list-of-chapters > li {
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-    display: flex; 
-    justify-content: left;
-    align-items: center;
-    min-height: 2.5rem;
-}
-ul.list-of-chapters > li span {
-    color: #999999;
-    text-transform: uppercase;
-    font-weight: 600;
-    line-height: 1rem;
-    text-align: left;
-}
-
-ul.list-of-chapters > li label {
-    position: relative;
-    margin-right: 0.5rem;
-    margin-left: 3px;
-}
-ul.list-of-chapters > li label:hover svg,
-ul.list-of-chapters > li label:focus-within svg {
-    border-color: #0099cc !important;
-}
-
-/* woraround for EDGE */
-ul.list-of-chapters > li label:hover > svg,
-ul.list-of-chapters input:focus + svg {
-    border: 1.5px solid #0099cc;
-}
-/* woraround for EDGE ends */
-
-ul.list-of-chapters > li label:focus-within::after {
-    content: '';
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: -3px;
-    right: -3px;
-    display: block;
-    border: 3px solid #0099cc;
-    opacity: 0.5;
-}
-
-ul.list-of-chapters > li label:hover::after{
-    content: '';
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: -3px;
-    right: -3px;
-    display: block;
-    border: 3px solid #0099cc;
-    opacity: 0.5;
-}
-
-ul.list-of-chapters > li.openChapter span {color: #666666;}
-ul.list-of-chapters > li.openChapter svg {border-color: #666666;}
- ul.list-of-chapters > li.openChapter input[type=checkbox]:checked + svg > .svg {fill: #666666 !important;}
-ul.list-of-chapters ul.list-of-chapters > li span {color: #666666; font-size: 0.9rem;line-height: 0.9rem;}
-ul.list-of-chapters > li:not(:last-child) {border-bottom: 1px solid #cccccc;}
-ul.list-of-chapters > li{
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-}
-
-ul.list-of-chapters > li > div > :first-child{flex: 0 0 1rem;}
-ul.list-of-chapters > li > div > :last-child {flex: 1 1 100px; display: flex; justify-content: space-between; align-items: center;}
-ul.list-of-chapters > li > div > :last-child > :last-child {flex: 0 0 0.8rem;}
-ul.list-of-chapters > li > div > :last-child svg {height: 0.8rem;}
-ul.list-of-chapters > li  ul.list-of-chapters {border-top: 1px solid #ededed;}
-ul.list-of-chapters > li  ul.list-of-chapters > li {
-    padding-left: 2rem;
-    flex-flow: row;
-    flex-wrap: nowrap;
-}
-ul.list-of-chapters > li ul.list-of-chapters > li:not(:last-child) {border-bottom: 1px solid #ededed;}
-ul.list-of-chapters button:focus {border-color:transparent;}
-ul.list-of-chapters button:focus .svg, ul.list-of-chapters button:hover .svg {fill: #0099cc;}
-ul.list-of-chapters button .svg {fill: #cccccc;}
-ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span {color: #0099cc !important;}
-
-
-/* wrappers */
-.lm-wrapper {
-    width: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-    background-color: inherit;
-}
-
-.lm-wrapper > :first-child {
-    width: 260px;
-    position: fixed;
-    overflow: hidden;
-    top: 65px;
-    bottom: 0px;
-    left: 0rem;
-    z-index: 2000;
-}
-
-.lm-wrapper > :last-child {
-    flex: 1 1 auto;
-    padding-left: 260px;
-    padding-right: 1rem;
-    padding-top: 3rem;
-}
-
-@media screen and (max-width: 1000px){
-    .lm-wrapper > :first-child {
-        top: 0px;
-        border-right: 1px solid #cccccc;
-        background-color: #ffffff;
-    }
-
-    .lm-wrapper > :last-child {
-        padding-left: 1rem;
-    }
-}
 
 /* navbar */
 
-.navbar {
-    position: relative;
+.main-nav-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: nowrap;
@@ -811,35 +568,124 @@ ul.list-of-chapters button:hover > span, ul.list-of-chapters button:focus > span
     align-items: center;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     border-bottom: 1px solid #cccccc !important;
     background-color: #ffffff;
     /* shadow */
     -webkit-box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
 }
+/* drop-down relative - absolute relationships */
+.position-wrapper {
+    position: relative;
+}
+
+.absolute-drop-down{
+    position: absolute;
+    top: 42px;
+    left: 0px;
+    right: 0px;
+    z-index: 999;
+    background: #ffffff;
+}
+
+/* table-element */
+.table-member { display: grid; grid-template-columns: minmax(100px, 0.5fr) 50px 110px minmax(120px, 0.7fr) 36px; }
+.table-budget { display: grid; grid-template-columns: minmax(100px, 0.5fr) minmax(120px, 0.7fr) 110px 36px; }
+
+.table-element { width: 100%; }
+.table-element-content, .table-element-header {border: 1px solid #666666;}
+.table-element-content { border-top: 0px solid #666666; }
+.table-element-content > li { font-size: 0.9rem;}
+ .table-element-header > li { font-size: 1rem;}
+.table-element-content > li:not(:first-child), .table-element-header > li:not(:first-child) { border-left: 1px solid #666666; }
+.table-element-member > li:not(.no-break) {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+.table-element-member > li:not(.no-padding) {
+    padding: 0.5rem;
+}
+.table-element-header > li {font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+
+@media screen and (max-width: 499px) {
+    .table-element-content > li {font-size: 2.5vw;}
+    .table-element-header > li {font-size: 2vw;}
+    .table-element-member > li:not(.no-padding) {padding: 1vw;}
+    .table-member {grid-template-columns: minmax(20vw, 0.5fr) 10vw 22vw minmax(20vw, 1fr) 5vw;}
+    .table-budget {grid-template-columns: minmax(20vw, 0.5fr) minmax(20vw, 1fr) 22vw 5vw;}
+}
 
 /* flexbox */
 .flex-nowrap {display: flex; flex-wrap: nowrap;}
 .flex-wrap {display: flex; flex-wrap: wrap;}
 .fit-content > :nth-child(n) {flex-basis: content; white-space: nowrap;}
-.fit-content > :nth-child(n):not(:last-child) {margin-right: 1rem;}
 .flex-flow-column {flex-flow: column}
 .align-center {align-items: center;}
 .align-end {align-items: flex-end;}
 .align-start {align-items: flex-start;} 
 .align-self-stretch {align-self: stretch !important;}
 .justify-center {justify-content: center;}
+.justify-stretch {justify-content: stretch;}
 .justify-left {justify-content: left;}
 .justify-space-between {justify-content: space-between;}
+.justify-self-stretch {justify-self: stretch !important;}
+.flex11auto {flex: 1 1 auto;}
+.flex01auto {flex: 0 1 auto;}
 
 .cw-100 > :nth-child(n) {width: 100%;}
 
+/* ????? */
 .fb-1150px {flex: 1 1 50px;}
 .fb-00100px {flex: 0 0 100px;}
 .fb-1050px {flex: 1 0 50px;}
-.fb-55100px {flex: 5 5 100px;}
 .fb-11auto {flex: 1 1 auto;}
+
+/* NEW BUTTON */
+
+.square-button-width{
+    font-size: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.square-button-width > svg {
+    font-size: inherit;
+    width: 100%;
+    height: auto;
+    padding: 0.5em;
+}
+
+.square-button-width > svg > .svg {fill: #666666;}
+.square-button-width:hover > svg > .svg {fill: #0099cc;}
+
+/* Square BUTTON !!! width depends on font-height of .square-button-height */
+
+.square-button-height{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.square-button-height > svg {
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+    padding: 0.25em;
+}
+
+.square-button-height .svg {
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+}
+
+.square-button-height .svg {fill: #666666;}
+.square-button-height:hover .svg {fill: #0099cc;}
 
 /* flip */
 

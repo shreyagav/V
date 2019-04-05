@@ -1,0 +1,51 @@
+.date-picker {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap !important;
+    width: 100%;
+    justify-content: stretch;
+}
+
+.date-picker > div:first-child {border: 1px solid #666666;}
+.date-picker > div:first-child:hover {cursor: pointer;}
+.date-picker > div:first-child:focus {border: 1px solid #0099cc;}
+.date-picker > div:first-child:focus button .svg, 
+.date-picker > div:first-child:hover button .svg {fill: #0099cc;}
+
+.date-picker > :nth-child(n) {flex: 1 1 auto;}
+.date-picker > div:first-child {display: flex; flex-wrap: nowrap; align-items: center; justify-content: stretch;}
+.date-picker > div:first-child > :first-child {flex: 1 1 auto;}
+.date-picker > div:first-child > :nth-child(n):not(:first-child) {flex: 0 0 auto;}
+.date-picker input {border: 0px solid !important; background-color: transparent;}
+
+.arrow-button-25square{
+    width: 2.5em;
+    height: 2.5em;
+}
+.arrow-button {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    flex: 0 0 auto;
+}
+.arrow-button > svg {
+    display: block;
+    position: relative;
+    height: 100%; 
+    padding: 0.75em;
+}
+
+.arrow-button > svg > .svg {fill: #666666;}
+.arrow-button:hover > svg > .svg, .arrow-button:focus > svg > .svg {fill: #0099cc;}
+.arrow-button:hover, .arrow-button:focus {outline: none; border-color: transparent;}
+
+/*
+.arrow-button:before{
+	content: "";
+	display: block;
+	padding-top: 100%; 	
+}
+*/
+

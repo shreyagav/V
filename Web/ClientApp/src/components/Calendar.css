@@ -1,0 +1,291 @@
+/* Calendar Grid */
+
+.calendar-grid {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.calendar-grid > li {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    -webkit-flex: 1 1 14%;
+    flex: 1 1 14%;
+    max-width: calc(100%/7);
+    border: 1px solid transparent;
+}
+
+.calendar-grid > li.listStyleView {min-width: 100%;}
+.calendar-grid > li > div {padding: 0.1em;}
+.calendar-grid > li:not(.listStyleView) > div {display: flex; flex-flow: column;}
+
+.month-calendar-grid > li {
+    -webkit-flex: 1 1 25% !important; 
+    flex: 1 1 25% !important; 
+    max-width: 25% !important;
+}
+.month-calendar-grid {max-width: 500px;}
+
+ul.calendar-header > li {
+    justify-content: center;
+    color: inherit;
+    font-size: 0.8rem;
+}
+
+ul.calendar-content {
+    border-right: 1px solid #cccccc !important;
+    border-bottom: 1px solid #cccccc !important;
+}
+
+ul.calendar-content > li {
+    overflow: hidden;
+    border: 0px !important;
+    border-left: 1px solid #cccccc !important;
+    border-top: 1px solid #cccccc !important;
+    justify-content: center;
+    align-items: stretch;
+    color: inherit;
+    position: relative;
+}
+
+ul.calendar-content > li > strong {
+    align-self: center;
+}
+
+ul.calendar-content > li > div {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    font-weight: 600;
+    line-height: 1;
+    border: 1px solid transparent;
+    font-size: 1rem;
+}
+
+ul.calendar-content > li:not(.listStyleView) > div > :first-child {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.2rem;
+}
+
+ul.calendar-content > li.listStyleView > div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    min-height: 2.8rem;
+    flex-wrap: nowrap;
+}
+
+ul.calendar-content > li.listStyleView > div > :first-child {flex: 1 1 auto; display: flex;}
+ul.calendar-content > li.listStyleView > div > :first-child > :first-child {flex: 0 0 2em; display: flex; justify-content: center; align-items: center; font-size: 1.2em;}
+ul.calendar-content > li.listStyleView > div > :first-child > :last-child:not(:first-child) {flex: 1 1 auto;}
+ul.calendar-content > li.listStyleView > div > :last-child {flex: 0 0 auto; margin: 0em 0.5em 0em 0.5em;}
+
+li.listStyleView ul.calendar-events-list > li {
+    flex-flow: row;
+    justify-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+li.listStyleView ul.calendar-events-list> li > :first-child {
+    white-space: nowrap;
+    margin-right: 0.25em;
+}
+
+ul.calendar-content > li:not(.listStyleView):before {
+    /* make cells square */
+    content: "";
+	display: block;
+    padding-top: 100%;
+}
+
+ul.calendar-content > li > div > span > :first-child{
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+ul.calendar-content > li:hover > div,
+ul.calendar-content > li:focus > div {
+    background: #cdeefc !important;
+    cursor: pointer;
+    position: relative;
+}
+
+
+ul.calendar-content > li.today > div {background: #e5f6f9;}
+/*
+ul.calendar-content > li:focus > div,
+ul.calendar-content > li:hover > div {
+    border: 1px solid #0099cc !important;
+    z-index: 100;
+}
+*/
+ul.calendar-content > li > div.next-month,
+ul.calendar-content > li > div.last-month {
+    background-color: #eaeaea;
+    color: #999999;
+}
+
+ul.calendar-content > li.next-month,
+ul.calendar-content > li.last-month {border: 1px solid #eaeaea;}
+li:not(.listStyleView) ul.calendar-events-list {width: 100%;}
+
+ul.calendar-events-list > li {
+    margin-top: 0.3em;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    font-size: 1rem;
+}
+
+ul.calendar-events-list > li:last-child {
+    margin-bottom: 0.3em;
+}
+ul.calendar-events-list> li > :first-child {
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 0.8em;
+    line-height: 1;
+    padding: 0.1em 0.3em 0.2em 0.3em;
+    white-space: nowrap;
+}
+
+ul.calendar-events-list> li > :last-child {
+    font-size: 0.9em;
+    white-space: wrap;
+    line-height: 1;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+
+li.listStyleView ul.calendar-events-list> li > :last-child {
+    padding: 0em;
+}
+
+@media screen and (max-width: 560px){ 
+    ul.calendar-content > li:not(.listStyleView) > div {font-size: 0.8em;}
+    li:not(.listStyleView) ul.calendar-events-list> li > :last-child {font-size: 0.75em;}
+    li:not(.listStyleView) ul.calendar-events-list> li > :first-child {font-size: 0.65em;}
+}
+
+@media screen and (min-width: 1400px){
+    ul.calendar-events-list > li {
+        flex-flow: row;
+        justify-items: flex-start;
+        flex-wrap: nowrap;
+    }
+    ul.calendar-events-list> li > :first-child {
+        white-space: nowrap;
+        margin-right: 0.25em;
+    }
+    ul.calendar-events-list> li > :last-child {
+        padding: 0em;
+    }
+}
+
+/* MONTH PICKER */
+
+.month-picker {
+    background: inherit;
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.month-picker > button {
+    text-transform: uppercase;
+}
+
+.month-picker > button:first-child,
+.month-picker > button:last-child {
+    height: 2em;
+    width: 2em;
+}
+
+.month-picker > button:not(:disabled):focus,
+.month-picker > button:not(:disabled):hover {
+    border: 1px solid transparent;
+    outline: none;
+    color: #0099cc;
+}
+
+.month-picker > button:nth-child(2) {
+    flex-grow: 1;
+    flex-shrink: 0;
+    padding: 0rem 0.5rem 0.2rem 0.5rem;
+    text-align: center;
+    position: relative;
+}
+
+/* wrappers */
+
+.lm-wrapper {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: inherit;
+}
+
+.lm-wrapper > :first-child {
+    width: 260px;
+    position: fixed;
+    overflow: hidden;
+    top: 65px;
+    bottom: 0px;
+    left: 0rem;
+    z-index: 2000;
+    background-color: #ffffff;
+    
+    transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out; 
+      -o-transition: all 1s ease-out; 
+ -webkit-transition: all 1s ease-out;
+     -ms-transition: all 1s ease-out;
+    
+}
+
+.black-layer-visible, .black-layer-invisible {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #666666;
+    z-index: 1999;
+}
+
+.black-layer-visible {
+    display: block;
+    opacity: 0.8;
+    transition: opacity 2s linear 5s; /* no visible effect */
+    -webkit-transition: opacity 2s linear 5s; /* no visible effect */
+}
+
+.black-layer-invisible {
+    display: none;
+    opacity: 0;
+    transition-delay: 3s, 0s; /* no visible effect */
+    transition-property: opacity, display; /* no visible effect */
+}
+
+.lm-wrapper > :last-child {
+    flex: 1 1 auto;
+    padding-left: 260px;
+    padding-right: 1rem;
+    padding-top: 3rem;
+}
+
+@media screen and (max-width: 999px){ 
+    .lm-wrapper > :first-child {
+        top: 0px;
+        border-right: 1px solid #cccccc;
+    }
+    .lm-wrapper > :last-child {padding-left: 1rem;}
+}
