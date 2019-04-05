@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models;
+using Services;
 using Services.Data;
+using System;
 
 namespace Web
 {
@@ -24,12 +26,14 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
+            services.AddTransient<IUserClaimsPrincipalFactory<TRRUser>, TRRClaimsPrincipalFactory<TRRUser>>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<TRRUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            var secretes = Configuration.Get<Secretes>();
+            //var secretes = Configuration.Get<Secretes>();
             services.AddAuthentication().AddFacebook(fbOptions=> {
                 fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
