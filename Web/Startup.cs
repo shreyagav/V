@@ -77,8 +77,15 @@ namespace Web
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
+                // Catch all Route - catches anything not caught be other routes
+                routes.MapRoute(
+                    name: "account",
+                    template: "/account/*",
+                    defaults: new { controller = "Account", action = "Login" }
+                );
 
+            });
+            
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
