@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace Web.Controllers
 {
@@ -24,6 +27,12 @@ namespace Web.Controllers
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             });
+        }
+
+        [HttpGet("[action]")]
+        public dynamic GetUser()
+        {
+            return new { User.Identity.Name};
         }
 
         public class WeatherForecast

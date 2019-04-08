@@ -72,7 +72,7 @@ class NavMenu extends Component {
             </a>
           </li>
           <li>
-            <a href="/signin">
+            <a href="/Account">
               <UserSVG />
               <span style={{'textTransform' : "none"}}>Sign In</span>
             </a>

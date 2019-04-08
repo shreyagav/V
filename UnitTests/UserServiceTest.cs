@@ -11,6 +11,7 @@ using System.IO;
 using Models;
 using System.Xml;
 using System;
+using System.Linq;
 
 namespace UnitTests
 {
@@ -29,6 +30,9 @@ namespace UnitTests
             services.AddDefaultIdentity<TRRUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserService, UserService>();
+            services.Configure<IdentityOptions>(options => {
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+            });
             var serviceProvider = services.BuildServiceProvider();
             userService = serviceProvider.GetService<IUserService>();
         }
@@ -36,6 +40,7 @@ namespace UnitTests
         [TestMethod]
         public async Task ImportUsers()
         {
+            File.AppendAllText("ImportUsers.log", $"{DateTime.Now}  :: Start");
             XmlDocument doc = new XmlDocument();
             doc.Load("C:\\Work\\TeamRiverRunner\\ImportOldData\\teamriv_admin.xml");
             var nodes = doc.SelectNodes("//table[@name='user']");
@@ -135,12 +140,16 @@ namespace UnitTests
 
                     }
                 }
-                var res = await userService.SignUp(usr);
-                if (!res.Succeeded)
+                var exists = userService.FindBy(a => a.OldId == usr.OldId);
+                IdentityResult res = null;
+                if(exists == null)
                 {
-
+                    res = await userService.SignUp(usr);
+                    if (!res.Succeeded)
+                    {
+                        File.AppendAllText("ImportUsers.log", $"{DateTime.Now}  :: Failed to import user with id={usr.OldId}; Error={string.Join("\n\t", res.Errors.Select(a => $"{a.Code}:{a.Description};").ToArray())}\n");
+                    }
                 }
-
             }
         }
 
