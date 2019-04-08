@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
+using Services;
 using Services.Data;
+using System;
 
 namespace Web
 {
@@ -23,12 +26,13 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<TRRUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-           
+            //var secretes = Configuration.Get<Secretes>();
             services.AddAuthentication().AddFacebook(fbOptions=> {
                 fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
@@ -41,6 +45,13 @@ namespace Web
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-XSRF-TOKEN";
+                options.Cookie.Name = "TRRAntiforgery";
+                options.Cookie.HttpOnly = false;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,12 +71,12 @@ namespace Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>

@@ -1,0 +1,11 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<h1>Login</h1>
+<form method="post" action="/Account/ExternalLogin">
+    <input type="hidden" value="/" name="redirectUrl"/>
+    <button type="submit" name="provider" value="Facebook">Facebook</button>
+</form>
+
