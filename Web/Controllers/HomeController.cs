@@ -16,14 +16,22 @@ namespace Web.Controllers
         {
             HostingEnv = env;
         }
-
         [HttpGet]
-        public IActionResult RedirectIndex()
+        public IActionResult Index()
         {
-            return new PhysicalFileResult(
-                Path.Combine(HostingEnv.ContentRootPath, "ClientApp", "public", "index.html"),
-                "text/html"
-            );
+            //return new PhysicalFileResult(
+            //    Path.Combine(HostingEnv.ContentRootPath, "ClientApp", "public", "index.html"),
+            //    "text/html"
+            //);
+            return new ContentResult() { Content = HostingEnv.ContentRootPath + "::" + HostingEnv.WebRootPath, ContentType = "text/html" };
         }
+        //[HttpGet]
+        //public IActionResult RedirectIndex()
+        //{
+        //    return new PhysicalFileResult(
+        //        Path.Combine(HostingEnv.ContentRootPath, "ClientApp", "public", "index.html"),
+        //        "text/html"
+        //    );
+        //}
     }
 }
