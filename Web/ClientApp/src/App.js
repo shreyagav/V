@@ -9,8 +9,6 @@ import NavMenu from './components/NavMenu'
 import { createStore } from './components/store'
 import { SignIn } from './components/account/SignIn';
 import { SignUp } from './components/account/SignUp';
-import MainLayout from './components/MainLayout';
-import EmptyLayout from './components/EmptyLayout';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;

@@ -45,7 +45,7 @@ export class SignIn extends Component {
             body: JSON.stringify(this.state.signInData)
         })
             .then(res => res.json())
-            .then(json => { console.log(json); this.setState({ waitingForServer: false }); if (this.props.location.state.redirectUrl) this.props.history.push(this.props.location.state.redirectUrl); else this.props.history.push('/')  })
+            .then(json => { console.log(json); this.setState({ waitingForServer: false }); if (this.props.location.state && this.props.location.state.redirectUrl) this.props.history.push(this.props.location.state.redirectUrl); else this.props.history.push('/')  })
             .catch(err => this.setState({ waitingForServer: false }));
     }
     goToRegister() {

@@ -33,10 +33,10 @@ namespace Web
             services.AddDefaultIdentity<TRRUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //var secretes = Configuration.Get<Secretes>();
-            services.AddAuthentication().AddFacebook(fbOptions=> {
-                fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
+            //services.AddAuthentication().AddFacebook(fbOptions=> {
+            //    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+            //    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            //});
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
