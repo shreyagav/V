@@ -9,6 +9,7 @@ namespace Models
     public class TRRUser : IdentityUser
     {
         public int OldId { get; set; }
+        public string OldLogin { get; set; }
         public string OldPassword { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -72,7 +72,12 @@ namespace Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
-            
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}");
+            });
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
@@ -81,12 +86,6 @@ namespace Web
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
-            });
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

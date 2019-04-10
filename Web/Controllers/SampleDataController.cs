@@ -29,12 +29,6 @@ namespace Web.Controllers
             });
         }
 
-        [HttpGet("[action]")]
-        public dynamic GetUser()
-        {
-            return new { User.Identity.Name};
-        }
-
         public class WeatherForecast
         {
             public string DateFormatted { get; set; }

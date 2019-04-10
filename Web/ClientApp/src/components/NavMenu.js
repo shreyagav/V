@@ -70,13 +70,14 @@ class NavMenu extends Component {
               <ReportsSVG />
               <span>Reports</span>
             </a>
-          </li>
-          <li>
-            <a href="/Account">
-              <UserSVG />
-              <span style={{'textTransform' : "none"}}>Sign In</span>
-            </a>
-          </li>
+                </li>
+                {this.props.store.userInfo == null && (<li>
+                    <a href="/SignIn">
+                        <UserSVG />
+                        <span style={{ 'textTransform': "none" }}>Sign In</span>
+                    </a>
+                </li>)}
+          
         </ul>
       </header>
     );

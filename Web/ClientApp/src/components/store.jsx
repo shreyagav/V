@@ -9,7 +9,7 @@ const createStore = WrappedComponent => {
       narrowScreen: false,
       tableStileView: true,
       chapterList: [],
-
+      userInfo:null,
       get: key => {
         return this.state[key]
       },

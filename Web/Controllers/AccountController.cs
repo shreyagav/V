@@ -9,20 +9,45 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.Dto;
+using Services.Data;
 
 namespace Web.Controllers
 {
     [AllowAnonymous]
+    [ApiController]
+    [Route("api/[controller]")]
     public class AccountController : Controller
     {
         private readonly SignInManager<TRRUser> _signInManager;
         private readonly UserManager<TRRUser> _userManager;
+        private readonly ApplicationDbContext _ctx;
         public AccountController(SignInManager<TRRUser> signInManager,
-            UserManager<TRRUser> userManager)
+            UserManager<TRRUser> userManager, ApplicationDbContext ctx)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _ctx = ctx;
         }
+
+        [HttpGet("[action]")]
+        public dynamic GetUser()
+        {
+            return new { User.Identity.Name };
+        }
+
+        [HttpPost("[action]")]
+        public async Task<Microsoft.AspNetCore.Identity.SignInResult> SignIn(SignInInfo info)
+        {
+            try {
+                var user = _ctx.Users.FirstOrDefault(u => u.UserName == info.UserName || u.OldLogin == info.UserName || u.Email == info.UserName);
+                return await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
+            }catch(Exception ex)
+            {
+                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            }
+        }
+
 
         [HttpGet]
         public IActionResult Index()
