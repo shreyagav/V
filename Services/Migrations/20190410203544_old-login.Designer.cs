@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.Data;
 
 namespace Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190410203544_old-login")]
+    partial class oldlogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,8 +145,6 @@ namespace Services.Migrations
 
                     b.Property<DateTime>("Created");
 
-                    b.Property<string>("CreatedById");
-
                     b.Property<DateTime>("Date");
 
                     b.Property<DateTime?>("Deleted");
@@ -161,27 +161,13 @@ namespace Services.Migrations
 
                     b.Property<int>("MaxCapacity");
 
-                    b.Property<DateTime>("Modified");
-
-                    b.Property<string>("ModifiedById");
-
                     b.Property<string>("Name");
 
                     b.Property<int>("OldCreatedById");
 
-                    b.Property<int>("OldEventCount");
-
-                    b.Property<int>("OldEventMultiOrder");
-
-                    b.Property<int>("OldEventRepeat");
-
                     b.Property<int>("OldEventSiteId");
 
                     b.Property<int>("OldEventTypeId");
-
-                    b.Property<string>("OldEventVisibility")
-                        .IsRequired()
-                        .HasConversion(new ValueConverter<string, string>(v => default(string), v => default(string), new ConverterMappingHints(size: 1)));
 
                     b.Property<int>("OldId");
 
@@ -193,15 +179,11 @@ namespace Services.Migrations
 
                     b.Property<int>("StartTime");
 
-                    b.Property<int>("Status");
+                    b.Property<DateTime?>("Updated");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
                     b.HasIndex("EventTypeId");
-
-                    b.HasIndex("ModifiedById");
 
                     b.HasIndex("SiteId");
 
@@ -447,17 +429,9 @@ namespace Services.Migrations
 
             modelBuilder.Entity("Models.CalendarEvent", b =>
                 {
-                    b.HasOne("Models.TRRUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
                     b.HasOne("Models.CalendarEventType", "EventType")
                         .WithMany()
                         .HasForeignKey("EventTypeId");
-
-                    b.HasOne("Models.TRRUser", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
 
                     b.HasOne("Models.EventSite", "Site")
                         .WithMany()

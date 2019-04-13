@@ -15,15 +15,26 @@ class NavMenu extends Component {
 
   constructor (props) {
     super(props);
-    this.state = {};
+      this.state = {};
+      this.signOut = this.signOut.bind(this);
   }
+
+    signOut() {
+        var me = this;
+        fetch('/api/Account/SignOut')
+            .then(function (data) { return data.json(); })
+            .then(function (jjson) {
+                if (jjson.result=='ok')
+                    me.props.store.set('userInfo',null);
+            });
+    }
 
   toggleChapters() {
     let sideBarIsHidden = this.props.store.sideBarIsHidden;
     this.props.store.set("sideBarIsHidden", !sideBarIsHidden);
   }
 
-  render () {
+    render() {
     return (
       <header className="main-nav-wrapper">
         {this.props.store.narrowScreen 
@@ -77,7 +88,12 @@ class NavMenu extends Component {
                         <span style={{ 'textTransform': "none" }}>Sign In</span>
                     </a>
                 </li>)}
-          
+                {this.props.store.userInfo != null && (<li>
+                    <a href="javascript:" onClick={this.signOut}>
+                        <UserSVG />
+                        <span style={{ 'textTransform': "none" }}>Sign Out</span>
+                    </a>
+                </li>)}
         </ul>
       </header>
     );

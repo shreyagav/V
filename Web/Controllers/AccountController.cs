@@ -31,21 +31,97 @@ namespace Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public dynamic GetUser()
+        public async Task<dynamic> SignOut()
         {
-            return new { User.Identity.Name };
+            await _signInManager.SignOutAsync();
+            return new { result="ok" };
+        }
+
+        [HttpGet("[action]")]
+        public async Task<SignInResponse> GetUser()
+        {
+            var res = new SignInResponse() { Error = "Not authenticated." };
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                if(user != null)
+                {
+                    res.UserName = user.UserName;
+                    res.UserRole = user.OldType.ToString();
+                    res.Error = null;
+                }
+            }
+            return res;
         }
 
         [HttpPost("[action]")]
-        public async Task<Microsoft.AspNetCore.Identity.SignInResult> SignIn(SignInInfo info)
+        public async Task<SignInResponse> SignUp(SignUpInfo info)
         {
+            var resp = new SignInResponse() { Error = null };
+            try
+            {
+                var user = _ctx.Users.FirstOrDefault(u => u.UserName == info.Email);
+                if(user != null)
+                {
+                    throw new Exception("User with provided email already exists. Use forgot passwrod to regain access.");
+                }
+                user = new TRRUser();
+                user.Active = false;
+                user.Email = info.Email;
+                user.Address = info.Zip;
+                user.UserName = info.Email;
+                user.PhoneNumber = info.Phone;
+                user.FirstName = info.FirstName;
+                user.LastName = info.LastName;
+
+                var add_res = await _userManager.CreateAsync(user, info.Password);
+                if (add_res.Succeeded)
+                {
+                    var res = await _signInManager.PasswordSignInAsync(user, info.Password, false, false);
+                    if (res.Succeeded)
+                    {
+                        resp.UserName = user.UserName;
+                        resp.UserRole = user.OldType.ToString();
+                    }
+                    else
+                    {
+                        resp.Error = "Wrong user name or password.";
+                    }
+                }
+                else
+                {
+                    throw new Exception(string.Join("\r\n",add_res.Errors.Select(a=>$"{a.Code}:: {a.Description}")));
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Error = ex.Message;
+            }
+            return resp;
+
+        }
+
+        [HttpPost("[action]")]
+        public async Task<SignInResponse> SignIn(SignInInfo info)
+        {
+            var resp = new SignInResponse() { Error = null };
             try {
                 var user = _ctx.Users.FirstOrDefault(u => u.UserName == info.UserName || u.OldLogin == info.UserName || u.Email == info.UserName);
-                return await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
+                var res = await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
+                if (res.Succeeded)
+                {
+                    resp.UserName = user.UserName;
+                    resp.UserRole = user.OldType.ToString();
+                }
+                else
+                {
+                    resp.Error = "Wrong user name or password.";
+                }
             }catch(Exception ex)
             {
-                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
+                resp.Error = ex.Message;
             }
+            return resp;
         }
 
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Models
 {
-
+    public enum EventStatus { New, Draft, Published, Closed, Deleted, Cancelled};
     public class CalendarEvent
     {
         public int Id { get; set; }
@@ -16,7 +16,10 @@ namespace Models
         public DateTime Date { get; set; }
         public int StartTime { get; set; }
         public int EndTime { get; set; }
+        public TRRUser CreatedBy { get; set; }
         public DateTime Created { get; set; }
+        public TRRUser ModifiedBy { get; set; }
+        public DateTime Modified { get; set; }
         public string Color { get; set; }
         public decimal Fee { get; set; }
         public int MaxCapacity { get; set; }
@@ -28,7 +31,11 @@ namespace Models
         public int OldModifiedById { get; set; }
         public DateTime? Deleted { get; set; }
         public DateTime? Canceled { get; set; }
-        public DateTime? Updated { get; set; }
         public string Report { get; set; }
+        public EventStatus Status { get; set; }
+        public int OldEventCount { get; set; }
+        public int OldEventMultiOrder { get; set; }
+        public int OldEventRepeat { get; set; }
+        public Char OldEventVisibility { get; set; }
     }
 }

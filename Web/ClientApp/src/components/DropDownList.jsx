@@ -29,6 +29,7 @@ class DropDownList extends React.Component {
         this.handleWheel = this.handleWheel.bind(this);
         this.className = '';
         this.style = {};
+        this.checkBoxSelected = this.checkBoxSelected.bind(this);
     }
 
     componentWillMount(){
@@ -127,6 +128,25 @@ class DropDownList extends React.Component {
         }
     }
 
+    checkBoxSelected(index, innerIndex) {
+        this.props.dropDownStore.onCheckBoxChange(index, innerIndex);
+        if (this.props.onSelectionChanged) {
+            var list = this.props.dropDownStore.modifiedList;
+            if (list && list.length && list.length > 0) {
+                let multiLeveElement = list[0].hasOwnProperty("state");
+                if (multiLeveElement) {
+                    var temp = [];
+                    list.forEach(a => {
+                           temp = temp.concat(a.chapters.filter(b => b.checked));
+                    });
+                    this.props.onSelectionChanged(temp);    
+                } else {
+                    this.props.onSelectionChanged(list.filter(a=>a.checked));    
+                }
+            }
+        }
+    }
+
     handleWheel = (e) => {
         if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {
             if (this.props.dropDownStore.isOpen) {this.props.dropDownStore.toggle();}
@@ -190,7 +210,7 @@ class DropDownList extends React.Component {
                 }
                 break;
             case 32: //Space
-                this.props.dropDownStore.onCheckBoxChange(index, innerIndex);
+                this.checkBoxSelected(index, innerIndex);
                 e.preventDefault();
                 break;
             case 27://ESC
@@ -292,8 +312,8 @@ class DropDownList extends React.Component {
                                     <label>
                                         <input 
                                             type="checkbox" 
-                                            checked={element.state.checked} 
-                                            onChange={() => {this.props.dropDownStore.onCheckBoxChange(index, -1); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1})}} /* */
+                                            checked={element.state.checked}
+                                            onChange={() => { this.checkBoxSelected(index, -1); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }) }} /* */
                                         />
                                         <CheckBoxSVG />
                                     </label>
@@ -332,8 +352,8 @@ class DropDownList extends React.Component {
                                             <label>
                                                 <input 
                                                     type="checkbox" 
-                                                    checked={el.checked} 
-                                                    onChange={() => {this.props.dropDownStore.onCheckBoxChange(index, innerIndex); this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});}}
+                                                        checked={el.checked}
+                                                        onChange={() => { this.checkBoxSelected(index, innerIndex); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }); }}
                                                 />
                                                 <CheckBoxSVG />
                                             </label>

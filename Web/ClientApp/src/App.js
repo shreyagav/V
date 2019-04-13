@@ -7,8 +7,8 @@ import  Event from './components/Event'
 import Calendar from './components/Calendar'
 import NavMenu from './components/NavMenu'
 import { createStore } from './components/store'
-import { SignIn } from './components/account/SignIn';
-import { SignUp } from './components/account/SignUp';
+import SignIn from './components/account/SignIn';
+import SignUp  from './components/account/SignUp';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;

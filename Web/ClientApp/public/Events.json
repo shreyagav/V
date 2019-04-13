@@ -1,23 +1,387 @@
-{
-    "3-31":[{"hours":2, "minutes":0, "am":false, "name":"YMCA Springfield Paddle Session", "color":"#993399"},{"hours":6, "minutes":0, "am":false, "name":"Pool Paddle at Fike Recreation C", "color":"#993399"}],
-    "3-1":[{"hours":6, "minutes":0, "am":false, "name":"Pool Session", "color":"#ff9933"},{"hours":7, "minutes":0, "am":false, "name":"Pool Session at CSU Sacramento", "color":"#0099cc"}],
-    "3-2":[{"hours":8, "minutes":30, "am":true, "name":"Kayak Pool Session", "color":"#0099cc"},{"hours":6, "minutes":0, "am":false, "name":"Pool Session", "color":"#669933"}],
-    "3-3":[{"hours":7, "minutes":0, "am":false, "name":"GB Kroc Center Pool", "color":"#0099cc"}],
-    "3-4":[{"hours":6, "minutes":0, "am":false, "name":"No Pool Session", "color":"#666666"}],
-    "3-5":[{"hours":8, "minutes":30, "am":true, "name":"Aqua Paddle", "color":"#993399"},{"hours":6, "minutes":0, "am":false, "name":"Aqua Paddle", "color":"#ff9933"}],
-    "3-6":[{"hours":8, "minutes":30, "am":true, "name":"VA Pool Session", "color":"#ff9933"},{"hours":10, "minutes":0, "am":true, "name":"OJT", "color":"#33cc99"}],
-    "3-7":[{"hours":2, "minutes":0, "am":false, "name":"YMCA Springfield Paddle Session", "color":"#993399"},{"hours":6, "minutes":0, "am":false, "name":"Pool Paddle at Fike Recreation C", "color":"#993399"}],
-    "3-8":[{"hours":6, "minutes":0, "am":false, "name":"Pool Session", "color":"#ff9933"},{"hours":7, "minutes":0, "am":false, "name":"Pool Session at CSU Sacramento", "color":"#0099cc"}],
-    "3-9":[{"hours":8, "minutes":30, "am":true, "name":"Kayak Pool Session", "color":"#0099cc"},{"hours":6, "minutes":0, "am":false, "name":"Pool Session", "color":"#669933"}],
-    "3-10":[{"hours":7, "minutes":0, "am":false, "name":"GB Kroc Center Pool", "color":"#0099cc"}],
-    "3-11":[{"hours":6, "minutes":0, "am":false, "name":"No Pool Session", "color":"#666666"}],
-    "3-12":[{"hours":8, "minutes":30, "am":true, "name":"Aqua Paddle", "color":"#993399"},{"hours":6, "minutes":0, "am":false, "name":"Aqua Paddle", "color":"#ff9933"}],
-    "3-13":[{"hours":8, "minutes":30, "am":true, "name":"VA Pool Session", "color":"#ff9933"},{"hours":1, "minutes":0, "am":false, "name":"1st Pool Session", "color":"#ff9933"},{"hours":2, "minutes":0, "am":false, "name":"OJT - Admin OJT Weekly Hours Rep", "color":"#33cc99"}],
-    "3-14":[{"hours":2, "minutes":0, "am":false, "name":"YMCA Springfield Paddle Session", "color":"#993399"},{"hours":6, "minutes":0, "am":false, "name":"Pool Paddle at Fike Recreation C", "color":"#993399"}],
-    "3-15":[{"hours":6, "minutes":0, "am":false, "name":"Pool Session", "color":"#ff9933"},{"hours":7, "minutes":0, "am":false, "name":"Pool Session at CSU Sacramento", "color":"#0099cc"}],
-    "3-16":[{"hours":8, "minutes":30, "am":true, "name":"Kayak Pool Session", "color":"#0099cc"},{"hours":6, "minutes":0, "am":false, "name":"Pool Session", "color":"#669933"}],
-    "3-17":[{"hours":7, "minutes":0, "am":false, "name":"GB Kroc Center Pool", "color":"#0099cc"}],
-    "3-18":[{"hours":6, "minutes":0, "am":false, "name":"No Pool Session", "color":"#666666"}],
-    "3-19":[{"hours":8, "minutes":30, "am":true, "name":"Aqua Paddle", "color":"#993399"},{"hours":6, "minutes":0, "am":false, "name":"Aqua Paddle", "color":"#ff9933"}],
-    "3-20":[{"hours":8, "minutes":30, "am":true, "name":"VA Pool Session", "color":"#ff9933"},{"hours":10, "minutes":0, "am":true, "name":"OJT", "color":"#33cc99"},{"hours":10, "minutes":0, "am":true, "name":"OJT - Admin OJT Weekly Hours Rep", "color":"#33cc99"},{"hours":1, "minutes":0, "am":false, "name":"1st Pool Session", "color":"#ff9933"},{"hours":2, "minutes":0, "am":false, "name":"OJT - Admin OJT Weekly Hours Rep", "color":"#33cc99"}]
-}
+[
+  {
+    "day": "3-31",
+    "events": [
+      {
+        "hours": 2,
+        "minutes": 0,
+        "am": false,
+        "name": "YMCA Springfield Paddle Session",
+        "color": "#993399"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Paddle at Fike Recreation C",
+        "color": "#993399"
+      }
+    ]
+  },
+  {
+    "day": "3-1",
+    "events": [
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 7,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session at CSU Sacramento",
+        "color": "#0099cc"
+      }
+    ]
+  },
+  {
+    "day": "3-2",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "Kayak Pool Session",
+        "color": "#0099cc"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session",
+        "color": "#669933"
+      }
+    ]
+  },
+  {
+    "day": "3-3",
+    "events": [
+      {
+        "hours": 7,
+        "minutes": 0,
+        "am": false,
+        "name": "GB Kroc Center Pool",
+        "color": "#0099cc"
+      }
+    ]
+  },
+  {
+    "day": "3-4",
+    "events": [
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "No Pool Session",
+        "color": "#666666"
+      }
+    ]
+  },
+  {
+    "day": "3-5",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "Aqua Paddle",
+        "color": "#993399"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Aqua Paddle",
+        "color": "#ff9933"
+      }
+    ]
+  },
+  {
+    "day": "3-6",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "VA Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 10,
+        "minutes": 0,
+        "am": true,
+        "name": "OJT",
+        "color": "#33cc99"
+      }
+    ]
+  },
+  {
+    "day": "3-7",
+    "events": [
+      {
+        "hours": 2,
+        "minutes": 0,
+        "am": false,
+        "name": "YMCA Springfield Paddle Session",
+        "color": "#993399"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Paddle at Fike Recreation C",
+        "color": "#993399"
+      }
+    ]
+  },
+  {
+    "day": "3-8",
+    "events": [
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 7,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session at CSU Sacramento",
+        "color": "#0099cc"
+      }
+    ]
+  },
+  {
+    "day": "3-9",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "Kayak Pool Session",
+        "color": "#0099cc"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session",
+        "color": "#669933"
+      }
+    ]
+  },
+  {
+    "day": "3-10",
+    "events": [
+      {
+        "hours": 7,
+        "minutes": 0,
+        "am": false,
+        "name": "GB Kroc Center Pool",
+        "color": "#0099cc"
+      }
+    ]
+  },
+  {
+    "day": "3-11",
+    "events": [
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "No Pool Session",
+        "color": "#666666"
+      }
+    ]
+  },
+  {
+    "day": "3-12",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "Aqua Paddle",
+        "color": "#993399"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Aqua Paddle",
+        "color": "#ff9933"
+      }
+    ]
+  },
+  {
+    "day": "3-13",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "VA Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 1,
+        "minutes": 0,
+        "am": false,
+        "name": "1st Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 2,
+        "minutes": 0,
+        "am": false,
+        "name": "OJT - Admin OJT Weekly Hours Rep",
+        "color": "#33cc99"
+      }
+    ]
+  },
+  {
+    "day": "3-14",
+    "events": [
+      {
+        "hours": 2,
+        "minutes": 0,
+        "am": false,
+        "name": "YMCA Springfield Paddle Session",
+        "color": "#993399"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Paddle at Fike Recreation C",
+        "color": "#993399"
+      }
+    ]
+  },
+  {
+    "day": "3-15",
+    "events": [
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 7,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session at CSU Sacramento",
+        "color": "#0099cc"
+      }
+    ]
+  },
+  {
+    "day": "3-16",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "Kayak Pool Session",
+        "color": "#0099cc"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Pool Session",
+        "color": "#669933"
+      }
+    ]
+  },
+  {
+    "day": "3-17",
+    "events": [
+      {
+        "hours": 7,
+        "minutes": 0,
+        "am": false,
+        "name": "GB Kroc Center Pool",
+        "color": "#0099cc"
+      }
+    ]
+  },
+  {
+    "day": "3-18",
+    "events": [
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "No Pool Session",
+        "color": "#666666"
+      }
+    ]
+  },
+  {
+    "day": "3-19",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "Aqua Paddle",
+        "color": "#993399"
+      },
+      {
+        "hours": 6,
+        "minutes": 0,
+        "am": false,
+        "name": "Aqua Paddle",
+        "color": "#ff9933"
+      }
+    ]
+  },
+  {
+    "day": "3-20",
+    "events": [
+      {
+        "hours": 8,
+        "minutes": 30,
+        "am": true,
+        "name": "VA Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 10,
+        "minutes": 0,
+        "am": true,
+        "name": "OJT",
+        "color": "#33cc99"
+      },
+      {
+        "hours": 10,
+        "minutes": 0,
+        "am": true,
+        "name": "OJT - Admin OJT Weekly Hours Rep",
+        "color": "#33cc99"
+      },
+      {
+        "hours": 1,
+        "minutes": 0,
+        "am": false,
+        "name": "1st Pool Session",
+        "color": "#ff9933"
+      },
+      {
+        "hours": 2,
+        "minutes": 0,
+        "am": false,
+        "name": "OJT - Admin OJT Weekly Hours Rep",
+        "color": "#33cc99"
+      }
+    ]
+  }
+    ]

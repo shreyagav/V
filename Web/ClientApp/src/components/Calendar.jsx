@@ -7,6 +7,7 @@ import { withStore } from './store';
 import './Calendar.css'
 import { createDropDownStore } from './DropDownStore';
 import DropDownHeader from './DropDownHeader';
+import { Service } from './ApiService';
 
 class Calendar extends Component {
     static displayName = Calendar.name;
@@ -22,6 +23,7 @@ class Calendar extends Component {
             setFocusTo: -1,
             chapters: [],
             events: [],
+            selectedChapters:[]
         };
         this.todayYear = null;
         this.todayMonth = null;
@@ -32,8 +34,13 @@ class Calendar extends Component {
         this.initialX = null;
         this.initialY = null;
         this.longTouch = false;
+        this.getEventsForMonth = this.getEventsForMonth.bind(this);
+        this.setSelectedChapters = this.setSelectedChapters.bind(this);
     }
-
+    setSelectedChapters(arr) {
+        this.setState({ selectedChapters: arr });
+        this.getEventsForMonth(this.state.currentYear, this.state.currentMonth+1, arr);
+    }
     componentWillMount() {
         let today = new Date();
         this.todayYear = today.getFullYear();
@@ -43,14 +50,15 @@ class Calendar extends Component {
         if (this.props.store.narrowScreen) {this.props.store.set("sideBarIsHidden", true);}
     }
 
+    getEventsForMonth(year,month, sites) {
+        var component = this;
+        var ids = [];
+        if (sites) {
+            ids = sites.map(a => a.id);
+        }
+        Service.getCalendarEvents(month, year,ids).then(data => component.setState({ events: data }));
+    }
     componentDidMount(){
-      var component = this;
-      fetch('/Events.json')
-      .then(function(data){return data.json();})
-      .then(function(jjson){
-        component.setState({events: jjson})
-      });
-
       if (this.sideBarRef !== null){
         window.addEventListener("touchstart", (e) => this.startTouch(e), false);
         window.addEventListener("touchmove", (e) => this.moveTouch(e), false);
@@ -179,10 +187,12 @@ class Calendar extends Component {
         }
         //check if to toggle the calendar
         if (this.state.regularCalendar){
-            this.setState(() => ({calendar: calendar, currentYear: year, currentMonth: month}));
+            this.setState({calendar: calendar, currentYear: year, currentMonth: month});
         }
         else {
-            this.setState(() => ({calendar: calendar, currentYear: year, currentMonth: month, regularCalendar: true, setFocusTo: -1}));}
+            this.setState({ calendar: calendar, currentYear: year, currentMonth: month, regularCalendar: true, setFocusTo: -1 });
+        }
+        this.getEventsForMonth(year, month + 1, this.state.selectedChapters);
     }
 
     incrementMonth(){
@@ -308,8 +318,8 @@ class Calendar extends Component {
               <div style={{"paddingRight": '0.9rem', "paddingLeft": '0.9rem'}}>
                 <button className='big-blue-button mt-1'>National Event Calendar</button>
                 <h3>Event calendar By Regions and chapters:</h3>
-              </div>
-              <DropDownList list={this.props.store.chapterList} />
+                    </div>
+                    <DropDownList list={this.props.store.chapterList} onSelectionChanged={this.setSelectedChapters} />
             </div>
             <div className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}></div>
             <div 
@@ -385,7 +395,8 @@ class Calendar extends Component {
                     <ul className='calendar-grid calendar-content dark-grey-text'>
                         {calendar.map((element, index) =>
                         {
-                          let eventKey = element.date.getMonth().toString()+'-'+element.date.getDate().toString();
+                            let eventKey = (element.date.getMonth()+1).toString() + '-' + element.date.getDate().toString();
+                            let dayOfEvents = this.state.events.find(a => a.day == eventKey);
                             return (
                             <li 
                                 key={index} 
@@ -401,9 +412,9 @@ class Calendar extends Component {
                                   <a className='round-button small-round-button light-grey-outline-button' href='./new-event'>
                                     <PlusSVG />
                                   </a>
-                                </span>
-                                {this.state.events[eventKey] !== undefined &&
-                                  <ul className='calendar-events-list'>{this.state.events[eventKey].map((event, index) => 
+                                            </span>
+                                            {dayOfEvents &&
+                                                <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) => 
                                     <li key={index}>
                                       <span style={{'backgroundColor':event.color}}>{event.hours.toString() + ':' + ('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
                                       <span style={this.props.store.narrowScreen ? {'color':event.color, "maxHeight":"2.2em"} : {'color':event.color}}>{event.name}</span>
@@ -416,8 +427,8 @@ class Calendar extends Component {
                               <div className={element.className}>
                                 <div>
                                   <strong>{element.label}</strong>
-                                  {this.state.events[eventKey] !== undefined &&
-                                    <ul className='calendar-events-list'>{this.state.events[eventKey].map((event, index) => 
+                                                {dayOfEvents &&
+                                                    <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) => 
                                       <li key={index}>
                                         <span style={{'backgroundColor':event.color}}>{event.hours.toString() + ':' + ('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
                                         <span style={this.props.store.narrowScreen ? {'color':event.color, "maxHeight":"2.2em"} : {'color':event.color}}>{event.name}</span>
