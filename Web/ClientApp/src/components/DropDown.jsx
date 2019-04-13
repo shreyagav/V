@@ -20,12 +20,14 @@ class DropDown extends React.Component {
                     toggleable = {true}
                     onKeyDown={this.props.onKeyDown}
                     defaultValue={this.props.defaultValue}
+                    doNotShowName={this.props.doNotShowName}
                 />
                 <DropDownList
                     ref={el => this.dropDownListRef = el}
                     toggleable = {true}
                     onKeyDown={this.props.onKeyDown}
                     list={this.props.list}
+                    doNotShowName={this.props.doNotShowName}
                 />
             </div>
         )

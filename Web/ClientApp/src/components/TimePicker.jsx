@@ -182,27 +182,33 @@ export class TimePicker extends Component {
                     onClick={() => this.toggle()}
                     onKeyDown={(e) => this.headerKeyDownHandler(e)}
                     style={this.state.isOpen ? {"border":"1px solid #0099cc"} : {}}
-                >
-                    <div style={!this.state.activated ? {'fontStyle':'italic', 'fontWeight':'400', 'color':'#999999'} : {}}>
-                        {this.props.timePickerMode ?
-                            (this.state.activated ? ("0"+this.state.hours).slice(-2) + ':' + ("0"+this.state.minutes).slice(-2) + " " + (this.state.am ? 'AM' : "PM") : "08:00 AM")
-                            :
-                            (this.state.activated ? this.state.number : "0")
-                        }
-                    </div>
-                    <button disabled className='drop-down-header-button' >
+                >   
+                    <input 
+                        readOnly 
+                        disabled={true} 
+                        placeholder={this.props.timePickerMode ? "08:00 AM" : "0"}
+                        value=
+                            {this.props.timePickerMode ?
+                                (this.state.activated ? ("0"+this.state.hours).slice(-2) + ':' + ("0"+this.state.minutes).slice(-2) + " " + (this.state.am ? 'AM' : "PM") : "")
+                                :
+                                (this.state.activated ? this.state.number : "")
+                            }
+                        
+                        style={{'paddingRight':'0px'}}
+                    ></input>
+                    <button disabled className='arrow-button' >
                         <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                 </div>
                 {this.state.isOpen && this.props.timePickerMode &&
                     <div 
                         className='time-number-picker-drop-down absolute-drop-down'
-                        style={{"border":"1px solid #0099cc", "borderTop":"0px solid #666666"}}
+                        style={{"border":"1px solid #0099cc"}}
                     >
                         <div>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square'
+                                className='arrow-button'
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.hoursIncrement())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}
@@ -219,7 +225,7 @@ export class TimePicker extends Component {
                             </span>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square'
+                                className='arrow-button'
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.hoursDecrement())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}
@@ -231,7 +237,7 @@ export class TimePicker extends Component {
                         <div>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square' 
+                                className='arrow-button' 
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.minutesIncrement())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}
@@ -247,7 +253,7 @@ export class TimePicker extends Component {
                             </span>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square' 
+                                className='arrow-button' 
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.minutesDecrement())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}
@@ -259,7 +265,7 @@ export class TimePicker extends Component {
                         <div>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square' 
+                                className='arrow-button' 
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.amPmToggler())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}
@@ -276,7 +282,7 @@ export class TimePicker extends Component {
                             </span>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square' 
+                                className='arrow-button' 
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.amPmToggler())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}
@@ -287,14 +293,11 @@ export class TimePicker extends Component {
                     </div>
                 }
                 {this.state.isOpen && !this.props.timePickerMode &&
-                    <div 
-                        className='time-number-picker-drop-down absolute-drop-down'
-                        style={{"border":"1px solid #0099cc", "borderTop":"0px solid #666666"}}
-                    >
+                    <div className='time-number-picker-drop-down absolute-drop-down'>
                         <div>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square' 
+                                className='arrow-button' 
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.numberIncrement())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()} 
@@ -312,7 +315,7 @@ export class TimePicker extends Component {
                             </span>
                             <button 
                                 tabIndex='-1'
-                                className='arrow-button arrow-button-25square'
+                                className='arrow-button'
                                 onMouseDown={() => {this.setState({activated: true}); this.performMultipleTimes(() => this.numberDecrement())}}
                                 onMouseUp={() => this.clearTimeoutAndInterval()}
                                 onMouseOut={() => this.clearTimeoutAndInterval()}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 import './DatePicker.css'
+import TodaySVG from '../svg/TodaySVG';
 
 class DatePicker extends Component {
     
@@ -275,28 +276,24 @@ class DatePicker extends Component {
                     onKeyDown={(e) => this.headerKeyDownHandler(e)}
                     style={this.state.isOpen ? {"border":"1px solid #0099cc"} : {}}
                 >
-                    <input readOnly disabled={true} placeholder='mm/dd/yy' value={("0"+(this.state.currentMonth+1)).slice(-2)+"/"+("0" + this.state.currentDate).slice(-2)+"/"+this.state.currentYear}></input>
-                    {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
-                        <button
-                            style={{'flexShrink' : '0'}}
-                            className='round-button medium-round-button grey-outline-button' 
-                            onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
-                        >
-                            <span>today</span>
-                        </button>
-                    }
-                    <button disabled className='arrow-button arrow-button-25square' >
+                    <input 
+                        readOnly 
+                        disabled={true} 
+                        placeholder='mm/dd/yy' 
+                        value={("0"+(this.state.currentMonth+1)).slice(-2)+"/"+("0" + this.state.currentDate).slice(-2)+"/"+this.state.currentYear}
+                        style={{'paddingRight':'0px'}}
+                    ></input>
+                    <button disabled className='arrow-button' >
                         <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                 </div>
                 {this.state.isOpen &&
                     <div 
                         ref={el => this.calendarBodyRef = el} 
-                        className='flex-nowrap flex-flow-column align-center cw-100 absolute-drop-down'
-                        style={{"border":"1px solid #0099cc", "borderTop":"0px solid #666666"}}
+                        className='flex-nowrap flex-flow-column align-center cw-100 date-picker-drop-down absolute-drop-down'
                     >
                         <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
-                            <button className='arrow-button arrow-button-25square' 
+                            <button className='arrow-button' 
                                 onClick={() => this.onArrowClick(false)}
                                 onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                             >
@@ -309,7 +306,7 @@ class DatePicker extends Component {
                             >
                                 {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
                             </button>
-                            <button className='arrow-button arrow-button-25square'
+                            <button className='arrow-button'
                                 onClick={() => this.onArrowClick(true)}
                                 onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                             >
@@ -368,6 +365,15 @@ class DatePicker extends Component {
                                     )}
                                 </ul>
                             </div>
+                        }
+                        {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
+                            <button
+                                style={{'flexShrink' : '0'}}
+                                className='round-button medium-round-button no-outline-button' 
+                                onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
+                            >
+                                <span>today</span>
+                            </button>
                         }
                     </div>
                 }

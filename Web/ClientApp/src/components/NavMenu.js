@@ -49,6 +49,7 @@ class NavMenu extends Component {
                   tabList={["table", "list"]}
                   proceedInOrder={false}
                   wasSelected={(index) => {if(index===0){this.props.store.set('tableStileView',true)} else {this.props.store.set('tableStileView', false)}}}
+                  tabEqualWidth={true}
               />
             </li>
           </ul>
@@ -59,13 +60,13 @@ class NavMenu extends Component {
         }
         <ul className="flex-nowrap main-nav">
           <li>
-            <a href="/chapters">
+            <a href="/chapter">
               <ChaptersSVG />
               <span>Chapters</span>
             </a>
           </li>
           <li>
-            <a href="/">
+            <a href="/events">
               <EventSVG />
               <span>Events</span>
             </a>

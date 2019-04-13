@@ -136,9 +136,10 @@ class Event extends Component {
                     tabList={['info', 'attendees', 'budget', 'pictures']}
                     wasSelected={(index) => this.setState({activeTabIndex: index})}
                     activeTabIndex={this.state.activeTabIndex}
+                    tabEqualWidth={true}
                 />
                 {this.state.activeTabIndex === 0 &&
-                    <ul className='input-fields first-child-text-120 mt-3 mb-2 pl-1 pr-1'>
+                    <ul className='input-fields first-child-text-125 mt-3 mb-2 pl-1 pr-1'>
                         <li>
                             <p>Event Title:</p>
                             <input type='text' placeholder=''></input>
@@ -164,7 +165,7 @@ class Event extends Component {
                                         <p className='flex11auto'>For repeated events</p>
                                         <button 
                                             disabled
-                                            className='arrow-button arrow-button-25square' 
+                                            className='arrow-button' 
                                             onClick={() => {this.toggleRepeatedEvents();}}
                                         >
                                             {/*<CloseUpSVG svgClassName={this.state.repeatedEventsIsOpen ? 'flip90' : 'flip270'}/>*/}
@@ -257,8 +258,8 @@ class Event extends Component {
                             <p>Color:</p>
                             <DropDown
                                 ref={el => this.colorDropDownRef = el}
-                                list={[{name: 'blue', color: '#0099cc'}, {name: 'orange', color: '#ff9933'}, {name: 'green', color: '#669933'}, {name: 'purple', color: '#9252a0'}, {name: 'grey', color: '#666666'}, {name: 'mint', color: '#33cc99'}]} 
-                                defaultValue={{name: 'green', color: '#669933'}}
+                                list={this.props.store.colorList} 
+                                defaultValue={{name: 'Gray', color: '#666666'}}
                             />
                         </li>
                         <li>
