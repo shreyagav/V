@@ -10,8 +10,8 @@ import SideBarLayout from './components/SideBarLayout'
 import Calendar from './components/Calendar'
 import NavMenu from './components/NavMenu'
 import { createStore } from './components/store'
-import { SignIn } from './components/account/SignIn';
-import { SignUp } from './components/account/SignUp';
+import SignIn  from './components/account/SignIn';
+import SignUp from './components/account/SignUp';
 
 import CalendarSideBar from './components/CalendarSideBar';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
