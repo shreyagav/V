@@ -33,10 +33,10 @@ namespace Web
             services.AddDefaultIdentity<TRRUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //var secretes = Configuration.Get<Secretes>();
-            services.AddAuthentication().AddFacebook(fbOptions=> {
-                fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
+            //services.AddAuthentication().AddFacebook(fbOptions=> {
+            //    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+            //    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            //});
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -76,9 +76,8 @@ namespace Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller}/{action}/{id?}");
             });
-
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

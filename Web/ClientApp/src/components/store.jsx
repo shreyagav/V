@@ -11,6 +11,7 @@ const createStore = WrappedComponent => {
       chapterList: [],
       colorList: [{name: 'Cosmic', color: '#794068'}, {name: 'Violet', color: '#AB4189'}, {name: 'Cerise', color: '#E53E71'}, {name: 'Amaranth', color: '#f2575b'}, {name: 'Tango', color: '#d16c35'}, {name: 'Pumpkin', color: '#fe7b22'}, {name: 'Supernova', color: '#fec037'}, {name: 'Gorse', color: '#ffe32e'}, {name: 'Lime', color: '#8bba19'}, {name: 'Java', color: '#3aa6a0'}, {name: 'Sky', color: '#0099cc'}, {name: 'Gray', color: '#666666'}],
 
+      userInfo:null,
       get: key => {
         return this.state[key]
       },

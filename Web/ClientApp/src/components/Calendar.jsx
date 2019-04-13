@@ -319,8 +319,8 @@ class Calendar extends Component {
                                 ?
                                 <div className={element.className}>
                                 <span>
-                                    <strong>{element.label}</strong>
-                                    <a className='round-button small-round-button light-grey-outline-button' href='./event'>
+                                  <strong>{element.label}</strong>
+                                  <a className='round-button small-round-button light-grey-outline-button' href='./new-event'>
                                     <PlusSVG />
                                     </a>
                                 </span>
@@ -358,8 +358,8 @@ class Calendar extends Component {
                                     </ul>
                                     }
                                 </div>
-                                <a className='round-button medium-round-button light-grey-outline-button' href='./event'>
-                                    <PlusSVG />
+                                <a className='round-button medium-round-button light-grey-outline-button' href='./new-event'>
+                                  <PlusSVG />
                                 </a>
                                 </div>
                             }

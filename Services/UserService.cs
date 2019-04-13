@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Models;
+using Services.Data;
 using Services.Interfaces;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Services
@@ -11,12 +14,20 @@ namespace Services
     {
         private UserManager<TRRUser> _userManager;
         private SignInManager<TRRUser> _signinManager;
+        private ApplicationDbContext _ctx;
 
-        public UserService(UserManager<TRRUser> userManager, SignInManager<TRRUser> signInManager)
+        public UserService(UserManager<TRRUser> userManager, SignInManager<TRRUser> signInManager, ApplicationDbContext ctx)
         {
             _userManager = userManager;
             _signinManager = signInManager;
+            _ctx = ctx;
         }
+
+        public TRRUser FindBy(Expression<Func<TRRUser, bool>> predicate)
+        {
+            return _ctx.Users.FirstOrDefault(predicate);
+        }
+
 
         public async Task<SignInResult> SignIn(string userName, string password)
         {
