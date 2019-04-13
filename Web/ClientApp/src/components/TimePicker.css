@@ -12,18 +12,22 @@
     align-content: center;
     align-items: center;
     justify-content: center;
+    margin: 0px;
+    margin-top: -1px;
+    border: 1px solid #0099cc;
 }
+
+.number-picker button, .time-picker button {font-size: inherit; width: 2.5em;}
 
 .time-picker:hover, .number-picker:hover {cursor: pointer;}
 .time-picker:focus, .number-picker:focus {border: 1px solid #0099cc;}
-.time-picker:focus .drop-down-header-button svg,
-.number-picker:focus .drop-down-header-button svg {fill: #0099cc;}
+/*.time-picker:focus .drop-down-header-button svg,
+.number-picker:focus .drop-down-header-button svg {fill: #0099cc;}*/
 
 .time-number-picker-drop-down > div {
     display: flex;
     flex-flow: column;
     align-content: center;
-    margin: 0px !important;
 }
 
 .time-number-picker-drop-down span {
@@ -36,7 +40,7 @@
     color: #0099cc;
 }
 
-.time-number-picker-drop-down > div:last-child {
+.time-number-picker-drop-down > div:last-child:not(:only-child) {
     margin-left: 0.5rem;
 }
 

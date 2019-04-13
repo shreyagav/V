@@ -32,7 +32,7 @@ class DropDownList extends React.Component {
     }
 
     componentWillMount(){
-        document.addEventListener('wheel', this.handleWheel, false);
+        document.addEventListener('wheel', this.handleWheel, {passive : false});
         window.addEventListener("resize", this.setHeight);
     }
 
@@ -59,7 +59,7 @@ class DropDownList extends React.Component {
     }
 
     componentWillUnmount(){
-        document.removeEventListener('wheel', this.handleWheel, true);
+        document.removeEventListener('wheel', this.handleWheel, {passive : false});
         window.removeEventListener("resize", this.setHeight);
     }
 
@@ -102,9 +102,9 @@ class DropDownList extends React.Component {
                     //simpleBarHeight = Math.floor(toTop);
                     simpleBarHeight = (Math.floor(toTop/45))*45-1;
                     if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                    this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
                     this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight+1).toString()+'px', "borderBottom":"0px solid #666666"};
+                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px"};
                 }
                 else {
                     /* OPENS DOWN */
@@ -112,16 +112,16 @@ class DropDownList extends React.Component {
                     //simpleBarHeight = Math.floor(toBottom);
                     simpleBarHeight = (Math.floor(toBottom/45))*45-1;
                     if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                    this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
                     this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "top": "1px", "borderTop":"0px solid #666666"};
+                    this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px"};
                 }
                 //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
             }
             else {
                 simpleBarHeight = Math.floor(toBottom);
                 if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                this.simpleBarHeight = simpleBarHeight.toString() + 'px';
+                this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
                 this.style = {"height":this.simpleBarHeight};
             }
         }
@@ -133,6 +133,7 @@ class DropDownList extends React.Component {
             return;
         }
         var cancelScrollEvent = function(e){
+            //debugger
             e.stopImmediatePropagation();
             e.preventDefault();
             e.returnValue = false;
@@ -299,7 +300,6 @@ class DropDownList extends React.Component {
                                     </label>
                                 }
                                 <button 
-                                    style={multiLeveElement ? {"justifyContent":"space-between"}:{}}
                                     onClick={() => {
                                         if (multiLeveElement) {
                                             this.toggler(index, true)
@@ -313,7 +313,7 @@ class DropDownList extends React.Component {
                                     {element.color !== undefined && 
                                         <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>
                                     }
-                                    <span>{multiLeveElement ? element.state.name : element.name}</span>
+                                    {(this.props.doNotShowName !== true) && <span>{multiLeveElement ? element.state.name : element.name}</span>}
                                     {multiLeveElement && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
                                 </button>
                             </div>

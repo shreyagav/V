@@ -81,20 +81,21 @@ class DropDownHeader extends React.Component {
                                     onClick={(e) => this.props.dropDownStore.unselect(e, element)}
                                     onKeyDown={(e) => this.headerKeyDownHandler(e, element)}
                                 >
-                                    <CloseSVG /></button>
+                                    <CloseSVG />
+                                </button>
                             </li>
                         )}
                         {this.props.dropDownStore.filteredList.length === 0 && 
                             <li className={this.props.dropDownStore.multiLevelList ? 'inverted' : ''}>
                                 {this.props.dropDownStore.value.color !== undefined && 
-                                    <span className='colorIndicator' style={{"backgroundColor": this.props.dropDownStore.value.color, "marginRight":"0.5rem"}}></span>
+                                    <span className='colorIndicator' style={(this.props.doNotShowName !== true) ? {"backgroundColor": this.props.dropDownStore.value.color, "marginRight":"0.5rem"} : {"backgroundColor": this.props.dropDownStore.value.color}}></span>
                                 }
-                                <span>{this.props.dropDownStore.value.name}</span>
+                                {(this.props.doNotShowName !== true) && <span>{this.props.dropDownStore.value.name}</span>}
                             </li>
                         }
                 </ul>
                 {this.props.toggleable &&
-                    <button disabled className='drop-down-header-button' >
+                    <button disabled className='arrow-button' >
                         <ArrowUpSVG svgClassName={this.props.dropDownStore.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                 }

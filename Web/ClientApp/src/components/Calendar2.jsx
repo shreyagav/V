@@ -28,6 +28,9 @@ class Calendar extends Component {
         this.todayMonth = null;
         this.todayDate = null;
         this.setFocusToRef = null;
+        this.initialX = null;
+        this.initialY = null;
+        this.longTouch = false;
     }
 
     componentWillMount() {

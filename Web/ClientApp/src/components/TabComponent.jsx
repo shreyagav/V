@@ -12,6 +12,7 @@ class TabComponent extends React.Component {
         this.longestLiIndex = 0;
         this.longestliRef = null;
         this.flex = {};
+        this.style = {};
     }
 
     componentWillReceiveProps(props){
@@ -32,32 +33,33 @@ class TabComponent extends React.Component {
         this.longestLiIndex = index;
     }
 
-    /*componentDidMount(){
-        console.log(this.props.tabEqualWidth);
-        if (this.props.tabEqualWidth){
+    componentDidMount(){
+        if (this.props.tabEqualWidth){ 
             if(this.longestliRef !== undefined){
-                this.flex = {'flex' : "1 1 "+this.longestliRef.getBoundingClientRect().width+"px"};
+                let width = Math.ceil(this.longestliRef.getBoundingClientRect().width);
+                this.flex = {'flex' : "1 1 "+ width + "px"};
+                if(this.props.inheritParentHeight) {
+                    this.style = {'width' : width * this.props.tabList.length + "px", 'height': '100%'};
+                }
+                else {
+                    this.style = {'width' : width * this.props.tabList.length + "px"};
+                }
             }
             /* update 1 time to make all elements the same width */
-            /*if (this.state.update) {this.setState(() => ({update: false}))};
+            if (this.state.update) {this.setState(() => ({update: false}))};
         }
-    }*/
+    }
 
     render() {
-        const setStyle = () => {
-            if (this.props.inheritParentHeight) {return {'height': '100%'}}
-            else return {}
-        }
-        const style = setStyle();
         return (
-            <ul className={'tab-component' + (this.props.inheritParentHeight ? " not-shrinkable-font" : "")} style={style}>
+            <ul className={'tab-component' + (this.props.inheritParentHeight ? " not-shrinkable-font" : "")} style={this.style}>
                 <li ref={e => this.longestliRef = e}>
                         {this.props.tabList[this.longestLiIndex]}
                 </li>
                 {this.props.tabList.map((element, index) => 
                     <li 
                         ref={e => {if(index === this.longestLiIndex){this.longestliRef = e}}} 
-                        /*style={this.flex}*/
+                        style={this.flex}
                         tabIndex='0' 
                         key={index} 
                         className={index === this.state.selected ? 'selected' : ''} 
