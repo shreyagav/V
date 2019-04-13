@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Models;
 using Services;
 using Services.Data;
+using Services.Interfaces;
 using System;
 
 namespace Web
@@ -27,6 +28,8 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
+            services.AddTransient<ICalendarEventService, CalendarEventService>();
+            services.AddTransient<IChapterService, ChapterService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));

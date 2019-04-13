@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Service } from './ApiService';
 const StoreContext = React.createContext()
 
 const createStore = WrappedComponent => {
@@ -28,17 +28,22 @@ const createStore = WrappedComponent => {
     }
 
     componentWillMount() {
-      this.checkIfNarrowScreen();
-      window.addEventListener("resize", () => this.checkIfNarrowScreen(), false);
+        this.checkIfNarrowScreen();
+        var component = this;
+        window.addEventListener("resize", () => this.checkIfNarrowScreen(), false);
+        fetch('/api/Account/GetUser')
+            .then(function (data) { return data.json(); })
+            .then(function (jjson) {
+                if (jjson.error == null) {
+                    var userInfo = { userName: jjson.userName, userRole: jjson.userRole };
+                    component.setState({ userInfo: userInfo });
+                }
+            });
     }
 
     componentDidMount() {
-      var component = this;
-      fetch('/Chapters.json')
-      .then(function(data){return data.json();})
-      .then(function(jjson){
-        component.setState({chapterList: jjson, modifiedChapterList: jjson})
-      });
+        var component = this;
+        Service.getChaptersForSelector().then(data => component.setState({ chapterList: data, modifiedChapterList: data }));
     }
 
     componentWillUnmount() {

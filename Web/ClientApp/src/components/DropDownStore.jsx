@@ -3,59 +3,63 @@ import React from 'react';
 const DropDownStoreContext = React.createContext()
 
 const createDropDownStore = WrappedComponent => {
-  return class extends React.Component {
-    state = {
-      list: [],
-      modifiedList: [],
-      filteredList: [],
-      defaultValue: {},
-      value: {},
-      isOpen: false,
-      multiLevelList: false,
-      dropDownHeaderRef: null,
+    return class extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                list: [],
+                modifiedList: [],
+                filteredList: [],
+                defaultValue: {},
+                value: {},
+                isOpen: false,
+                multiLevelList: false,
+                dropDownHeaderRef: null,
 
-      get: key => {
-        return this.state[key]
-      },
-      set: (key, value) => {
-        const state = this.state
-        state[key] = value
-        this.setState(state)
-      },
-      remove: key => {
-        const state = this.state
-        delete state[key]
-        this.setState(state)
-      },
-      onCheckBoxChange: (index, innerIndex) => {
-        this.checkBoxChange(index, innerIndex);
-      },
-      unselect: (e, element) => {
-        let filteredList = this.state.filteredList;
-        let modifiedList = this.state.modifiedList;
-        let index = -1;
-        let innerIndex = -1;
-        filteredList = this.arrayRemove(filteredList, element.toString());
-        let splittedElement = element.split(', ');
-        if (splittedElement.length > 1) {
-            index = modifiedList.findIndex(element => {return element.state.name === splittedElement[1]});
-            innerIndex = modifiedList[index].chapters.findIndex(element => {return element.name === splittedElement[0]});
+                get: key => {
+                    return this.state[key]
+                },
+                set: (key, value) => {
+                    const state = this.state
+                    state[key] = value
+                    this.setState(state)
+                },
+                remove: key => {
+                    const state = this.state
+                    delete state[key]
+                    this.setState(state)
+                },
+                onCheckBoxChange: (index, innerIndex) => {
+                    this.checkBoxChange(index, innerIndex);
+                },
+                unselect: (e, element) => {
+                    let filteredList = this.state.filteredList;
+                    let modifiedList = this.state.modifiedList;
+                    let index = -1;
+                    let innerIndex = -1;
+                    filteredList = this.arrayRemove(filteredList, element.toString());
+                    let splittedElement = element.split(', ');
+                    if (splittedElement.length > 1) {
+                        index = modifiedList.findIndex(element => { return element.state.name === splittedElement[1] });
+                        innerIndex = modifiedList[index].chapters.findIndex(element => { return element.name === splittedElement[0] });
+                    }
+                    else {
+                        index = modifiedList.findIndex(element => { return element.state.name === splittedElement[0] });
+                    }
+                    this.checkBoxChange(index, innerIndex);
+                    this.setState({ filteredList, filteredList });
+                    e.stopPropagation();
+                },
+                toggle: () => {
+                    let isOpenWas = this.state.isOpen;
+                    this.setState(() => ({ isOpen: !this.state.isOpen }));
+                    if (isOpenWas) {
+                        this.state.dropDownHeaderRef.focus();
+                    }
+                },
+            }
+
         }
-        else {
-            index = modifiedList.findIndex(element => {return element.state.name === splittedElement[0]});
-        }
-        this.checkBoxChange(index, innerIndex);
-        this.setState({filteredList, filteredList});
-        e.stopPropagation();
-      },
-      toggle: () => {
-        let isOpenWas = this.state.isOpen;
-        this.setState(() => ({isOpen: !this.state.isOpen}));
-        if(isOpenWas){
-          this.state.dropDownHeaderRef.focus();
-        }
-      },
-    }
 
     componentWillReceiveProps(props){
       let multiLevelList = false;

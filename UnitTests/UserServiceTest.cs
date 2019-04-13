@@ -12,6 +12,7 @@ using Models;
 using System.Xml;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace UnitTests
 {
@@ -30,11 +31,16 @@ namespace UnitTests
             services.AddDefaultIdentity<TRRUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserService, UserService>();
-            services.Configure<IdentityOptions>(options => {
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
-            });
+            /*services.Configure<IdentityOptions>(options => {
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            });*/
             var serviceProvider = services.BuildServiceProvider();
             userService = serviceProvider.GetService<IUserService>();
+        }
+
+        private string SanitizeUserName(string name)
+        {
+            return Regex.Replace(name, "[^a-zA-Z\\d-\\.@\\+]", "");
         }
 
         [TestMethod]
@@ -58,7 +64,8 @@ namespace UnitTests
                                 usr.Email = node.InnerText;
                                 break;
                             case "user_login":
-                                usr.UserName = node.InnerText;
+                                usr.UserName = SanitizeUserName(node.InnerText);
+                                usr.OldLogin = node.InnerText;
                                 break;
                                 case "user_password":
                                     usr.OldPassword = node.InnerText;
@@ -89,7 +96,7 @@ namespace UnitTests
                                         usr.OldSiteId = int.Parse(node.InnerText);
                                         break;
                                     case "user_type":
-                                        usr.OldType = int.Parse(node.InnerText);
+                                        usr.OldType =  (TRRUserType)int.Parse(node.InnerText);
                                         break;
                                     case "user_gender":
                                         usr.Gender = node.InnerText.Length==0?' ':node.InnerText[0];
@@ -147,7 +154,8 @@ namespace UnitTests
                     res = await userService.SignUp(usr);
                     if (!res.Succeeded)
                     {
-                        File.AppendAllText("ImportUsers.log", $"{DateTime.Now}  :: Failed to import user with id={usr.OldId}; Error={string.Join("\n\t", res.Errors.Select(a => $"{a.Code}:{a.Description};").ToArray())}\n");
+                        File.AppendAllText("ImportUsers.log", $"{DateTime.Now}  :: Failed to import user with id={usr.OldId}; Error={string.Join("\n\t", res.Errors.Select(a => $"{a.Code}:{a.Description};").ToArray())}\r\n");
+                        File.AppendAllLines("ImportUsersNotCreated.log", new string[] { usr.OldId.ToString() + "\r\n" });
                     }
                 }
             }

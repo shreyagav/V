@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Models
 {
+    public enum TRRUserType { Paddler=53, Staff=54};
     public class TRRUser : IdentityUser
     {
         public int OldId { get; set; }
@@ -18,7 +19,7 @@ namespace Models
         [Column(TypeName = "Date")]
         public DateTime? DateOfBirth { get; set; }
         public int OldSiteId { get; set; }
-        public int OldType { get; set; }
+        public TRRUserType OldType { get; set; }
         public char Gender { get; set; }
         public string TravelTime { get; set; }
         [Column(TypeName = "Date")]
