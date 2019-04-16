@@ -7,6 +7,7 @@ import  Event from './components/Event'
 import  Events from './components/Events'
 import  Chapter from './components/Chapter'
 import SideBarLayout from './components/SideBarLayout'
+import EventsSideBar from './components/EventsSideBar'
 import Calendar from './components/Calendar'
 import NavMenu from './components/NavMenu'
 import { createStore } from './components/store'
@@ -28,12 +29,13 @@ class App extends Component {
           <BrowserRouter>
               <Switch>
                   <Route exact path='/' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={CalendarSideBar} bodyContent={Calendar}/></div>}/>
-                  <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={CalendarSideBar} bodyContent={Events}/></div>}/>
+                  <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
                   <Route path='/event:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/new-event' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/chapter' render={(match) => <div><NavMenu /><Chapter {...match} /></div>} />
                   <Route path='/SignIn' component={SignIn} />
                   <Route path='/SignUp' component={SignUp} />
+                  <Route path='/new-event' component={Event} />
                   </Switch>
           </BrowserRouter>
          

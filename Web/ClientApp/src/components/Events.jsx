@@ -71,15 +71,26 @@ class NewEvents extends Component {
     render() {
         const eventsList = this.state.events;
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
-                <h1 className='uppercase-text mb-2'><strong>Events </strong></h1>
+            <div className='flex-nowrap flex-flow-column align-center pb-2 mediaMin500-pl-pr-025' style={{"maxWidth":"900px"}}>
+                <div className="flex-wrap align-center justify-space-between w-100 mb-2 mediaMax500-pl-pr-025">
+                    <h1 className='uppercase-text'><strong>Events </strong></h1>
+                    <a className='big-static-button static-button' href="/new-event"><p>ADD NEW EVENT</p></a>
+                </div>
+                <div className="label-input-wrapper mediaMax500-pl-pr-025">
+                    <p>CHAPTER:</p>
+                    <DropDown 
+                        ref={el => this.chaptersDropDownRef = el}
+                        list={this.props.store.chapterList}
+                        defaultValue={{name:'National'}}
+                    />
+                </div>
                 <ul className="table events-table">
                     <li className="table-header">Title</li>
-                    <li className="table-header">Chapter</li>
-                    <li className="table-header">Start Date</li>
-                    <li className="table-header">End Date</li>
+                    <li className="table-header">Date</li>
+                    <li className="table-header">Time</li>
                     <li className="table-header">Type of event</li>
-                    <li className="table-filter table-filter-color-name">
+                    <li className="table-header">Status</li>
+                    {/*<li className="table-filter table-filter-color-name">
                         <DropDown
                             ref={el => this.colorDropDownRef = el}
                             list={this.props.store.colorList} 
@@ -103,17 +114,28 @@ class NewEvents extends Component {
                             list={[{name: 'Pool Session'}, {name: 'Flat or White Water Session'}, {name: 'National Event'}, {name: 'Regional Event'}, {name: 'Chapter Planning Party'}]} 
                             defaultValue={{name: 'Pool Session'}}
                         />
-                    </li>
-                    {eventsList.map((element, index) => Object.keys(element).filter(key => key !== 'color').map(key =>
-                                {if (key === 'name') {return <li key = {index.toString()+key} className="table-content"><span style={{'backgroundColor':element['color']}}></span><span>{element[key]}</span></li>}
-                                    else {return <li key = {index.toString()+key} className="table-content">{element[key]}</li>}
+                    </li>*/}
+                    {eventsList.map((element, index) => Object.keys(element).filter(key => (key !== 'color' && key !== 'chapter')).map(key =>
+                                {   
+                                    if (key === 'name'){
+                                        return <li key = {index.toString()+key} className={key === 'name' ? "name table-content" : "table-content"}>
+                                            <span style={{'backgroundColor':element['color']}}></span>
+                                            <span className="display-flex flex-flow-column flex-nowrap justify-left">                                                
+                                                <span style={{"fontSize":"1.1em"}}>{element['name']}</span>
+                                                <span className='chapter'>{element['chapter']}</span>
+                                            </span>
+                                        </li>
+                                    }
+                                    else {
+                                        return <li key = {index.toString()+key} className={ key === 'status' ? "table-content small-bold" : "table-content"} >
+                                            {element[key]}
+                                        </li>
+                                    }
                                 }
                             )
                         )
                     }
                 </ul>
-                <a href="/event">NEW EVENT</a>
-                <a href="/calendar">CALENDAR</a>
             </div>
         );
     }

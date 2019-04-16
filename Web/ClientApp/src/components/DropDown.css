@@ -58,6 +58,7 @@
     align-items: center;
 }
 
+ul.multi-level-list {margin: 0.15em !important;}
 .drop-down-header > ul.multi-level-list > li {
     border: 1px solid #666666;
     border-radius: 3px;
@@ -84,6 +85,11 @@
     padding: 0 0 2px 0;
     font-weight: 500;
     color: inherit;
+}
+
+ul.multi-level-list > li > span {
+    text-transform: uppercase;
+    font-size: 0.85em;
 }
 
 .drop-down-header > ul > li > span:not(:only-child) {
