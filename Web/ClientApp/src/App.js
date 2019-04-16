@@ -4,7 +4,6 @@ import { Route, Router, BrowserRouter, Switch } from 'react-router-dom';
 import './TeamRiverRunner.css'
 import React, { Component } from 'react'
 import  Event from './components/event/Event'
-import  Event from './components/Event'
 import EventDemo from './components/EventDemo';
 import  Events from './components/Events'
 import  Chapter from './components/Chapter'
