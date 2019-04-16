@@ -4,6 +4,7 @@ import DatePicker from './DatePicker';
 import CloseUpSVG from '../svg/CloseUpSVG';
 import TimePicker from './TimePicker';
 import { withStore } from './store';
+import { Service } from './ApiService';
 
 class NewEvents extends Component {
 
@@ -29,11 +30,7 @@ class NewEvents extends Component {
 
     componentDidMount(){
         var component = this;
-        fetch('/Events2.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({events: jjson})
-        });
+        Service.getEventsList(null).then(json => { component.setState({ events: json }); });
     }
 
     handleClick(e) {
@@ -115,7 +112,7 @@ class NewEvents extends Component {
                             defaultValue={{name: 'Pool Session'}}
                         />
                     </li>*/}
-                    {eventsList.map((element, index) => Object.keys(element).filter(key => (key !== 'color' && key !== 'chapter')).map(key =>
+                    {eventsList.map((element, index) => Object.keys(element).filter(key => (key !== 'color' && key !== 'chapter' && key !='id')).map(key =>
                                 {   
                                     if (key === 'name'){
                                         return <li key = {index.toString()+key} className={key === 'name' ? "name table-content" : "table-content"}>
