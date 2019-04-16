@@ -324,7 +324,7 @@ button.big-blue-button {
     width: 10em;
 }
 
-button.static-button {
+.static-button {
     height: 3em;
     border: 1px solid #666666;
     color: #666666;
@@ -337,23 +337,23 @@ button.static-button {
     margin: 0.5em;
 }
 
-button.static-button:hover {
+.static-button:hover {
     border: 1px solid #0099cc;
     color: #0099cc;
 }
 
 @media screen and (max-width: 500px){
-    button.static-button {font-size: 3.2vw; height: 8.4vw;}
-    button.medium-static-button {width: 25.6vw;}
-    button.big-static-button {width: 32vw;}
+    .static-button {font-size: 3.2vw; height: 8.4vw;}
+    .medium-static-button {width: 25.6vw;}
+    .big-static-button {width: 32vw;}
 }
 
-button.default-button {
+.default-button {
     background-color: #666666 !important;
     color: #ffffff !important;
 }
 
-button.default-button:hover {
+.default-button:hover {
     background-color: #0099cc !important;
     color: #ffffff !important;
 }
