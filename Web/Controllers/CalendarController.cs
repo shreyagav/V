@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.Dto;
 using Services.Interfaces;
 
@@ -24,5 +25,11 @@ namespace Web.Controllers
         {
             return _service.GetMonthEvents(filter);
         }
+        [HttpPost("[action]")]
+        public EventListRow[] GetFilteredList(EventListFilter filter)
+        {
+            return _service.GetFilteredEvents(filter);
+        }
+
     }
 }

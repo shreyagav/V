@@ -36,5 +36,6 @@ namespace Models
         public bool ReleaseSigned { get; set; }
         public bool LiabilitySigned { get; set; }
         public string Comments { get; set; }
+        public virtual ICollection<UserEvent> Events { get; set; }
     }
 }

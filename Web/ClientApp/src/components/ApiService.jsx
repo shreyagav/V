@@ -21,4 +21,18 @@ export class Service {
             return data.json();
         });
     }
+    static getEventsList(filter) {
+        filter = filter || { from: '2019-03-01', to: '2019-04-01' };
+        var promice = fetch(host + '/api/Calendar/GetFilteredList', {
+            method: 'post',
+            body: JSON.stringify(filter),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        promice.catch(err => console.error(err));
+        return promice.then(data => {
+            return data.json();
+        });
+    }
 }

@@ -16,7 +16,7 @@ class ImageGallery extends Component {
     }
 
     componentWillReceiveProps(props){
-        //this.formatImageList(props.pictures, 1);
+        this.formatImageList(props.pictures, 1);
     }
 
     componentDidMount(){
