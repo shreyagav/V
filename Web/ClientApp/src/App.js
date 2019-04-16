@@ -4,6 +4,7 @@ import { Route, Router, BrowserRouter, Switch } from 'react-router-dom';
 import './TeamRiverRunner.css'
 import React, { Component } from 'react'
 import  Event from './components/Event'
+import EventDemo from './components/EventDemo';
 import  Events from './components/Events'
 import  Chapter from './components/Chapter'
 import SideBarLayout from './components/SideBarLayout'
@@ -36,6 +37,7 @@ class App extends Component {
                   <Route path='/SignIn' component={SignIn} />
                   <Route path='/SignUp' component={SignUp} />
                   <Route path='/new-event' component={Event} />
+                  <Route path='/event-demo' component={EventDemo} />
                   </Switch>
           </BrowserRouter>
          
