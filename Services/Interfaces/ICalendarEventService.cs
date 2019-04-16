@@ -18,5 +18,6 @@ namespace Services.Interfaces
         CalendarEventType[] AllEventTypes();
         TRRUser GetUserByOldId(int id);
         CalendarView[] GetMonthEvents(CalendarViewFilter filter);
+        string[] AddUserEvent(IEnumerable<ImportUserEvent> list);
     }
 }

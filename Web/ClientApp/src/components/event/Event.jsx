@@ -1,22 +1,36 @@
 import React, { Component } from 'react';
-import TabComponent from './TabComponent';
-import DropDown from './DropDown';
-import DatePicker from './DatePicker';
-import CloseUpSVG from '../svg/CloseUpSVG';
-import TimePicker from './TimePicker';
-import { withStore } from './store';
-import ImageGallery from './ImageGallery';
+import TabComponent from '../TabComponent';
+import DropDown from '../DropDown';
+import DatePicker from '../DatePicker';
+import TimePicker from '../TimePicker';
+import { withStore } from '../store';
+import EventAttendees from './EventAttendees';
+import EventBudget from './EventBudget';
+import EventPictures from './EventPictures';
 
 class Event extends Component {
 
     constructor(props) {
         super(props);
+        let evtId = 0;
+        if (props.match.params.id) {
+            evtId = props.match.params.id
+        }
         this.state = {
             repeatedEventsIsOpen: true,
             activeTabIndex: 0,
             members: [],
             budget: [],
             pictures: [],
+            eventMain: {
+                name: "",
+                description: "",
+                eventType: 0,
+                sites: [],
+                groupId: 0,
+                date: new Date()
+            },
+            eventId: evtId
         };
         this.colorDropDownRef = null;
         this.dayDropDownRef = null;
@@ -33,18 +47,8 @@ class Event extends Component {
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
-    componentDidMount(){
+    componentDidMount() {
         var component = this;
-        fetch('/Members.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({members: jjson})
-        });
-        fetch('/Budget.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({budget: jjson})
-        });
         fetch('/Pictures.json')
         .then(function(data){return data.json();})
         .then(function(jjson){
@@ -125,8 +129,6 @@ class Event extends Component {
     }
 
     render() {
-        const members = this.state.members;
-        const budget = this.state.budget;
         const pictures = this.state.formattedPicturesList;
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
@@ -268,99 +270,9 @@ class Event extends Component {
                         </li>
                     </ul>
                 }
-                {this.state.activeTabIndex === 1 && 
-                <div style={{"width":"100%", "maxWidth":"600px"}}>
-                    <div className="flex-wrap align-center justify-center mt-2 mb-2">
-                        <p className='input-label'>ADD ATTENDEES:</p>
-                        <span>
-                            <button disabled className='big-static-button static-button' >
-                                Create New
-                            </button>
-                            <button disabled className='big-static-button static-button' >
-                                Add Member
-                            </button>
-                        </span>
-                    </div>
-                    <ul className='table-element mt-1 mb-2'>
-                        <li>
-                            <ul className='table-element-header table-element-member table-member'>
-                                <li>Name</li>
-                                <li className='no-break'>Role</li>
-                                <li>Phone</li>
-                                <li>Email</li>
-                                <li></li>
-                            </ul>
-                        </li>
-                        {
-                        members.map((element,index) => 
-                            <ul key={index} className='table-element-content table-element-member table-member'>
-                                <li >{element.firstName + " " + element.lastName}</li>
-                                <li className='no-break'>{element.role}</li>
-                                <li >{element.phone}</li>
-                                <li >{element.email}</li>
-                                <li className='no-padding'>
-                                <button disabled className='square-button-width'>
-                                    <CloseUpSVG svgClassName='flip90'/>
-                                </button>
-                                </li>
-                            </ul>
-                            )
-                        }
-                    </ul>
-                </div>
-                }
-                {this.state.activeTabIndex === 2 && 
-                <div style={{"width":"100%", "maxWidth":"600px"}}>
-
-                    <ul className='input-fields first-child-text-240 mt-3 mb-1 pl-1 pr-1'>
-                        <li className='number-field'>
-                            <p className='input-label'>Entered Projected Cost:</p>
-                            <input />
-                        </li>
-                        <li className='number-field'>
-                            <p className='input-label'>Calculated Projected Cost:</p>
-                            <input />
-                        </li>
-                    </ul>
-                    <div className="flex-wrap align-center justify-center">
-                        <p className='input-label'>ADD NEW ITEM:</p>
-                        <button disabled className='big-static-button static-button' >Add Item</button>
-                    </div>
-                    <ul className='table-element mt-2 mb-2'>
-                        <li>
-                            <ul className='table-element-header table-element-member table-budget'>
-                                <li>Name</li>
-                                <li>Description</li>
-                                <li>Cost</li>
-                                <li></li>
-                            </ul>
-                        </li>
-                        {
-                        budget.map((element,index) => 
-                            <ul key={index} className='table-element-content table-element-member table-budget'>
-                                <li >{element.name}</li>
-                                <li >{element.description}</li>
-                                <li >{element.cost}</li>
-                                <li className='no-padding'>
-                                    <button disabled className='square-button-width'>
-                                        <CloseUpSVG svgClassName='flip90'/>
-                                    </button>
-                                </li>
-                            </ul>
-                            )
-                        }
-                    </ul>
-                </div>
-                }
-                {this.state.activeTabIndex === 3 && 
-                <div style={{"width":"100%", "maxWidth":"600px"}}>
-                    <div className="flex-wrap align-center justify-center mt-2">
-                        <p className='input-label'>Upload a picture:</p>
-                        <button disabled className='big-static-button static-button' >Browse</button>
-                    </div>
-                    <ImageGallery pictures={this.state.pictures} />
-                </div>
-                }
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} /> }
+                {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} /> }
+                {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&
                         <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>

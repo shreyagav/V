@@ -6,6 +6,7 @@ const createDropDownStore = WrappedComponent => {
     return class extends React.Component {
         constructor(props) {
             super(props);
+            console.log('DropDownStore create', props)
             this.state = {
                 list: [],
                 modifiedList: [],
@@ -61,22 +62,32 @@ const createDropDownStore = WrappedComponent => {
 
         }
 
-    componentWillReceiveProps(props){
-      let multiLevelList = false;
-      if(props.list !== undefined){
-        if(props.list.length>0 && props.list[0].hasOwnProperty("state")) {
-          multiLevelList = true;
+        componentDidMount() {
+            this.fillStore(this.props)
         }
-        if(props.defaultValue !== undefined){
-          this.setState({modifiedList: props.list, multiLevelList: multiLevelList, defaultValue: props.defaultValue});
+
+        fillStore(props) {
+            console.log('DropDownStore WillReceiveProps', props)
+            let multiLevelList = false;
+            if (props.list !== undefined) {
+                if (props.list.length > 0 && props.list[0].hasOwnProperty("state")) {
+                    multiLevelList = true;
+                }
+                if (props.defaultValue !== undefined) {
+                    this.setState({ modifiedList: props.list, multiLevelList: multiLevelList, defaultValue: props.defaultValue });
+                }
+                else { this.setState({ modifiedList: props.list, multiLevelList: multiLevelList }); }
+            }
+            else {
+                if (props.store.chapterList !== undefined) {
+                    this.setState({ modifiedList: props.store.chapterList, multiLevelList: true });
+                }
+            }
         }
-        else {this.setState({modifiedList: props.list, multiLevelList: multiLevelList});}
-      }
-      else {
-        if(props.store.chapterList !== undefined){
-          this.setState({modifiedList: props.store.chapterList, multiLevelList: true});
-        }
-      }
+
+
+        componentWillReceiveProps(props) {
+            this.fillStore(props)
     }
 
     checkBoxChange = (index, innerIndex) => {

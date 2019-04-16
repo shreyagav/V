@@ -22,12 +22,23 @@ namespace Services.Data
     public class ApplicationDbContext : IdentityDbContext<TRRUser>
     {
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<UserEvent> UserEvents { get; set; }
         public DbSet<CalendarEvent> CalendarEvents { get; set; }
         public DbSet<CalendarEventType> CalendarEventTypes { get; set; }
         public DbSet<EventSite> EventSites { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserEvent>()
+                .HasOne<TRRUser>(e => e.User)
+                .WithMany(u => u.Events)
+                .HasForeignKey(e => e.UserId);
+            modelBuilder.Entity<UserEvent>()
+                .HasKey(ue => new { ue.UserId, ue.EventId });
         }
     }
 }

@@ -7,6 +7,7 @@ using Services;
 using Services.Data;
 using Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -55,14 +56,74 @@ namespace ImportOldData
 
             //nodes = doc.SelectNodes("//table[@name='user']");
             //ImportUsers(nodes, userService);
-            ImportExceptionalEvents(doc,service);
+            //ImportExceptionalEvents(doc,service);
+            var nodes = doc.SelectNodes("//table[@name='user_event']");
+            ImportUserEvents(nodes, service);
+        }
+
+        private static void ImportUserEvents(XmlNodeList nodes, ICalendarEventService service)
+        {
+            List<ImportUserEvent> users = new List<ImportUserEvent>();
+            foreach (XmlNode ue in nodes)
+            {
+                int userId = 0, eventId = 0, createdBy = 0;
+                bool? userAttended = null;
+                string comment = "";
+                DateTime added = DateTime.Now;
+                string name="",value="";
+                int idx = 0;
+                try {
+                    var user = new ImportUserEvent();
+                    foreach (XmlNode node in ue.ChildNodes)
+                    {
+                        name = node.Attributes["name"].Value;
+                        value = node.InnerText;
+                        switch (name)
+                        {
+                            case "user_id":
+                                user.UserId = int.Parse(node.InnerText);
+                                break;
+                            case "event_anchor":
+                                user.EventId = int.Parse(node.InnerText.Split('_')[1]);
+                                break;
+                            case "user_event_comment":
+                                user.Comment = node.InnerText;
+                                break;
+                            case "user_event_added":
+                                user.Created = DateTime.Parse(node.InnerText);
+                                break;
+                            case "user_added_by":
+                                user.CreatedById = int.Parse(node.InnerText);
+                                break;
+                            case "user_attended":
+                                user.UserAttended = string.IsNullOrEmpty(node.InnerText) ? null : (bool?)(node.InnerText == "Y");
+                                break;
+                        }
+                    }
+                    users.Add(user);
+                    if(users.Count == 1000)
+                    {
+                        string[] errors = service.AddUserEvent(users);
+                        foreach(var err in errors)
+                        {
+                            File.AppendAllText("ImportUserEvents.log", $"{err};\r\n");
+                        }
+                        users.Clear();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllLines("ImportUserEventsNotAdded.log", new string[] { $"{name}={value}" });
+                    File.AppendAllText("ImportUserEvents.log", $"{DateTime.Now}  :: Failed to import event with {name}={value}; Error={ex.Message};\r\n");
+                }
+            }
         }
 
         private static void ImportExceptionalEvents(XmlDocument doc, ICalendarEventService service)
         {
             var eventTypes = service.AllEventTypes();
             var lines = File.ReadAllLines("ImportEventsNotAdded4.log");
-            foreach(string line in lines)
+            foreach (string line in lines)
             {
                 var node = doc.SelectSingleNode($"//table[@name='calendar_events' and ./column='{line}']");
                 ImportEvent(node, service, eventTypes);
@@ -79,103 +140,103 @@ namespace ImportOldData
         }
         private static void ImportEvent(XmlNode t, ICalendarEventService service, CalendarEventType[] eventTypes)
         {
-                Models.CalendarEvent evt = new Models.CalendarEvent();
-                string name = string.Empty;
-                try
-                {
+            Models.CalendarEvent evt = new Models.CalendarEvent();
+            string name = string.Empty;
+            try
+            {
 
-                    int month = 0, year = 0, day = 0, createdById = 0, modifiedById = 0, eventType = 0, eventSiteId = 0;
-                    string modifiedStr = "";
-                    foreach (XmlNode node in t.ChildNodes)
-                    {
-                        name = node.Attributes["name"].Value;
-                        switch (name)
-                        {
-                            case "event_id":
-                                evt.OldId = int.Parse(node.InnerText);
-                                break;
-                            case "event_title":
-                                evt.Name = node.InnerText;
-                                break;
-                            case "event_desc":
-                                evt.Description = node.InnerText;
-                                break;
-                            case "event_report":
-                                evt.Report = node.InnerText;
-                                break;
-                            case "event_type":
-                                eventType = int.Parse(node.InnerText);
-                                break;
-                            case "event_added_by_id":
-                                createdById = int.Parse(node.InnerText);
-                                break;
-                            case "event_modified_by_id":
-                                modifiedById = int.Parse(node.InnerText);
-                                break;
-                            case "event_max":
-                                evt.MaxCapacity = int.Parse(node.InnerText);
-                                break;
-                            case "event_count":
-                                evt.OldEventCount = int.Parse(node.InnerText);
-                                break;
-                            case "event_multi_order":
-                                evt.OldEventMultiOrder = int.Parse(node.InnerText);
-                                break;
-                            case "event_repeat":
-                                evt.OldEventRepeat = node.InnerText != "NULL" ? int.Parse(node.InnerText) : 0;
-                                break;
-                            case "event_site_id":
-                                eventSiteId = int.Parse(node.InnerText);
-                                break;
-                            case "event_day":
-                                day = int.Parse(node.InnerText);
-                                break;
-                            case "event_year":
-                                year = int.Parse(node.InnerText);
-                                break;
-                            case "event_month":
-                                month = int.Parse(node.InnerText);
-                                break;
-                            case "event_time":
-                                evt.StartTime = string.IsNullOrEmpty(node.InnerText)?800:int.Parse(node.InnerText);
-                                break;
-                            case "event_end_time":
-                                evt.EndTime = string.IsNullOrEmpty(node.InnerText) ? 2000 : int.Parse(node.InnerText);
-                            break;
-                            case "event_fee":
-                                evt.Fee = decimal.Parse(node.InnerText);
-                                break;
-                            case "event_date_added":
-                                evt.Created = DateTime.Parse(node.InnerText);
-                                break;
-                            case "event_date_updated":
-                                modifiedStr = node.InnerText;
-                                break;
-                            case "event_visibility":
-                                evt.OldEventVisibility = node.InnerText[0];
-                                break;
-                            case "event_date_deleted":
-                                evt.Deleted = node.InnerText == "0000-00-00" ? null : (DateTime?)DateTime.Parse(node.InnerText);
-                                break;
-                            case "event_date_canceled":
-                                evt.Canceled = node.InnerText == "0000-00-00" ? null : (DateTime?)DateTime.Parse(node.InnerText);
-                                break;
-                        }
-                    }
-                    evt.Date = new DateTime(year==0?2010:year, month, day);
-                    evt.Modified = modifiedStr == "0000-00-00" ? evt.Created : DateTime.Parse(modifiedStr);
-                    evt.Site = service.GetEventSite(eventSiteId);
-                    evt.CreatedBy = service.GetUserByOldId(createdById);
-                    if (modifiedById != 0)
-                        evt.ModifiedBy = modifiedById != createdById ? service.GetUserByOldId(modifiedById) : evt.CreatedBy;
-                    evt.EventType = eventTypes.FirstOrDefault(a => a.OldId == eventType);
-                    service.AddEvent(evt);
-                }
-                catch (Exception ex)
+                int month = 0, year = 0, day = 0, createdById = 0, modifiedById = 0, eventType = 0, eventSiteId = 0;
+                string modifiedStr = "";
+                foreach (XmlNode node in t.ChildNodes)
                 {
-                    File.AppendAllLines("ImportEventsNotAdded5.log", new string[] { evt.OldId.ToString() });
-                    File.AppendAllText("ImportEvents5.log", $"{DateTime.Now}  :: Failed to import event with id={evt.OldId}; name={name}; Error={ex.Message};\r\n");
+                    name = node.Attributes["name"].Value;
+                    switch (name)
+                    {
+                        case "event_id":
+                            evt.OldId = int.Parse(node.InnerText);
+                            break;
+                        case "event_title":
+                            evt.Name = node.InnerText;
+                            break;
+                        case "event_desc":
+                            evt.Description = node.InnerText;
+                            break;
+                        case "event_report":
+                            evt.Report = node.InnerText;
+                            break;
+                        case "event_type":
+                            eventType = int.Parse(node.InnerText);
+                            break;
+                        case "event_added_by_id":
+                            createdById = int.Parse(node.InnerText);
+                            break;
+                        case "event_modified_by_id":
+                            modifiedById = int.Parse(node.InnerText);
+                            break;
+                        case "event_max":
+                            evt.MaxCapacity = int.Parse(node.InnerText);
+                            break;
+                        case "event_count":
+                            evt.OldEventCount = int.Parse(node.InnerText);
+                            break;
+                        case "event_multi_order":
+                            evt.OldEventMultiOrder = int.Parse(node.InnerText);
+                            break;
+                        case "event_repeat":
+                            evt.OldEventRepeat = node.InnerText != "NULL" ? int.Parse(node.InnerText) : 0;
+                            break;
+                        case "event_site_id":
+                            eventSiteId = int.Parse(node.InnerText);
+                            break;
+                        case "event_day":
+                            day = int.Parse(node.InnerText);
+                            break;
+                        case "event_year":
+                            year = int.Parse(node.InnerText);
+                            break;
+                        case "event_month":
+                            month = int.Parse(node.InnerText);
+                            break;
+                        case "event_time":
+                            evt.StartTime = string.IsNullOrEmpty(node.InnerText) ? 800 : int.Parse(node.InnerText);
+                            break;
+                        case "event_end_time":
+                            evt.EndTime = string.IsNullOrEmpty(node.InnerText) ? 2000 : int.Parse(node.InnerText);
+                            break;
+                        case "event_fee":
+                            evt.Fee = decimal.Parse(node.InnerText);
+                            break;
+                        case "event_date_added":
+                            evt.Created = DateTime.Parse(node.InnerText);
+                            break;
+                        case "event_date_updated":
+                            modifiedStr = node.InnerText;
+                            break;
+                        case "event_visibility":
+                            evt.OldEventVisibility = node.InnerText[0];
+                            break;
+                        case "event_date_deleted":
+                            evt.Deleted = node.InnerText == "0000-00-00" ? null : (DateTime?)DateTime.Parse(node.InnerText);
+                            break;
+                        case "event_date_canceled":
+                            evt.Canceled = node.InnerText == "0000-00-00" ? null : (DateTime?)DateTime.Parse(node.InnerText);
+                            break;
+                    }
                 }
+                evt.Date = new DateTime(year == 0 ? 2010 : year, month, day);
+                evt.Modified = modifiedStr == "0000-00-00" ? evt.Created : DateTime.Parse(modifiedStr);
+                evt.Site = service.GetEventSite(eventSiteId);
+                evt.CreatedBy = service.GetUserByOldId(createdById);
+                if (modifiedById != 0)
+                    evt.ModifiedBy = modifiedById != createdById ? service.GetUserByOldId(modifiedById) : evt.CreatedBy;
+                evt.EventType = eventTypes.FirstOrDefault(a => a.OldId == eventType);
+                service.AddEvent(evt);
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllLines("ImportEventsNotAdded5.log", new string[] { evt.OldId.ToString() });
+                File.AppendAllText("ImportEvents5.log", $"{DateTime.Now}  :: Failed to import event with id={evt.OldId}; name={name}; Error={ex.Message};\r\n");
+            }
         }
 
         private async static void ImportUsers(XmlNodeList nodes, IUserService service)
@@ -281,7 +342,7 @@ namespace ImportOldData
                     }
                 }
                 res = await service.SignUp(usr);
-                if(!res.Succeeded)
+                if (!res.Succeeded)
                 {
 
                 }
@@ -312,7 +373,7 @@ namespace ImportOldData
 
         static void ImportSites(XmlNodeList sites, ICalendarEventService service)
         {
-            foreach(XmlNode site in sites)
+            foreach (XmlNode site in sites)
             {
                 Models.EventSite evtSite = new Models.EventSite();
                 Models.Contact main = new Models.Contact();
@@ -324,7 +385,8 @@ namespace ImportOldData
                 foreach (XmlNode node in site.ChildNodes)
                 {
                     string name = node.Attributes["name"].Value;
-                    try {
+                    try
+                    {
                         switch (name)
                         {
                             case "site_id":
@@ -404,11 +466,12 @@ namespace ImportOldData
                                 break;
                         }
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
 
                     }
                 }
-                if(!string.IsNullOrEmpty(main.Email))
+                if (!string.IsNullOrEmpty(main.Email))
                 {
                     var temp = service.GetContactByEmail(main.Email);
                     if (temp != null)
@@ -475,7 +538,7 @@ namespace ImportOldData
                 }
                 service.AddEventSite(evtSite);
             }
-            
+
         }
     }
 }

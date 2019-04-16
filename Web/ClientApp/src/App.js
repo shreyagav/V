@@ -3,7 +3,7 @@ import { Route, Router, BrowserRouter, Switch } from 'react-router-dom';
 
 import './TeamRiverRunner.css'
 import React, { Component } from 'react'
-import  Event from './components/Event'
+import  Event from './components/event/Event'
 import  Events from './components/Events'
 import  Chapter from './components/Chapter'
 import SideBarLayout from './components/SideBarLayout'
@@ -29,7 +29,7 @@ class App extends Component {
               <Switch>
                   <Route exact path='/' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={CalendarSideBar} bodyContent={Calendar}/></div>}/>
                   <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={CalendarSideBar} bodyContent={Events}/></div>}/>
-                  <Route path='/event:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
+                  <Route path='/event/:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/new-event' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/chapter' render={(match) => <div><NavMenu /><Chapter {...match} /></div>} />
                   <Route path='/SignIn' component={SignIn} />
