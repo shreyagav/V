@@ -11,14 +11,12 @@
 }
 
 .drop-down-header {
-    min-height: 2.8em;
     border: 1px solid #666666;
     /*min-height: 40px;*/
     display: flex;
     align-items: stretch;
     /*padding: 0.25rem;*/
     border-radius: 0px;
-    background: white;
 }
 
 .drop-down-header input {
@@ -44,7 +42,7 @@
     align-items: center;
 }
 
-.drop-down-header > :last-child {
+.drop-down-header > :last-child:not(:only-child) {
     flex: 0 0 2.5em;
 }
 
@@ -148,6 +146,7 @@ ul.multi-level-list > li > span {
     z-index: 999; 
     border: 1px solid #0099cc;
 }
+
 
 ul.drop-down-list > li {margin-right: 0.9rem; margin-left: 0.9rem; text-transform: uppercase;}
 ul.drop-down-list > li ul.drop-down-list > li {margin-right: 0rem; margin-left: 0rem;}

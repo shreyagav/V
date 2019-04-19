@@ -58,16 +58,10 @@ class Calendar extends Component {
         }
         Service.getCalendarEvents(month, year,ids).then(data => component.setState({ events: data }));
     }
-    componentDidMount(){
-      if (this.sideBarRef !== null){
-        window.addEventListener("touchstart", (e) => this.startTouch(e), false);
-        window.addEventListener("touchmove", (e) => this.moveTouch(e), false);
-      }
-  }
 
-  componentDidUpdate() {
-    this.setFocus();
-  }
+    componentDidUpdate() {
+      this.setFocus();
+    }
 
     setFocus() {
         if (this.setFocusToRef !== null) {

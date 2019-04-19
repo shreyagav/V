@@ -3,49 +3,102 @@ import './Calendar.css'
 import { withStore } from './store';
 import DropDown from './DropDown'
 import DatePicker from './DatePicker';
-
+import TimePicker from './TimePicker';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
-import TimePicker from './TimePicker';
+import SearchUpSVG from '../svg/SearchUpSVG';
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
     
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            title: '',
+            dateStart: '',
+            dateEnd: '',
+            timeFrom: '',
+            timeTo: '',
+            typeOfEvent: '',
+            status: '',
+            color: '',
+        };
         this.simpleBarWrapperRef = null;
+        this.dateStartDropDownRef = null;
+        this.dateEndDropDownRef = null;
+        this.timeFromDropDownRef = null;
+        this.timeToDropDownRef = null;
+        this.typeOfEventDropDownRef = null;
+        this.statusDropDownRef = null;
+        this.colorDropDownRef = null;
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    
-    componentWillUpdate(){
-        this.setHeight();
-    }
+    componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
+    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
-    componentDidMount(){
-        this.setHeight();
-    }
-
-    setHeight(){
-        if(this.simpleBarWrapperRef !== null){
-            let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
-            this.simpleBarHeight = Math.floor(windowHeight - top);
-            this.style = {"height":this.simpleBarHeight};
+    handleClick(e) {
+        if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
+            this.colorDropDownRef.state.toggle();
         }
+        if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
+            this.statusDropDownRef.state.toggle();
+        }
+        if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
+            this.typeOfEventDropDownRef.state.toggle();
+        }
+        if(this.timeFromDropDownRef.state.isOpen && !this.timeFromDropDownRef.timeNumberPickerRef.contains(e.target)){
+            this.timeFromDropDownRef.toggle();
+        }
+        if(this.timeToDropDownRef.state.isOpen && !this.timeToDropDownRef.timeNumberPickerRef.contains(e.target)){
+            this.timeToDropDownRef.toggle();
+        }
+        if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
+            this.dateStartDropDownRef.toggle();
+        }
+        if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
+            this.dateEndDropDownRef.toggle();
+        }
+    }
+
+    onTitleChange(value) {
+        this.setState({title: value});
+    }
+
+    keyDownOnTitleInputHandler(e){
+        if(e.keyCode === 13) {
+            // ENTER WAS PRESSED
+            this.searchByTitle();
+        }
+    }
+
+    searchByTitle() {
+        alert(this.state.title);
     }
 
     render() {
         return (
-            <div className = 'mt-1 pl-1 pr-1' ref={el => this.simpleBarWrapperRef=el} style={{"position":"relative"}}>
-            <div style={this.style}>
-            <SimpleBar>
-            <div className = 'filters'>
+            <div style={{"height": "100%"}} data-simplebar >
+            <div className = 'mt-1 pl-1 pr-1 filters'>
                 <p>Event Title:</p>
-                <input type='text' placeholder=''></input>
-                <p>Date:</p>
+                <div className='input-button-wrapper'>
+                    <input 
+                        placeholder='Event Title'
+                        value={this.state.title}
+                        onChange={(e) => this.onTitleChange(e.target.value)}
+                        onKeyDown={(e) => this.keyDownOnTitleInputHandler(e)}
+                    />
+                    <button onClick={() => this.searchByTitle()}>
+                        <SearchUpSVG />
+                    </button>
+                </div>
+                <p>From:</p>
                 <DatePicker
-                    ref={el => this.dateDropDownRef = el}
+                    ref={el => this.dateStartDropDownRef = el}
+                />
+                <p>To:</p>
+                <DatePicker
+                    ref={el => this.dateEndDropDownRef = el}
                 />
                 <p>Start Time:</p>
                 <TimePicker 
@@ -75,8 +128,6 @@ class EventsSideBar extends Component {
                     list={this.props.store.colorList} 
                     defaultValue={{name: 'Gray', color: '#666666'}}
                 />
-            </div>
-            </SimpleBar>
             </div>
             </div>
         );

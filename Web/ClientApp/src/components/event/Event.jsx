@@ -142,7 +142,7 @@ class Event extends Component {
                 />
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 mb-2 pl-1 pr-1'>
-                        <li>
+                        <li className='input-button-wrapper'>
                             <p>Event Title:</p>
                             <input type='text' placeholder=''></input>
                         </li>

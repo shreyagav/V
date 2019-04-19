@@ -23,6 +23,8 @@ class SideBarLayout extends Component {
         this.initialX = null;
         this.initialY = null;
         this.longTouch = false;
+        this.startTouch = this.startTouch.bind(this);
+        this.moveTouch = this.moveTouch.bind(this);
     }
 
     componentWillMount() {
@@ -31,8 +33,8 @@ class SideBarLayout extends Component {
 
     componentDidMount(){
       if (this.sideBarRef !== null){
-        window.addEventListener("touchstart", (e) => this.startTouch(e), false);
-        window.addEventListener("touchmove", (e) => this.moveTouch(e), false);
+        window.addEventListener("touchstart", this.startTouch, false);
+        window.addEventListener("touchmove", this.moveTouch, false);
       }
   }
 
@@ -41,8 +43,8 @@ class SideBarLayout extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("touchstart", (e) => this.startTouch(e), false);
-    window.removeEventListener("touchmove", (e) => this.moveTouch(e), false);
+      window.removeEventListener("touchstart", this.startTouch, false);
+      window.removeEventListener("touchmove", this.moveTouch, false);
   }
 
   startTouch(e) {
@@ -66,7 +68,7 @@ class SideBarLayout extends Component {
         if (diffX > 0) {
         // swiped left
         if(this.sideBarRef.contains(e.target) && !this.longTouch){
-          //this.setState(() => ({sideBarTransform: 'translate3d(-260px,0,0)'}));
+          //this.setState(() => ({sideBarTransform: 'translate3d(-325px,0,0)'}));
           this.props.store.set("sideBarIsHidden", true);
         }
       } else {
@@ -101,7 +103,7 @@ class SideBarLayout extends Component {
       if (this.props.store.narrowScreen){
         if(this.props.store.sideBarIsHidden){return {"paddingLeft": "0rem", "paddingRight": "0rem"};}
         else return {"paddingLeft": "0rem", "paddingRight": "0rem", "position":"fixed"};}
-      else {return {"paddingLeft":"260px","paddingRight": "1rem"};}
+      else {return {"paddingLeft":"325px","paddingRight": "1rem"};}
     }
 
     render() {
@@ -114,11 +116,14 @@ class SideBarLayout extends Component {
           <div className={'lm-wrapper'} >
             <div 
               ref={el => this.sideBarRef = el} 
-              style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-260px"} : {"left":"0px"}} 
+              style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}} 
             >
               <SideBarContent {...this.props}/>
             </div>
-            <div className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}>
+            <div 
+              className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}
+              onClick = {() => this.props.store.set("sideBarIsHidden", true)}
+            >
             </div>
             <div 
               ref={el => this.bodyRef = el} 

@@ -234,7 +234,7 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
 }
 
 .lm-wrapper > :first-child {
-    width: 260px;
+    width: 325px;
     position: fixed;
     overflow: hidden;
     top: 65px;
@@ -277,7 +277,7 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
 
 .lm-wrapper > :last-child {
     flex: 1 1 auto;
-    padding-left: 260px;
+    padding-left: 325px;
     padding-right: 1em;
     padding-top: 3em;
 }

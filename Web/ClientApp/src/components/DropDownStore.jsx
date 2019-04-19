@@ -6,7 +6,6 @@ const createDropDownStore = WrappedComponent => {
     return class extends React.Component {
         constructor(props) {
             super(props);
-            console.log('DropDownStore create', props)
             this.state = {
                 list: [],
                 modifiedList: [],
@@ -67,7 +66,6 @@ const createDropDownStore = WrappedComponent => {
         }
 
         fillStore(props) {
-            console.log('DropDownStore WillReceiveProps', props)
             let multiLevelList = false;
             if (props.list !== undefined) {
                 if (props.list.length > 0 && props.list[0].hasOwnProperty("state")) {
