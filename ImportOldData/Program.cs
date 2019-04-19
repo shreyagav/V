@@ -103,10 +103,10 @@ namespace ImportOldData
                     users.Add(user);
                     if(users.Count == 1000)
                     {
-                        string[] errors = service.AddUserEvent(users);
-                        foreach(var err in errors)
+                        //string[] errors = service.AddUserEvent(users);
+                        //foreach(var err in errors)
                         {
-                            File.AppendAllText("ImportUserEvents.log", $"{err};\r\n");
+                           // File.AppendAllText("ImportUserEvents.log", $"{err};\r\n");
                         }
                         users.Clear();
                     }
