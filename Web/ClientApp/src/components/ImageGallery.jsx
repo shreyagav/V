@@ -73,7 +73,7 @@ class ImageGallery extends Component {
         const amountOfPages = Math.ceil(this.props.pictures.length/this.state.amountPerPage);
         return (
             <div className="flex-wrap align-center justify-center">
-                <ul ref={(el) => this.imageGalleryRef = el} style={{"width":"100%"}} className='image-gallery mt-2'>
+                <ul ref={(el) => this.imageGalleryRef = el} style={{"width":"100%"}} className='image-gallery mt-2 mb-2'>
                     {formattedList.map((element, index) => 
                         <li 
                             key={index}

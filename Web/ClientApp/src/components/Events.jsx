@@ -32,9 +32,9 @@ class NewEvents extends Component {
         }
     }
 
-    renderColumnName(value, row, index) {
+    renderColumnName(value, row, index, col) {
         return (
-            <li key={index} className="table-content">
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
                 <span style={{'backgroundColor':row['color']}}></span>
                 <span className="display-flex flex-flow-column flex-nowrap justify-left">                                                
                     <span style={{"fontSize":"1.1em"}}>{value}</span>
@@ -47,7 +47,7 @@ class NewEvents extends Component {
     render() {
         const eventsList = this.state.events;
         const columns=[
-            {title:"Title", accesor:"name", render: this.renderColumnName},
+            {title:"Title", accesor:"name", className:"borders-when-display-block", render: this.renderColumnName},
             {title:"Date", accesor:"date"},
             {title:"Time", accesor:"time", columnMinWidth:'6em'},
             {title:"Type of event", accesor:"type", columnMinWidth:'5em', className:'word-break'},

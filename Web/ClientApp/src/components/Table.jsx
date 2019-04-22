@@ -26,13 +26,13 @@ class Table extends Component {
             )});
         const gridTemplateColumns = preGridTemplateColumns.join(' ');
         return (
-            <ul className="table" style={{"gridTemplateColumns":gridTemplateColumns}}>
+            <ul className={this.props.className ? ("table " + this.props.className) : "table"} style={{"gridTemplateColumns":gridTemplateColumns}}>
                 <TableHeader columns = {columns} />
                 {data.map(element => {
                     return (
                         columns.map((col, index) => {
                             if (col.render) {
-                                return (col.render(element[col.accesor], element, index))
+                                return (col.render(element[col.accesor], element, index, col))
                             } 
                             else return (
                                 <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>

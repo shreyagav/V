@@ -141,7 +141,7 @@ class Event extends Component {
                     tabEqualWidth={true}
                 />
                 {this.state.activeTabIndex === 0 &&
-                    <ul className='input-fields first-child-text-125 mt-3 mb-2 pl-1 pr-1'>
+                    <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
                         <li className='input-button-wrapper'>
                             <p>Event Title:</p>
                             <input type='text' placeholder=''></input>
@@ -273,7 +273,7 @@ class Event extends Component {
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} /> }
                 {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} /> }
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
-                <div className='flex-wrap'>
+                <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
                         <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
                     }

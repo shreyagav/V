@@ -16,6 +16,8 @@ import SignIn  from './components/account/SignIn';
 import SignUp from './components/account/SignUp';
 
 import CalendarSideBar from './components/CalendarSideBar';
+import Members from './components/Members';
+import MembersSideBar from './components/MembersSideBar'
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -31,6 +33,7 @@ class App extends Component {
               <Switch>
                   <Route exact path='/' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={CalendarSideBar} bodyContent={Calendar}/></div>}/>
                   <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
+                  <Route path='/members' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
                   <Route path='/event/:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/new-event' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/chapter' render={(match) => <div><NavMenu /><Chapter {...match} /></div>} />

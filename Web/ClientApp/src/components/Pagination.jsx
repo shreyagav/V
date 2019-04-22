@@ -55,9 +55,7 @@ class Pagination extends React.Component {
     
     render() {
         return (
-            <div 
-                className='mt-2 mb-2' 
-                style={
+            <div style={
                 (this.props.pageNumber === 1 || this.props.pageNumber === this.props.amountOfPages) 
                 ? 
                 (
