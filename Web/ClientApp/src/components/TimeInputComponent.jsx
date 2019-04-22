@@ -149,7 +149,6 @@ class TimeInput extends React.Component {
         }
       </div>
     );
-  }
-}
+  }'p}
 
 export default TimeInput;

@@ -5,6 +5,7 @@ import CloseUpSVG from '../svg/CloseUpSVG';
 import TimePicker from './TimePicker';
 import { withStore } from './store';
 import { Service } from './ApiService';
+import Table from './Table';
 
 class NewEvents extends Component {
 
@@ -13,15 +14,7 @@ class NewEvents extends Component {
         this.state = {
             events: [],
         };
-        this.colorDropDownRef = null;
-        this.dayDropDownRef = null;
-        this.numberDropDownRef = null;
-        this.timeFromDropDownRef = null;
-        this.timeToDropDownRef = null;
-        this.dateStartDropDownRef = null;
-        this.dateEndDropDownRef = null;
         this.chaptersDropDownRef = null;
-        this.typeOfEventDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -34,39 +27,32 @@ class NewEvents extends Component {
     }
 
     handleClick(e) {
-        if(this.state.activeTabIndex === 0){
-            if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-                this.colorDropDownRef.state.toggle();
-            }
-            if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-                this.typeOfEventDropDownRef.state.toggle();
-            }
-            if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.dayDropDownRef.state.toggle();
-            }
-            if(this.numberDropDownRef.state.isOpen && !this.numberDropDownRef.timeNumberPickerRef.contains(e.target)){
-                this.numberDropDownRef.toggle();
-            }
-            if(this.timeFromDropDownRef.state.isOpen && !this.timeFromDropDownRef.timeNumberPickerRef.contains(e.target)){
-                this.timeFromDropDownRef.toggle();
-            }
-            if(this.timeToDropDownRef.state.isOpen && !this.timeToDropDownRef.timeNumberPickerRef.contains(e.target)){
-                this.timeToDropDownRef.toggle();
-            }
-            if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
-                this.dateStartDropDownRef.toggle();
-            }
-            if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
-                this.dateEndDropDownRef.toggle();
-            }
-            if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.chaptersDropDownRef.state.toggle();
-            }
+        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
+            this.chaptersDropDownRef.state.toggle();
         }
+    }
+
+    renderColumnName(value, row, index, col) {
+        return (
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
+                <span style={{'backgroundColor':row['color']}}></span>
+                <span className="display-flex flex-flow-column flex-nowrap justify-left">                                                
+                    <span style={{"fontSize":"1.1em"}}>{value}</span>
+                    <span className='chapter'>{row['chapter']}</span>
+                </span>
+            </li>
+        );
     }
 
     render() {
         const eventsList = this.state.events;
+        const columns=[
+            {title:"Title", accesor:"name", className:"borders-when-display-block", render: this.renderColumnName},
+            {title:"Date", accesor:"date"},
+            {title:"Time", accesor:"time", columnMinWidth:'6em'},
+            {title:"Type of event", accesor:"type", columnMinWidth:'5em', className:'word-break'},
+            {title:"Status", accesor:"status", className:"small-bold"}
+        ];
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 mediaMin500-pl-pr-025' style={{"maxWidth":"900px"}}>
                 <div className="flex-wrap align-center justify-space-between w-100 mb-2 mediaMax500-pl-pr-025">
@@ -81,58 +67,7 @@ class NewEvents extends Component {
                         defaultValue={{name:'National'}}
                     />
                 </div>
-                <ul className="table events-table">
-                    <li className="table-header">Title</li>
-                    <li className="table-header">Date</li>
-                    <li className="table-header">Time</li>
-                    <li className="table-header">Type of event</li>
-                    <li className="table-header">Status</li>
-                    {/*<li className="table-filter table-filter-color-name">
-                        <DropDown
-                            ref={el => this.colorDropDownRef = el}
-                            list={this.props.store.colorList} 
-                            defaultValue={{name: 'Gray', color: '#666666'}}
-                            doNotShowName={true}
-                        />
-                        <input type='text' placeholder=''></input>
-                    </li>
-                    <li className="table-filter">
-                        <DropDown 
-                            ref={el => this.chaptersDropDownRef = el}
-                            list={this.props.store.chapterList}
-                            defaultValue={{name:'National'}}
-                        />
-                    </li>
-                    <li className="table-filter"> <DatePicker ref={el => this.dateStartDropDownRef = el} /> </li>
-                    <li className="table-filter"> <DatePicker ref={el => this.dateStartDropDownRef = el} /> </li>
-                    <li className="table-filter">
-                        <DropDown
-                            ref={el => this.typeOfEventDropDownRef = el}
-                            list={[{name: 'Pool Session'}, {name: 'Flat or White Water Session'}, {name: 'National Event'}, {name: 'Regional Event'}, {name: 'Chapter Planning Party'}]} 
-                            defaultValue={{name: 'Pool Session'}}
-                        />
-                    </li>*/}
-                    {eventsList.map((element, index) => Object.keys(element).filter(key => (key !== 'color' && key !== 'chapter' && key !='id')).map(key =>
-                                {   
-                                    if (key === 'name'){
-                                        return <li key = {index.toString()+key} className={key === 'name' ? "name table-content" : "table-content"}>
-                                            <span style={{'backgroundColor':element['color']}}></span>
-                                            <span className="display-flex flex-flow-column flex-nowrap justify-left">                                                
-                                                <span style={{"fontSize":"1.1em"}}>{element['name']}</span>
-                                                <span className='chapter'>{element['chapter']}</span>
-                                            </span>
-                                        </li>
-                                    }
-                                    else {
-                                        return <li key = {index.toString()+key} className={ key === 'status' ? "table-content small-bold" : "table-content"} >
-                                            {element[key]}
-                                        </li>
-                                    }
-                                }
-                            )
-                        )
-                    }
-                </ul>
+                <Table columns={columns} data={eventsList} />
             </div>
         );
     }

@@ -72,17 +72,9 @@ class Calendar extends Component {
         }
     }
 
-
-    componentDidMount(){
-      if (this.sideBarRef !== null){
-        window.addEventListener("touchstart", (e) => this.startTouch(e), false);
-        window.addEventListener("touchmove", (e) => this.moveTouch(e), false);
-      }
-  }
-
-  componentDidUpdate() {
-    this.setFocus();
-  }
+    componentDidUpdate() {
+      this.setFocus();
+    }
 
     setFocus() {
         if (this.setFocusToRef !== null) {

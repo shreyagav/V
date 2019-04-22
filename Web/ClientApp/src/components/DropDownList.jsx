@@ -105,7 +105,7 @@ class DropDownList extends React.Component {
                     if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
                     this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
                     this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px"};
+                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px", "boxShadow": "0em -1em 2em #ffffff, 0em -0.25em 0.25em rgba(0, 0, 0, 0.19)"};
                 }
                 else {
                     /* OPENS DOWN */
@@ -115,7 +115,7 @@ class DropDownList extends React.Component {
                     if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
                     this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
                     this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px"};
+                    this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px", "boxShadow": "0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19)"};
                 }
                 //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
             }

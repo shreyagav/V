@@ -20,14 +20,22 @@ class EventPictures extends Component {
         fetch('/Pictures.json')
             .then(function (data) { return data.json(); })
             .then(function (jjson) {
-                component.setState({ pictures: jjson, loadData: false });
+                component.setState({pictures: jjson});
+            })
+            .then(function () {
+                setTimeout(() => component.setState({loadData: false}), 1500)
             });
     }
 
     render() {
         if (this.state.loadData) {
-            return (<p>Loading</p>);
-        } else
+            return (
+                <div className='loader-wrapper'>
+                    <img src='kayak.gif' alt='loading' className="loader-img"/>
+                </div>
+            );
+        } 
+        else {
             return (
                 <div style={{ "width": "100%", "maxWidth": "600px" }}>
                     <div className="flex-wrap align-center justify-center mt-2">
@@ -36,8 +44,8 @@ class EventPictures extends Component {
                     </div>
                     <ImageGallery pictures={this.state.pictures} />
                 </div>
-
             );
+        }
     }
 }
 

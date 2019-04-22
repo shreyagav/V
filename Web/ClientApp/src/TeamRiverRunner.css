@@ -45,6 +45,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-weight: 300;
     color: inherit;
     line-height: 1;
+    text-align: center;
 }
 
 h1, .h1 {font-size: 3.5rem;}
@@ -113,12 +114,14 @@ h4, .h4 {
 .mediaMin500-pl-pr-025 {padding-right: 0.5rem !important; padding-left: 0.5rem !important}
 
 
-@media screen and (max-width: 500px){
+@media screen and (max-width: 700px){
     h1, .h1 {font-size: 8vw;}
     h2, .h2 {font-size: 6.4vw;}
     h3, .h3 {font-size: 4.8vw;}
     h4, .h4 {font-size: 3.2vw;}
+}
 
+@media screen and (max-width: 500px){
     .mediaMax500-pl-pr-025 {padding-right: 0.8vw !important; padding-left: 0.8vw !important}
     .mediaMin500-pl-pr-025 {padding-right: 0vw !important; padding-left: 0vw !important}
 
@@ -183,7 +186,7 @@ input,
 .buttonlike-checkbox label > span {
     width: 100%;
     font-size: inherit;
-    height: 2.8em;
+    height: 2.5em;
     border: 1px solid #666666;
     background: white;
     padding: 0.5em;
@@ -415,7 +418,9 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
 
 .small-round-button > svg,
 .small-round-icon > svg {
-    padding: 0.1rem;
+    padding: 0.15rem;
+    height: 100%;
+    width: auto;
 }
 
 .medium-round-button,
@@ -465,23 +470,23 @@ ul.main-nav > li:not(:last-child) span {text-transform: uppercase;}
 ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
 
 .light-grey-outline-icon, .light-grey-outline-button {border-color: #cccccc; color: #cccccc;}
-ul.main-nav .SVG,
-.grey-outline-button .SVG,
-.grey-outline-icon .SVG {
+ul.main-nav .svg,
+.grey-outline-button .svg,
+.grey-outline-icon .svg {
     fill: #666666;
 }
 
-.light-grey-outline-button .SVG,
-.light-grey-outline-icon .SVG {
+.light-grey-outline-button .svg,
+.light-grey-outline-icon .svg {
     fill: #cccccc;
 }
 
 .main-nav-wrapper a:hover .SVG,
-.main-nav-wrapper a:focus .SVG,
-.light-grey-outline-button:hover .SVG,
-.light-grey-outline-button:focus .SVG,
-.grey-outline-button:hover .SVG,
-.grey-outline-button:focus .SVG {
+.main-nav-wrapper a:focus .svg,
+.light-grey-outline-button:hover .svg,
+.light-grey-outline-button:focus .svg,
+.grey-outline-button:hover .svg,
+.grey-outline-button:focus .svg {
     fill: #0099cc;
 }
 
@@ -733,7 +738,6 @@ button.grey-SVG-button:focus {
 
 .arrow-button {
     border: 0px solid;
-    margin: 1px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -741,9 +745,9 @@ button.grey-SVG-button:focus {
     max-height: 2.5em;
 }
 .arrow-button > svg {
-    display: flex;
+    display: block;
     height: 100%; 
-    flex: 0 0 100%;
+    width: 100%;
     padding: 0.65em;
 }
 
@@ -796,13 +800,38 @@ button.grey-SVG-button:focus {
 .square-button-height .svg {fill: #666666;}
 .square-button-height:hover .svg {fill: #0099cc;}
 
+/* INPUT-BUTTON-WRAPPER */
+
+.input-button-wrapper {display: block; position: relative;}
+.input-button-wrapper > button {position: absolute; width: 2.5em; height: 2.5em; top: 1px; right: 1px; border: 0px solid;}
+.input-button-wrapper > button .svg {fill: #666666;}
+.input-button-wrapper > button > svg {
+    display: -ms-flexbox;
+    display: flex;
+    height: 100%;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    padding: 0.65em;
+}
+.input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
+.input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
+.input-button-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
+.input-button-wrapper > input:focus {border-color: #0099cc;}
+
 /* FILTERS */
 
 .filters > :nth-child(n) {margin-bottom: 1em;}
 .filters > p {text-transform: uppercase; font-weight: 500;}
 
 /* TABLE STYLES */
-.table {display: grid; grid-template-rows: max-content;}
+.table {
+    display: grid; 
+    grid-template-rows: max-content; 
+    border-right: 1px solid #cccccc; 
+    border-left: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc; 
+    width: 100%;
+}
 .table > li {padding: 0.65em;}
 .table > li.table-header {
     text-transform: uppercase;
@@ -813,29 +842,20 @@ button.grey-SVG-button:focus {
     border-top: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
 }
-/*.table > li.table-header:first-child {border-left: 1px solid #666666;}
-.table > li.table-header:nth-child(5n) {border-right: 1px solid #666666;}*/
-.table > li.table-filter {
-    background-color: #cccccc;
-    border-bottom: 1px solid #666666;
-    font-size: 0.8rem;
-}
-.table > li.table-content:nth-child(5n) {border-right: 1px solid #cccccc;}
-.table > li.table-content:nth-child(5n+6) {border-left: 1px solid #cccccc;}
-.table > li.table-content {border-bottom: 1px solid #cccccc; font-size: 0.9rem;}
-.table-content span {font-size: inherit;}
-.events-table {
-    width: 100%;
-    grid-template-columns: repeat(2, minmax(auto, auto)) minmax(6em, auto) minmax(5em, 10em) minmax(auto, auto);
-}
+/*.events-table {width: 100%; grid-template-columns: repeat(2, minmax(auto, auto)) minmax(6em, auto) minmax(5em, 10em) minmax(auto, auto);}*/
 
-.table-filter-color-name {display: flex;}
-.table-filter-color-name > :first-child {flex: 0 0 70px; margin-right: 0.85rem;}
-.table-filter-color-name > :last-child {flex: 1 1 auto;}
+.event-demo-table {max-width: 600px; grid-template-columns: max-content minmax(auto, max-content);align-items: stretch;}
+.event-demo-table > :nth-child(n) {display: flex; align-items: center;}
+.event-demo-table > :nth-child(2) {border-top: 1px solid #e8e8e8;}
+.event-demo-table > :nth-child(2n) {border-bottom: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8;}
+.event-demo-table > :nth-child(2n+1):not(:last-child):not(:nth-last-child(2)) {border-bottom: 1px solid #ffffff;}
+.event-demo-table > :nth-child(2n+1) {font-weight: 700; font-size: 0.85em; text-transform: uppercase; background-color: #e8e8e8;}
 
-.table-content {display: flex; align-items: stretch;}
+.table-content {display: flex; align-items: center; border-top: 1px solid #cccccc; font-size: 0.9rem;}
 .table-content > :first-child:not(:last-child){flex: 0 0 1em; margin-right: 0.5rem;}
-
+.table-content span {font-size: inherit;}
+.table-content span > svg {height: 100%; width: auto;}
+.table-content span > svg > .svg {fill: #666666;}
 .table-content span.chapter {
     /*margin-left: 1.5rem;*/
     font-size: 0.8rem !important;
@@ -854,20 +874,60 @@ button.grey-SVG-button:focus {
     text-transform: uppercase;
 }
 
+.big-bold {
+    font-size: 1.1em !important;
+    font-weight: 500;
+}
+
+.word-break {word-break: break-word;}
+
+.text-overflow-ellipsis {
+    display: block; 
+    overflow: hidden; 
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
 @media screen and (max-width: 500px) {
     .table {display: block; }
-    .table > li.table-content {border-right: 0px solid #cccccc !important; border-left: 0px solid #cccccc !important;}
     .table > li.table-header {display: none;}
-    .table > li:nth-child(5n+1) {
-        border-top: 1px solid #666666 !important;
-        border-bottom: 1px solid #666666 !important;
-        /*background-color: #f4f3f2;*/
-    }
-    .table > li:nth-child(5n) {
-        border-bottom: 0px solid #666666 !important;
+    .table > li.borders-when-display-block {
+        /*border-top: 1px solid #666666 !important;
+        border-bottom: 1px solid #666666 !important;*/
+        background-color: #f4f3f2;
     }
 }
 
+@media screen and (max-width: 700px) {
+    .break-at-700 {display: block; }
+    .break-at-700 > li.table-header {display: none;}
+    .break-at-700 > li.borders-when-display-block {background-color: #f4f3f2;}
+}
+
+/* LOADER */
+
+.loader-img{
+    width: 100px;
+    height: auto;
+    margin: 3rem;
+}
+
+@media screen and (max-width: 500px) {
+    .loader-wrapper {
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        z-index: 9999;
+        background-color: #ffffff;
+        opacity: 0.8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
 
 /* CENTERED */
 
