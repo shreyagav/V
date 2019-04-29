@@ -45,11 +45,14 @@ class Members extends Component {
 
     renderFullNameColumn(value, row, index, col) {
         return (
-            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"display":"flex", "alignItems":"center"}}>
                 <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
                     {row['role'] === 'VET' ? <VeteranUpSVG /> : <VolunteerUpSVG />}
                 </span>
-                <span style={{"flex":"1 1 auto"}} className="big-bold">{row['firstName'] + ' ' + row['lastName']}</span>
+                <span style={{"display":"flex", "flexFlow":"column", "flexWrap":"nowrap","flex":"1 1 auto"}}>
+                    <span style={{"fontSize":"1.1em", "flex":"1 1 auto"}}>{row['firstName'] + ' ' + row['lastName']}</span>
+                    <span style={{"flex":"1 1 auto"}} className='chapter'>{row['chapter']}</span>
+                </span>
                 <button 
                     className='round-button small-round-button light-grey-outline-button' 
                     style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
@@ -71,7 +74,7 @@ class Members extends Component {
     render() {
         const members = this.state.members;
         const columns=[
-            {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
+            {title:"Member", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", columnMinWidth:'6em', className:'word-break'},
             {title:"Zip", accesor:"zip"},
@@ -81,7 +84,7 @@ class Members extends Component {
             <div className='flex-nowrap flex-flow-column align-center pb-2 mediaMin500-pl-pr-025' style={{"maxWidth":"900px"}}>
                 <div className="flex-wrap align-center justify-space-between w-100 mb-2 mediaMax500-pl-pr-025">
                     <h1 className='uppercase-text'><strong>Members</strong></h1>
-                    <a className='big-static-button static-button' href="/new-event"><p>ADD NEW MEMBER</p></a>
+                    <a className='big-static-button static-button' href="/new-member"><p>ADD NEW MEMBER</p></a>
                 </div>
                 <div className="label-input-wrapper mediaMax500-pl-pr-025">
                     <p>CHAPTER:</p>

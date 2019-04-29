@@ -21,14 +21,14 @@ namespace Services
             var sites = _ctx.EventSites.ToArray();
             var temp = (from e in sites
                         group e by e.GroupId into ge
-                        select new SiteListItemView() { State = new SiteItem() { Id = ge.Key }, Chapters = ge.Select(a => new SiteItem() { Id = a.Id, Name = a.Name, Type = SiteListItemType.Site }).ToArray() }).ToArray();
+                        select new SiteListItemView() { Id = ge.Key , Chapters = ge.Select(a => new SiteItem() { Id = a.Id, Name = a.Name, Type = SiteListItemType.Site }).ToArray() }).ToArray();
             foreach(SiteListItemView t in temp)
             {
-                var b = sites.First(a => a.GroupId == t.State.Id);
-                t.State.Name = b.GroupName;
-                t.State.Type = SiteListItemType.Group;
+                var b = sites.First(a => a.GroupId == t.Id);
+                t.State = b.GroupName;
+                
             }
-            return temp.OrderBy(a=>a.State.Name).ToArray();
+            return temp.OrderBy(a=>a.State).ToArray();
         }
     }
 }

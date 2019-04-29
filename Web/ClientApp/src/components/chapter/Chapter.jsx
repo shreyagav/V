@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import TabComponent from './TabComponent';
-import DropDown from './DropDown';
-import CloseUpSVG from '../svg/CloseUpSVG';
-import ArrowUpSVG from '../svg/ArrowUpSVG';
-import EditUpSVG from '../svg/EditUpSVG';
-import { withStore } from './store';
-import EditContact from './EditContact';
+import TabComponent from '../TabComponent';
+import DropDown from '../DropDown';
+import CloseUpSVG from '../../svg/CloseUpSVG';
+import ArrowUpSVG from '../../svg/ArrowUpSVG';
+import EditUpSVG from '../../svg/EditUpSVG';
+import { withStore } from '../store';
+import EditContact from '../EditContact';
 
 class Chapter extends Component {
 

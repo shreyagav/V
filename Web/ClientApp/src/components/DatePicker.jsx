@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 import './DatePicker.css'
 import TodaySVG from '../svg/TodaySVG';
+import CloseUpSVG from '../svg/CloseUpSVG';
 
 class DatePicker extends Component {
     
@@ -9,6 +10,7 @@ class DatePicker extends Component {
         super(props);
         this.state = {
             calendar: [],
+            dateWasSet: false,
             currentYear: null,
             currentMonth: null,
             currentDate: null,
@@ -31,7 +33,9 @@ class DatePicker extends Component {
         this.todayMonth = today.getMonth();
         this.todayDate = today.getDate();
         this.createCalendar(this.todayYear, this.todayMonth);
-        this.setState({currentDate: this.todayDate});
+        if(this.props.defaultDateToday){
+            this.setState({currentDate: this.todayDate, dateWasSet: true});
+        } else {this.setState({currentDate: this.todayDate});}
     }
 
     componentDidUpdate() {
@@ -196,7 +200,7 @@ class DatePicker extends Component {
             e.preventDefault();
             break;
           case 13: //enter 
-            this.setState({currentDate: date});
+            this.setState({currentDate: date, dateWasSet: true});
             this.toggle();
             this.dropDownHeaderRef.focus();
             break;
@@ -280,12 +284,19 @@ class DatePicker extends Component {
                         readOnly 
                         disabled={true} 
                         placeholder='mm/dd/yy' 
-                        value={("0"+(this.state.currentMonth+1)).slice(-2)+"/"+("0" + this.state.currentDate).slice(-2)+"/"+this.state.currentYear}
+                        value={this.state.dateWasSet ? (("0"+(this.state.currentMonth+1)).slice(-2)+"/"+("0" + this.state.currentDate).slice(-2)+"/"+this.state.currentYear) : ""}
                         style={{'paddingRight':'0px'}}
-                    ></input>
+                    />
+                    {this.state.dateWasSet 
+                    ?
+                    <button className='arrow-button' onClick={(e) => {this.setState({dateWasSet: false}); e.stopPropagation();}}>
+                        <CloseUpSVG />
+                    </button>
+                    :
                     <button disabled className='arrow-button' >
                         <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
+                    }
                 </div>
                 {this.state.isOpen &&
                     <div 
@@ -336,7 +347,7 @@ class DatePicker extends Component {
                                             if(index === calendar.length-1 && e.keyCode === 9) {this.toggle();}
                                             else {this.calendarKeyDownHandler(e, index, element.label)}}
                                         }
-                                        onClick={() => {this.setState({currentDate: element.label}); this.toggle();}}
+                                        onClick={() => {this.setState({currentDate: element.label, dateWasSet: true}); this.toggle();}}
                                         ref={el => {if (index === this.state.setFocusTo) {this.setFocusToRef = el}}}
                                     > 
                                         <div className={element.className}><strong>{element.label}</strong></div>

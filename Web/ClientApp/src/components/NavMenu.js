@@ -60,7 +60,7 @@ class NavMenu extends Component {
         }
         <ul className="flex-nowrap main-nav">
           <li>
-            <a href="/chapter">
+            <a href="/chapters">
               <ChaptersSVG />
               <span>Chapters</span>
             </a>
