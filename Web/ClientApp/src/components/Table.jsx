@@ -26,7 +26,8 @@ class Table extends Component {
             )});
         const gridTemplateColumns = preGridTemplateColumns.join(' ');
         return (
-            <ul className={this.props.className ? ("table " + this.props.className) : "table"} style={{"gridTemplateColumns":gridTemplateColumns}}>
+            <ul className={this.props.className ? ("table " + this.props.className) : "table"} 
+                style={{"gridTemplateColumns":gridTemplateColumns}}>
                 <TableHeader columns = {columns} />
                 {data.map(element => {
                     return (

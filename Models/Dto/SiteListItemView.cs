@@ -8,14 +8,14 @@ namespace Models.Dto
     public class SiteItem
     {
         public string Name { get; set; }
-        public bool Checked => false;
         public int Id { get; set; }
         public SiteListItemType Type { get; set; }
     }
 
     public class SiteListItemView
     {
-        public SiteItem State { get; set; }
+        public string State { get; set; }
+        public int Id { get; set; }
         public SiteItem[] Chapters { get; set; }
     }
 }

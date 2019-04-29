@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import CheckBoxSVG from '../svg/CheckBoxSVG';
-import ArrowUpSVG from '../svg/ArrowUpSVG';
-import { withDropDownStore } from './DropDownStore';
+import CheckBoxSVG from '../../svg/CheckBoxSVG';
+import ArrowUpSVG from '../../svg/ArrowUpSVG';
+import { withMultiDropDownStore } from './MultiDropDownStore';
 
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import { combineReducers } from 'redux';
+import CheckBoxSquareSVG from '../../svg/CheckBoxSquareSVG';
 
-class DropDownList extends React.Component {
+class MultiDropDownList extends React.Component {
 
     constructor(props) {
         super(props);
@@ -87,14 +88,14 @@ class DropDownList extends React.Component {
         if(this.simpleBarWrapperRef !== null){
             let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
             let dropDownHeaderHeight = 0;
-            if(this.props.dropDownStore.dropDownHeaderRef !== null){
-                dropDownHeaderHeight = this.props.dropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
+            if(this.props.multiDropDownStore.dropDownHeaderRef !== null){
+                dropDownHeaderHeight = this.props.multiDropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
             }
             let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
             let bottom = top + dropDownHeaderHeight;
             let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
             let toBottom = windowHeight - bottom + dropDownHeaderHeight;
-            let regularHeight = 45*this.props.dropDownStore.modifiedList.length;
+            let regularHeight = 45*this.props.multiDropDownStore.modifiedList.length;
             let simpleBarHeight = 0;
             if (this.props.toggleable) {
                 if (toTop > toBottom){
@@ -129,19 +130,18 @@ class DropDownList extends React.Component {
     }
 
     checkBoxSelected(index, innerIndex) {
-        this.props.dropDownStore.onCheckBoxChange(index, innerIndex);
+        this.props.multiDropDownStore.onCheckBoxChange(index, innerIndex);
         if (this.props.onSelectionChanged) {
-            var list = this.props.dropDownStore.modifiedList;
+            var list = this.props.multiDropDownStore.modifiedList;
             if (list && list.length && list.length > 0) {
-                let multiLeveElement = list[0].hasOwnProperty("state");
-                if (multiLeveElement) {
+                if (this.props.expandBy) {
                     var temp = [];
                     list.forEach(a => {
                            temp = temp.concat(a.chapters.filter(b => b.checked));
                     });
-                    this.props.onSelectionChanged(temp);    
+                    this.props.onSelectionChanged(temp);
                 } else {
-                    this.props.onSelectionChanged(list.filter(a=>a.checked));    
+                    this.props.onSelectionChanged(list.filter(a=>a.checked));
                 }
             }
         }
@@ -149,7 +149,7 @@ class DropDownList extends React.Component {
 
     handleWheel = (e) => {
         if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {
-            if (this.props.dropDownStore.isOpen) {this.props.dropDownStore.toggle();}
+            if (this.props.multiDropDownStore.isOpen) {this.props.multiDropDownStore.toggle();}
             return;
         }
         var cancelScrollEvent = function(e){
@@ -180,8 +180,8 @@ class DropDownList extends React.Component {
         }
     }
 
-    toggler(index, multiLevelList) {
-        if(multiLevelList){
+    toggler(index) {
+        if(this.props.expandBy){
             let openStateIndex = this.state.openStateIndex;
             if (openStateIndex['_'+index.toString()] === true){
                 delete openStateIndex['_'+index.toString()];
@@ -200,15 +200,15 @@ class DropDownList extends React.Component {
         if (this.lastOpenState === index) {this.openStateRef = el;}
     }
 
-    keyDownHandler(e, index, innerIndex, multiLevelList, element){
+    keyDownHandler(e, index, innerIndex, element){
         switch (e.keyCode){
             case 13: //ENTER
-                if(multiLevelList){this.toggler(index, multiLevelList);}
+                if(this.props.expandBy){this.toggler(index);}
                 else{
-                    this.props.dropDownStore.set("value", element);
-                    this.props.onDropDownValueChange(element);
+                    this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
+                    this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
                     this.setState({setFocusToIndex: 0});
-                    this.props.dropDownStore.toggle();
+                    this.props.multiDropDownStore.toggle();
                 }
                 break;
             case 32: //Space
@@ -217,11 +217,10 @@ class DropDownList extends React.Component {
                 break;
             case 27://ESC
                 this.setState({setFocusToIndex: 0, setFocusToInnerIndex: 0, setFocusToInnerIndex: -1});
-                this.props.dropDownStore.toggle();
+                this.props.multiDropDownStore.toggle();
                 //this.dropDownHeader.focus();
                 break;
             case 38: //Up Arrow
-            //debugger
                 e.preventDefault();
                 if(innerIndex > -1) {
                     // IT IS CHAPTER
@@ -238,7 +237,7 @@ class DropDownList extends React.Component {
                     // IT IS STATE
                     if(this.state.openStateIndex["_"+(index-1).toString()] === true){
                         //previous state is open
-                        this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: this.props.dropDownStore.modifiedList[index-1].chapters.length-1}));
+                        this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: this.props.multiDropDownStore.modifiedList[index-1].chapters.length-1}));
                     }
                     else{
                         //previous state is closed
@@ -252,13 +251,13 @@ class DropDownList extends React.Component {
                     // STATE IS OPEN
                     if (innerIndex > -1){
                         // IT IS CHAPTER
-                        if (innerIndex < this.props.dropDownStore.modifiedList[index].chapters.length-1){ 
+                        if (innerIndex < this.props.multiDropDownStore.modifiedList[index].chapters.length-1){ 
                             // NOT LAST CHAPTER
                             this.setState({setFocusToIndex: index, setFocusToInnerIndex: innerIndex+1});
                         }
                         else {
                             // LAST CHAPTER
-                            if (index < this.props.dropDownStore.modifiedList.length-1) {
+                            if (index < this.props.multiDropDownStore.modifiedList.length-1) {
                                 //NOT LAST STATE
                                 this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
                             }
@@ -271,7 +270,7 @@ class DropDownList extends React.Component {
                 }
                 else {
                     // STATE IS CLOSED
-                    if (index < this.props.dropDownStore.modifiedList.length-1) {
+                    if (index < this.props.multiDropDownStore.modifiedList.length-1) {
                         //NOT LAST STATE
                         this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
                     }
@@ -289,46 +288,43 @@ class DropDownList extends React.Component {
             <div ref={el => this.simpleBarWrapperRef=el} style={{"position":"relative"}}>
             <div
                 className={this.className}
-                style={this.props.dropDownStore.isOpen || !this.props.toggleable ? this.style : {"display":"none"}}
+                style={this.props.multiDropDownStore.isOpen || !this.props.toggleable ? this.style : {"display":"none"}}
             >
                 <SimpleBar>
                 <ul className='drop-down-list' 
                     ref={el => this.simpleBarRef=el} 
                     style={{'height':this.simpleBarHeight}}
                 >
-                    {this.props.dropDownStore.modifiedList.map((element, index) =>
+                    {this.props.multiDropDownStore.modifiedList.map((element, index) =>
                     {   
                         let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
-                        let multiLeveElement = element.hasOwnProperty("state");
                         return(
-                        <li 
-                            key={index} 
-                            className={isOpen ? 'openChapter' : ''} 
-                        >
+                        <li key={index} className={isOpen ? 'openChapter' : ''}>
                             <div
                                 ref={el => {if(index === this.state.setFocusToIndex){this.setFocusToRef = el}}}
                                 tabIndex='0'
-                                onKeyDown = {(e) => this.keyDownHandler(e, index, -1, multiLeveElement, element)}
+                                onKeyDown = {(e) => this.keyDownHandler(e, index, -1, element)}
                             >
-                                {multiLeveElement &&
+                                {this.props.multiSelect &&
                                     <label>
                                         <input 
                                             type="checkbox" 
-                                            checked={element.state.checked}
-                                            onChange={() => { this.checkBoxSelected(index, -1); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }) }} /* */
+                                            checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
+                                            onChange={() => {this.checkBoxSelected(index, -1); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }) }} /* */
                                         />
-                                        <CheckBoxSVG />
+                                        {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
                                     </label>
                                 }
                                 <button 
+                                    /*disabled = {this.props.expandBy ? false : true}*/
                                     onClick={() => {
-                                        if (multiLeveElement) {
+                                        if (this.props.expandBy) {
                                             this.toggler(index, true)
                                         }
                                         else {
-                                            this.props.dropDownStore.set("value", element);
-                                            this.props.onDropDownValueChange(element);
-                                            this.props.dropDownStore.toggle();
+                                            this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
+                                            this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
+                                            this.props.multiDropDownStore.toggle();
                                         }
                                     }}
                                 >   
@@ -338,31 +334,31 @@ class DropDownList extends React.Component {
                                     {element.img && 
                                         <span className='drop-down-icon'>{element.img}</span>
                                     }
-                                    {(this.props.doNotShowName !== true) && <span>{multiLeveElement ? element.state.name : element.name}</span>}
-                                    {multiLeveElement && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
+                                    <span>{element[this.props.textProperty]}</span>
+                                    {this.props.expandBy && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
                                 </button>
                             </div>
                             {isOpen && 
                                 <ul className='drop-down-list' ref={(el) => this.setUpRef(el,index)}>
-                                    {element.chapters.map((el, innerIndex) =>
+                                    {element[this.props.expandBy].map((el, innerIndex) =>
                                         <li 
-                                            key={el.name} 
+                                            key={innerIndex} 
                                             className='openChapter'
                                         >
                                             <div
                                                 ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
                                                 tabIndex='0'
-                                                onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, true, element);}}
+                                                onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, element);}}
                                             >
-                                            <label>
+                                            {this.props.expandedMultiSelect && <label>
                                                 <input 
                                                     type="checkbox" 
                                                         checked={el.checked}
                                                         onChange={() => { this.checkBoxSelected(index, innerIndex); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }); }}
                                                 />
                                                 <CheckBoxSVG />
-                                            </label>
-                                            <span>{el.name}</span>
+                                            </label>}
+                                            <span>{el[this.props.expandedTextProperty]}</span>
                                             </div>
                                         </li>
                                     )}
@@ -377,4 +373,4 @@ class DropDownList extends React.Component {
         )
     }
 }
-export default withDropDownStore(DropDownList);
+export default withMultiDropDownStore(MultiDropDownList);

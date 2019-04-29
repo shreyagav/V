@@ -87,10 +87,24 @@ class DropDownHeader extends React.Component {
                         )}
                         {this.props.dropDownStore.filteredList.length === 0 && 
                             <li className={this.props.dropDownStore.multiLevelList ? 'inverted' : ''}>
-                                {this.props.dropDownStore.value.color !== undefined && 
+                                {this.props.dropDownStore.value && this.props.dropDownStore.value.color !== undefined && 
                                     <span className='colorIndicator' style={(this.props.doNotShowName !== true) ? {"backgroundColor": this.props.dropDownStore.value.color, "marginRight":"0.5rem"} : {"backgroundColor": this.props.dropDownStore.value.color}}></span>
                                 }
-                                {(this.props.doNotShowName !== true) && <span>{this.props.dropDownStore.value.name}</span>}
+                                {this.props.dropDownStore.value && this.props.dropDownStore.value.img && 
+                                    <span className='drop-down-icon'>{this.props.dropDownStore.value.img}</span>
+                                }
+                                {this.props.dropDownStore.value
+                                ?
+                                    (this.props.doNotShowName !== true) && (
+                                        this.props.showParameter 
+                                        ? 
+                                        <span>{this.props.dropDownStore.value[this.props.showParameter]}</span>
+                                        :
+                                        <span>{this.props.dropDownStore.value.name}</span>
+                                    )
+                                :
+                                <span style={{"fontStyle":"italic","textTransform":"none","fontWeight":"400", "color":"#999999"}}>{this.props.placeholder}</span>
+                                }
                             </li>
                         }
                 </ul>

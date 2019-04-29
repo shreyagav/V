@@ -15,7 +15,7 @@ label {margin: 0rem;}
 ul {list-style: none; margin: 0px !important;}
 li {list-style-type:none; }
 a {text-decoration: none;}
-a:hover {cursor: pointer;}
+a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
 button {background: #ffffff;}
 
@@ -226,8 +226,9 @@ input:focus::after {
     opacity: 0.5;
 } 
 
-input::placeholder, textarea::placeholder {
-    font-weight: 400;
+input::placeholder, textarea::placeholder, .placeholder, .placeholder > span {
+    text-transform: none;
+    font-weight: 400 !important;
     font-style: italic;
     color: #999999;
 }
@@ -565,7 +566,7 @@ ul.input-fields > li{
         text-align: right;
     }
 
-    ul.input-fields > li > :last-child:not(label),
+    ul.input-fields > li > :last-child:not(label):not(:only-child),
     ul.input-fields .add-margin {
         margin-left: 1rem !important;
     }
@@ -818,6 +819,8 @@ button.grey-SVG-button:focus {
 .input-button-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
 .input-button-wrapper > input:focus {border-color: #0099cc;}
 
+.input-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666;}
+
 /* FILTERS */
 
 .filters > :nth-child(n) {margin-bottom: 1em;}
@@ -856,7 +859,7 @@ button.grey-SVG-button:focus {
 .table-content span {font-size: inherit;}
 .table-content span > svg {height: 100%; width: auto;}
 .table-content span > svg > .svg {fill: #666666;}
-.table-content span.chapter {
+.chapter {
     /*margin-left: 1.5rem;*/
     font-size: 0.8rem !important;
     text-transform: uppercase;
@@ -888,7 +891,8 @@ button.grey-SVG-button:focus {
     text-overflow: ellipsis;
     text-align: center;
 }
-
+.children-mr-08-when-width-500 > :nth-child(n):not(:last-child) {margin-right: 0.8rem;}
+.break-at-500-p {margin-top:0px !important; margin-right:0.5rem;}
 @media screen and (max-width: 500px) {
     .table {display: block; }
     .table > li.table-header {display: none;}
@@ -897,6 +901,9 @@ button.grey-SVG-button:focus {
         border-bottom: 1px solid #666666 !important;*/
         background-color: #f4f3f2;
     }
+    .break-at-500 {display: block;}
+    .break-at-500-p {margin-bottom: 0.8rem;}
+    .children-mr-08-when-width-500 > :nth-child(n):not(:last-child) {margin-right: 0em; margin-bottom: 1rem;}
 }
 
 @media screen and (max-width: 700px) {

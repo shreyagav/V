@@ -6,6 +6,8 @@ import DatePicker from './DatePicker';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import SearchUpSVG from '../svg/SearchUpSVG';
+import VolunteerUpSVG from '../svg/VolunteerUpSVG';
+import VeteranUpSVG from '../svg/VeteranUpSVG';
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
@@ -82,8 +84,8 @@ class EventsSideBar extends Component {
                 <p>Role:</p>
                 <DropDown
                     ref={el => this.roleDropDownRef = el}
-                    list={[{name: 'Veteran'},{name: 'Volunteer'}]} 
-                    defaultValue={{name: 'Veteran'}}
+                    list={[{name: 'Veteran', img: <VeteranUpSVG />},{name: 'Volunteer', img: <VolunteerUpSVG />}]} 
+                    defaultValue={{name: 'Veteran', img: <VeteranUpSVG />}}
                 />
                 <p>DOB From:</p>
                 <DatePicker

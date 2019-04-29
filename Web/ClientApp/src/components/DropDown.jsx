@@ -21,6 +21,8 @@ class DropDown extends React.Component {
                     onKeyDown={this.props.onKeyDown}
                     defaultValue={this.props.defaultValue}
                     doNotShowName={this.props.doNotShowName}
+                    placeholder={this.props.placeholder}
+                    showParameter={this.props.showParameter}
                 />
                 <DropDownList
                     ref={el => this.dropDownListRef = el}
@@ -28,6 +30,7 @@ class DropDown extends React.Component {
                     onKeyDown={this.props.onKeyDown}
                     list={this.props.list}
                     doNotShowName={this.props.doNotShowName}
+                    onDropDownValueChange={this.props.onDropDownValueChange}
                 />
             </div>
         )

@@ -58,11 +58,16 @@
 
 ul.multi-level-list {margin: 0.15em !important;}
 .drop-down-header > ul.multi-level-list > li {
-    border: 1px solid #666666;
-    border-radius: 3px;
-    padding: 0.15rem;
+    border: 1px solid #dddddd;
+    background-color: #dddddd;
+    border-radius: 10px;
+    padding: 0.15rem 0.25rem 0.15rem 0.35rem;
     margin: 0.15rem;
 }
+
+.drop-down-header > ul.multi-level-list > li button .svg {fill: #999999;}
+.drop-down-header > ul.multi-level-list > li button:hover .svg,
+.drop-down-header > ul.multi-level-list > li button:focus .svg {fill: #0099cc;}
 
 .simple-list {
     margin-left: 0.7rem !important;
@@ -74,6 +79,7 @@ ul.multi-level-list {margin: 0.15em !important;}
 
 .drop-down-header > ul > li.inverted {
     background-color: #666666;
+    border-color: #666666;
     color: #ffffff;
 }
 
@@ -93,6 +99,18 @@ ul.multi-level-list > li > span {
 .drop-down-header > ul > li > span:not(:only-child) {
     margin-right: 0.25rem;
 }
+
+.unselectButton {
+    height: 1rem;
+    width: 1rem;
+    padding: 0.15rem;
+    border: 0px solid !important;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    }
 
 /* list of Chapters */
 .drop-down-list-wrapper {
