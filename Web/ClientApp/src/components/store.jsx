@@ -10,7 +10,7 @@ const createStore = WrappedComponent => {
       tableStileView: true,
       chapterList: [],
       colorList: [{name: 'Cosmic', color: '#794068'}, {name: 'Violet', color: '#AB4189'}, {name: 'Cerise', color: '#E53E71'}, {name: 'Pink', color: '#f577a3'}, {name: 'Tango', color: '#d16c35'}, {name: 'Pumpkin', color: '#fe7b22'}, {name: 'Supernova', color: '#fec037'}, {name: 'Gorse', color: '#ffe32e'}, {name: 'Lime', color: '#8bba19'}, {name: 'Java', color: '#3aa6a0'}, {name: 'Sky', color: '#0099cc'}, {name: 'Gray', color: '#666666'}],
-
+      eventTypes:[],
       userInfo:null,
       get: key => {
         return this.state[key]
@@ -44,6 +44,7 @@ const createStore = WrappedComponent => {
     componentDidMount() {
         var component = this;
         Service.getChaptersForSelector().then(data => component.setState({ chapterList: data, modifiedChapterList: data }));
+        Service.getEventTypes().then(data => component.setState({ eventTypes: data}));
     }
 
     componentWillUnmount() {
