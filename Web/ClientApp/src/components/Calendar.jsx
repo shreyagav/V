@@ -38,6 +38,7 @@ class Calendar extends Component {
         this.getEventsForMonth = this.getEventsForMonth.bind(this);
         this.setSelectedChapters = this.setSelectedChapters.bind(this);
     }
+
     setSelectedChapters(arr) {
         this.setState({ selectedChapters: arr });
         this.getEventsForMonth(this.state.currentYear, this.state.currentMonth+1, arr);
@@ -56,7 +57,19 @@ class Calendar extends Component {
         if (sites) {
             ids = sites.map(a => a.id);
         }
-        Service.getCalendarEvents(month, year,ids).then(data => component.setState({ events: data }));
+        Service.getCalendarEvents(month+1, year,ids).then(data => component.setState({ events: data }));
+    }
+    componentWillReceiveProps(props) {
+        console.log(props);
+        var ids = [];
+        props.dropDownStore.modifiedList.forEach(st => {
+            var tmp = st.chapters.filter(ch => ch.checked);
+            ids = ids.concat(tmp);
+        });
+        if (ids.length != this.state.selectedChapters.length) {
+            this.getEventsForMonth(this.state.currentYear, this.state.currentMonth, ids);
+            this.setState({ selectedChapters:ids });
+        }
     }
 
     componentDidUpdate() {
@@ -135,7 +148,7 @@ class Calendar extends Component {
         else {
             this.setState({ calendar: calendar, currentYear: year, currentMonth: month, regularCalendar: true, setFocusTo: -1 });
         }
-        this.getEventsForMonth(year, month + 1, this.state.selectedChapters);
+        this.getEventsForMonth(year, month, this.state.selectedChapters);
     }
 
     incrementMonth(){
