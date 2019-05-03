@@ -29,6 +29,7 @@ namespace Web
         {
             services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
             services.AddTransient<ICalendarEventService, CalendarEventService>();
+            services.AddTransient<IListService, ListService>();
             services.AddTransient<IChapterService, ChapterService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

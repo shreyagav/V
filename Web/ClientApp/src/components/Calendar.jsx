@@ -24,7 +24,8 @@ class Calendar extends Component {
             setFocusTo: -1,
             chapters: [],
             events: [],
-            selectedChapters:[]
+            selectedChapters: [],
+            loading: false
         };
         this.todayYear = null;
         this.todayMonth = null;
@@ -54,10 +55,11 @@ class Calendar extends Component {
     getEventsForMonth(year,month, sites) {
         var component = this;
         var ids = [];
+        component.setState({ loading: true });
         if (sites) {
             ids = sites.map(a => a.id);
         }
-        Service.getCalendarEvents(month+1, year,ids).then(data => component.setState({ events: data }));
+        Service.getCalendarEvents(month + 1, year, ids).then(data => component.setState({ events: data, loading: false })).catch(err => component.setState({ loading: false }));
     }
     componentWillReceiveProps(props) {
         console.log(props);
@@ -271,14 +273,21 @@ class Calendar extends Component {
         const calendar = this.calendarUpdate();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         var maxWidth = {};
-        if (!this.state.regularCalendar) {maxWidth = {'maxWidth' : '500px'}};
-        return (
-            <div>
-                <div className='flex-flow-column'>
-                    <div className='flex-wrap justify-space-between align-center'>
-                    <h1 className='h2 uppercase-text pl-025 pb-1'>
-                        <strong>
-                            Event Calendar
+        if (!this.state.regularCalendar) { maxWidth = { 'maxWidth': '500px' } };
+        if (this.state.loadData) {
+            return (
+                <div className='loader-wrapper'>
+                    <img src='kayak.gif' alt='loading' className="loader-img" />
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    <div className='flex-flow-column'>
+                        <div className='flex-wrap justify-space-between align-center'>
+                            <h1 className='h2 uppercase-text pl-025'>
+                                <strong>
+                                    Event Calendar
                         </strong>
                     </h1>
                     <span>
@@ -333,102 +342,102 @@ class Calendar extends Component {
                     </button>
                 </div>
 
-                {this.state.regularCalendar && this.props.store.tableStileView &&
-                    <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>
-                    <li>Su</li>
-                    <li>Mo</li>
-                    <li>Tu</li>
-                    <li>We</li>
-                    <li>Th</li>
-                    <li>Fr</li>
-                    <li>Sa</li>
-                    </ul>
-                }
-              
-                {this.state.regularCalendar &&
-                    <ul className='calendar-grid calendar-content dark-grey-text'>
-                    {calendar.map((element, index) =>
-                        {
-                            let eventKey = (element.date.getMonth()+1).toString() + '-' + element.date.getDate().toString();
-                            let dayOfEvents = this.state.events.find(a => a.day == eventKey);
-                            return (
-                            <li 
-                            key={index} 
-                            className={this.props.store.tableStileView ? element.className : element.className + ' listStyleView'} 
-                            tabIndex='0'
-                            onKeyDown={(e) => this.calendarKeyDownHandler(e, index)}
-                            ref={el => this.setRef(el, index)}
-                            > 
-                            {this.props.store.tableStileView 
-                                ?
-                                <div className={element.className}>
-                                <span>
-                                  <strong>{element.label}</strong>
-                                  <a className='round-button small-round-button light-grey-outline-button' href='./new-event'>
-                                    <PlusSVG />
-                                  </a>
-                                            </span>
-                                            {dayOfEvents &&
-                                                <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) => 
-                                    <li key={index}>
-                                      <span style={{'backgroundColor':event.color}}>{event.hours.toString() + ':' + ('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
-                                      <span style={this.props.store.narrowScreen ? {'color':event.color, "maxHeight":"2.2em"} : {'color':event.color}}>{event.name}</span>
-                                    </li>
-                                    )}
-                                    </ul>
-                                }
-                                </div>
-                                :
-                                <div className={element.className}>
-                                <div>
-                                  <strong>{element.label}</strong>
+                    {this.state.regularCalendar && this.props.store.tableStileView &&
+                        <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>
+                            <li>Su</li>
+                            <li>Mo</li>
+                            <li>Tu</li>
+                            <li>We</li>
+                            <li>Th</li>
+                            <li>Fr</li>
+                            <li>Sa</li>
+                        </ul>
+                    }
+
+                    {this.state.regularCalendar &&
+                        <ul className='calendar-grid calendar-content dark-grey-text'>
+                            {calendar.map((element, index) => {
+                                let eventKey = (element.date.getMonth() + 1).toString() + '-' + element.date.getDate().toString();
+                                let dayOfEvents = this.state.events.find(a => a.day == eventKey);
+                                return (
+                                    <li
+                                        key={index}
+                                        className={this.props.store.tableStileView ? element.className : element.className + ' listStyleView'}
+                                        tabIndex='0'
+                                        onKeyDown={(e) => this.calendarKeyDownHandler(e, index)}
+                                        ref={el => this.setRef(el, index)}
+                                    >
+                                        {this.props.store.tableStileView
+                                            ?
+                                            <div className={element.className}>
+                                                <span>
+                                                    <strong>{element.label}</strong>
+                                                    <a className='round-button small-round-button light-grey-outline-button' href='./new-event'>
+                                                        <PlusSVG />
+                                                    </a>
+                                                </span>
                                                 {dayOfEvents &&
-                                                    <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) => 
-                                      <li key={index}>
-                                        <span style={{'backgroundColor':event.color}}>{event.hours.toString() + ':' + ('0'+ event.minutes.toString()).slice(-2)+' '+(event.am ? "AM":"PM")}</span>
-                                        <span style={this.props.store.narrowScreen ? {'color':event.color, "maxHeight":"2.2em"} : {'color':event.color}}>{event.name}</span>
-                                      </li>
-                                      )}
-                                    </ul>
-                                    }
-                                </div>
-                                <a className='round-button medium-round-button light-grey-outline-button' href='./new-event'>
-                                  <PlusSVG />
-                                </a>
-                                </div>
+                                                    <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
+                                                        <li key={index}>
+                                                            <span style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
+                                                            <span style={this.props.store.narrowScreen ? { 'color': event.color, "maxHeight": "2.2em" } : { 'color': event.color }}>{event.name}</span>
+                                                        </li>
+                                                    )}
+                                                    </ul>
+                                                }
+                                            </div>
+                                            :
+                                            <div className={element.className}>
+                                                <div>
+                                                    <strong>{element.label}</strong>
+                                                    {dayOfEvents &&
+                                                        <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
+                                                            <li key={index}>
+                                                                <span style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
+                                                                <span style={this.props.store.narrowScreen ? { 'color': event.color, "maxHeight": "2.2em" } : { 'color': event.color }}>{event.name}</span>
+                                                            </li>
+                                                        )}
+                                                        </ul>
+                                                    }
+                                                </div>
+                                                <a className='round-button medium-round-button light-grey-outline-button' href='./new-event'>
+                                                    <PlusSVG />
+                                                </a>
+                                            </div>
+                                        }
+                                    </li>
+                                );
                             }
-                            </li>
-                        );
-                        }
-                    )}
-                    </ul>
-                }
-                {!this.state.regularCalendar &&
-                    <div className='flex-nowrap justify-center'> 
-                    <ul className='calendar-grid month-calendar-grid calendar-content dark-grey-text'>
-                        {monthNames.map((element, index) => 
-                        <li 
-                            key={index} 
-                            tabIndex='0'
-                            onClick={() => this.createCalendar(this.state.currentYear, index)}
-                            onKeyDown={(e) => this.monthPickerKeyDownHandler(e, index)}
-                            className={(this.state.currentYear === this.todayYear && index === this.todayMonth) ? 'today' : ''}
-                            ref={el => this.setFocusFunction(el, index)}
-                        >
-                            <div>
-                            <span>
-                                <strong className='uppercase-text'>
-                                {element.slice(0,3)}
-                                </strong>
-                            </span>
-                            </div>
-                        </li>
-                        )}
-                    </ul>
-                    </div>
-                }
-            </div>
-        )
+                            )}
+                        </ul>
+                    }
+                    {!this.state.regularCalendar &&
+                        <div className='flex-nowrap justify-center'>
+                            <ul className='calendar-grid month-calendar-grid calendar-content dark-grey-text'>
+                                {monthNames.map((element, index) =>
+                                    <li
+                                        key={index}
+                                        tabIndex='0'
+                                        onClick={() => this.createCalendar(this.state.currentYear, index)}
+                                        onKeyDown={(e) => this.monthPickerKeyDownHandler(e, index)}
+                                        className={(this.state.currentYear === this.todayYear && index === this.todayMonth) ? 'today' : ''}
+                                        ref={el => this.setFocusFunction(el, index)}
+                                    >
+                                        <div>
+                                            <span>
+                                                <strong className='uppercase-text'>
+                                                    {element.slice(0, 3)}
+                                                </strong>
+                                            </span>
+                                        </div>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    }
+                </div>
+            )
+        }
     }
 }
 

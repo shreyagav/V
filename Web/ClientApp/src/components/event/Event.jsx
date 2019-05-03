@@ -7,6 +7,7 @@ import { withStore } from '../store';
 import EventAttendees from './EventAttendees';
 import EventBudget from './EventBudget';
 import EventPictures from './EventPictures';
+import {SimpleDropDown} from '../SimpleDropDown/SimpleDropDown'
 
 class Event extends Component {
 
@@ -23,10 +24,14 @@ class Event extends Component {
             budget: [],
             pictures: [],
             eventMain: {
+                test:[2,3],
                 name: "",
                 description: "",
                 eventType: 0,
                 sites: [],
+                timeFrom: "",
+                timeTo: "",
+                type:null,
                 groupId: 0,
                 date: new Date()
             },
@@ -42,11 +47,16 @@ class Event extends Component {
         this.chaptersDropDownRef = null;
         this.typeOfEventDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
+        this.onTestChange = this.onTestChange.bind(this);
     }
 
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
-
+    onTestChange(newVal){
+        var tmp = this.state.eventMain;
+        tmp.test = newVal;
+        this.setState({eventMain:tmp});
+    }
     componentDidMount() {
         var component = this;
         fetch('/Pictures.json')
@@ -64,12 +74,12 @@ class Event extends Component {
             if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
                 this.typeOfEventDropDownRef.state.toggle();
             }
-            if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
+            /*if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.dayDropDownRef.state.toggle();
             }
             if(this.numberDropDownRef.state.isOpen && !this.numberDropDownRef.timeNumberPickerRef.contains(e.target)){
                 this.numberDropDownRef.toggle();
-            }
+            }*/
             if(this.timeFromDropDownRef.state.isOpen && !this.timeFromDropDownRef.timeNumberPickerRef.contains(e.target)){
                 this.timeFromDropDownRef.toggle();
             }
@@ -79,9 +89,9 @@ class Event extends Component {
             if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
                 this.dateStartDropDownRef.toggle();
             }
-            if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
+            /*if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
                 this.dateEndDropDownRef.toggle();
-            }
+            }*/
             if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.chaptersDropDownRef.state.toggle();
             }
@@ -147,11 +157,25 @@ class Event extends Component {
                             <input type='text' placeholder=''></input>
                         </li>
                         <li>
+                        <p>Test:</p>
+                        <SimpleDropDown
+                            list={this.props.store.eventTypes} 
+                            keyProperty="id"
+                            textProperty="title"
+                            selectedValues={this.state.eventMain.test}
+                            onSelectionChanged={(a) => console.log(a)}
+                            allowMultiple={true}
+                            onChange={this.onTestChange}
+                            />
+                        </li>
+                        <li>
                             <p>Chapter:</p>
                             <DropDown 
-                                ref={el => this.chaptersDropDownRef = el}
-                                list={this.props.store.chapterList}
-                                defaultValue={{name:'National'}}
+                            ref={el => this.chaptersDropDownRef = el}
+                            list={this.props.store.chapterList}
+                            defaultValue={{ name: 'National' }}
+                            onSelectionChanged={(a)=>console.log(a)}
+
                             />
                         </li>
                         <li>
@@ -163,17 +187,17 @@ class Event extends Component {
                         <li>
                             <p></p>
                             <div>
-                                <div className='flex-nowrap mb-1'>
+                            {/*<div className='flex-nowrap mb-1'>
                                         <p className='flex11auto'>For repeated events</p>
                                         <button 
                                             disabled
                                             className='arrow-button' 
                                             onClick={() => {this.toggleRepeatedEvents();}}
-                                        >
+                                        >*/}
                                             {/*<CloseUpSVG svgClassName={this.state.repeatedEventsIsOpen ? 'flip90' : 'flip270'}/>*/}
-                                        </button>
-                                </div>
-                                {this.state.repeatedEventsIsOpen && 
+                            {/*</button>
+                                </div>*/}
+                                {/*this.state.repeatedEventsIsOpen && 
                                     <ul className='input-fields'>
                                         <li className='number-field'>
                                             <p>repeats every:</p>
@@ -227,7 +251,7 @@ class Event extends Component {
                                             />
                                         </li>
                                     </ul>
-                                }
+                                */}
                             </div>
                         </li>
                         <li>
@@ -252,16 +276,22 @@ class Event extends Component {
                             <p>Type of event:</p>
                             <DropDown
                                 ref={el => this.typeOfEventDropDownRef = el}
-                                list={[{name: 'Pool Session'}, {name: 'Flat or White Water Session'}, {name: 'National Event'}, {name: 'Regional Event'}, {name: 'Chapter Planning Party'}]} 
-                                defaultValue={{name: 'Pool Session'}}
+                            list={this.props.store.eventTypes} 
+                            keyProperty="id"
+                            defaultValue={[2,3]}
+                            onSelectionChanged={(a) => console.log(a)}
+
                             />
                         </li>
                         <li>
                             <p>Color:</p>
                             <DropDown
                                 ref={el => this.colorDropDownRef = el}
-                                list={this.props.store.colorList} 
-                                defaultValue={{name: 'Gray', color: '#666666'}}
+                            list={this.props.store.colorList} 
+                            valueKey="color"
+                            defaultValue={{ name: 'Gray', color: '#666666' }}
+                            onSelectionChanged={(a) => console.log(a)}
+
                             />
                         </li>
                         <li>
