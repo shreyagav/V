@@ -197,7 +197,7 @@ const createMultiDropDownStore = WrappedComponent => {
         let expandedKeyProperty = this.state.expandedKeyProperty;
         let listElement = dropDownList[index];
         let listElementInnerList = listElement[expandBy];
-        if (innerIndex < 0) {
+        if (this.state.multiSelect && innerIndex < 0) {
             if (listElement.checked === true || listElement.checked === false) {
                 listElement.checked = !listElement.checked;
                 // add or remove value
@@ -228,7 +228,7 @@ const createMultiDropDownStore = WrappedComponent => {
                 };
             }
         }
-        else {
+        if (this.state.expandedMultiSelect && innerIndex > -1) {
             listElementInnerList[innerIndex].checked = !listElementInnerList[innerIndex].checked;
             if(listElementInnerList[innerIndex].checked){
                 value.push(listElementInnerList[innerIndex][expandedKeyProperty]); // add value

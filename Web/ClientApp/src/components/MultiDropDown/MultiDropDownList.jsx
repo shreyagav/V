@@ -202,7 +202,7 @@ class MultiDropDownList extends React.Component {
                     // 2 layer element
                     if(innerIndex > -1){
                         // 2 layer element has been pressed
-                        if(!this.props.multiDropDownStore.expandedMultiselect){
+                        if(!this.props.multiDropDownStore.expandedMultiSelect){
                             this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.expandedKeyProperty]);
                             this.props.onDropDownValueChange(element[this.props.multiDropDownStore.expandedKeyProperty]);
                             this.props.multiDropDownStore.toggle();//
@@ -214,10 +214,12 @@ class MultiDropDownList extends React.Component {
                     }
                 }
                 else{
-                    this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
-                    this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
-                    this.props.multiDropDownStore.set("setFocusToIndex", 0);
-                    this.props.multiDropDownStore.toggle();
+                    if(!this.props.multiDropDownStore.multiSelect){
+                        this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
+                        this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
+                        this.props.multiDropDownStore.set("setFocusToIndex", 0);
+                        this.props.multiDropDownStore.toggle();
+                    }
                 }
                 break;
             case 32: //Space
@@ -344,9 +346,11 @@ class MultiDropDownList extends React.Component {
                                             this.props.multiDropDownStore.toggler(index, true)
                                         }
                                         else {
-                                            this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
-                                            this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
-                                            this.props.multiDropDownStore.toggle();
+                                            if(!this.props.multiDropDownStore.multiSelect){
+                                                this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
+                                                this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
+                                                this.props.multiDropDownStore.toggle();
+                                            }
                                         }
                                     }}
                                 >
@@ -384,9 +388,11 @@ class MultiDropDownList extends React.Component {
                                                 }
                                                 <button 
                                                     onClick={() => {
-                                                        this.props.multiDropDownStore.set("value", el[this.props.multiDropDownStore.expandedKeyProperty]);
-                                                        this.props.onDropDownValueChange(el[this.props.multiDropDownStore.expandedKeyProperty]);
-                                                        this.props.multiDropDownStore.toggle();
+                                                        if(!this.props.multiDropDownStore.multiSelect){
+                                                            this.props.multiDropDownStore.set("value", el[this.props.multiDropDownStore.expandedKeyProperty]);
+                                                            this.props.onDropDownValueChange(el[this.props.multiDropDownStore.expandedKeyProperty]);
+                                                            this.props.multiDropDownStore.toggle();
+                                                        }
                                                     }}
                                                 >
                                                     {el.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":el.color, "marginRight":"0.5rem"}}></span>}
