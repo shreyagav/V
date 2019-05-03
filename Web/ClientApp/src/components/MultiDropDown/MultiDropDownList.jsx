@@ -350,15 +350,26 @@ class MultiDropDownList extends React.Component {
                                                 tabIndex='0'
                                                 onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, element);}}
                                             >
-                                            {this.props.expandedMultiSelect && <label>
+                                            {this.props.expandedMultiSelect && <section><label>
                                                 <input 
                                                     type="checkbox" 
                                                         checked={el.checked}
                                                         onChange={() => { this.checkBoxSelected(index, innerIndex); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }); }}
                                                 />
-                                                <CheckBoxSVG />
-                                            </label>}
-                                            <span>{el[this.props.expandedTextProperty]}</span>
+                                                    <CheckBoxSVG />
+                                                </label><span>{el[this.props.expandedTextProperty]}</span></section>}
+                                                {!this.props.expandedMultiSelect &&
+                                                    <button
+                                                        onClick={() => {
+                                                                this.props.multiDropDownStore.set("value", el[this.props.multiDropDownStore.expandedKeyProperty]);
+                                                                this.props.onDropDownValueChange(el[this.props.multiDropDownStore.expandedKeyProperty]);
+                                                                this.props.multiDropDownStore.toggle();
+                                                        }}
+                                                >
+                                                    <span>{el[this.props.expandedTextProperty]}</span>
+                                                        
+                                                    </button>}
+                                            
                                             </div>
                                         </li>
                                     )}

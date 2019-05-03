@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Services.Interfaces
 {
-    interface IEventService
+    public interface IEventService
     {
-        MainEventDto CreateEvent(MainEventDto data);
-
+        EventMainDto ChangeEvent(EventMainDto data);
+        EventMainDto GetEvent(int id);
     }
 }

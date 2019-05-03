@@ -8,6 +8,8 @@ import EventAttendees from './EventAttendees';
 import EventBudget from './EventBudget';
 import EventPictures from './EventPictures';
 import {SimpleDropDown} from '../SimpleDropDown/SimpleDropDown'
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
+import { Service } from '../ApiService';
 
 class Event extends Component {
 
@@ -24,13 +26,12 @@ class Event extends Component {
             budget: [],
             pictures: [],
             eventMain: {
-                test:[2,3],
                 name: "",
                 description: "",
                 eventType: 0,
-                sites: [],
-                timeFrom: "",
-                timeTo: "",
+                site: 0,
+                timeFrom: {},
+                timeTo: {},
                 type:null,
                 groupId: 0,
                 date: new Date()
@@ -48,8 +49,26 @@ class Event extends Component {
         this.typeOfEventDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
         this.onTestChange = this.onTestChange.bind(this);
+        this.nextStep = this.nextStep.bind(this);
+        this.updateEventProperty = this.updateEventProperty.bind(this);
     }
+    nextStep() {
+        if (this.state.activeTabIndex == 0) {
+            var me = this;
+            var event = Object.assign({}, this.state.eventMain);
+            event.id = this.state.eventId;
+            console.log('goto step 2', event);
+            Service.changeEvent(event).then((data) => {
 
+                console.log('goto step 2', data);
+                setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, eventId: data.id }); }, 500);
+            });
+            
+        } else {
+            this.setState({ activeTabIndex: this.state.activeTabIndex + 1 });
+        }
+        
+    }
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
     onTestChange(newVal){
@@ -58,7 +77,21 @@ class Event extends Component {
         this.setState({eventMain:tmp});
     }
     componentDidMount() {
+        if (this.props.location && this.props.location.state && this.props.location.state.date) {
+            var temp = this.state.eventMain;
+            temp.date = this.props.location.state.date;
+            this.setState({ eventMain: temp });
+        }
         var component = this;
+        if (this.state.eventId != 0) {
+            this.setState({ loading: true });
+            Service.getEvent(this.state.eventId)
+                .then(data => {
+                    data.date = new Date(data.date);
+                    component.setState({ eventMain: data, loading: false });
+                })
+                .catch(exception => component.setState({ error: exception, loading: false }));
+        }
         fetch('/Pictures.json')
         .then(function(data){return data.json();})
         .then(function(jjson){
@@ -138,6 +171,12 @@ class Event extends Component {
         this.setState(() => ({formattedPicturesList: newImageList}));
     }
 
+    updateEventProperty(property, value) {
+        var temp = this.state.eventMain;
+        temp[property] = value;
+        this.setState({ eventMain: temp });
+    }
+
     render() {
         const pictures = this.state.formattedPicturesList;
         return (
@@ -153,41 +192,37 @@ class Event extends Component {
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
                         <li className='input-button-wrapper'>
-                            <p>Event Title:</p>
-                            <input type='text' placeholder=''></input>
-                        </li>
-                        <li>
-                        <p>Test:</p>
-                        <SimpleDropDown
-                            list={this.props.store.eventTypes} 
-                            keyProperty="id"
-                            textProperty="title"
-                            selectedValues={this.state.eventMain.test}
-                            onSelectionChanged={(a) => console.log(a)}
-                            allowMultiple={true}
-                            onChange={this.onTestChange}
-                            />
+                        <p>Event Title:</p>
+                        <input type='text' placeholder='' value={this.state.eventMain.name} onChange={(evt) => this.updateEventProperty("name", evt.target.value)}></input>
                         </li>
                         <li>
                             <p>Chapter:</p>
-                            <DropDown 
+                            <MultiDropDown
                             ref={el => this.chaptersDropDownRef = el}
                             list={this.props.store.chapterList}
-                            defaultValue={{ name: 'National' }}
-                            onSelectionChanged={(a)=>console.log(a)}
-
+                            multiSelect={false}
+                            keyProperty='id'
+                            textProperty='state'
+                            expandBy='chapters'
+                            expandedTextProperty='name'
+                            expandedKeyProperty='id'
+                            expandedMultiSelect={false}
+                            defaultValue={this.state.eventMain.site}
+                            placeholder="Select chapter"
+                            onDropDownValueChange={value => this.updateEventProperty("site", value)}
                             />
                         </li>
                         <li>
-                            <p>Start Date:</p>
-                            <DatePicker
-                                ref={el => this.dateStartDropDownRef = el}
+                        <p>Start Date:</p>
+                        <DatePicker value={this.state.eventMain.date}
+                            ref={el => this.dateStartDropDownRef = el}
+                            onSelect={value => this.updateEventProperty("date", value)}
                             />
                         </li>
-                        <li>
+                    {/*<li>
                             <p></p>
                             <div>
-                            {/*<div className='flex-nowrap mb-1'>
+                            <div className='flex-nowrap mb-1'>
                                         <p className='flex11auto'>For repeated events</p>
                                         <button 
                                             disabled
@@ -251,52 +286,59 @@ class Event extends Component {
                                             />
                                         </li>
                                     </ul>
-                                */}
+                                
                             </div>
-                        </li>
+                        </li>*/}
                         <li>
                             <p>From:</p>
                             <ul className='input-fields-child-ul time-fields'>
                                 <li>
                                     <TimePicker 
-                                        ref={el => this.timeFromDropDownRef = el}
-                                        timePickerMode={true}
+                                    ref={el => this.timeFromDropDownRef = el}
+                                    timePickerMode={true}
+                                    time={this.state.eventMain.timeFrom}
+                                    onChange={value => this.updateEventProperty("timeFrom", value)}
                                     />
                                 </li>
                                 <li><p>to:</p></li>
                                 <li>
                                     <TimePicker 
                                         ref={el => this.timeToDropDownRef = el}
-                                        timePickerMode={true}
+                                    timePickerMode={true}
+                                    time={this.state.eventMain.timeTo}
+                                    onChange={value => this.updateEventProperty("timeTo", value)}
                                     />
                                 </li>
                             </ul>
                         </li>
                         <li>
                             <p>Type of event:</p>
-                            <DropDown
+                            <MultiDropDown
                                 ref={el => this.typeOfEventDropDownRef = el}
-                            list={this.props.store.eventTypes} 
-                            keyProperty="id"
-                            defaultValue={[2,3]}
-                            onSelectionChanged={(a) => console.log(a)}
-
-                            />
+                                list={this.props.store.eventTypes}
+                                keyProperty='id'
+                                textProperty='title'
+                                defaultValue={this.state.eventMain.eventType}
+                            placeholder='Event type'
+                            onDropDownValueChange={value => this.updateEventProperty("eventType",value)}
+                    />
                         </li>
                         <li>
                             <p>Color:</p>
-                            <DropDown
+                            <MultiDropDown
                                 ref={el => this.colorDropDownRef = el}
-                            list={this.props.store.colorList} 
-                            valueKey="color"
-                            defaultValue={{ name: 'Gray', color: '#666666' }}
-                            onSelectionChanged={(a) => console.log(a)}
-
+                                list={this.props.store.colorList}
+                                keyProperty='color'
+                                textProperty='name'
+                                defaultValue={this.state.eventMain.color}
+                                placeholder='Color'
+                                onDropDownValueChange={value => this.updateEventProperty("color", value)}
                             />
+
                         </li>
                         <li>
-                            <p>Description:</p>
-                            <textarea placeholder='Description'/>
+                        <p>Description:</p>
+                        <textarea placeholder='Description' value={this.state.eventMain.description} onChange={(evt) => this.updateEventProperty("description", evt.target.value)} />
                         </li>
                     </ul>
                 }
@@ -308,7 +350,7 @@ class Event extends Component {
                         <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex+1})}>Next</button>
+                        <button className='medium-static-button static-button default-button' onClick={this.nextStep}>Next</button>
                     }
                     {this.state.activeTabIndex === 3 &&
                         <button className='medium-static-button static-button default-button' disabled >Save</button>

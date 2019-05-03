@@ -111,8 +111,8 @@ class MultiDropDownHeader extends React.Component {
         }
         let style = setStyle();
         const list = this.createList();
-        console.log("LIST");
-        console.log(list);
+        //console.log("LIST");
+        //console.log(list);
         return (
             <div
                 ref={el => this.dropDownHeaderRef = el}

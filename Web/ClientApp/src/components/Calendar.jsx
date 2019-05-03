@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
@@ -38,8 +39,12 @@ class Calendar extends Component {
         this.longTouch = false;
         this.getEventsForMonth = this.getEventsForMonth.bind(this);
         this.setSelectedChapters = this.setSelectedChapters.bind(this);
+        this.navigateToEventView = this.navigateToEventView.bind(this);
     }
-
+    navigateToEventView(id) {
+        //this.props.history.push('/event-view/' + id);
+        this.props.history.push('/event-edit/' + id);
+    }
     setSelectedChapters(arr) {
         this.setState({ selectedChapters: arr });
         this.getEventsForMonth(this.state.currentYear, this.state.currentMonth+1, arr);
@@ -356,13 +361,11 @@ class Calendar extends Component {
                                             <div className={element.className}>
                                                 <span>
                                                     <strong>{element.label}</strong>
-                                                    <a className='round-button small-round-button light-grey-outline-button' href='./new-event'>
-                                                        <PlusSVG />
-                                                    </a>
+                                                    <Link to={{ pathname: "/new-event", state: { date: element.date } }} className="round-button small-round-button light-grey-outline-button"><PlusSVG /></Link>
                                                 </span>
                                                 {dayOfEvents &&
                                                     <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
-                                                        <li key={index}>
+                                                        <li key={index} onClick={e => this.navigateToEventView(event.id)}>
                                                             <span style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
                                                             <span style={this.props.store.narrowScreen ? { 'color': event.color, "maxHeight": "2.2em" } : { 'color': event.color }}>{event.name}</span>
                                                         </li>

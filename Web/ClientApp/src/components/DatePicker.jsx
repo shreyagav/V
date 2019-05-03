@@ -25,17 +25,31 @@ class DatePicker extends Component {
         this.calendarBodyRef = null;
         this.datePickerRef = null;
         this.dropDownHeaderRef = null;
+        this.setCurrentDate = this.setCurrentDate.bind(this);
     }
 
     componentWillMount() {
-        let today = new Date();
+        let today;
+        if (this.props.value) {
+            this.setCurrentDate(this.props.value, true);
+        } else {
+            this.setCurrentDate(new Date(), false);
+        }
+        
+    }
+
+    componentWillReceiveProps(props) {
+        if(props.value)
+            this.setCurrentDate(props.value, true);
+    }
+
+    setCurrentDate(today, dateSet) {
         this.todayYear = today.getFullYear();
         this.todayMonth = today.getMonth();
         this.todayDate = today.getDate();
         this.createCalendar(this.todayYear, this.todayMonth);
-        if(this.props.defaultDateToday){
-            this.setState({currentDate: this.todayDate, dateWasSet: true});
-        } else {this.setState({currentDate: this.todayDate});}
+        this.setState({ currentDate: this.todayDate, dateWasSet: dateSet });
+
     }
 
     componentDidUpdate() {
@@ -266,7 +280,14 @@ class DatePicker extends Component {
             default: break;
         }
     }
-
+    onSelect(val) {
+        this.toggle();
+        if (!this.props.onSelect) {
+            this.setState({ currentDate: val, dateWasSet: true });
+        } else {
+            this.props.onSelect(new Date(this.state.currentYear, this.state.currentMonth,val));
+        }
+    }
 
     render() {
         const calendar = this.state.calendar;
@@ -335,7 +356,8 @@ class DatePicker extends Component {
                                 <li>Fr</li>
                                 <li>Sa</li>
                             </ul>
-                        }
+                    }
+                    
                         {this.state.regularCalendar &&
                             <ul className='calendar-grid calendar-content dark-grey-text'>
                                 {calendar.map((element, index) =>
@@ -346,8 +368,8 @@ class DatePicker extends Component {
                                         onKeyDown={(e) => {
                                             if(index === calendar.length-1 && e.keyCode === 9) {this.toggle();}
                                             else {this.calendarKeyDownHandler(e, index, element.label)}}
-                                        }
-                                        onClick={() => {this.setState({currentDate: element.label, dateWasSet: true}); this.toggle();}}
+                                }
+                                onClick={() => this.onSelect(element.label)}
                                         ref={el => {if (index === this.state.setFocusTo) {this.setFocusToRef = el}}}
                                     > 
                                         <div className={element.className}><strong>{element.label}</strong></div>

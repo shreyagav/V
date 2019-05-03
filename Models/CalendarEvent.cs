@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Models.Dto;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,31 @@ namespace Models
     public enum EventStatus { New, Draft, Published, Closed, Deleted, Cancelled};
     public class CalendarEvent
     {
+        public CalendarEvent() {
+        }
+        public CalendarEvent(EventMainDto newEvent)
+        {
+            Id = newEvent.Id;
+            Map(newEvent);
+        }
+
+        public CalendarEvent Map(EventMainDto newEvent)
+        {
+            Name = newEvent.Name;
+            Description = newEvent.Description;
+            Color = newEvent.Color;
+            StartTime = newEvent.TimeFrom.ToInt();
+            EndTime = newEvent.TimeTo.ToInt();
+            Date = newEvent.Date;
+            return this;
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int EventTypeId { get; set; }
         public CalendarEventType EventType { get; set; }
+        public int SiteId { get; set; }
         public EventSite Site { get; set; }
         public int GroupId { get; set; }
         public DateTime Date { get; set; }
