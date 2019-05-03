@@ -5,8 +5,8 @@ import PlusSVG from '../svg/PlusSVG';
 import DropDownList from './DropDownList';
 import { withStore } from './store';
 import './Calendar.css'
-import { createDropDownStore } from './DropDownStore';
-import DropDownHeader from './DropDownHeader';
+import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
+import MultiDropDownHeader from './MultiDropDown/MultiDropDownHeader';
 
 class SideBarLayout extends Component {
     static displayName = SideBarLayout.name;
@@ -118,7 +118,7 @@ class SideBarLayout extends Component {
               ref={el => this.sideBarRef = el} 
               style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}} 
             >
-              <SideBarContent {...this.props}/>
+              <SideBarContent {...this.props} />
             </div>
             <div 
               className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}
@@ -137,4 +137,4 @@ class SideBarLayout extends Component {
     }
 }
 
-export default withStore(createDropDownStore(SideBarLayout));
+export default withStore(createMultiDropDownStore(SideBarLayout));

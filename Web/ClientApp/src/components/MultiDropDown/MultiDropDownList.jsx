@@ -12,11 +12,8 @@ class MultiDropDownList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            openStateIndex: [],
-            setFocusToIndex: 0,
-            setFocusToInnerIndex:0,
-        };
+        this.state = {       };
+
         this.lastOpenState = null;
         this.simpleBarRef = null;
         this.simpleBarWrapperRef = null;
@@ -29,7 +26,9 @@ class MultiDropDownList extends React.Component {
         this.setHeight = this.setHeight.bind(this);
         this.handleWheel = this.handleWheel.bind(this);
         this.className = '';
-        this.style = {};
+        this.style = {
+            dropDownHeaderHeight: 0,
+        };
         this.checkBoxSelected = this.checkBoxSelected.bind(this);
     }
 
@@ -58,6 +57,7 @@ class MultiDropDownList extends React.Component {
                 elem.scrollIntoView(false);
             }
         }
+        this.setHeight();
     }
 
     componentWillUnmount(){
@@ -90,12 +90,21 @@ class MultiDropDownList extends React.Component {
             let dropDownHeaderHeight = 0;
             if(this.props.multiDropDownStore.dropDownHeaderRef !== null){
                 dropDownHeaderHeight = this.props.multiDropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
+                if (dropDownHeaderHeight !== this.state.dropDownHeaderHeight){
+                    this.setState({dropDownHeaderHeight: dropDownHeaderHeight});
+                }
             }
             let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
             let bottom = top + dropDownHeaderHeight;
             let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
             let toBottom = windowHeight - bottom + dropDownHeaderHeight;
-            let regularHeight = 45*this.props.multiDropDownStore.modifiedList.length;
+            let coeff = 0;
+            let openStateIndex = Object.keys(this.props.multiDropDownStore.openStateIndex);
+            openStateIndex.forEach(element => {  
+                let ind = parseInt(element.slice(1));
+                coeff = coeff + this.props.multiDropDownStore.modifiedList[ind][this.props.multiDropDownStore.expandBy].length;
+            })
+            let regularHeight = 45*(this.props.multiDropDownStore.modifiedList.length + coeff);
             let simpleBarHeight = 0;
             if (this.props.toggleable) {
                 if (toTop > toBottom){
@@ -149,7 +158,9 @@ class MultiDropDownList extends React.Component {
 
     handleWheel = (e) => {
         if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {
-            if (this.props.multiDropDownStore.isOpen) {this.props.multiDropDownStore.toggle();}
+            if (this.props.multiDropDownStore.isOpen) {
+                this.props.multiDropDownStore.toggle();
+            }
             return;
         }
         var cancelScrollEvent = function(e){
@@ -180,22 +191,6 @@ class MultiDropDownList extends React.Component {
         }
     }
 
-    toggler(index) {
-        if(this.props.expandBy){
-            let openStateIndex = this.state.openStateIndex;
-            if (openStateIndex['_'+index.toString()] === true){
-                delete openStateIndex['_'+index.toString()];
-                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: -1}));
-            }
-            else { 
-                openStateIndex['_'+index.toString()]=true;
-                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: 0}));
-                this.lastOpenState = index;
-            }
-        }
-        this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});
-    }
-
     setUpRef(el, index){
         if (this.lastOpenState === index) {this.openStateRef = el;}
     }
@@ -203,11 +198,25 @@ class MultiDropDownList extends React.Component {
     keyDownHandler(e, index, innerIndex, element){
         switch (e.keyCode){
             case 13: //ENTER
-                if(this.props.expandBy){this.toggler(index);}
+                if(this.props.expandBy){
+                    // 2 layer element
+                    if(innerIndex > -1){
+                        // 2 layer element has been pressed
+                        if(!this.props.multiDropDownStore.expandedMultiselect){
+                            this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.expandedKeyProperty]);
+                            this.props.onDropDownValueChange(element[this.props.multiDropDownStore.expandedKeyProperty]);
+                            this.props.multiDropDownStore.toggle();//
+                        }
+                    }
+                    else {
+                        // 1st layer element has been pressed
+                        this.props.multiDropDownStore.toggler(index);
+                    }
+                }
                 else{
                     this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
                     this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
-                    this.setState({setFocusToIndex: 0});
+                    this.props.multiDropDownStore.set("setFocusToIndex", 0);
                     this.props.multiDropDownStore.toggle();
                 }
                 break;
@@ -216,9 +225,10 @@ class MultiDropDownList extends React.Component {
                 e.preventDefault();
                 break;
             case 27://ESC
-                this.setState({setFocusToIndex: 0, setFocusToInnerIndex: 0, setFocusToInnerIndex: -1});
+                this.props.multiDropDownStore.set("setFocusToIndex", 0);
+                this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
+                this.props.multiDropDownStore.set("openStateIndex", []);
                 this.props.multiDropDownStore.toggle();
-                //this.dropDownHeader.focus();
                 break;
             case 38: //Up Arrow
                 e.preventDefault();
@@ -226,53 +236,62 @@ class MultiDropDownList extends React.Component {
                     // IT IS CHAPTER
                     if(innerIndex > 0) {
                         // NOT FIRST CHAPTER
-                        this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: (innerIndex-1)}));
+                        this.props.multiDropDownStore.set("setFocusToIndex", index);
+                        this.props.multiDropDownStore.set("setFocusToInnerIndex", (innerIndex-1));
                     }
                     else {
                         // FIRST CHAPTER
-                        this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
+                        this.props.multiDropDownStore.set("setFocusToIndex", index);
+                        this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
+                        
                     }
                 }
                 else {
                     // IT IS STATE
-                    if(this.state.openStateIndex["_"+(index-1).toString()] === true){
+                    if(this.props.multiDropDownStore.openStateIndex["_"+(index-1).toString()] === true){
                         //previous state is open
-                        this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: this.props.multiDropDownStore.modifiedList[index-1].chapters.length-1}));
+                        this.props.multiDropDownStore.set("setFocusToIndex", (index-1));
+                        this.props.multiDropDownStore.set("setFocusToInnerIndex", this.props.multiDropDownStore.modifiedList[index-1].chapters.length-1);
                     }
                     else{
                         //previous state is closed
-                        this.setState(() => ({setFocusToIndex: (index-1), setFocusToInnerIndex: -1}));
+                        this.props.multiDropDownStore.set("setFocusToIndex", (index-1));
+                        this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
                     }
                 }
                 break;
             case 40: //Down Arrow
                 e.preventDefault();
-                if(this.state.openStateIndex["_"+index.toString()] === true){
+                if(this.props.multiDropDownStore.openStateIndex["_"+index.toString()] === true){
                     // STATE IS OPEN
                     if (innerIndex > -1){
                         // IT IS CHAPTER
                         if (innerIndex < this.props.multiDropDownStore.modifiedList[index].chapters.length-1){ 
                             // NOT LAST CHAPTER
-                            this.setState({setFocusToIndex: index, setFocusToInnerIndex: innerIndex+1});
+                            this.props.multiDropDownStore.set("setFocusToIndex", index);
+                            this.props.multiDropDownStore.set("setFocusToInnerIndex", innerIndex+1);
                         }
                         else {
                             // LAST CHAPTER
                             if (index < this.props.multiDropDownStore.modifiedList.length-1) {
                                 //NOT LAST STATE
-                                this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
+                                this.props.multiDropDownStore.set("setFocusToIndex", index+1);
+                                this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
                             }
                         }
                     }
                     else {
                         // IT IS STATE 
-                        this.setState({setFocusToIndex: index, setFocusToInnerIndex: 0});
+                        this.props.multiDropDownStore.set("setFocusToIndex", index);
+                        this.props.multiDropDownStore.set("setFocusToInnerIndex", 0);
                     }
                 }
                 else {
                     // STATE IS CLOSED
                     if (index < this.props.multiDropDownStore.modifiedList.length-1) {
                         //NOT LAST STATE
-                        this.setState({setFocusToIndex: index+1, setFocusToInnerIndex: -1});
+                        this.props.multiDropDownStore.set("setFocusToIndex", index+1);
+                        this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
                     }
                 }
                 break;
@@ -297,11 +316,11 @@ class MultiDropDownList extends React.Component {
                 >
                     {this.props.multiDropDownStore.modifiedList.map((element, index) =>
                     {   
-                        let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
+                        let isOpen = (this.props.multiDropDownStore.openStateIndex["_"+index.toString()] === true);
                         return(
                         <li key={index} className={isOpen ? 'openChapter' : ''}>
                             <div
-                                ref={el => {if(index === this.state.setFocusToIndex){this.setFocusToRef = el}}}
+                                ref={el => {if(index === this.props.multiDropDownStore.setFocusToIndex){this.setFocusToRef = el}}}
                                 tabIndex='0'
                                 onKeyDown = {(e) => this.keyDownHandler(e, index, -1, element)}
                             >
@@ -310,16 +329,19 @@ class MultiDropDownList extends React.Component {
                                         <input 
                                             type="checkbox" 
                                             checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
-                                            onChange={() => {this.checkBoxSelected(index, -1); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }) }} /* */
+                                            onChange={() => {
+                                                this.checkBoxSelected(index, -1); 
+                                                this.props.multiDropDownStore.set("setFocusToIndex", index);
+                                                this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
+                                            }} 
                                         />
                                         {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
                                     </label>
                                 }
                                 <button 
-                                    /*disabled = {this.props.expandBy ? false : true}*/
                                     onClick={() => {
                                         if (this.props.expandBy) {
-                                            this.toggler(index, true)
+                                            this.props.multiDropDownStore.toggler(index, true)
                                         }
                                         else {
                                             this.props.multiDropDownStore.set("value", element[this.props.multiDropDownStore.keyProperty]);
@@ -327,13 +349,9 @@ class MultiDropDownList extends React.Component {
                                             this.props.multiDropDownStore.toggle();
                                         }
                                     }}
-                                >   
-                                    {element.color !== undefined && 
-                                        <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>
-                                    }
-                                    {element.img && 
-                                        <span className='drop-down-icon'>{element.img}</span>
-                                    }
+                                >
+                                    {element.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>}
+                                    {element.img && <span className='drop-down-icon'>{element.img}</span>}
                                     <span>{element[this.props.textProperty]}</span>
                                     {this.props.expandBy && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
                                 </button>
@@ -346,19 +364,35 @@ class MultiDropDownList extends React.Component {
                                             className='openChapter'
                                         >
                                             <div
-                                                ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
+                                                ref={el => {if(index === this.props.multiDropDownStore.setFocusToIndex && innerIndex === this.props.multiDropDownStore.setFocusToInnerIndex){this.setFocusToRef = el}}}
                                                 tabIndex='0'
-                                                onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, element);}}
+                                                onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, el);}}
                                             >
-                                            {this.props.expandedMultiSelect && <label>
-                                                <input 
-                                                    type="checkbox" 
-                                                        checked={el.checked}
-                                                        onChange={() => { this.checkBoxSelected(index, innerIndex); this.setState({ setFocusToIndex: index, setFocusToInnerIndex: -1 }); }}
-                                                />
-                                                <CheckBoxSVG />
-                                            </label>}
-                                            <span>{el[this.props.expandedTextProperty]}</span>
+                                                {this.props.expandedMultiSelect && 
+                                                    <label>
+                                                        <input 
+                                                            type="checkbox" 
+                                                                checked={el.checked}
+                                                                onChange={() => { 
+                                                                    this.checkBoxSelected(index, innerIndex);
+                                                                    this.props.multiDropDownStore.set("setFocusToIndex", index);
+                                                                    this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
+                                                                }}
+                                                        />
+                                                        <CheckBoxSVG />
+                                                    </label>
+                                                }
+                                                <button 
+                                                    onClick={() => {
+                                                        this.props.multiDropDownStore.set("value", el[this.props.multiDropDownStore.expandedKeyProperty]);
+                                                        this.props.onDropDownValueChange(el[this.props.multiDropDownStore.expandedKeyProperty]);
+                                                        this.props.multiDropDownStore.toggle();
+                                                    }}
+                                                >
+                                                    {el.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":el.color, "marginRight":"0.5rem"}}></span>}
+                                                    {el.img && <span className='drop-down-icon'>{el.img}</span>}
+                                                    <span>{el[this.props.expandedTextProperty]}</span>
+                                                </button>
                                             </div>
                                         </li>
                                     )}

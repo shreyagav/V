@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
-import DropDownList from './DropDownList';
 import { withStore } from './store';
-import { withDropDownStore } from './DropDownStore';
+import { withMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
 import './Calendar.css'
-import { createDropDownStore } from './DropDownStore';
-import DropDownHeader from './DropDownHeader';
+import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
+import MultiDropDownHeader from './MultiDropDown/MultiDropDownHeader';
 import { Service } from './ApiService';
+import MultiDropDown from './MultiDropDown/MultiDropDown';
 
 class Calendar extends Component {
     static displayName = Calendar.name;
@@ -62,7 +62,7 @@ class Calendar extends Component {
     componentWillReceiveProps(props) {
         console.log(props);
         var ids = [];
-        props.dropDownStore.modifiedList.forEach(st => {
+        props.multiDropDownStore.modifiedList.forEach(st => {
             var tmp = st.chapters.filter(ch => ch.checked);
             ids = ids.concat(tmp);
         });
@@ -276,7 +276,7 @@ class Calendar extends Component {
             <div>
                 <div className='flex-flow-column'>
                     <div className='flex-wrap justify-space-between align-center'>
-                    <h1 className='h2 uppercase-text pl-025'>
+                    <h1 className='h2 uppercase-text pl-025 pb-1'>
                         <strong>
                             Event Calendar
                         </strong>
@@ -293,7 +293,23 @@ class Calendar extends Component {
                         }
                     </span>
                     </div>
-                    <DropDownHeader toggleable={false} defaultValue={{name:'National'}}/>
+                    <MultiDropDown 
+                            toggleable={false}
+                            list={this.props.store.chapterList}
+                            multiSelect={true}
+                            keyProperty='id'
+                            textProperty='state'
+                            expandBy='chapters'
+                            expandedTextProperty='name'
+                            expandedKeyProperty='id'
+                            expandedMultiSelect={true}
+                            defaultValue={this.props.chapterFilter}
+                            placeholder='National'
+                            onDropDownValueChange = {value => this.props.onBodyDropDownValueChange(value)}
+                            hideHeader = {false}
+                            hideList = {true}
+                    />
+                    {/*<MultiDropDownHeader toggleable={false} placeholder='National'/>*/}
                 </div>
                 <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
                     <button className='h1 square-button-height' 
@@ -416,4 +432,4 @@ class Calendar extends Component {
     }
 }
 
-export default withStore(withDropDownStore(Calendar));
+export default withStore(withMultiDropDownStore(Calendar));

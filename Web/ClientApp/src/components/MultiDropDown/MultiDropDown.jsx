@@ -15,37 +15,43 @@ class MultiDropDown extends React.Component {
     render() {
         return (
             <div className='drop-down' ref={el => this.dropDownRef = el}>
-                <MultiDropDownHeader 
-                    list={this.props.list}
-                    multiSelect={this.props.multiSelect}
-                    keyProperty={this.props.keyProperty}
-                    textProperty={this.props.textProperty}
-                    expandBy={this.props.expandBy}
-                    expandedMultiSelect={this.props.expandedMultiSelect}
-                    expandedTextProperty={this.props.expandedTextProperty}
-                    expandedKeyProperty={this.props.expandedKeyProperty}
-                    defaultValue={this.props.defaultValue}
-                    onDropDownValueChange = {value => this.setState({stateFilter: value})}
-                    toggleable = {true}
-                    onKeyDown={this.props.onKeyDown}
-                    placeholder={this.props.placeholder}
-                    showParameter={this.props.showParameter}
-                />
-                <MultiDropDownList
-                    ref={el => this.dropDownListRef = el}
-                    list={this.props.list}
-                    multiSelect={this.props.multiSelect}
-                    keyProperty={this.props.keyProperty}
-                    textProperty={this.props.textProperty}
-                    expandBy={this.props.expandBy}
-                    expandedMultiSelect={this.props.expandedMultiSelect}
-                    expandedTextProperty={this.props.expandedTextProperty}
-                    expandedKeyProperty={this.props.expandedKeyProperty}
-                    defaultValue={this.props.defaultValue}
-                    toggleable = {true}
-                    onKeyDown={this.props.onKeyDown}
-                    onDropDownValueChange={this.props.onDropDownValueChange}
-                />
+                {!this.props.hideHeader && 
+                    <MultiDropDownHeader 
+                        list={this.props.list}
+                        multiSelect={this.props.multiSelect}
+                        keyProperty={this.props.keyProperty}
+                        textProperty={this.props.textProperty}
+                        expandBy={this.props.expandBy}
+                        expandedMultiSelect={this.props.expandedMultiSelect}
+                        expandedTextProperty={this.props.expandedTextProperty}
+                        expandedKeyProperty={this.props.expandedKeyProperty}
+                        defaultValue={this.props.defaultValue}
+                        //onDropDownValueChange = {value => this.setState({stateFilter: value})}
+                        onDropDownValueChange={this.props.onDropDownValueChange}
+                        toggleable = {true}
+                        onKeyDown={this.props.onKeyDown}
+                        placeholder={this.props.placeholder}
+                        showParameter={this.props.showParameter}
+                        toggleable = {this.props.toggleable ? this.props.toggleable : (this.props.hideList ? !this.props.hideList : true)}
+                    />
+                }
+                {!this.props.hideList &&
+                    <MultiDropDownList
+                        ref={el => this.dropDownListRef = el}
+                        list={this.props.list}
+                        multiSelect={this.props.multiSelect}
+                        keyProperty={this.props.keyProperty}
+                        textProperty={this.props.textProperty}
+                        expandBy={this.props.expandBy}
+                        expandedMultiSelect={this.props.expandedMultiSelect}
+                        expandedTextProperty={this.props.expandedTextProperty}
+                        expandedKeyProperty={this.props.expandedKeyProperty}
+                        defaultValue={this.props.defaultValue}
+                        onKeyDown={this.props.onKeyDown}
+                        onDropDownValueChange={(value) => {this.props.onDropDownValueChange(value)}}
+                        toggleable = {this.props.toggleable ? this.props.toggleable : (this.props.hideHeader ? !this.props.hideHeader : true)}
+                    />
+                }
             </div>
         )
     }

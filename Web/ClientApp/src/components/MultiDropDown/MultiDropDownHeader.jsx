@@ -58,22 +58,37 @@ class MultiDropDownHeader extends React.Component {
         let expandBy = this.props.multiDropDownStore.expandBy;
         let keyProperty = this.props.multiDropDownStore.keyProperty;
         let textProperty = this.props.multiDropDownStore.textProperty;
+        let expandedMultiSelect = this.props.multiDropDownStore.expandedMultiSelect;
         let expandedKeyProperty = this.props.multiDropDownStore.expandedKeyProperty;
         let expandedTextProperty = this.props.multiDropDownStore.expandedTextProperty;
         let headerList = [];
         if(expandBy){
             //2 level array
-            for(var i=0; i < modifiedList.length; i++){
-                var modifiedListElement = modifiedList[i];
-                if (modifiedListElement.checked === 1 || modifiedListElement.checked === true) {
-                    headerList.push({"textProperty": modifiedListElement[textProperty], "element":modifiedListElement});
+            if(expandedMultiSelect){
+                for(var i=0; i < modifiedList.length; i++){
+                    var modifiedListElement = modifiedList[i];
+                    if (modifiedListElement.checked === 1 || modifiedListElement.checked === true) {
+                        headerList.push({"parentElement" : modifiedListElement, "parentElementIndex" : i});
+                    }
+                    else {
+                        let innerArray = modifiedListElement[expandBy];
+                        for (let j=0; j < innerArray.length; j++){
+                            let innerArrayElement = innerArray[j];
+                            if (innerArrayElement.checked){
+                                headerList.push({"childElement": innerArrayElement, "childElementIndex":j, "parentElement" : modifiedListElement, "parentElementIndex" : i});
+                            }
+                        }
+                    }
                 }
-                else {
+            }
+            else {
+                for(var i=0; i < modifiedList.length; i++){
+                    var modifiedListElement = modifiedList[i];
                     let innerArray = modifiedListElement[expandBy];
                     for (let j=0; j < innerArray.length; j++){
                         let innerArrayElement = innerArray[j];
-                        if (innerArrayElement.checked){
-                            headerList.push({"textProperty": (innerArrayElement[expandedTextProperty] + ', ' + modifiedListElement[textProperty]), "element":modifiedListElement});
+                        if (innerArrayElement[expandedKeyProperty] === value){
+                            headerList.push({"childElement": innerArrayElement, "childElementIndex":j, "parentElement" : modifiedListElement, "parentElementIndex" : i});
                         }
                     }
                 }
@@ -85,7 +100,7 @@ class MultiDropDownHeader extends React.Component {
                 for(let i=0; i < modifiedList.length; i++){
                     let modifiedListElement = modifiedList[i];
                     if (modifiedListElement.checked){
-                        headerList.push({"textProperty": modifiedListElement[textProperty], "element":modifiedListElement});
+                        headerList.push({"parentElement" : modifiedListElement, "parentElementIndex" : i});
                     }
                 }
             }
@@ -94,7 +109,7 @@ class MultiDropDownHeader extends React.Component {
                 for(var i=0; i < modifiedList.length; i++){
                     var modifiedListElement = modifiedList[i];
                     if (modifiedListElement[keyProperty] === value){
-                        headerList.push({"textProperty": modifiedListElement[textProperty], "element":modifiedListElement});
+                        headerList.push({"parentElement" : modifiedListElement, "parentElementIndex" : i});
                     }
                 }
             }
@@ -111,8 +126,6 @@ class MultiDropDownHeader extends React.Component {
         }
         let style = setStyle();
         const list = this.createList();
-        console.log("LIST");
-        console.log(list);
         return (
             <div
                 ref={el => this.dropDownHeaderRef = el}
@@ -128,19 +141,28 @@ class MultiDropDownHeader extends React.Component {
                     className={(this.props.multiDropDownStore.multiSelect || this.props.multiDropDownStore.expandedMultiSelect) ? "multi-level-list" : "simple-list"}
                 >
                         {list.length > 0 && list.map((element, index) => {
+                            let targetElement;
+                            if(element.childElement !== undefined){targetElement = element.childElement}
+                            else {targetElement = element.parentElement}
                             return <li key={index}>
-                                {element["element"].color && 
+                                {targetElement.color && 
                                     <span 
                                         className='colorIndicator'
-                                        style={{"backgroundColor": element["element"].color, "marginRight":"0.5rem"}}>
+                                        style={{"backgroundColor": targetElement.color, "marginRight":"0.5rem"}}>
                                     </span>
                                 }
-                                {element["element"].img && <span className='drop-down-icon'>{element["element"].img}</span>}
-                                <span>{element["textProperty"]}</span>
+                                {targetElement.img && <span className='drop-down-icon'>{targetElement.img}</span>}
+                                <span>{
+                                    element.childElement 
+                                    ? 
+                                    element.childElement[this.props.multiDropDownStore.expandedTextProperty] + ', ' + element.parentElement[this.props.multiDropDownStore.textProperty]
+                                    :
+                                    element.parentElement[this.props.multiDropDownStore.textProperty]
+                                }</span>
                                 {(this.props.multiDropDownStore.multiSelect || this.props.multiDropDownStore.expendedMultiSelect) &&
                                     <button className='unselectButton'
-                                        onClick={(e) => this.props.multiDropDownStore.unselect(e, element["element"])}
-                                        onKeyDown={(e) => this.headerKeyDownHandler(e, element["element"])}
+                                        onClick={(e) => this.props.multiDropDownStore.unselect(e, element)}
+                                        onKeyDown={(e) => this.headerKeyDownHandler(e, element)}
                                     >
                                         <CloseSVG />
                                     </button>

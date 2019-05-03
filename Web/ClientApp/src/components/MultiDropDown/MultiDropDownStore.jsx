@@ -9,7 +9,7 @@ const createMultiDropDownStore = WrappedComponent => {
             this.state = {
                 list: [],
                 modifiedList: [],
-                value: {},
+                value: [],
                 placeholder: '',
                 expandBy: false,
                 textProperty:'',
@@ -19,6 +19,9 @@ const createMultiDropDownStore = WrappedComponent => {
                 expandedMultiSelect: 'false',
                 isOpen: false,
                 dropDownHeaderRef: null,
+                openStateIndex: [],
+                setFocusToIndex: 0,
+                setFocusToInnerIndex: 0,
 
                 get: key => {
                     return this.state[key]
@@ -37,37 +40,48 @@ const createMultiDropDownStore = WrappedComponent => {
                     this.checkBoxChange(index, innerIndex);
                 },
                 unselect: (e, element) => {
-                    let modifiedList = this.state.modifiedList;
-                    let index = -1;
+                    let index = element.parentElementIndex;
                     let innerIndex = -1;
-
-                    index = modifiedList.findIndex(el => {return el === element});
-                    if (this.state.expandBy){
-                        let modifiedListElement = modifiedList[index];
-                        innerIndex = modifiedListElement[this.state.expandBy].findIndex(el => { return element[this.state.expandBy] === el });
+                    if(element.childElementIndex){
+                        innerIndex = element.childElementIndex;
                     }
                     this.checkBoxChange(index, innerIndex);
                     e.stopPropagation();
                 },
                 toggle: () => {
                     let isOpenWas = this.state.isOpen;
-                    this.setState(() => ({ isOpen: !this.state.isOpen }));
                     if (isOpenWas) {
+                        this.setState(() => ({isOpen: !this.state.isOpen, openStateIndex: []}));
                         this.state.dropDownHeaderRef.focus();
                     }
+                    else {this.setState(() => ({isOpen: !this.state.isOpen}));}
                 },
+                toggler: (index) => {this.toggler(index);}
             }
         }
 
     componentWillMount() {
         this.fillStore(this.props);
     }
+
     componentWillReceiveProps(props) {
         this.fillStore(props);
-        //this.setDefaultValue();
     }
-    componentDidMount() {
-        //this.setDefaultValue();
+
+    toggler(index) {
+        if(this.state.expandBy){
+            let openStateIndex = this.state.openStateIndex;
+            if (openStateIndex['_'+index.toString()] === true){
+                delete openStateIndex['_'+index.toString()];
+                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: -1}));
+            }
+            else { 
+                openStateIndex['_'+index.toString()]=true;
+                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: 0}));
+                this.lastOpenState = index;
+            }
+        }
+        this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});
     }
 
     ifCheckParent(element, expandBy){
@@ -83,8 +97,8 @@ const createMultiDropDownStore = WrappedComponent => {
 
     fillStore(props) {
         if (props.list !== undefined) {
-            let value = '';
-            if (props.defaultValue){value = props.defaultValue};
+            let value = [];
+            if (props.defaultValue){value = props.defaultValue}
             let placeholder = '';
             if(props.placeholder){placeholder = props.placeholder;}
             let multiSelect = false;
@@ -247,6 +261,7 @@ const createMultiDropDownStore = WrappedComponent => {
             }
         }
         this.setState({modifiedList: dropDownList, value: value});
+        this.props.onDropDownValueChange(value);
     }
 
     arrayRemove = (arr, value) => {

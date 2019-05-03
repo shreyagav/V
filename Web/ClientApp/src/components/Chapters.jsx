@@ -19,7 +19,7 @@ class Chapters extends Component {
             stateFilter1: [],
             stateFilter2: 8,
             stateFilter3: [2, 3, 4],
-            stateFilter4: 'Veteran',
+            stateFilter4: '444',
             stateFilter5: '#666666',
         };
         this.chaptersDropDownRef = null;
@@ -76,44 +76,6 @@ class Chapters extends Component {
             {title:"State", accesor:"state", className:"borders-when-display-block chapter", render: this.renderStateColumn},
             {title:"Chapters", accesor:"chapters", render: this.renderChaptersList}
         ];
-        
-        
-        const newChapterList = [
-            {"state": "Alabama", "id":1, "chapters": [{"name":"South Alabama"}]},
-            {"state": "California", "id":2, "chapters": [{"name":"American River"}, {"name":"Palo Alto"}, {"name":"San Diego"}]},
-            {"state": "Colorado", "id":3, "chapters": [{"name":"Denver"}, {"name":"Ft. Carson/Colorado Springs","checked":false},{"name":"Fort Collins","checked":false},{"name":"Grand Junction","checked":false},{"name":"Montrose"}]},
-            {"state": "District of Columbia", "id":4, "chapters": [{"name":"Washington, DC"}]},
-            {"state": "Florida", "id":5, "chapters": [{"name":"St. Cloud","checked":false},{"name":"St. Augustine","checked":false},{"name":"Tampa Bay","checked":false}]},
-            {"state": "Georgia", "id":6, "chapters": [{"name":"Atlanta","checked":false},{"name":"Savannah – Ft. Stewart"}]},
-            {"state":"Idaho", "id":7, "chapters": [{"name":"Boise"}]},
-            {"state":"Illinois", "id":8, "chapters": [{"name":"Decatur"}]},
-            {"state":"Indiana", "id":9, "chapters": [{"name":"Northwest Indiana","checked":false},{"name":"Indiana State","checked":false},{"name":"Indianapolis"}]},
-            {"state":"Iowa", "id":10, "chapters": [{"name":"Des Moines"}]},
-            {"state":"Kentucky", "id":11, "chapters": [{"name":"Ft. Campbell","checked":false},{"name":"Lexington","checked":false}]},
-            {"state":"Maine", "id":12, "chapters": [{"name":"Maine"}]},
-            {"state":"Maryland", "id":13, "chapters": [{"name":"Walter Reed National Military Medical Center","checked":false},{"name":"Perry Point VA","checked":false},{"name":"Southern Maryland"},{"name":"University of Maryland"}]},
-            {"state":"Massachusetts", "id":14, "chapters": [{"name":"Boston"}]},
-            {"state":"Michigan", "id":15, "chapters": [{"name":"Battle Creek"}]},
-            {"state":"Minnesota", "id":16, "chapters": [{"name":"Minneapolis"}]},
-            {"state":"Missouri", "id":17, "chapters": [{"name":"St. Louis","checked":false},{"name":"Springfield – Missouri State University","checked":false}]},
-            {"state":"Montana", "id":18, "chapters": [{"name":"Bozeman"}]},
-            {"state":"North Carolina", "id":19, "chapters": [{"name":"Asheville","checked":false},{"name":"Charlotte","checked":false},{"name":"Raleigh-Durham","checked":false},{"name":"Winston Salem, Greensboro, High Point"}]},
-            {"state":"New Hampshire", "id":20, "chapters": [{"name":"NEHSA"}]},
-            {"state":"Nevada", "id":21, "chapters": [{"name":"Reno"}]},
-            {"state":"New York", "id":22, "chapters": [{"name":"Northport VA","checked":false}, {"name":"Buffalo"}]},
-            {"state":"Ohio", "id":23, "chapters": [{"name":"Cincinnati"},{"name":"Ironton","checked":false},{"name":"North East & Central Ohio"}]},
-            {"state":"Oregon", "id":24, "chapters": [{"name":"Portland"}]},
-            {"state":"Pennsylvania", "id":25, "chapters": [{"name":"Butler","checked":false},{"name":"Lehigh Valley","checked":false},{"name":"Ohiopyle","checked":false},{"name":"Southeast PA","checked":false},{"name":"Susquehanna Valley"}]},
-            {"state":"South Carolina", "id":26, "chapters": [{"name":"Columbia","checked":false},{"name":"Charleston","checked":false},{"name":"Clemson"}]},
-            {"state":"Tennessee", "id":27, "chapters": [{"name":"Austin Peay State University","checked":false},{"name":"Chattanooga","checked":false},{"name":"Johnson City/Tricities Northern TN","checked":false},{"name":"Memphis","checked":false},{"name":"Nashville"}]},
-            {"state":"Texas", "id":28, "chapters": [{"name":"San Antonio","checked":false}, {"name":"Houston"}]},
-            {"state":"Utah", "id":29, "chapters": [{"name":"Salt Lake City"}]},
-            {"state":"Virginia", "id":30, "chapters": [{"name":"Blue Ridge","checked":false},{"name":"Fort Belvoir","checked":false},{"name":"Richmond","checked":false},{"name":"Fredericksburg"}]},
-            {"state":"Washington", "id":31, "chapters": [{"name":"Seattle","checked":false}, {"name":"Spokane"}]},
-            {"state":"West Virginia", "id":32, "chapters": [{"name":"Beckley","checked":false}, {"name":"Shepherd","checked":false}]},
-            {"state":"Wisconsin", "id":33, "chapters": [{"name":"Green Bay","checked":false}, {"name":"Milwaukee"}]},
-            {"state":"International", "id":34, "chapters": [{"name":"Italy – Camp Ederle"}]}
-        ]
 
         return (
             <div className='flex-nowrap justify-center'>
@@ -142,6 +104,20 @@ class Chapters extends Component {
 
                         <MultiDropDown 
                             list={this.props.store.chapterList}
+                            multiSelect={false}
+                            keyProperty='id'
+                            textProperty='state'
+                            expandBy='chapters'
+                            expandedTextProperty='name'
+                            expandedKeyProperty='id'
+                            expandedMultiSelect={false}
+                            defaultValue={this.state.stateFilter10}
+                            placeholder='National'
+                            onDropDownValueChange = {value => this.setState({stateFilter10: value})}
+                        />
+
+                        <MultiDropDown 
+                            list={this.props.store.chapterList}
                             keyProperty='id'
                             textProperty='state'
                             defaultValue={this.state.stateFilter2}
@@ -150,7 +126,7 @@ class Chapters extends Component {
                         />
                         
                         <MultiDropDown 
-                            list={newChapterList}
+                            list={this.props.store.chapterList}
                             multiSelect={true}
                             keyProperty='id'
                             textProperty='state'
@@ -160,11 +136,14 @@ class Chapters extends Component {
                         />
 
                         <MultiDropDown
-                            list={[{name: 'Veteran', img: <VeteranUpSVG />},{name: 'Volunteer', img: <VolunteerUpSVG />}]}
+                            list={[{name: 'Veteran', role: [{name: '111', img: <VeteranUpSVG />},{name: '222', img: <VolunteerUpSVG />}]},{name: 'Volunteer', role: [{name: '333', img: <VeteranUpSVG />},{name: '444', img: <VolunteerUpSVG />}]}]}
                             keyProperty='name'
                             textProperty='name'
                             defaultValue={this.state.stateFilter4}
                             placeholder='Role'
+                            expandBy='role'
+                            expandedTextProperty='name'
+                            expandedKeyProperty='name'
                             onDropDownValueChange = {value => this.setState({stateFilter4: value})}
                         />
 
