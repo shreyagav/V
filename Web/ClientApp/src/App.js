@@ -26,14 +26,25 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      chapterFilter: [],
+    };
   }
 
   render () {
       return (
           <BrowserRouter>
               <Switch>
-                  <Route exact path='/' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={CalendarSideBar} bodyContent={Calendar}/></div>}/>
+                  <Route exact path='/' render={(match)=><div><NavMenu />
+                    <SideBarLayout {...match} 
+                      sideBarContent={CalendarSideBar} 
+                      bodyContent={Calendar}
+                      onSideBarDropDownValueChange = {value => {this.setState({chapterFilter: value})}}
+                      onBodyDropDownValueChange = {value => this.setState({chapterFilter: value})}
+                      chapterFilter = {this.state.chapterFilter}
+                      clearChapterFilter = {() => this.setState({chapterFilter: []})}
+                    />
+                  </div>}/>
                   <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
                   <Route path='/members' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
                   <Route path='/event-edit/:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
