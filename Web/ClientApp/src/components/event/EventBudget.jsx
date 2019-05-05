@@ -4,6 +4,7 @@ import { withStore } from './../store'
 import CloseUpSVG from '../../svg/CloseUpSVG';
 import EditUpSVG from '../../svg/EditUpSVG';
 import Table from '../Table';
+import Loader from '../Loader';
 
 class EventBudget extends Component {
     static displayName = EventBudget.name;
@@ -72,9 +73,7 @@ class EventBudget extends Component {
         ];
         if (this.state.loadData) {
             return (
-                <div className='loader-wrapper'>
-                    <img src='kayak.gif' alt='loading' className="loader-img"/>
-                </div>
+                <Loader />
             );
         } 
         else {

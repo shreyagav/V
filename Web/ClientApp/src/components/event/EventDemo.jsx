@@ -3,6 +3,8 @@ import TabComponent from '../TabComponent';
 import EventAttendees from './EventAttendees';
 import EventPictures from './EventPictures';
 import { withStore } from '../store';
+import TimeUpSVG from '../../svg/TimeUpSVG';
+import DateUpSVG from '../../svg/DateUpSVG';
 
 class EventDemo extends Component {
 
@@ -77,30 +79,40 @@ class EventDemo extends Component {
         const budget = this.state.budget;
         const pictures = this.state.formattedPicturesList;
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
+            <div className='flex-nowrap flex-flow-column justify-center align-center pr-1 pl-1' >
 
                 <h1 className='mb-2'>OJT Admin - OJT Weekly Hours Rep</h1>
                 <TabComponent 
                     inheritParentHeight={false}
-                    tabList={['info', 'attendees', 'pictures']}
+                    tabList={['description', 'attendees', 'pictures']}
                     wasSelected={(index) => this.setState({activeTabIndex: index})}
                     activeTabIndex={this.state.activeTabIndex}
                     tabEqualWidth={true}
                 />
-
-                {this.state.activeTabIndex === 0 &&
-                    <ul className="table event-demo-table pt-3 pb-2">
-                        <li>Chapter</li>
-                        <li>National</li>
-                        <li>Date</li>
-                        <li>12/04/2019</li>
-                        <li>Time</li>
-                        <li>08:00 AM - 09:00 AM</li>
-                        <li>Type</li>
-                        <li>Flat or white water session</li>
-                        <li>Description</li>
-                        <li>Here goes some quite long event description. And some more words to show how long the description can actuallu be.Here goes some quite long event description. And some more words to show how long the description can actuallu be.</li>
-                    </ul>
+                {this.state.activeTabIndex === 0 && 
+                    <div className='flex-wrap flex-flow-column justify-center align-center mt-2' style={{"maxWidth":"900px"}}>
+                        <ul className='icon-text-set mt-1 mb-2'>
+                            <li>
+                                <DateUpSVG />
+                                <span>05/12/2019</span>
+                            </li>
+                            <li>
+                                <TimeUpSVG />
+                                <span>08:00 AM - 09:00 AM</span>
+                            </li>
+                            <li>
+                                <span><strong>Chapter:</strong></span>
+                                <span className='chapter'>PA - SUSQUEHANNA VALLEY</span>
+                            </li>
+                            <li>
+                                <span><strong>Type of Event:</strong></span>
+                                <span>Flat or White Water Something Event</span>
+                            </li>
+                        </ul>
+                        <span className='mb-3'>
+                            Here goes some quite long event description. And some more words to show how long the description can actually be. Here goes some quite long event description. And some more words to show how long the description can actuallu be.
+                        </span>
+                    </div>
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} editsPermitted={false}/> }
                 {this.state.activeTabIndex === 2 && <EventPictures eventId={this.state.eventId} editsPermitted={false}/> }

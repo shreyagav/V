@@ -7,6 +7,7 @@ import EditUpSVG from '../../svg/EditUpSVG';
 import Table from '../Table';
 import VolunteerUpSVG from '../../svg/VolunteerUpSVG';
 import VeteranUpSVG from '../../svg/VeteranUpSVG';
+import Loader from '../Loader';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -75,11 +76,10 @@ class EventAttendees extends Component {
         ];
         if (this.state.loadData) {
             return (
-                <div className='loader-wrapper'>
-                    <img src='kayak.gif' alt='loading' className="loader-img"/>
-                </div>
-            );
-        } else 
+                <Loader />
+            )
+        }
+        else 
         return (
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
                 <div className="flex-wrap align-center justify-center mt-2 mb-2">

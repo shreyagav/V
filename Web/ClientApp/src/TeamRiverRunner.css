@@ -912,28 +912,24 @@ button.grey-SVG-button:focus {
     .break-at-700 > li.borders-when-display-block {background-color: #f4f3f2;}
 }
 
-/* LOADER */
-
-.loader-img{
-    width: 100px;
-    height: auto;
-    margin: 3rem;
+/* icon-text-set */
+.icon-text-set {display: flex; flex-wrap: wrap; align-items: center; width: 100%;}
+.icon-text-set > li {display: flex; flex-wrap: nowrap; align-items: center;}
+.icon-text-set > li > :nth-child(n) {margin-bottom: 1em;}
+.icon-text-set > li:not(:last-child) {margin-right: 2em;}
+.icon-text-set > li > :first-child {margin-right: 1em;}
+.icon-text-set svg {height: 1.5em; width: 1.5em;}
+.icon-text-set svg > .svg {fill: #666666;}
+.icon-text-set span {
+    text-transform: uppercase;
+    line-height: 1;
+    font-weight: 500;
 }
-
-@media screen and (max-width: 500px) {
-    .loader-wrapper {
-        position: fixed;
-        top: 0px;
-        right: 0px;
-        bottom: 0px;
-        left: 0px;
-        z-index: 9999;
-        background-color: #ffffff;
-        opacity: 0.8;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.icon-text-set span.chapter {
+    border: 1px solid #dddddd;
+    background-color: #dddddd;
+    border-radius: 10px;
+    padding: 0.25rem 0.25rem 0.30rem 0.35rem;
 }
 
 /* CENTERED */
