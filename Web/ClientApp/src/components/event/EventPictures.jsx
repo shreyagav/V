@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { withStore } from './../store';
 import ImageGallery from '../ImageGallery';
+import Loader from '../Loader';
 
 class EventPictures extends Component {
     static displayName = EventPictures.name;
@@ -30,9 +31,7 @@ class EventPictures extends Component {
     render() {
         if (this.state.loadData) {
             return (
-                <div className='loader-wrapper'>
-                    <img src='kayak.gif' alt='loading' className="loader-img"/>
-                </div>
+                <Loader />
             );
         } 
         else {

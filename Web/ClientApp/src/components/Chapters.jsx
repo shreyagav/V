@@ -10,6 +10,7 @@ import Table from './Table';
 
 import VolunteerUpSVG from '../svg/VolunteerUpSVG';
 import VeteranUpSVG from '../svg/VeteranUpSVG';
+import Alert from './Alert';
 
 class Chapters extends Component {
 
@@ -157,7 +158,49 @@ class Chapters extends Component {
                         />
 
                     </div>
+                    {this.state.showAlert && 
+                        <Alert 
+                            headerText = 'Warning!'
+                            onClose = {()=>this.setState({showAlert: false})}
+                            showOkButton = {true}
+                            mode = 'warning'
+                        >
+                            <span>Here is some Alert Text YAY!</span>
+                        </Alert>
+                    }
+                    {this.state.showSuccess && 
+                        <Alert 
+                            headerText = 'Success!'
+                            onClose = {()=>this.setState({showSuccess: false})}
+                            showOkButton = {true}
+                            mode = 'success'
+                        >
+                            <span>Here is some Alert Text YAY!</span>
+                        </Alert>
+                    }
+                    {this.state.showError && 
+                        <Alert 
+                            headerText = 'Error!'
+                            onClose = {()=>this.setState({showError: false})}
+                            showOkButton = {true}
+                            mode = 'error'
+                        >
+                            <span>Here is some Alert Text YAY!</span>
+                        </Alert>
+                    }
+                    {this.state.showRegular && 
+                        <Alert 
+                            headerText = 'Regular Modal Window'
+                            onClose = {()=>this.setState({showRegular: false})}
+                        >
+                            <span>Here is some Alert Text YAY!</span>
+                        </Alert>
+                    }
                     <button onClick={()=>console.log(this.state)}>check state</button>
+                    <button onClick={()=>this.setState({showAlert: true})}>Warning</button>
+                    <button onClick={()=>this.setState({showSuccess: true})}>Success</button>
+                    <button onClick={()=>this.setState({showError: true})}>Error</button>
+                    <button onClick={()=>this.setState({showRegular: true})}>regular</button>
                     {/*<Table columns={columns} data={chapterList}/>*/}
                 </div>
             </div>
