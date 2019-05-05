@@ -24,7 +24,6 @@ namespace Services
             if (newEvent.Id == 0)
             {
                 temp = new CalendarEvent(newEvent);
-                temp.Site = _context.EventSites.First(s => s.Id == newEvent.Site);
                 temp.Created = temp.Modified = DateTime.Now;
                 temp.Status = EventStatus.Draft;
                 var added = _context.CalendarEvents.Add(temp);

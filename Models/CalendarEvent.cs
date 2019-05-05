@@ -26,6 +26,8 @@ namespace Models
             StartTime = newEvent.TimeFrom.ToInt();
             EndTime = newEvent.TimeTo.ToInt();
             Date = newEvent.Date;
+            SiteId = newEvent.Site;
+            EventTypeId = newEvent.EventType;
             return this;
         }
 
