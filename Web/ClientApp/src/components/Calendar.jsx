@@ -327,23 +327,23 @@ class Calendar extends Component {
                 </div>
                 <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
                     <button className='h1 square-button-height' 
-                    onClick={() => this.onArrowClick(false)}
-                    //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                        onClick={() => this.onArrowClick(false)}
+                        //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                     >
-                    <ArrowUpSVG svgClassName='flip0'/>
+                        <ArrowUpSVG svgClassName='flip0'/>
                     </button>
                     <button 
-                    className="h1 uppercase-text flex11auto align-self-stretch" 
-                    onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
-                    onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                        className="h1 uppercase-text flex11auto align-self-stretch no-outline-button" 
+                        onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
+                        onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                     >
-                    {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
+                        {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
                     </button>
                     <button className='h1 square-button-height'
-                    onClick={() => this.onArrowClick(true)}
-                    //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                        onClick={() => this.onArrowClick(true)}
+                        //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                     >
-                    <ArrowUpSVG svgClassName='flip180' />
+                        <ArrowUpSVG svgClassName='flip180' />
                     </button>
                 </div>
 

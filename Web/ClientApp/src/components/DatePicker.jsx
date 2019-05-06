@@ -310,7 +310,10 @@ class DatePicker extends Component {
                     />
                     {this.state.dateWasSet 
                     ?
-                    <button className='arrow-button' onClick={(e) => {this.setState({dateWasSet: false}); e.stopPropagation();}}>
+                    <button 
+                        className='arrow-button'
+                        onClick={(e) => {this.setState({dateWasSet: false}); e.stopPropagation();}}
+                    >
                         <CloseUpSVG />
                     </button>
                     :
@@ -332,7 +335,7 @@ class DatePicker extends Component {
                                 <ArrowUpSVG />
                             </button>
                             <button 
-                                className="h2 uppercase-text flex11auto align-self-stretch" 
+                                className="h2 uppercase-text flex11auto align-self-stretch no-outline-button" 
                                 onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
                                 onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                             >

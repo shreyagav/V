@@ -69,7 +69,7 @@ class EditContact extends Component {
                             {this.state.contactName !== "" ? <strong className='regular-p pb-05'>{this.state.contactName + ', '}</strong>:''}
                             <p className='regular-p pb-05'>{(this.state.contactPhone !== '' ? (this.state.contactPhone + ', ') : "") + this.state.contactEmail}</p>
                         </span>
-                        <button disabled className='drop-down-header-button' >
+                        <button disabled className='arrow-button' >
                             {this.state.contactIsOpen ? <ArrowUpSVG svgClassName='flip90'/> : <EditUpSVG />}
                         </button>
                     </div>

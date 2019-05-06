@@ -73,7 +73,7 @@ class Alert extends Component {
                             className = 'ok-button medium-static-button static-button default-button mt-1' 
                             onClick = {this.props.onClose} 
                         >
-                            ok
+                            {this.props.buttonText ? this.props.buttonText : "OK"}
                         </button>
                     }
                     {this.props.showOkCancelButtons &&
