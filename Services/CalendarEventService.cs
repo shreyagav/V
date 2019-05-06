@@ -102,6 +102,7 @@ namespace Services
         private EventView RawToView(CalendarEvent evt)
         {
             var res = new EventView();
+            res.Id = evt.Id;
             res.Am = evt.StartTime < 1200;
             res.Hours = res.Am? evt.StartTime / 100 : (evt.StartTime / 100) -12;
             if (res.Hours == 0 && !res.Am)
@@ -130,6 +131,5 @@ namespace Services
                           select new CalendarView (){ Day = ge.Key, Events = ge.Select(a=>RawToView(a)).ToArray() }).ToArray();
 
         }
-
     }
 }

@@ -47,14 +47,14 @@ class App extends Component {
                   </div>}/>
                   <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
                   <Route path='/members' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
-                  <Route path='/event/:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
+                  <Route path='/event-edit/:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/new-event' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
                   <Route path='/chapters' render={(match) => <div><NavMenu /><Chapters {...match} /></div>} />
                   <Route path='/new-member' render={(match) => <div><NavMenu /><Member {...match} /></div>} />
                   <Route path='/SignIn' component={SignIn} />
                   <Route path='/SignUp' component={SignUp} />
                   <Route path='/new-event' component={Event} />
-                  <Route path='/event-demo' component={EventDemo} />
+                  <Route path='/event-view/:id' component={EventDemo} />
                   <Route path='/new-chapter' component={Chapter} />
                   </Switch>
           </BrowserRouter>

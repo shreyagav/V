@@ -18,6 +18,8 @@ export class TimePicker extends Component {
         this.toggle = this.toggle.bind(this);
         this.dropDownHeaderRef = null;
         this.numberRef = null;
+        this.onChange = this.onChange.bind(this);
+        this.setValueFromProps = this.setValueFromProps.bind(this);
     }
 
     componentDidUpdate(){
@@ -25,18 +27,33 @@ export class TimePicker extends Component {
             this.numberRef.focus();
         }
     }
+    componentDidMount() {
+        this.setValueFromProps(this.props);
+    }
+    componentWillReceiveProps(props) {
+        this.setValueFromProps(props);
+    }
+
+    setValueFromProps(nextProps) {
+        if (nextProps.time.hours != undefined && nextProps.time.minutes != undefined && nextProps.time.am != undefined && !(nextProps.timePickerMode && nextProps.time.hours === this.state.hours && nextProps.time.minutes === this.state.minutes && nextProps.time.am === this.state.am)) {
+            this.setState({ hours: nextProps.time.hours, minutes: nextProps.time.minutes, am: nextProps.time.am, activated: true });
+        }
+        if (nextProps.number != undefined && !(!nextProps.timePickerMode && nextProps.number === this.state.number)) {
+            this.setState({ number: nextProps.number, activated: true });
+        }
+    }
 
     toggle(){this.setState({isOpen: !this.state.isOpen});}
 
     numberIncrement() {
         if (this.state.number < 99) {
-            this.setState({number: this.state.number + 1})
+            this.setState({ number: this.state.number + 1 }, this.onChange)
         } 
     }
 
     numberDecrement() {
         if (this.state.number > 0) {
-            this.setState({number: this.state.number - 1})
+            this.setState({ number: this.state.number - 1 }, this.onChange)
         } 
     }
 
@@ -46,7 +63,7 @@ export class TimePicker extends Component {
             this.setState({hours: 1})
         } 
         else {
-            this.setState({hours: hours + 1})
+            this.setState({ hours: hours + 1 }, this.onChange)
         }
     }
 
@@ -65,20 +82,42 @@ export class TimePicker extends Component {
         else {
             minutes = minutes + 5;
         }
-        this.setState({hours: hours, minutes: minutes});
+        this.setState({ hours: hours, minutes: minutes }, this.onChange);
     }
-
+    shouldComponentUpdate(nextProps, nextState) {
+        for (var key in this.state) {
+            if (this.state[key] !== nextState[key]) {
+                return true;
+            }
+        }
+        if (nextProps.timePickerMode && nextProps.time.hours === this.state.hours && nextProps.time.minutes === this.state.minutes && nextProps.time.am === this.state.am) {
+            return false;
+        }
+        if (!nextProps.timePickerMode && nextProps.number === this.state.number) {
+            return false;
+        }
+        return true;
+    }
+    onChange() {
+        if (this.props.onChange) {
+            if (this.props.timePickerMode) {
+                this.props.onChange({ hours: this.state.hours, minutes: this.state.minutes, am: this.state.am });
+            } else {
+                this.props.onChange(this.state.number);
+            }
+        }
+    }
     amPmToggler(){
-        this.setState({am: !this.state.am});
+        this.setState({am: !this.state.am}, this.onChange);
     }
 
     hoursDecrement() {
         let hours = this.state.hours;
         if (hours < 2) {
-            this.setState({hours: 12})
+            this.setState({ hours: 12 }, this.onChange)
         } 
         else {
-            this.setState({hours: hours - 1})
+            this.setState({ hours: hours - 1 }, this.onChange)
         }
     }
 
@@ -97,7 +136,7 @@ export class TimePicker extends Component {
         else {
             minutes = minutes - 5;
         }
-        this.setState({hours: hours, minutes: minutes});
+        this.setState({ hours: hours, minutes: minutes }, this.onChange);
     }
 
     performMultipleTimes(callback) {

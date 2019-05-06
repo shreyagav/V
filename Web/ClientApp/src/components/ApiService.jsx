@@ -42,4 +42,24 @@ export class Service {
             return data.json();
         });
     }
+    static changeEvent(event) {
+        var promice = fetch(host + '/api/Event/ChangeEvent', {
+            method: 'post',
+            body: JSON.stringify(event),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        promice.catch(err => console.error(err));
+        return promice.then(data => {
+            return data.json();
+        }).catch(err => console.error(err));
+    }
+    static getEvent(id) {
+        var promice = fetch(host + '/api/Event/GetEventById/'+id);
+        promice.catch(err => console.error(err));
+        return promice.then(data => {
+            return data.json();
+        }).catch(err => console.error(err));
+    }
 }
