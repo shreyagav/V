@@ -196,11 +196,25 @@ class Chapters extends Component {
                             <span>Here is some Alert Text YAY!</span>
                         </Alert>
                     }
+                    {this.state.showRegularWithBUttons && 
+                        <Alert 
+                            headerText = 'Regular Modal Window with 2 buttons'
+                            onClose = {()=>this.setState({showRegularWithBUttons: false})}
+                            showOkCancelButtons = {true}
+                            onCancelButtonClick = { () => {alert("cancel button was clicked"); this.setState({showRegularWithBUttons: false})}}
+                            onOkButtonClick = {() => {alert("ok button was clicked");this.setState({showRegularWithBUttons: false})}}
+                            cancelButtonText = "NO"
+                            okButtonText = "YES"
+                        >
+                            <span>Here is some Alert Text</span>
+                        </Alert>
+                    }
                     <button onClick={()=>console.log(this.state)}>check state</button>
                     <button onClick={()=>this.setState({showAlert: true})}>Warning</button>
                     <button onClick={()=>this.setState({showSuccess: true})}>Success</button>
                     <button onClick={()=>this.setState({showError: true})}>Error</button>
                     <button onClick={()=>this.setState({showRegular: true})}>regular</button>
+                    <button onClick={()=>this.setState({showRegularWithBUttons: true})}>regular with ok and cancel buttons</button>
                     {/*<Table columns={columns} data={chapterList}/>*/}
                 </div>
             </div>

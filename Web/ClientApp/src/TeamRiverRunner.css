@@ -372,7 +372,7 @@ button.big-blue-button {
     align-items: center;
 }
 
-.static-button:hover {
+.static-button:hover, .static-button:focus {
     border: 1px solid #0099cc;
     color: #0099cc;
 }
@@ -388,7 +388,7 @@ button.default-button {
     color: #ffffff !important;
 }
 
-button.default-button:hover {
+button.default-button:hover, button.default-button:focus {
     background-color: #0099cc !important;
     color: #ffffff !important;
 }
