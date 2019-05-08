@@ -56,7 +56,7 @@ class App extends Component {
                   <Route path='/SignUp' component={SignUp} />
                   <Route path='/new-event' component={Event} />
                   <Route path='/event-view/:id' component={EventDemo} />
-                  <Route path='/new-chapter' component={Chapter} />
+                  <Route path='/new-chapter' render={(match) => <div><NavMenu /><Chapter {...match} /></div>} />
                   <Route path='/test' component={TestPage} />
                   </Switch>
           </BrowserRouter>

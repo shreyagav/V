@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 import './TimePicker.css'
-import './DropDown.css'
+import './MultiDropDown/MultiDropDown.css'
+import CloseUpSVG from '../svg/CloseUpSVG';
 
 export class TimePicker extends Component {
 
@@ -15,16 +16,46 @@ export class TimePicker extends Component {
             number: 0,
             isOpen: false,
         };
+        this.defaultState = {
+            activated: false,
+            hours: 8,
+            minutes: 0,
+            am: true,
+            number: 0,
+            isOpen: false,
+        };
         this.toggle = this.toggle.bind(this);
         this.dropDownHeaderRef = null;
         this.numberRef = null;
+        this.lastInputTouchedRef = null;
+        this.hoursRef = null;
+        this.minutesRef = null;
+        this.amPmRef = null;
         this.onChange = this.onChange.bind(this);
         this.setValueFromProps = this.setValueFromProps.bind(this);
     }
 
     componentDidUpdate(){
         if (this.state.isOpen){
-            this.numberRef.focus();
+            if (this.numberRef !== null) {
+                this.numberRef.focus();
+            }
+            else {
+                if(this.lastInputTouchedRef !== null) {
+                    let me = this;
+                    setTimeout(() => {
+                        me.lastInputTouchedRef.focus();
+                    }, 10);
+                }
+                else {
+                    if(this.hoursRef !== null) {
+                        let me = this;
+                        setTimeout(() => {
+                            me.hoursRef.focus();
+                        }, 100);
+                    }
+                }
+            }
         }
     }
     componentDidMount() {
@@ -43,7 +74,13 @@ export class TimePicker extends Component {
         }
     }
 
-    toggle(){this.setState({isOpen: !this.state.isOpen});}
+    toggle(){
+        if(this.state.isOpen){
+            this.lastInputTouchedRef = null;
+        }
+        if(this.state.isOpen) {this.dropDownHeaderRef.focus();}
+        this.setState({isOpen: !this.state.isOpen});
+    }
 
     numberIncrement() {
         if (this.state.number < 99) {
@@ -59,6 +96,7 @@ export class TimePicker extends Component {
 
     hoursIncrement() {
         let hours = this.state.hours;
+        this.lastInputTouchedRef = this.hoursRef;
         if (hours > 11) {
             this.setState({hours: 1})
         } 
@@ -68,6 +106,7 @@ export class TimePicker extends Component {
     }
 
     minutesIncrement() {
+        this.lastInputTouchedRef = this.minutesRef;
         let hours = this.state.hours;
         let minutes = this.state.minutes;
         if (minutes > 50) {
@@ -84,6 +123,7 @@ export class TimePicker extends Component {
         }
         this.setState({ hours: hours, minutes: minutes }, this.onChange);
     }
+
     shouldComponentUpdate(nextProps, nextState) {
         for (var key in this.state) {
             if (this.state[key] !== nextState[key]) {
@@ -98,6 +138,7 @@ export class TimePicker extends Component {
         }
         return true;
     }
+
     onChange() {
         if (this.props.onChange) {
             if (this.props.timePickerMode) {
@@ -108,11 +149,13 @@ export class TimePicker extends Component {
         }
     }
     amPmToggler(){
+        this.lastInputTouchedRef = this.amPmRef;
         this.setState({am: !this.state.am}, this.onChange);
     }
 
     hoursDecrement() {
         let hours = this.state.hours;
+        this.lastInputTouchedRef = this.hoursRef;
         if (hours < 2) {
             this.setState({ hours: 12 }, this.onChange)
         } 
@@ -122,6 +165,7 @@ export class TimePicker extends Component {
     }
 
     minutesDecrement() {
+        this.lastInputTouchedRef = this.minutesRef;
         let hours = this.state.hours;
         let minutes = this.state.minutes;
         if (minutes < 5) {
@@ -157,13 +201,21 @@ export class TimePicker extends Component {
     }
 
     handleKeyDown(e, callback1, callback2) {
-        if(e.keyCode === 27 || e.keyCode === 13) { // ESC
+        if(e.keyCode === 13) { // Enter
+            if(this.state.isOpen && !this.state.activated){
+                this.setState({activated: true})
+                this.dropDownHeaderRef.focus();
+            }
+            this.toggle();
+            return;
+        }
+        if(e.keyCode === 27) { // ESC
             if(this.state.isOpen){this.dropDownHeaderRef.focus();}
             this.toggle();
             return;
         }
         if(e.keyCode === 9) { // TAB
-            if(this.state.isOpen && e.target.className === 'lastTabElement'){
+            if((this.state.isOpen && e.target.className === 'lastTabElement') || (this.state.isOpen && e.shiftKey)){
                 e.preventDefault();
                 this.dropDownHeaderRef.focus();
                 this.toggle();
@@ -208,6 +260,15 @@ export class TimePicker extends Component {
         }
     }
 
+    clearButtonKeyHandler(e){
+        if(e.keyCode === 13){
+            this.setState(this.defaultState); 
+            this.lastInputTouchedRef = null; 
+            e.stopPropagation();
+            this.dropDownHeaderRef.focus();
+        }
+    }
+
     render() { 
         return (
             <div 
@@ -215,16 +276,16 @@ export class TimePicker extends Component {
                 className={this.props.timePickerMode ? 'drop-down time-picker position-wrapper' : 'drop-down number-picker position-wrapper'}
             >
                 <div 
+                    className='input-button-wrapper'
                     ref={el => this.dropDownHeaderRef = el}
-                    tabIndex='0'
-                    className='drop-down-header' 
+                    tabIndex='0' 
                     onClick={() => this.toggle()}
                     onKeyDown={(e) => this.headerKeyDownHandler(e)}
                     style={this.state.isOpen ? {"border":"1px solid #0099cc"} : {}}
-                >   
+                >
                     <input 
                         readOnly 
-                        disabled={true} 
+                        tabIndex='-1'
                         placeholder={this.props.timePickerMode ? "08:00 AM" : "0"}
                         value=
                             {this.props.timePickerMode ?
@@ -232,12 +293,24 @@ export class TimePicker extends Component {
                                 :
                                 (this.state.activated ? this.state.number : "")
                             }
-                        
-                        style={{'paddingRight':'0px'}}
-                    ></input>
-                    <button disabled className='arrow-button' >
-                        <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
-                    </button>
+                    />
+                    {this.state.activated && !this.state.isOpen
+                    ?
+                        <button 
+                            className='arrow-button'
+                            onClick={(e) => {this.setState(this.defaultState); this.lastInputTouchedRef = null; e.stopPropagation();}}
+                            onKeyDown={(e) => this.clearButtonKeyHandler(e)}
+                        >
+                            <CloseUpSVG />
+                        </button>
+                        :
+                        <button 
+                            disabled
+                            className='arrow-button'
+                        >
+                            <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
+                        </button>
+                    }
                 </div>
                 {this.state.isOpen && this.props.timePickerMode &&
                     <div 
@@ -256,7 +329,7 @@ export class TimePicker extends Component {
                             </button>
                             <span 
                                 tabIndex='0' 
-                                ref={el => this.numberRef = el}
+                                ref={el => this.hoursRef = el}
                                 onKeyDown={(e) => this.handleKeyDown(e, this.hoursIncrement.bind(this), this.hoursDecrement.bind(this))}
                                 onKeyUp = {() => this.clearTimeoutAndInterval()}
                             >
@@ -285,6 +358,7 @@ export class TimePicker extends Component {
                             </button>
                             <span
                                 tabIndex='0' 
+                                ref={el => this.minutesRef = el}
                                 onKeyDown={(e) => this.handleKeyDown(e, this.minutesIncrement.bind(this), this.minutesDecrement.bind(this))}
                                 onKeyUp = {() => this.clearTimeoutAndInterval()}
                             >
@@ -313,6 +387,7 @@ export class TimePicker extends Component {
                             </button>
                             <span
                                 tabIndex='0' 
+                                ref={el => this.amPmRef = el}
                                 className='lastTabElement'
                                 onKeyDown={(e) => this.handleKeyDown(e, this.amPmToggler.bind(this), this.amPmToggler.bind(this))}
                                 onKeyUp = {() => this.clearTimeoutAndInterval()}

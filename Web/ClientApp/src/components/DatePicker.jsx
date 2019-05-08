@@ -294,7 +294,8 @@ class DatePicker extends Component {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         return (
             <div ref={el => this.datePickerRef = el} className='date-picker position-wrapper'>
-                <div
+                <div 
+                    className='input-button-wrapper'
                     ref={el => this.dropDownHeaderRef = el}
                     tabIndex='0' 
                     onClick={() => this.toggle()}
@@ -303,21 +304,29 @@ class DatePicker extends Component {
                 >
                     <input 
                         readOnly 
-                        disabled={true} 
+                        tabIndex='-1'
                         placeholder='mm/dd/yy' 
                         value={this.state.dateWasSet ? (("0"+(this.state.currentMonth+1)).slice(-2)+"/"+("0" + this.state.currentDate).slice(-2)+"/"+this.state.currentYear) : ""}
-                        style={{'paddingRight':'0px'}}
                     />
-                    {this.state.dateWasSet 
+                    {this.state.dateWasSet && !this.state.isOpen
                     ?
                     <button 
                         className='arrow-button'
-                        onClick={(e) => {this.setState({dateWasSet: false}); e.stopPropagation();}}
+                        onClick={(e) => {this.setState({dateWasSet: false, isOpen: false}); e.stopPropagation();}}
+                        onKeyDown={(e) => {
+                            if(e.keyCode === 13){
+                                e.stopPropagation();
+                                this.setState({dateWasSet: false, isOpen: false});
+                                this.dropDownHeaderRef.focus();
+                            }}}
                     >
                         <CloseUpSVG />
                     </button>
                     :
-                    <button disabled className='arrow-button' >
+                    <button 
+                        disabled
+                        className='arrow-button' 
+                    >
                         <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                     }

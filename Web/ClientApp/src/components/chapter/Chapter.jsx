@@ -130,7 +130,7 @@ class Chapter extends Component {
                 {this.state.activeTabIndex === 1 && 
                 <div style={{"width":"100%", "maxWidth":"600px"}}>
                     <div className="flex-wrap align-center justify-center mt-2 mb-2">
-                        <p className='input-label pr-1'>ADD MEMBERS:</p>
+                        <p className='input-label pr-1s '>ADD MEMBERS:</p>
                         <span className="flex-nowrap">
                             <button disabled className='big-static-button static-button' >
                                 Create New

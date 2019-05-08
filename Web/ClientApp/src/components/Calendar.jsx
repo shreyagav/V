@@ -59,21 +59,18 @@ class Calendar extends Component {
 
     getEventsForMonth(year,month, sites) {
         var component = this;
-        var ids = [];
+        /*var ids = [];
         component.setState({ loading: true });
         if (sites) {
             ids = sites.map(a => a.id);
-        }
-        Service.getCalendarEvents(month + 1, year, ids).then(data => component.setState({ events: data, loading: false })).catch(err => component.setState({ loading: false }));
+        }*/
+        Service.getCalendarEvents(month + 1, year, sites).then(data => component.setState({ events: data, loading: false })).catch(err => component.setState({ loading: false }));
     }
     componentWillReceiveProps(props) {
         console.log(props);
-        var ids = [];
-        props.multiDropDownStore.modifiedList.forEach(st => {
-            var tmp = st.chapters.filter(ch => ch.checked);
-            ids = ids.concat(tmp);
-        });
-        if (ids.length != this.state.selectedChapters.length) {
+        var ids = props.chapterFilter.slice(0);
+        if (this.state.selectedChapters.length != ids.length) {
+            
             this.getEventsForMonth(this.state.currentYear, this.state.currentMonth, ids);
             this.setState({ selectedChapters:ids });
         }
@@ -381,7 +378,7 @@ class Calendar extends Component {
                                                 </span>
                                                 {dayOfEvents &&
                                                     <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
-                                                        <li key={index} onClick={e => this.navigateToEventView(event.id)}>
+                                                        <li className='select-on-hover' key={index} onClick={e => this.navigateToEventView(event.id)}>
                                                             <span style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
                                                             <span style={this.props.store.narrowScreen ? { 'color': event.color, "maxHeight": "2.2em" } : { 'color': event.color }}>{event.name}</span>
                                                         </li>

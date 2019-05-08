@@ -10,6 +10,7 @@ import EventPictures from './EventPictures';
 import {SimpleDropDown} from '../SimpleDropDown/SimpleDropDown'
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { Service } from '../ApiService';
+import CloseUpSVG from '../../svg/CloseUpSVG';
 
 class Event extends Component {
 
@@ -191,9 +192,21 @@ class Event extends Component {
                 />
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
-                        <li className='input-button-wrapper'>
-                        <p>Event Title:</p>
-                        <input type='text' placeholder='' value={this.state.eventMain.name} onChange={(evt) => this.updateEventProperty("name", evt.target.value)}></input>
+                        <li>
+                            <p>Event Title:</p>
+                            <div className='input-button-wrapper'>
+                                <input 
+                                    ref={el => this.titleDropDownRef = el}
+                                    placeholder='Event Title'
+                                    value={this.state.eventMain.name}
+                                    onChange={(evt) => this.updateEventProperty("name", evt.target.value)}
+                                />
+                                {this.state.eventMain.name !== "" &&
+                                    <button onClick={() => {this.updateEventProperty("name", ""); this.titleDropDownRef.focus();}}>
+                                        <CloseUpSVG />
+                                    </button>
+                                }
+                            </div>
                         </li>
                         <li>
                             <p>Chapter:</p>
@@ -337,8 +350,20 @@ class Event extends Component {
 
                         </li>
                         <li>
-                        <p>Description:</p>
-                        <textarea placeholder='Description' value={this.state.eventMain.description} onChange={(evt) => this.updateEventProperty("description", evt.target.value)} />
+                            <p>Description:</p>
+                            <div className='input-button-wrapper'>
+                                <textarea 
+                                    ref={el => this.descriptionInputRef = el}
+                                    placeholder='Description'
+                                    value={this.state.eventMain.description}
+                                    onChange={(evt) => this.updateEventProperty("description", evt.target.value)}
+                                />
+                                {/*this.state.eventMain.description !== "" &&
+                                    <button onClick={() => {this.updateEventProperty("description", ""); this.descriptionInputRef.focus();}}>
+                                        <CloseUpSVG />
+                                    </button>
+                                */}
+                            </div>
                         </li>
                     </ul>
                 }

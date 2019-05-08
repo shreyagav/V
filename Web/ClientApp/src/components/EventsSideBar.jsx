@@ -103,12 +103,12 @@ class EventsSideBar extends Component {
                 <p>Start Time:</p>
                 <TimePicker 
                     ref={el => this.timeFromDropDownRef = el}
-                    timePickerMode={true}
+                    timePickerMode={true} time={{hours:8,minutes:0,am:true}}
                 />
                 <p>End Time:</p>
                 <TimePicker 
                     ref={el => this.timeToDropDownRef = el}
-                    timePickerMode={true}
+                    timePickerMode={true} time={{hours:8,minutes:0,am:true}}
                 />
                 <p>Type of event:</p>
                 <DropDown
