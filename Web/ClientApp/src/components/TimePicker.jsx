@@ -142,9 +142,9 @@ export class TimePicker extends Component {
     onChange() {
         if (this.props.onChange) {
             if (this.props.timePickerMode) {
-                this.props.onChange({ hours: this.state.hours, minutes: this.state.minutes, am: this.state.am });
+                this.props.onChange({ hours: this.state.hours, minutes: this.state.minutes, am: this.state.am, activated: this.state.activated });
             } else {
-                this.props.onChange(this.state.number);
+                this.props.onChange({number: this.state.number, activated: this.state.activated});
             }
         }
     }
@@ -262,7 +262,7 @@ export class TimePicker extends Component {
 
     clearButtonKeyHandler(e){
         if(e.keyCode === 13){
-            this.setState(this.defaultState); 
+            this.setState(this.defaultState, this.onChange); 
             this.lastInputTouchedRef = null; 
             e.stopPropagation();
             this.dropDownHeaderRef.focus();
@@ -298,7 +298,7 @@ export class TimePicker extends Component {
                     ?
                         <button 
                             className='arrow-button'
-                            onClick={(e) => {this.setState(this.defaultState); this.lastInputTouchedRef = null; e.stopPropagation();}}
+                            onClick={(e) => {this.setState(this.defaultState, this.onChange); this.lastInputTouchedRef = null; e.stopPropagation();}}
                             onKeyDown={(e) => this.clearButtonKeyHandler(e)}
                         >
                             <CloseUpSVG />

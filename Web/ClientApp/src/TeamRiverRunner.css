@@ -179,7 +179,7 @@ textarea {
     color: #666666;
 }
 
-textarea:focus, textarea:hover {border-color: #0099cc;}
+input:hover, input:focus, textarea:focus, textarea:hover {border-color: #0099cc !important;}
 /*
 input[type=checkbox], input[type=radio] {
     width: 1.5rem;
@@ -1043,4 +1043,56 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
 }
+
+/* MARK OPTIONAL */
+
+.mark-optional {position: relative;}
+
+.mark-optional::after {
+    position: absolute;
+    top: 1.5em;
+    right: 0em;
+    content: 'optional';
+    color: #999999;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+@media screen and (max-width: 560px){ 
+    .mark-optional::after {top: 0em;}
+}
+
+/* MARK INVALID or EMPTY */
+
+li.mark-invalid {
+    position: relative;
+    margin-bottom: 0.75em;
+}
+
+li.mark-invalid::after {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    content: attr(error-text);
+    color: #E53E71;
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.input-fields-child-ul > li.mark-invalid::after {
+    bottom: -1.25em;
+}
+
+@media screen and (max-width: 560px){ 
+    li.mark-invalid {margin-bottom: 0.5em;}
+    li.mark-invalid::after {bottom: -1.25em;}
+}
+
+li.mark-invalid > div > input,
+li.mark-invalid div.drop-down-header,
+li.mark-invalid > div.time-picker > div.input-button-wrapper {
+    border-color: #E53E71 !important;
+}
+
 
