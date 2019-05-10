@@ -15,8 +15,8 @@ class EventsSideBar extends Component {
         super(props);
         this.state = {
             title: '',
-            dateStart: '',
-            dateEnd: '',
+            dateFrom: null,
+            dateTo: null,
             timeFrom: '',
             timeTo: '',
             typeOfEvent: '',
@@ -34,8 +34,19 @@ class EventsSideBar extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
+    componentWillMount(){
+        document.addEventListener("mousedown", this.handleClick, false);
+        this.setFilters();
+    }
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
+
+    setFilters() {
+        let filters = [];
+        filters.push({name: "title", value: ''});
+        filters.push({name: "dateFrom", value: null});
+        filters.push({name: "dateTo", value: null});
+        this.props.updateFilters(filters);
+    }
 
     handleClick(e) {
         if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
@@ -61,19 +72,11 @@ class EventsSideBar extends Component {
         }
     }
 
-    onTitleChange(value) {
-        this.setState({title: value});
-    }
-
-    keyDownOnTitleInputHandler(e){
-        if(e.keyCode === 13) {
-            // ENTER WAS PRESSED
-            this.searchByTitle();
-        }
-    }
-
-    searchByTitle() {
-        alert(this.state.title);
+    updateTitle(){
+        let filters = this.props.filters;
+        let element = filters.find(element => element.name === "title"); 
+        element.value = this.state.title;
+        this.props.updateFilters(filters);
     }
 
     render() {
@@ -85,21 +88,44 @@ class EventsSideBar extends Component {
                     <input 
                         placeholder='Event Title'
                         value={this.state.title}
-                        onChange={(e) => this.onTitleChange(e.target.value)}
-                        onKeyDown={(e) => this.keyDownOnTitleInputHandler(e)}
+                        onChange={(e) => this.setState({title: e.target.value})}
+                        onKeyDown={(e) => {
+                            if(e.keyCode === 13) {this.updateTitle()}
+                        }}
                     />
-                    <button onClick={() => this.searchByTitle()}>
+                    <button onClick={() => this.updateTitle()}>
                         <SearchUpSVG />
                     </button>
                 </div>
+
                 <p>From:</p>
-                <DatePicker
+                <DatePicker 
+                    value={this.state.dateFrom}
+                    maxDate={this.state.dateTo}
                     ref={el => this.dateStartDropDownRef = el}
+                    onSelect={value => {
+                        this.setState({dateFrom: value});
+                        let filters = this.props.filters;
+                        let element = filters.find(element => element.name === "dateFrom"); 
+                        element.value = value;
+                        this.props.updateFilters(filters);
+                    }}
                 />
+
                 <p>To:</p>
-                <DatePicker
+                <DatePicker 
+                    value={this.state.dateTo}
+                    minDate={this.state.dateFrom}
                     ref={el => this.dateEndDropDownRef = el}
+                    onSelect={value => {
+                        this.setState({dateTo: value});
+                        let filters = this.props.filters;
+                        let element = filters.find(element => element.name === "dateTo"); 
+                        element.value = value;
+                        this.props.updateFilters(filters);
+                    }}
                 />
+
                 <p>Start Time:</p>
                 <TimePicker 
                     ref={el => this.timeFromDropDownRef = el}

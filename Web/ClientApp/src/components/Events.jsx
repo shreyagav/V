@@ -13,6 +13,9 @@ class NewEvents extends Component {
         super(props);
         this.state = {
             events: [],
+            filters: {
+                dateFrom: '',
+            }
         };
         this.chaptersDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);

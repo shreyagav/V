@@ -308,7 +308,8 @@ class Event extends Component {
                             error-text='Please enter the date'
                         >
                         <p>Start Date:</p>
-                        <DatePicker value={this.state.eventMain.date}
+                        <DatePicker 
+                            value={this.state.eventMain.date}
                             ref={el => this.dateStartDropDownRef = el}
                             onSelect={value => {
                                 this.emptyStartDate = false;
