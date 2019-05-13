@@ -9,5 +9,8 @@ namespace Services.Interfaces
     {
         EventMainDto ChangeEvent(EventMainDto data);
         EventMainDto GetEvent(int id);
+        EventAttendeeDto[] GetEventAttendees(int eventId);
+        EventAttendeeDto[] RemoveEventAttendees(int eventId, EventAttendeeDto attendee);
+        EventAttendeeDto[] GetSiteMembers(int eventId);
     }
 }

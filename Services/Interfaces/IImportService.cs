@@ -5,8 +5,17 @@ using System.Text;
 
 namespace Services.Interfaces
 {
-    interface IImportService
+    public interface IImportService
     {
         string[] ImportUserEvents(IEnumerable<ImportUserEvent> list);
+        void ImportOptionCategories(OptionCategory[] options);
+        OptionCategory[] GetAllCategories();
+        void ImportOptions(Option[] opts);
+        void ImportUserOptions(UserOption[] uopts);
+        Option[] GetAllOptions();
+        Diagnosis[] GetAllDiagnoses();
+        TRRUser[] GetAllUsers();
+        void ImportSystemCodes(SystemCode[] codes);
+        void ImportUserDiagnoses(UserDiagnosis[] diag);
     }
 }

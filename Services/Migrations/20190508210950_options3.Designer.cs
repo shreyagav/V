@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.Data;
 
 namespace Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190508210950_options3")]
+    partial class options3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,21 +242,6 @@ namespace Services.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("Models.Diagnosis", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description");
-
-                    b.Property<int>("OldId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Diagnoses");
-                });
-
             modelBuilder.Entity("Models.EventSite", b =>
                 {
                     b.Property<int>("Id")
@@ -345,25 +332,6 @@ namespace Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OptionCategories");
-                });
-
-            modelBuilder.Entity("Models.SystemCode", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CodeType")
-                        .HasMaxLength(2);
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("OldId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SystemCodes");
                 });
 
             modelBuilder.Entity("Models.TRRUser", b =>
@@ -472,21 +440,6 @@ namespace Services.Migrations
                     b.HasIndex("SiteId");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Models.UserDiagnosis", b =>
-                {
-                    b.Property<int>("DiagnosisId");
-
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("Note");
-
-                    b.HasKey("DiagnosisId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserDiagnoses");
                 });
 
             modelBuilder.Entity("Models.UserEvent", b =>
@@ -633,19 +586,6 @@ namespace Services.Migrations
                     b.HasOne("Models.EventSite", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId");
-                });
-
-            modelBuilder.Entity("Models.UserDiagnosis", b =>
-                {
-                    b.HasOne("Models.Diagnosis", "Diagnosis")
-                        .WithMany("Users")
-                        .HasForeignKey("DiagnosisId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Models.TRRUser", "User")
-                        .WithMany("Diagnoses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Models.UserEvent", b =>

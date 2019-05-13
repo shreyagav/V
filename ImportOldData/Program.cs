@@ -29,6 +29,7 @@ namespace ImportOldData
             //services.AddTransient<IUserClaimsPrincipalFactory<TRRUser>, TRRClaimsPrincipalFactory<TRRUser>>();
             services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
             services.AddTransient<ICalendarEventService, CalendarEventService>();
+            services.AddTransient<IImportService, ImportService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                             options.UseSqlServer(
                                 "Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
@@ -37,6 +38,7 @@ namespace ImportOldData
             services.AddScoped<IUserService, UserService>();
             var serviceProvider = services.BuildServiceProvider();
             var userService = serviceProvider.GetService<IUserService>();
+            var importService = serviceProvider.GetService<IImportService>();
             ICalendarEventService service = serviceProvider.GetService<ICalendarEventService>();
 
             /*DbContextOptionsBuilder<ApplicationDbContext> optBulder = new DbContextOptionsBuilder<ApplicationDbContext>();
@@ -57,8 +59,205 @@ namespace ImportOldData
             //nodes = doc.SelectNodes("//table[@name='user']");
             //ImportUsers(nodes, userService);
             //ImportExceptionalEvents(doc,service);
-            var nodes = doc.SelectNodes("//table[@name='user_event']");
-            ImportUserEvents(nodes, service);
+            //var nodes = doc.SelectNodes("//table[@name='user_event']");
+            //ImportUserEvents(nodes, service);
+            //var nodes = doc.SelectNodes("//table[@name='option_category']");
+            //ImportOptionCategories(nodes, importService);
+            //nodes = doc.SelectNodes("//table[@name='options']");
+            //ImportOptions(nodes, importService);
+            //var nodes = doc.SelectNodes("//table[@name='user_options']");
+            //ImportUserOptions(nodes, importService);
+            //var nodes = doc.SelectNodes("//table[@name='syscode']");
+            //ImportSystemCodes(nodes, importService);
+            var nodes = doc.SelectNodes("//table[@name='diagnosis']");
+            ImportUserDiagnosis(nodes, importService);
+        }
+
+        private static void ImportUserDiagnosis(XmlNodeList nodes, IImportService service)
+        {
+            List<UserDiagnosis> list = new List<UserDiagnosis>();
+            var all = service.GetAllDiagnoses();
+            var users = service.GetAllUsers();
+            foreach (XmlNode ue in nodes)
+            {
+                var cat = new UserDiagnosis();
+                TRRUser user = null;
+                Diagnosis diag = null;
+                foreach (XmlNode node in ue.ChildNodes)
+                {
+                    var name = node.Attributes["name"].Value;
+                    switch (name)
+                    {
+                        case "diagnosis_syscode":
+                            diag = all.FirstOrDefault(d => d.OldId == int.Parse(node.InnerText));
+                            break;
+                        case "user_id":
+                            user = users.FirstOrDefault(u => u.OldId == int.Parse(node.InnerText));
+                            break;
+                        case "diagnosis_note":
+                            cat.Note = node.InnerText;
+                            break;
+                    }
+                }
+                if(user!=null && diag != null)
+                {
+                    var exists = list.FirstOrDefault(u => u.DiagnosisId == diag.Id && u.UserId == user.Id) != null;
+                    if (!exists)
+                    {
+                        cat.User = user;
+                        cat.UserId = user.Id;
+                        cat.Diagnosis = diag;
+                        cat.DiagnosisId = diag.Id;
+                        list.Add(cat);
+                    }
+                }
+            }
+            service.ImportUserDiagnoses(list.ToArray());
+        }
+
+        private static void ImportSystemCodes(XmlNodeList nodes, IImportService service)
+        {
+
+            List<SystemCode> list = new List<SystemCode>();
+            foreach (XmlNode ue in nodes)
+            {
+                var cat = new SystemCode();
+                foreach (XmlNode node in ue.ChildNodes)
+                {
+                    var name = node.Attributes["name"].Value;
+                    switch (name)
+                    {
+                        case "code_id":
+                            cat.OldId = int.Parse(node.InnerText);
+                            break;
+                        case "code_desc":
+                            cat.Description = node.InnerText;
+                            break;
+                        case "code_type":
+                            cat.CodeType = node.InnerText;
+                            break;
+                    }
+                }
+                list.Add(cat);
+            }
+            service.ImportSystemCodes(list.ToArray());
+        }
+
+        private static void ImportUserOptions(XmlNodeList nodes, IImportService service) {
+
+            Option[] all = service.GetAllOptions();
+            TRRUser[] allUsers = service.GetAllUsers();
+            List<UserOption> wholeList = new List<UserOption>();
+            List<UserOption> list = new List<UserOption>();
+            foreach (XmlNode ue in nodes)
+            {
+                var uOpt = new UserOption();
+                foreach (XmlNode node in ue.ChildNodes)
+                {
+                    var name = node.Attributes["name"].Value;
+                    switch (name)
+                    {
+                        case "user_id":
+                            var usr = allUsers.FirstOrDefault(a => a.OldId == int.Parse(node.InnerText));
+                            if (usr != null)
+                            {
+                                uOpt.UserId = usr.Id;
+                                uOpt.User = usr;
+                            }
+                            else {
+                                continue;
+                            }
+                            break;
+                        case "option_id":
+                            var opt = all.FirstOrDefault(a => a.OldId == int.Parse(node.InnerText));
+                            if (opt != null)
+                            {
+                                uOpt.OptionId = opt.Id;
+                                uOpt.Option = opt;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                            break;
+                        case "user_option_desc":
+                            uOpt.Description = node.InnerText;
+                            break;
+                    }
+                }
+                var exists = wholeList.FirstOrDefault(a => a.UserId == uOpt.UserId && a.OptionId == uOpt.OptionId);
+                if (exists == null && uOpt.Option!=null && uOpt.User != null)
+                {
+                    list.Add(uOpt);
+                    wholeList.Add(uOpt);
+                }
+                else
+                    Console.WriteLine($"{uOpt.UserId}::{uOpt.OptionId}");
+                if(list.Count == 1000)
+                {
+                    service.ImportUserOptions(list.ToArray());
+                    list = new List<UserOption>();
+                }
+            }
+            service.ImportUserOptions(list.ToArray());
+        }
+
+        private static void ImportOptionCategories(XmlNodeList nodes, IImportService service)
+        {
+
+            List<OptionCategory> list = new List<OptionCategory>();
+            foreach (XmlNode ue in nodes)
+            {
+                var cat = new OptionCategory();
+                foreach (XmlNode node in ue.ChildNodes)
+                {
+                    var name = node.Attributes["name"].Value;
+                    switch (name)
+                    {
+                        case "category_id":
+                            cat.OldId = int.Parse(node.InnerText);
+                            break;
+                        case "category_name":
+                            cat.Name = node.InnerText;
+                            break;
+                    }
+                }
+                list.Add(cat);
+            }
+            service.ImportOptionCategories(list.ToArray());
+        }
+
+        private static void ImportOptions(XmlNodeList nodes, IImportService service)
+        {
+            OptionCategory[] cats = service.GetAllCategories();
+            List<Option> list = new List<Option>();
+            foreach (XmlNode ue in nodes)
+            {
+                var opt = new Option();
+                foreach (XmlNode node in ue.ChildNodes)
+                {
+                    var name = node.Attributes["name"].Value;
+                    switch (name)
+                    {
+                        case "option_id":
+                            opt.OldId = int.Parse(node.InnerText);
+                            break;
+                        case "category_id":
+                            var cat = cats.First(a => a.OldId == int.Parse(node.InnerText));
+                            opt.OptionCategoryId = cat.Id;
+                            opt.Category = cat;
+                            break;
+                        case "option_title":
+                            opt.Title = node.InnerText;
+                            break;
+                        case "option_desc":
+                            opt.Description = node.InnerText;
+                            break;
+                    }
+                }
+                list.Add(opt);
+            }
+            service.ImportOptions(list.ToArray());
         }
 
         private static void ImportUserEvents(XmlNodeList nodes, ICalendarEventService service)

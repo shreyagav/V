@@ -8,6 +8,9 @@ import Table from '../Table';
 import VolunteerUpSVG from '../../svg/VolunteerUpSVG';
 import VeteranUpSVG from '../../svg/VeteranUpSVG';
 import Loader from '../Loader';
+import { Service } from '../ApiService';
+import Alert from '../Alert';
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -16,26 +19,36 @@ class EventAttendees extends Component {
         super(props);
         this.state = {
             eventId: props.eventId,
-            members: [],
-            loadData: false
+            members: props.attendees,
+            loading: false,
+            addingExistingMembers: false,
+            tempMembers:[],
+            siteMembers: []
         };
+        this.membersDropDownRef = null;
         this.removeMember = this.removeMember.bind(this);
+        this.renderFullNameColumn = this.renderFullNameColumn.bind(this);
+        this.addNewMember = this.addNewMember.bind(this);
+        this.addExistingMember = this.addExistingMember.bind(this);
+        
     }
-    componentDidMount() {
-        var component = this;
-        this.setState({ loadData: true });
-        fetch('/Members.json')
-            .then(function (data) { return data.json(); })
-            .then(function (jjson) {
-                component.setState({ members: jjson});
-            })
-            .then(function () {
-                setTimeout(() => component.setState({loadData: false}), 1500)
-            });
-    }
+    addNewMember() {
 
-    removeMember() {
-        alert("remove this member");
+    }
+    addExistingMember() {
+        this.setState({ loading: true });
+        Service.getSiteMembers(this.state.eventId)
+            .then(data => { this.setState({ siteMembers: data, loading: false, addingExistingMembers: true }) });
+    }
+    removeMember(member) {
+        var me = this;
+        this.setState({ loading: true })
+        Service.removeEventAttendee(this.state.eventId, member)
+            .then(data => {
+                setTimeout(() => {
+                    me.setState({ members: data, loading: false });
+                }, 1000);
+            });
     }
 
     editMember() {
@@ -46,13 +59,13 @@ class EventAttendees extends Component {
         return (
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
                 <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
-                    {row['role'] === 'VET' ? <VeteranUpSVG /> : <VolunteerUpSVG />}
+                    {row['memberTypeId'] === '1' ? <VeteranUpSVG /> : <VolunteerUpSVG />}
                 </span>
                 <span style={{"flex":"1 1 auto"}} className="big-bold">{row['firstName'] + ' ' + row['lastName']}</span>
                 <button 
                     className='round-button small-round-button light-grey-outline-button' 
                     style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                    onClick={() => this.removeMember()}
+                    onClick={() => this.removeMember(row)}
                 >
                     <CloseUpSVG />
                 </button>
@@ -74,19 +87,31 @@ class EventAttendees extends Component {
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", className:'word-break'}
         ];
-        if (this.state.loadData) {
-            return (
-                <Loader />
-            )
-        }
-        else 
+
         return (
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
+                {this.state.loading && <Loader />}
+                {this.state.addingExistingMembers && <Alert
+                    headerText='Add existing members'
+                    onClose={() => this.setState({ addingExistingMembers: false })}
+                >
+                    <MultiDropDown
+                        ref={el => this.membersDropDownRef = el}
+                        list={this.state.siteMembers}
+                        multiSelect={true}
+                        toggleable={false}
+                        keyProperty='id'
+                        textProperty='email'
+                        defaultValue={this.state.tempMembers}
+                        placeholder="Select members"
+                        onDropDownValueChange={value => this.setState({ tempMembers: value })}
+                    />
+                </Alert>}
                 <div className="flex-wrap align-center justify-center mt-2 mb-2">
                     <p className='input-label'>ADD ATTENDEES:</p>
                     <span>
-                        <button disabled className='big-static-button static-button' >Create New</button>
-                        <button disabled className='big-static-button static-button' >Add Member</button>
+                        <button disabled className='big-static-button static-button' onClick={this.addNewMember}>Create New</button>
+                        <button className='big-static-button static-button' onClick={this.addExistingMember}>Add Member</button>
                     </span>
                 </div>
                 <Table columns={columns} data={members} />

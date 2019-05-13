@@ -10,6 +10,7 @@ import EventPictures from './EventPictures';
 import {SimpleDropDown} from '../SimpleDropDown/SimpleDropDown'
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { Service } from '../ApiService';
+import Loader from '../Loader';
 
 class Event extends Component {
 
@@ -25,6 +26,7 @@ class Event extends Component {
             members: [],
             budget: [],
             pictures: [],
+            loading: evtId!=0,
             eventMain: {
                 name: "",
                 description: "",
@@ -48,7 +50,6 @@ class Event extends Component {
         this.chaptersDropDownRef = null;
         this.typeOfEventDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
-        this.onTestChange = this.onTestChange.bind(this);
         this.nextStep = this.nextStep.bind(this);
         this.updateEventProperty = this.updateEventProperty.bind(this);
     }
@@ -57,11 +58,12 @@ class Event extends Component {
             var me = this;
             var event = Object.assign({}, this.state.eventMain);
             event.id = this.state.eventId;
-            console.log('goto step 2', event);
+            this.setState({ loading: true });
             Service.changeEvent(event).then((data) => {
-
-                console.log('goto step 2', data);
-                setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, eventId: data.id }); }, 500);
+                Service.getEventAttendees(data.id)
+                    .then(attendees => {
+                        setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, members: attendees, eventId: data.id, loading: false }); }, 500);
+                    })
             });
             
         } else {
@@ -71,11 +73,7 @@ class Event extends Component {
     }
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
-    onTestChange(newVal){
-        var tmp = this.state.eventMain;
-        tmp.test = newVal;
-        this.setState({eventMain:tmp});
-    }
+
     componentDidMount() {
         if (this.props.location && this.props.location.state && this.props.location.state.date) {
             var temp = this.state.eventMain;
@@ -84,7 +82,6 @@ class Event extends Component {
         }
         var component = this;
         if (this.state.eventId != 0) {
-            this.setState({ loading: true });
             Service.getEvent(this.state.eventId)
                 .then(data => {
                     data.date = new Date(data.date);
@@ -181,6 +178,7 @@ class Event extends Component {
         const pictures = this.state.formattedPicturesList;
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
+                {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
                 <TabComponent 
                     inheritParentHeight={false}
@@ -342,7 +340,7 @@ class Event extends Component {
                         </li>
                     </ul>
                 }
-                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} /> }
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} />}
                 {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} /> }
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap mt-2'>
