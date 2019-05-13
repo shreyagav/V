@@ -81,8 +81,6 @@ class Event extends Component {
         this.emptyType = false;
         this.emptyColor = false;
     }
-
-    }
     nextStep() {
         if (this.state.activeTabIndex == 0) {
             var me = this;
@@ -114,6 +112,8 @@ class Event extends Component {
             Service.getEvent(this.state.eventId)
                 .then(data => {
                     data.date = new Date(data.date);
+                    data.timeFrom["activated"] = true;
+                    data.timeTo["activated"] = true;
                     component.setState({ eventMain: data, loading: false });
                 })
                 .catch(exception => component.setState({ error: exception, loading: false }));
