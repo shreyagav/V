@@ -16,6 +16,7 @@ class SideBarLayout extends Component {
         this.state = {
             flag: false,
             setFocusTo: -1,
+            filters: [],
         };
         this.setFocusToRef = null;
         this.sideBarRef = null;
@@ -45,6 +46,11 @@ class SideBarLayout extends Component {
   componentWillUnmount() {
       window.removeEventListener("touchstart", this.startTouch, false);
       window.removeEventListener("touchmove", this.moveTouch, false);
+  }
+
+  updateFilters(filters){
+    this.setState({filters: filters}, console.log(this.state.filters));
+    alert("time to refresh the Table");
   }
 
   startTouch(e) {
@@ -118,7 +124,7 @@ class SideBarLayout extends Component {
               ref={el => this.sideBarRef = el} 
               style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}} 
             >
-              <SideBarContent {...this.props} />
+              <SideBarContent {...this.props} updateFilters={filters => this.updateFilters(filters)} filters={this.state.filters} />
             </div>
             <div 
               className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}
@@ -130,7 +136,7 @@ class SideBarLayout extends Component {
               style={mainLevelStyle} 
               className='flex-nowrap flex-flow-column align-center cw-100'
             >
-              <BodyContent {...this.props}/>
+              <BodyContent {...this.props} filters={this.state.filters}/>
             </div>
           </div>
         );

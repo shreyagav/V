@@ -20,6 +20,7 @@ import Chapters from './components/Chapters';
 import Members from './components/Members';
 import Member from './components/member/Member';
 import MembersSideBar from './components/MembersSideBar'
+import TestPage from './components/TestPage';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -55,11 +56,10 @@ class App extends Component {
                   <Route path='/SignUp' component={SignUp} />
                   <Route path='/new-event' component={Event} />
                   <Route path='/event-view/:id' component={EventDemo} />
-                  <Route path='/new-chapter' component={Chapter} />
+                  <Route path='/new-chapter' render={(match) => <div><NavMenu /><Chapter {...match} /></div>} />
+                  <Route path='/test' component={TestPage} />
                   </Switch>
           </BrowserRouter>
-         
-
       );
   }
 }

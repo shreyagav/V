@@ -7,12 +7,22 @@
     max-width: 80px;
 }
 
+.time-picker > div:first-child {
+    border: 1px solid #666666;
+}
+
+.time-picker input {
+    border: 0px solid;
+    background-color: inherit;
+}
+
 .time-number-picker-drop-down {
     display: flex;
     align-content: center;
     align-items: center;
     justify-content: center;
     margin: 0px;
+    box-sizing: border-box;
     border: 1px solid #0099cc;
     box-shadow:  0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19);
 }

@@ -18,6 +18,9 @@ a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
 button {background: #ffffff;}
+input::-ms-clear {
+    display: none;
+}
 
 
 header {
@@ -170,10 +173,13 @@ textarea {
     width: 100%;
     border: 1px solid #666666;
     background: white;
-    padding: 0.5rem 1rem;
+    padding: 0.5em 0.7em;
+    padding-right: 2.5em;
     font-weight: 500;
     color: #666666;
 }
+
+input:hover, input:focus, textarea:focus, textarea:hover {border-color: #0099cc !important;}
 /*
 input[type=checkbox], input[type=radio] {
     width: 1.5rem;
@@ -189,8 +195,8 @@ input,
     height: 2.5em;
     border: 1px solid #666666;
     background: white;
-    padding: 0.5em;
-    font-weight: 600;
+    padding: 0.5em 0.7em;
+    font-weight: 500;
     position: relative;
 }
 
@@ -372,7 +378,7 @@ button.big-blue-button {
     align-items: center;
 }
 
-.static-button:hover {
+.static-button:hover, .static-button:focus {
     border: 1px solid #0099cc;
     color: #0099cc;
 }
@@ -388,13 +394,13 @@ button.default-button {
     color: #ffffff !important;
 }
 
-button.default-button:hover {
+button.default-button:hover, button.default-button:focus {
     background-color: #0099cc !important;
     color: #ffffff !important;
 }
 
 .no-outline-button, .no-outline-button:hover, .no-outline-button:focus, .no-outline-button::after {border: 0px solid !important;}
-.no-outline-button:hover, .no-outline-button:focus {color: #0099cc !important;}
+.no-outline-button:not(:disabled):hover, .no-outline-button:focus {color: #0099cc !important;}
 
 div.round-icon, div.round-button {margin-right: 0.5rem;}
 .round-button,
@@ -486,6 +492,7 @@ ul.main-nav .svg,
 .main-nav-wrapper a:focus .svg,
 .light-grey-outline-button:hover .svg,
 .light-grey-outline-button:focus .svg,
+ul.main-nav a:hover .svg, ul.main-nav a:focus .svg, 
 .grey-outline-button:hover .svg,
 .grey-outline-button:focus .svg {
     fill: #0099cc;
@@ -738,7 +745,7 @@ button.grey-SVG-button:focus {
 /* ARROW BUTTON */
 
 .arrow-button {
-    border: 0px solid;
+    border: 0px solid transparent;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -752,9 +759,9 @@ button.grey-SVG-button:focus {
     padding: 0.65em;
 }
 
-.arrow-button > svg > .svg {fill: #666666 !important;}
-.arrow-button:hover > svg > .svg, .arrow-button:focus > svg > .svg {fill: #0099cc;}
-.arrow-button:hover, .arrow-button:focus {outline: none; border: 0px solid;}
+.arrow-button .svg {fill: #666666 !important;}
+.arrow-button:hover .svg, .arrow-button:focus .svg {fill: #0099cc !important;}
+.arrow-button:hover, .arrow-button:focus {outline: none !important; border: 0px solid;}
 
 /* NEW BUTTON */
 
@@ -799,7 +806,7 @@ button.grey-SVG-button:focus {
 }
 
 .square-button-height .svg {fill: #666666;}
-.square-button-height:hover .svg {fill: #0099cc;}
+.square-button-height:hover .svg, .square-button-height:focus .svg {fill: #0099cc;}
 
 /* INPUT-BUTTON-WRAPPER */
 
@@ -814,11 +821,16 @@ button.grey-SVG-button:focus {
     flex: 0 0 100%;
     padding: 0.65em;
 }
+.input-button-wrapper > input {cursor: pointer;}
 .input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
 .input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
 .input-button-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
-.input-button-wrapper > input:focus {border-color: #0099cc;}
-
+.input-button-wrapper > input:focus,
+.input-button-wrapper:focus > input {border-color: #0099cc;}
+.input-button-wrapper:hover, .input-button-wrapper:focus {border-color: #0099cc !important;}
+.input-button-wrapper:focus > button:disabled > svg > .svg,
+.input-button-wrapper:hover > button:disabled > svg > .svg{fill: #0099cc !important;}
+.input-button-wrapper:hover > button:disabled {cursor: pointer !important;}
 .input-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666;}
 
 /* FILTERS */
@@ -1013,6 +1025,15 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     -webkit-transform: rotate(270deg);
 }
 
+.select-on-hover:hover > span:last-child {
+    /*text-decoration: underline;*/
+    color: #999999 !important;
+}
+
+.select-on-hover:hover > span:first-child {
+    background-color: #999999 !important;
+}
+
 .nonselect {
     /* unselectable text */
     -webkit-touch-callout: none; /* iOS Safari */
@@ -1022,3 +1043,56 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
 }
+
+/* MARK OPTIONAL */
+
+.mark-optional {position: relative;}
+
+.mark-optional::after {
+    position: absolute;
+    top: 1.5em;
+    right: 0em;
+    content: 'optional';
+    color: #999999;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+@media screen and (max-width: 560px){ 
+    .mark-optional::after {top: 0em;}
+}
+
+/* MARK INVALID or EMPTY */
+
+li.mark-invalid {
+    position: relative;
+    margin-bottom: 0.75em;
+}
+
+li.mark-invalid::after {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    content: attr(error-text);
+    color: #E53E71;
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.input-fields-child-ul > li.mark-invalid::after {
+    bottom: -1.25em;
+}
+
+@media screen and (max-width: 560px){ 
+    li.mark-invalid {margin-bottom: 0.5em;}
+    li.mark-invalid::after {bottom: -1.25em;}
+}
+
+li.mark-invalid > div > input,
+li.mark-invalid div.drop-down-header,
+li.mark-invalid > div.time-picker > div.input-button-wrapper {
+    border-color: #E53E71 !important;
+}
+
+

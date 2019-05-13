@@ -10,6 +10,8 @@ import EventPictures from './EventPictures';
 import {SimpleDropDown} from '../SimpleDropDown/SimpleDropDown'
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { Service } from '../ApiService';
+import CloseUpSVG from '../../svg/CloseUpSVG';
+import Alert from '../Alert';
 import Loader from '../Loader';
 
 class Event extends Component {
@@ -32,13 +34,31 @@ class Event extends Component {
                 description: "",
                 eventType: 0,
                 site: 0,
-                timeFrom: {},
-                timeTo: {},
+                timeFrom: {
+                    activated: false,
+                    hours: 8,
+                    minutes: 0,
+                    am: true,
+                },
+                timeTo: {
+                    activated: false,
+                    hours: 8,
+                    minutes: 0,
+                    am: true,
+                },
                 type:null,
+                color: "#666666",
                 groupId: 0,
-                date: new Date()
+                date: new Date(),
             },
-            eventId: evtId
+            eventId: evtId,
+            showError: false,
+        };
+        this.defaultTimeValue = {
+            activated: false,
+            hours: 8,
+            minutes: 0,
+            am: true,
         };
         this.colorDropDownRef = null;
         this.dayDropDownRef = null;
@@ -52,6 +72,16 @@ class Event extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.nextStep = this.nextStep.bind(this);
         this.updateEventProperty = this.updateEventProperty.bind(this);
+
+        this.emptyTitle = false;
+        this.emptyChapter = false;
+        this.emptyStartDate = false;
+        this.emptyTimeFrom = false;
+        this.emptyTimeTo = false;
+        this.emptyType = false;
+        this.emptyColor = false;
+    }
+
     }
     nextStep() {
         if (this.state.activeTabIndex == 0) {
@@ -73,7 +103,6 @@ class Event extends Component {
     }
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
-
     componentDidMount() {
         if (this.props.location && this.props.location.state && this.props.location.state.date) {
             var temp = this.state.eventMain;
@@ -94,6 +123,63 @@ class Event extends Component {
         .then(function(jjson){
           component.setState({pictures: jjson})
         });
+    }
+
+    validation() {
+        let validationPassed = true;
+            if (this.state.activeTabIndex === 0){
+                //debugger
+                if(this.state.eventMain.name.length < 1) {
+                    this.emptyTitle = true;
+                }
+                if(this.state.eventMain.site === 0) {
+                    this.emptyChapter = true;
+                }
+                if(this.state.eventMain.date === '') {
+                    this.emptyStartDate = true;
+                }
+                if(!this.state.eventMain.timeFrom.activated) {
+                    this.emptyTimeFrom = true;
+                }
+                if(!this.state.eventMain.timeTo.activated) {
+                    this.emptyTimeTo = true;
+                }
+
+                if(this.state.eventMain.eventType === null || this.state.eventMain.eventType === 0) {
+                    this.emptyType = true;
+                }
+                if(this.state.eventMain.color === '') {
+                    this.emptyColor = true;
+                }
+                if (this.emptyTitle || this.emptyChapter || this.emptyStartDate || this.emptyTimeFrom || this.emptyTimeTo || this.emptyType || this.emptyColor){
+                    this.setState({showError: true});
+                    validationPassed = false;
+                }
+            }
+        return validationPassed;
+    }
+
+    nextStep() {
+        if (this.state.activeTabIndex == 0) {
+            var me = this;
+            var event = Object.assign({}, this.state.eventMain);
+            event.id = this.state.eventId;
+            console.log('goto step 2', event);
+            Service.changeEvent(event).then((data) => {
+                console.log('goto step 2', data);
+                setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, eventId: data.id }); }, 500);
+            });
+            
+        } else {
+            this.setState({ activeTabIndex: this.state.activeTabIndex + 1 });
+        }
+        
+    }
+
+    onTestChange(newVal){
+        var tmp = this.state.eventMain;
+        tmp.test = newVal;
+        this.setState({eventMain:tmp});
     }
 
     handleClick(e) {
@@ -189,32 +275,66 @@ class Event extends Component {
                 />
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
-                        <li className='input-button-wrapper'>
-                        <p>Event Title:</p>
-                        <input type='text' placeholder='' value={this.state.eventMain.name} onChange={(evt) => this.updateEventProperty("name", evt.target.value)}></input>
+                        <li 
+                            className={this.emptyTitle ? 'mark-invalid' : ''}
+                            error-text='Please enter the Event Title'
+                        >
+                            <p>Event Title:</p>
+                            <div className='input-button-wrapper'>
+                                <input 
+                                    type='text'
+                                    ref={el => this.titleDropDownRef = el}
+                                    placeholder='Event Title'
+                                    value={this.state.eventMain.name}
+                                    onChange={(evt) => {
+                                        if(evt.target.value.length > 0) {
+                                            this.emptyTitle = false;
+                                        }
+                                        this.updateEventProperty("name", evt.target.value);
+                                    }}
+                                />
+                                {this.state.eventMain.name !== "" &&
+                                    <button onClick={() => {this.updateEventProperty("name", ""); this.titleDropDownRef.focus();}}>
+                                        <CloseUpSVG />
+                                    </button>
+                                }
+                            </div>
                         </li>
-                        <li>
+                        <li 
+                            className={this.emptyChapter ? 'mark-invalid' : ''}
+                            error-text='Please select the Chapter'
+                        >
                             <p>Chapter:</p>
                             <MultiDropDown
-                            ref={el => this.chaptersDropDownRef = el}
-                            list={this.props.store.chapterList}
-                            multiSelect={false}
-                            keyProperty='id'
-                            textProperty='state'
-                            expandBy='chapters'
-                            expandedTextProperty='name'
-                            expandedKeyProperty='id'
-                            expandedMultiSelect={false}
-                            defaultValue={this.state.eventMain.site}
-                            placeholder="Select chapter"
-                            onDropDownValueChange={value => this.updateEventProperty("site", value)}
+                                ref={el => this.chaptersDropDownRef = el}
+                                list={this.props.store.chapterList}
+                                multiSelect={false}
+                                keyProperty='id'
+                                textProperty='state'
+                                expandBy='chapters'
+                                expandedTextProperty='name'
+                                expandedKeyProperty='id'
+                                expandedMultiSelect={false}
+                                defaultValue={this.state.eventMain.site}
+                                placeholder="Select chapter"
+                                onDropDownValueChange={value => {
+                                    this.emptyChapter = false;
+                                    this.updateEventProperty("site", value);
+                                }}
                             />
                         </li>
-                        <li>
+                        <li
+                            className={this.emptyStartDate ? 'mark-invalid' : ''}
+                            error-text='Please enter the date'
+                        >
                         <p>Start Date:</p>
-                        <DatePicker value={this.state.eventMain.date}
+                        <DatePicker 
+                            value={this.state.eventMain.date}
                             ref={el => this.dateStartDropDownRef = el}
-                            onSelect={value => this.updateEventProperty("date", value)}
+                            onSelect={value => {
+                                this.emptyStartDate = false;
+                                this.updateEventProperty("date", value);
+                            }}
                             />
                         </li>
                     {/*<li>
@@ -290,26 +410,41 @@ class Event extends Component {
                         <li>
                             <p>From:</p>
                             <ul className='input-fields-child-ul time-fields'>
-                                <li>
+                                <li 
+                                    className={this.emptyTimeFrom ? 'mark-invalid' : ''}
+                                    error-text='Please enter the time event starts'
+                                >
                                     <TimePicker 
-                                    ref={el => this.timeFromDropDownRef = el}
-                                    timePickerMode={true}
-                                    time={this.state.eventMain.timeFrom}
-                                    onChange={value => this.updateEventProperty("timeFrom", value)}
+                                        ref={el => this.timeFromDropDownRef = el}
+                                        timePickerMode={true}
+                                        time={this.state.eventMain.timeFrom}
+                                        onChange={value => {
+                                            if (value.activated) {this.emptyTimeFrom = false;}
+                                            this.updateEventProperty("timeFrom", value);
+                                        }}
                                     />
                                 </li>
                                 <li><p>to:</p></li>
-                                <li>
+                                <li
+                                    className={this.emptyTimeTo ? 'mark-invalid' : ''}
+                                    error-text='Please enter the time event ends'
+                                >
                                     <TimePicker 
                                         ref={el => this.timeToDropDownRef = el}
-                                    timePickerMode={true}
-                                    time={this.state.eventMain.timeTo}
-                                    onChange={value => this.updateEventProperty("timeTo", value)}
+                                        timePickerMode={true}
+                                        time={this.state.eventMain.timeTo}
+                                        onChange={value => {
+                                            if (value.activated) {this.emptyTimeTo = false;}
+                                            this.updateEventProperty("timeTo", value);
+                                        }}
                                     />
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <li
+                            className={this.emptyType ? 'mark-invalid' : ''}
+                            error-text='Please select the Event Type'
+                        >
                             <p>Type of event:</p>
                             <MultiDropDown
                                 ref={el => this.typeOfEventDropDownRef = el}
@@ -317,9 +452,12 @@ class Event extends Component {
                                 keyProperty='id'
                                 textProperty='title'
                                 defaultValue={this.state.eventMain.eventType}
-                            placeholder='Event type'
-                            onDropDownValueChange={value => this.updateEventProperty("eventType",value)}
-                    />
+                                placeholder='Event type'
+                                onDropDownValueChange={value => {
+                                    this.emptyType = false;
+                                    this.updateEventProperty("eventType",value)
+                                }}
+                            />
                         </li>
                         <li>
                             <p>Color:</p>
@@ -335,8 +473,20 @@ class Event extends Component {
 
                         </li>
                         <li>
-                        <p>Description:</p>
-                        <textarea placeholder='Description' value={this.state.eventMain.description} onChange={(evt) => this.updateEventProperty("description", evt.target.value)} />
+                            <p className='mark-optional'>Description:</p>
+                            <div className='input-button-wrapper'>
+                                <textarea 
+                                    ref={el => this.descriptionInputRef = el}
+                                    placeholder='Description'
+                                    value={this.state.eventMain.description}
+                                    onChange={(evt) => this.updateEventProperty("description", evt.target.value)}
+                                />
+                                {/*this.state.eventMain.description !== "" &&
+                                    <button onClick={() => {this.updateEventProperty("description", ""); this.descriptionInputRef.focus();}}>
+                                        <CloseUpSVG />
+                                    </button>
+                                */}
+                            </div>
                         </li>
                     </ul>
                 }
@@ -345,15 +495,43 @@ class Event extends Component {
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
-                        <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
+                        <button className='medium-static-button static-button' 
+                            onClick={() => {
+                                if (this.validation()) {
+                                    this.setState({activeTabIndex: this.state.activeTabIndex-1})
+                                }
+                            }}
+                        >
+                            Back
+                        </button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' onClick={this.nextStep}>Next</button>
+                        <button className='medium-static-button static-button default-button' 
+                            onClick={() => {
+                                if (this.validation()) {
+                                    this.nextStep();
+                                }
+                            }}
+                        >
+                            Next
+                        </button>
                     }
                     {this.state.activeTabIndex === 3 &&
                         <button className='medium-static-button static-button default-button' disabled >Save</button>
                     }
                 </div>
+                
+                {this.state.showError && 
+                    <Alert 
+                        headerText = 'Error'
+                        onClose = {()=>this.setState({showError: false})}
+                        showOkButton = {true}
+                        buttonText = "Got IT!"
+                        mode = 'error'
+                    >
+                       <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
+                    </Alert>
+                }
             </div>
         );
     }

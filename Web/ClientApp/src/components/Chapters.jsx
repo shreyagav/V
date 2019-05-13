@@ -17,11 +17,7 @@ class Chapters extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            stateFilter1: [],
-            stateFilter2: 8,
-            stateFilter3: [2, 3, 4],
-            stateFilter4: '444',
-            stateFilter5: '#666666',
+            stateFilter: [],
         };
         this.chaptersDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
@@ -74,7 +70,7 @@ class Chapters extends Component {
         /*const chapterList = this.filterList();*/
         const stateList = Array.from(this.props.store.chapterList, element => {return {"name":element.state.name}});
         const columns=[
-            {title:"State", accesor:"state", className:"borders-when-display-block chapter", render: this.renderStateColumn},
+            {title:"State", accesor:"state", className:"borders-when-display-block chapter"},
             {title:"Chapters", accesor:"chapters", render: this.renderChaptersList}
         ];
 
@@ -87,121 +83,18 @@ class Chapters extends Component {
                     </div>
                     <div className="label-input-wrapper mediaMax500-pl-pr-025">
                         <p>CHAPTER:</p>
-                       
                         <MultiDropDown 
                             ref={el => this.chaptersDropDownRef = el}
                             list={this.props.store.chapterList}
                             multiSelect={true}
                             keyProperty='id'
                             textProperty='state'
-                            expandBy='chapters'
-                            expandedTextProperty='name'
-                            expandedKeyProperty='id'
-                            expandedMultiSelect={true}
-                            defaultValue={this.state.stateFilter1}
+                            defaultValue={this.state.stateFilter}
                             placeholder='National'
-                            onDropDownValueChange = {value => this.setState({stateFilter1: value})}
+                            onDropDownValueChange = {value => this.setState({stateFilter: value})}
                         />
-
-                        <MultiDropDown 
-                            list={this.props.store.chapterList}
-                            multiSelect={false}
-                            keyProperty='id'
-                            textProperty='state'
-                            expandBy='chapters'
-                            expandedTextProperty='name'
-                            expandedKeyProperty='id'
-                            expandedMultiSelect={false}
-                            defaultValue={this.state.stateFilter10}
-                            placeholder='National'
-                            onDropDownValueChange = {value => this.setState({stateFilter10: value})}
-                        />
-
-                        <MultiDropDown 
-                            list={this.props.store.chapterList}
-                            keyProperty='id'
-                            textProperty='state'
-                            defaultValue={this.state.stateFilter2}
-                            placeholder='National'
-                            onDropDownValueChange = {value => this.setState({stateFilter2: value})}
-                        />
-                        
-                        <MultiDropDown 
-                            list={this.props.store.chapterList}
-                            multiSelect={true}
-                            keyProperty='id'
-                            textProperty='state'
-                            defaultValue={this.state.stateFilter3}
-                            placeholder='National'
-                            onDropDownValueChange = {value => this.setState({stateFilter3: value})}
-                        />
-
-                        <MultiDropDown
-                            list={[{name: 'Veteran', role: [{name: '111', img: <VeteranUpSVG />},{name: '222', img: <VolunteerUpSVG />}]},{name: 'Volunteer', role: [{name: '333', img: <VeteranUpSVG />},{name: '444', img: <VolunteerUpSVG />}]}]}
-                            keyProperty='name'
-                            textProperty='name'
-                            defaultValue={this.state.stateFilter4}
-                            placeholder='Role'
-                            expandBy='role'
-                            expandedTextProperty='name'
-                            expandedKeyProperty='name'
-                            onDropDownValueChange = {value => this.setState({stateFilter4: value})}
-                        />
-
-                        <MultiDropDown
-                            list={this.props.store.colorList} 
-                            keyProperty='color'
-                            textProperty='name'
-                            defaultValue={this.state.stateFilter5}
-                            placeholder='Color'
-                            onDropDownValueChange = {value => this.setState({stateFilter5: value})}
-                        />
-
+                        <Table columns={columns} data={this.props.store.chapterList}/>
                     </div>
-                    {this.state.showAlert && 
-                        <Alert 
-                            headerText = 'Warning!'
-                            onClose = {()=>this.setState({showAlert: false})}
-                            showOkButton = {true}
-                            mode = 'warning'
-                        >
-                            <span>Here is some Alert Text YAY!</span>
-                        </Alert>
-                    }
-                    {this.state.showSuccess && 
-                        <Alert 
-                            headerText = 'Success!'
-                            onClose = {()=>this.setState({showSuccess: false})}
-                            showOkButton = {true}
-                            mode = 'success'
-                        >
-                            <span>Here is some Alert Text YAY!</span>
-                        </Alert>
-                    }
-                    {this.state.showError && 
-                        <Alert 
-                            headerText = 'Error!'
-                            onClose = {()=>this.setState({showError: false})}
-                            showOkButton = {true}
-                            mode = 'error'
-                        >
-                            <span>Here is some Alert Text YAY!</span>
-                        </Alert>
-                    }
-                    {this.state.showRegular && 
-                        <Alert 
-                            headerText = 'Regular Modal Window'
-                            onClose = {()=>this.setState({showRegular: false})}
-                        >
-                            <span>Here is some Alert Text YAY!</span>
-                        </Alert>
-                    }
-                    <button onClick={()=>console.log(this.state)}>check state</button>
-                    <button onClick={()=>this.setState({showAlert: true})}>Warning</button>
-                    <button onClick={()=>this.setState({showSuccess: true})}>Success</button>
-                    <button onClick={()=>this.setState({showError: true})}>Error</button>
-                    <button onClick={()=>this.setState({showRegular: true})}>regular</button>
-                    {/*<Table columns={columns} data={chapterList}/>*/}
                 </div>
             </div>
         );

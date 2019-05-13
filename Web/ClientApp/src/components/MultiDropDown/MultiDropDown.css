@@ -63,6 +63,7 @@ ul.multi-level-list {margin: 0.15em !important;}
     border-radius: 10px;
     padding: 0.15rem 0.25rem 0.15rem 0.35rem;
     margin: 0.15rem;
+    cursor: default;
 }
 
 .drop-down-header > ul.multi-level-list > li button .svg {fill: #999999;}
@@ -161,6 +162,7 @@ ul.drop-down-list > li label {
     position: relative;
     margin-right: 0.5rem;
 }
+ul.drop-down-list > li label:hover {cursor: pointer;}
 ul.drop-down-list > li label:hover svg,
 ul.drop-down-list > li label:focus-within svg {
     border-color: #0099cc !important;

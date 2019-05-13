@@ -107,8 +107,8 @@ ul.calendar-content > li > div > span > :first-child{
     line-height: 1;
 }
 
-ul.calendar-content > li:hover > div,
-ul.calendar-content > li:focus > div {
+ul.calendar-content > li:not(.disabled):hover > div,
+ul.calendar-content > li:not(.disabled):focus > div {
     background: #cdeefc !important;
     cursor: pointer;
     position: relative;
@@ -116,6 +116,7 @@ ul.calendar-content > li:focus > div {
 
 
 ul.calendar-content > li.today > div {background: #e5f6f9;}
+ul.calendar-content > li.act-today > div {background: #ffffcc !important;}
 /*
 ul.calendar-content > li:focus > div,
 ul.calendar-content > li:hover > div {
@@ -123,6 +124,12 @@ ul.calendar-content > li:hover > div {
     z-index: 100;
 }
 */
+
+ul.calendar-content > li.disabled > div {
+    background-color: #e2e1c7 !important;
+    color: #bfbe94 !important;
+}
+
 ul.calendar-content > li > div.next-month,
 ul.calendar-content > li > div.last-month {
     background-color: #eaeaea;
