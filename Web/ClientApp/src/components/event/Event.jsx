@@ -81,24 +81,6 @@ class Event extends Component {
         this.emptyType = false;
         this.emptyColor = false;
     }
-    nextStep() {
-        if (this.state.activeTabIndex == 0) {
-            var me = this;
-            var event = Object.assign({}, this.state.eventMain);
-            event.id = this.state.eventId;
-            this.setState({ loading: true });
-            Service.changeEvent(event).then((data) => {
-                Service.getEventAttendees(data.id)
-                    .then(attendees => {
-                        setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, members: attendees, eventId: data.id, loading: false }); }, 500);
-                    })
-            });
-            
-        } else {
-            this.setState({ activeTabIndex: this.state.activeTabIndex + 1 });
-        }
-        
-    }
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
     componentDidMount() {
@@ -164,16 +146,18 @@ class Event extends Component {
             var me = this;
             var event = Object.assign({}, this.state.eventMain);
             event.id = this.state.eventId;
-            console.log('goto step 2', event);
+            this.setState({ loading: true });
             Service.changeEvent(event).then((data) => {
-                console.log('goto step 2', data);
-                setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, eventId: data.id }); }, 500);
+                Service.getEventAttendees(data.id)
+                    .then(attendees => {
+                        setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, members: attendees, eventId: data.id, loading: false }); }, 500);
+                    })
             });
-            
+
         } else {
             this.setState({ activeTabIndex: this.state.activeTabIndex + 1 });
         }
-        
+
     }
 
     onTestChange(newVal){
