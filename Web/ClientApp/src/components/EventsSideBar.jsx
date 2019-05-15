@@ -41,7 +41,7 @@ class EventsSideBar extends Component {
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     setFilters() {
-        let filters = [];
+        let filters = this.props.filters;
         let initialTitle = '';
         let initialDateFrom = null;
         let initialDateTo = null;

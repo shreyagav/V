@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import DropDown from './DropDown';
-import DatePicker from './DatePicker';
-import CloseUpSVG from '../svg/CloseUpSVG';
-import TimePicker from './TimePicker';
+import MultiDropDown from './MultiDropDown/MultiDropDown';
 import { withStore } from './store';
 import { Service } from './ApiService';
 import Table from './Table';
@@ -21,7 +18,12 @@ class NewEvents extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
+    componentWillMount(){
+        document.addEventListener("mousedown", this.handleClick, false);
+        let filters = this.props.filters;
+        filters.push({name: "chapters", value: []});
+        this.props.updateFilters(filters);
+    }
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     componentDidMount(){
@@ -47,7 +49,17 @@ class NewEvents extends Component {
         );
     }
 
+    updateFilter(filterName, value){
+        let filters = this.props.filters;
+        let element = filters.find(element => element.name === filterName); 
+        element.value = value;
+        this.props.updateFilters(filters);
+    }
+
     render() {
+        const chapterFilter = this.props.filters.find(element => {
+            if (element.name === 'chapters'){return element}
+        })
         const eventsList = this.state.events;
         const columns=[
             {title:"Title", accesor:"name", className:"borders-when-display-block", render: this.renderColumnName},
@@ -64,10 +76,19 @@ class NewEvents extends Component {
                 </div>
                 <div className="label-input-wrapper mediaMax500-pl-pr-025">
                     <p>CHAPTER:</p>
-                    <DropDown 
-                        ref={el => this.chaptersDropDownRef = el}
-                        list={this.props.store.chapterList}
-                        defaultValue={{name:'National'}}
+                    <MultiDropDown 
+                            ref={el => this.chaptersDropDownRef = el}
+                            list={this.props.store.chapterList}
+                            multiSelect={true}
+                            keyProperty='id'
+                            textProperty='state'
+                            expandBy='chapters'
+                            expandedTextProperty='name'
+                            expandedKeyProperty='id'
+                            expandedMultiSelect={true}
+                            defaultValue={chapterFilter ? chapterFilter.value : [] }
+                            placeholder='National'
+                            onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
                 </div>
                 <Table columns={columns} data={eventsList} />
