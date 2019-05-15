@@ -98,7 +98,9 @@ const createMultiDropDownStore = WrappedComponent => {
     fillStore(props) {
         if (props.list !== undefined) {
             let value = [];
-            if (props.defaultValue){value = props.defaultValue}
+            if (props.defaultValue !== undefined){
+                value = props.defaultValue;
+            }
             let placeholder = '';
             if(props.placeholder){placeholder = props.placeholder;}
             let multiSelect = false;

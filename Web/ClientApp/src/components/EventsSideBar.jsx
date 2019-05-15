@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './Calendar.css'
 import { withStore } from './store';
-import DropDown from './DropDown'
 import DatePicker from './DatePicker';
 import TimePicker from './TimePicker';
+import MultiDropDown from './MultiDropDown/MultiDropDown';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import SearchUpSVG from '../svg/SearchUpSVG';
@@ -17,9 +17,9 @@ class EventsSideBar extends Component {
             title: '',
             dateFrom: null,
             dateTo: null,
-            timeFrom: '',
-            timeTo: '',
-            typeOfEvent: '',
+            timeFrom: {},
+            timeTo: {},
+            typeOfEvent: -1,
             status: '',
             color: '',
         };
@@ -42,9 +42,34 @@ class EventsSideBar extends Component {
 
     setFilters() {
         let filters = [];
-        filters.push({name: "title", value: ''});
-        filters.push({name: "dateFrom", value: null});
-        filters.push({name: "dateTo", value: null});
+        let initialTitle = '';
+        let initialDateFrom = null;
+        let initialDateTo = null;
+        let initialTimeFrom = {activated: false, hours: 8, minutes: 0, am: true};
+        let initialTimeTo = {activated: false, hours: 8, minutes: 0, am: true};
+        let initialTypeOfEvent = '';
+        let initialStatus = '';
+        let initialColor = '';
+        filters.push({name: "title", value: initialTitle});
+        filters.push({name: "dateFrom", value: initialDateFrom});
+        filters.push({name: "dateTo", value: initialDateTo});
+        filters.push({name: "timeFrom", value: initialTimeFrom});
+        filters.push({name: "timeTo", value: initialTimeTo});
+        filters.push({name: "typeOfEvent", value: initialTypeOfEvent});
+        filters.push({name: "status", value: initialStatus});
+        filters.push({name: "color", value: initialColor});
+
+        let initialState = {
+            title: initialTitle, 
+            dateFrom: initialDateFrom, 
+            dateTo: initialDateTo, 
+            timeFrom: initialTimeFrom, 
+            timeTo: initialTimeTo,
+            typeOfEvent: initialTypeOfEvent,
+            status: initialStatus,
+            color: initialColor
+        };
+        this.setState(initialState);
         this.props.updateFilters(filters);
     }
 
@@ -72,10 +97,10 @@ class EventsSideBar extends Component {
         }
     }
 
-    updateTitle(){
+    updateFilter(filterName, value){
         let filters = this.props.filters;
-        let element = filters.find(element => element.name === "title"); 
-        element.value = this.state.title;
+        let element = filters.find(element => element.name === filterName); 
+        element.value = value;
         this.props.updateFilters(filters);
     }
 
@@ -83,6 +108,13 @@ class EventsSideBar extends Component {
         return (
             <div style={{"height": "100%"}} data-simplebar >
             <div className = 'mt-1 pl-1 pr-1 filters'>
+                <div className='flex-nowrap justify-space-between align-end mb-1'>
+                    <h3>Filters</h3>
+                    <button 
+                        className='round-button medium-round-button grey-outline-button pr-05 pl-05'
+                        onClick={() => this.setFilters()} 
+                    >Clear all</button>
+                </div>
                 <p>Event Title:</p>
                 <div className='input-button-wrapper'>
                     <input 
@@ -90,10 +122,10 @@ class EventsSideBar extends Component {
                         value={this.state.title}
                         onChange={(e) => this.setState({title: e.target.value})}
                         onKeyDown={(e) => {
-                            if(e.keyCode === 13) {this.updateTitle()}
+                            if(e.keyCode === 13) {this.updateFilter("title", this.state.title)}
                         }}
                     />
-                    <button onClick={() => this.updateTitle()}>
+                    <button onClick={() => this.updateFilter("title", this.state.title)}>
                         <SearchUpSVG />
                     </button>
                 </div>
@@ -105,10 +137,7 @@ class EventsSideBar extends Component {
                     ref={el => this.dateStartDropDownRef = el}
                     onSelect={value => {
                         this.setState({dateFrom: value});
-                        let filters = this.props.filters;
-                        let element = filters.find(element => element.name === "dateFrom"); 
-                        element.value = value;
-                        this.props.updateFilters(filters);
+                        this.updateFilter("dateFrom", value);
                     }}
                 />
 
@@ -119,40 +148,71 @@ class EventsSideBar extends Component {
                     ref={el => this.dateEndDropDownRef = el}
                     onSelect={value => {
                         this.setState({dateTo: value});
-                        let filters = this.props.filters;
-                        let element = filters.find(element => element.name === "dateTo"); 
-                        element.value = value;
-                        this.props.updateFilters(filters);
+                        this.updateFilter("dateTo", value);
                     }}
                 />
 
                 <p>Start Time:</p>
                 <TimePicker 
                     ref={el => this.timeFromDropDownRef = el}
-                    timePickerMode={true} time={{hours:8,minutes:0,am:true}}
+                    timePickerMode={true} 
+                    value={this.state.timeFrom}
+                    onChange = {value => {
+                        this.setState({timeFrom: value});
+                        this.updateFilter("timeFrom", value);
+                    }}
                 />
                 <p>End Time:</p>
                 <TimePicker 
                     ref={el => this.timeToDropDownRef = el}
-                    timePickerMode={true} time={{hours:8,minutes:0,am:true}}
+                    timePickerMode={true} 
+                    value={this.state.timeTo}
+                    onChange = {value => {
+                        this.setState({timeTo: value});
+                        this.updateFilter("timeTo", value);
+                    }}
                 />
+
                 <p>Type of event:</p>
-                <DropDown
+                <MultiDropDown
                     ref={el => this.typeOfEventDropDownRef = el}
-                    list={[{name: 'Pool Session'}, {name: 'Flat or White Water Session'}, {name: 'National Event'}, {name: 'Regional Event'}, {name: 'Chapter Planning Party'}]} 
-                    defaultValue={{name: 'Pool Session'}}
+                    list={[{name: 'Pool Session', typeID: 0}, {name: 'Flat or White Water Session', typeID: 1}, {name: 'National Event', typeID: 2}, {name: 'Regional Event', typeID: 3}, {name: 'Chapter Planning Party', typeID: 4}]}
+                    keyProperty='typeID'
+                    textProperty='name'
+                    defaultValue={this.state.typeOfEvent}
+                    placeholder='Type of Event'
+                    onDropDownValueChange = {value => {
+                        this.setState({typeOfEvent: value});
+                        this.updateFilter("typeOfEvent", value);
+                    }}
                 />
+
                 <p>Status:</p>
-                <DropDown
+                <MultiDropDown
                     ref={el => this.statusDropDownRef = el}
                     list={[{name: 'Draft'}, {name: 'Published'}, {name: 'Closed'}, {name: 'Deleted'}, {name: 'Cancelled'}]} 
-                    defaultValue={{name: 'Published'}}
+                    keyProperty='name'
+                    textProperty='name'
+                    defaultValue={this.state.status}
+                    placeholder='Status'
+                    onDropDownValueChange = {value => {
+                        this.setState({status: value});
+                        this.updateFilter("status", value);
+                    }}
                 />
+
                 <p>Color:</p>
-                <DropDown
+                <MultiDropDown
                     ref={el => this.colorDropDownRef = el}
                     list={this.props.store.colorList} 
-                    defaultValue={{name: 'Gray', color: '#666666'}}
+                    keyProperty='color'
+                    textProperty='name'
+                    defaultValue={this.state.color}
+                    placeholder='Color'
+                    onDropDownValueChange = {value => {
+                        this.setState({color: value});
+                        this.updateFilter("color", value);
+                    }}
                 />
             </div>
             </div>

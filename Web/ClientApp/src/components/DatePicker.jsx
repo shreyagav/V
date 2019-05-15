@@ -30,6 +30,7 @@ class DatePicker extends Component {
         this.calendarBodyRef = null;
         this.datePickerRef = null;
         this.dropDownHeaderRef = null;
+        this.todayButtonRef = null;
         this.setCurrentDate = this.setCurrentDate.bind(this);
     }
 
@@ -39,15 +40,12 @@ class DatePicker extends Component {
         } else {
             this.setCurrentDate(new Date(), false);
         }
-        
     }
 
-    componentWillReceiveProps(props) {
-        
+    componentWillReceiveProps(props) {        
         this.actTodayYear = new Date().getFullYear();
         this.actTodayMonth = new Date().getMonth();
         this.actTodayDate = new Date().getDate();
-
         if(props.value){
             this.setCurrentDate(props.value, true);
         }
@@ -66,7 +64,6 @@ class DatePicker extends Component {
         this.todayDate = today.getDate();
         this.createCalendar(this.todayYear, this.todayMonth);
         this.setState({ currentDate: this.todayDate, dateWasSet: dateSet });
-
     }
 
     componentDidUpdate() {
@@ -74,11 +71,19 @@ class DatePicker extends Component {
     }
 
     toggle(){
-        this.setState({isOpen: !this.state.isOpen});
+        if (this.setState.isOpen) {
+            this.setState({isOpen: !this.state.isOpen, setFocusTo: -1});
+        }
+        else {
+            this.setState({isOpen: !this.state.isOpen});
+        }
     }
 
     setFocus() {
-        if (this.setFocusToRef !== null) {this.setFocusToRef.focus();}
+        if (this.setFocusToRef !== null) {
+            /*setTimeout(() => this.setFocusToRef.focus(), 10);*/
+            this.setFocusToRef.focus();
+        }
     }
 
     leapYear (year){
@@ -107,7 +112,7 @@ class DatePicker extends Component {
         let calendar = [];
         let prevMonth, prevYear, nextMonth, nextYear, prevMonthNumberOfDays;
         let thisMonthNumberOfDays = this.amountOfDays(month, year);
-        let setFocusTo = 0;
+        let setFocusTo = -1;
         if (month > 0) {
           prevMonthNumberOfDays = this.amountOfDays (month - 1, year);
           prevMonth = month - 1; 
@@ -134,7 +139,7 @@ class DatePicker extends Component {
         for (let i = 0; i < thisMonthNumberOfDays; i++){
             if ((year === todayYear)&&(month === todayMonth)&&(i+1===todayDate)) { 
               calendar.push({label:i+1, className:'today', date:new Date(year, month, i+1)});
-              setFocusTo = i + firstDayOfMonth;
+              //setFocusTo = i + firstDayOfMonth;
             } else calendar.push({label:i+1, className:'current-month', date:new Date(year, month, i+1)})
         }
         //NEXT MONTH
@@ -152,8 +157,10 @@ class DatePicker extends Component {
 
     incrementMonth(){
         if (this.state.currentMonth < 11){
-          this.createCalendar (this.state.currentYear, this.state.currentMonth+1);
-        } else this.createCalendar (this.state.currentYear+1, 0);
+            this.createCalendar (this.state.currentYear, this.state.currentMonth+1);
+        } else {
+            this.createCalendar (this.state.currentYear+1, 0);
+        };
     }
       
     decrementMonth(){
@@ -179,12 +186,13 @@ class DatePicker extends Component {
     onArrowClick(increment){
         switch(increment) {
             case true:
-                if(this.state.regularCalendar) {this.incrementMonth()}
-                else{this.incrementYear()};
+                if(this.state.regularCalendar) { this.incrementMonth(); }
+                else {this.incrementYear();}
                 break;
             case false:
                 if(this.state.regularCalendar) {this.decrementMonth()}
                 else{this.decrementYear()};
+                this.setState({setFocusTo: -1});
                 break;
         }
     }
@@ -201,23 +209,25 @@ class DatePicker extends Component {
             this.createCalendar(this.state.currentYear, index);
             break;
           case 39: // Right Arrow
-            if (index<11) {this.setState(()=>({setFocusTo: index+1}))};
+            if (index<11) {this.setState(()=>({setFocusTo: index+1}))}
+            else {this.setState({currentYear: this.state.currentYear+1, currentMonth: 0, setFocusTo: 0})}
             break;
           case 37: //Left arrow
-            if (index>0) {this.setState(()=>({setFocusTo: index-1}))};
+            if (index>0) {this.setState(()=>({setFocusTo: index-1}))}
+            else {this.setState({currentYear: this.state.currentYear-1, currentMonth: 11, setFocusTo: 11})}
             break;
           case 38: //Up Arrow
-            if (index>3) {this.setState(()=>({setFocusTo: index-4}))};
+            if (index>3) {this.setState(()=>({setFocusTo: index-4}))}
+            else {this.setState({currentYear: this.state.currentYear-1, currentMonth: 11+index-3, setFocusTo: 11+index-3})}
             e.preventDefault();
             break;
           case 40: //Down Arrow
-            if (index<9) {this.setState(()=>({setFocusTo: index+4}))};
+            if (index<9) {this.setState(()=>({setFocusTo: index+4}))}
+            else {this.setState({currentYear: this.state.currentYear+1, currentMonth: index+3-11, setFocusTo: index+3-11})}
             e.preventDefault();
             break;
-          case 9: //tab
-            this.toggleCalendar();
-            break;
           case 27: //escape
+            //this.setState({regularCalendar: true});
             this.toggle();
             this.dropDownHeaderRef.focus();
             break;
@@ -228,9 +238,21 @@ class DatePicker extends Component {
     calendarKeyDownHandler(e, index, element) {
         switch (e.keyCode)
         {
-          case 9: //tab
-            e.preventDefault();
+          /*case 9: //tab
+            if(!e.shiftKey) {
+                if (this.todayButtonRef !== null){
+                    this.setFocusToRef = this.todayButtonRef; 
+                    this.setState(
+                        {setFocusTo: -1}, 
+                        console.log(this.state.setFocusTo)
+                    )
+                } else {
+                    this.toggle();
+                    this.dropDownHeaderRef.focus();
+                }
+            }
             break;
+        */
           case 13: //enter 
             this.setState({currentDate: element.label, dateWasSet: true});
             this.props.onSelect(element.date);
@@ -294,11 +316,18 @@ class DatePicker extends Component {
             break;
 
           case 38: //Up Arrow 
+          //debugger
+          
+          //if(this.state.setFocusTo >= 0 )//
           {
-            //debugger
+            //console.log(element.date);
             let year = element.date.getFullYear();
             let month = element.date.getMonth();
             let date = element.date.getDate();
+            
+            //let year = this.state.calendar[this.state.setFocusTo].date.getFullYear();
+            //let month = this.state.calendar[this.state.setFocusTo].date.getMonth();
+            //let date = this.state.calendar[this.state.setFocusTo].date.getDate();
             let newDateYear = year;
             let newDateMonth = month;
             let newDateDate = date - 7;
@@ -311,10 +340,7 @@ class DatePicker extends Component {
                 let newDateLastDayOfMonth = this.amountOfDays(newDateMonth, newDateYear);
                 newDateDate = date + newDateLastDayOfMonth - 7;
             }
-            if (!(this.props.minDate !== null && 
-                this.props.minDate !== undefined && 
-                new Date(newDateYear, newDateMonth, newDateDate) > this.props.minDate
-            )){
+            if (this.props.minDate === null || this.props.minDate === undefined || new Date(newDateYear, newDateMonth, newDateDate) >= this.props.minDate){
                 if (index > 6) {
                     let newDate = this.state.calendar[index-7].date;
                     if (!(this.props.minDate !== null && this.props.minDate !== undefined && newDate < this.props.minDate)){
@@ -326,14 +352,19 @@ class DatePicker extends Component {
                     let firstDayOfNewMonth = (new Date(newDateYear, newDateMonth, 1)).getDay();
                     this.setState({setFocusTo: newDateDate + firstDayOfNewMonth - 1});
                 }
-                e.preventDefault();
             }}
+            e.preventDefault();
             break;
 
           case 40: //Down Arrow
+          //if(this.state.setFocusTo >= 0 )
+          {
             let year = element.date.getFullYear();
             let month = element.date.getMonth();
             let date = element.date.getDate();
+            //let year = this.state.calendar[this.state.setFocusTo].date.getFullYear();
+            //let month = this.state.calendar[this.state.setFocusTo].date.getMonth();
+            //let date = this.state.calendar[this.state.setFocusTo].date.getDate();
             let lastDayOfMonth = this.amountOfDays(month, year);
             let newDateYear = year;
             let newDateMonth = month;
@@ -342,10 +373,7 @@ class DatePicker extends Component {
                 if (month > 10) {newDateMonth = 0; newDateYear = year + 1}
                 else {newDateMonth = month + 1; newDateYear = year;}
             }
-            if (!(this.props.maxDate !== null && 
-                this.props.maxDate !== undefined &&
-                new Date(newDateYear, newDateMonth, newDateDate) < this.props.maxDate
-            )){
+            if (this.props.maxDate === null || this.props.maxDate === undefined || new Date(newDateYear, newDateMonth, newDateDate) <= this.props.maxDate){
                 if (index < 35) {
                     let newDate = this.state.calendar[index+7].date;
                     if (!(this.props.maxDate !== null && 
@@ -363,9 +391,10 @@ class DatePicker extends Component {
                     }
                     else {this.setState({setFocusTo: newDateDate + firstDayOfNewMonth - 1});}
                 }
-                e.preventDefault();
-            }
+            }}
+            e.preventDefault();
             break;
+
           case 27: //escape
             this.toggle();
             this.dropDownHeaderRef.focus();
@@ -420,7 +449,7 @@ class DatePicker extends Component {
         if (!this.props.onSelect) {
             this.setState({ currentDate: val, dateWasSet: true });
         } else {
-            this.props.onSelect(new Date(this.state.currentYear, this.state.currentMonth,val));
+            this.props.onSelect(val);
         }
     }
 
@@ -446,6 +475,22 @@ class DatePicker extends Component {
         if(this.actTodayDate === date.getDate() && this.actTodayMonth === date.getMonth() && this.actTodayYear === date.getFullYear()){
             return true;
         } else return false;
+    }
+
+    todayButtonKeyHandler(e) {
+        switch (e.keyCode){
+            case 9:
+                // tab pressed
+                if(!e.shiftKey) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                break;
+            default: 
+                e.preventDefault;
+                e.stopPropagation();
+                break;
+        }
     }
 
     render() {
@@ -509,6 +554,7 @@ class DatePicker extends Component {
                             </button>
                             <button 
                                 className="h2 uppercase-text flex11auto align-self-stretch no-outline-button" 
+                                style={{"fontSize": "25px", "paddingBottom":"2px"}}
                                 onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
                                 onKeyDown={(e) => this.buttonKeyDownHandler(e)}
                             >
@@ -541,15 +587,13 @@ class DatePicker extends Component {
                                     return <li key={index} 
                                         className={element.className + (disabled ? " disabled" : "") + (actToday ? " act-today" : "")}
                                         tabIndex={disabled ? -1 : 0}
-                                        onKeyDown={(e) => {
-                                            if(!disabled){
-                                                if(index === calendar.length-1 && e.keyCode === 9) {this.toggle();}
-                                                else {this.calendarKeyDownHandler(e, index, element)}
-                                            }
-                                        }}
-                                        onClick={() => {if(!disabled){this.onSelect(element.label)}}}
+                                        onKeyDown={e => {if(!disabled){ this.calendarKeyDownHandler(e, index, element)}}}
+                                        onClick={() => {if(!disabled){this.onSelect(element.date)}}}
+                                        onFocus={(el) => {if(!disabled){this.setFocusToRef = el}}}
                                         ref={el => {
-                                            if (index === this.state.setFocusTo) {this.setFocusToRef = el}
+                                            if (index === this.state.setFocusTo || (this.state.setFocusTo === -1 && actToday)) {
+                                                this.setFocusToRef = el;
+                                            }
                                         }}
                                     > 
                                         <div className={element.className}><strong>{element.label}</strong></div>
@@ -568,7 +612,7 @@ class DatePicker extends Component {
                                             onKeyDown={(e) => this.monthPickerKeyDownHandler(e, index)}
                                             className={(this.state.currentYear === this.todayYear && index === this.todayMonth) ? 'today' : ''}
                                             ref={el => {
-                                                if (index === this.state.setFocusTo) {
+                                                if ((index === this.state.setFocusTo) || (this.state.setFocusTo === -1 && this.state.currentYear === this.todayYear && index === this.todayMonth) ) {
                                                     this.setFocusToRef = el
                                                 }
                                             }}
@@ -583,13 +627,15 @@ class DatePicker extends Component {
                                 </ul>
                             </div>
                         }
-                        {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
+                        {/*!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && */
                             <button
                                 style={{'flexShrink' : '0'}}
                                 className='round-button medium-round-button no-outline-button' 
-                                onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
+                                onClick={() => {this.setState({setFocusTo: -1}, this.createCalendar(this.actTodayYear, this.actTodayMonth))}}
+                                onKeyDown={e => this.todayButtonKeyHandler(e)}
+                                ref={el => this.todayButtonRef = el}
                             >
-                                <span>today</span>
+                                <span>current month</span>
                             </button>
                         }
                     </div>

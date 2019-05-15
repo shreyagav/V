@@ -103,7 +103,7 @@ ul.calendar-content > li:not(.listStyleView):before {
 }
 
 ul.calendar-content > li > div > span > :first-child{
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     line-height: 1;
 }
 
@@ -286,7 +286,7 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
     flex: 1 1 auto;
     padding-left: 325px;
     padding-right: 1em;
-    padding-top: 3em;
+    padding-top: 2em;
 }
 
 @media screen and (max-width: 999px){ 
