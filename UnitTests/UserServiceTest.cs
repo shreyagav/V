@@ -28,7 +28,7 @@ namespace UnitTests
             services.AddDbContext<ApplicationDbContext>(options =>
                             options.UseSqlServer(
                                 "Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
-            services.AddDefaultIdentity<TRRUser>()
+            services.AddIdentity<TRRUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserService, UserService>();
             /*services.Configure<IdentityOptions>(options => {
@@ -44,8 +44,26 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public async Task AddUsersToRoles()
+        {
+            var opts = userService.GetRolesFromOptions();
+            foreach(var o in opts)
+            {
+                IdentityRole role = new IdentityRole();
+                role.Name = o.Title;
+                var res = await userService.AddRole(role);
+                if (res.Succeeded)
+                {
+                    var users = userService.GetUsersInRole(o.Id);
+                    var result = await userService.AddUsersToRole(users, role);
+                }
+            }
+        }
+
+        [TestMethod]
         public async Task ImportUsers()
         {
+            return;
             File.AppendAllText("ImportUsers.log", $"{DateTime.Now}  :: Start");
             XmlDocument doc = new XmlDocument();
             doc.Load("C:\\Work\\TeamRiverRunner\\ImportOldData\\teamriv_admin.xml");

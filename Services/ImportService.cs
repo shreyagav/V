@@ -15,6 +15,10 @@ namespace Services
 
         public OptionCategory[] GetAllCategories() => _context.OptionCategories.ToArray();
         public Diagnosis[] GetAllDiagnoses() => _context.Diagnoses.ToArray();
+        public void AddRole(TRRRole role)
+        {
+            
+        }
         public void ImportUserDiagnoses(UserDiagnosis[] diag)
         {
             _context.UserDiagnoses.AddRange(diag);

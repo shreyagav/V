@@ -8,6 +8,8 @@ namespace Models.Dto
     {
         public string Error { get; set; }
         public string UserName { get; set; }
-        public string UserRole { get; set; }
+        public IList<string> UserRoles { get; set; }
+        public string UserType { get; set; }
+        public string AuthType { get; set; }
     }
 }
