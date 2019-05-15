@@ -401,7 +401,7 @@ class Event extends Component {
                                     <TimePicker 
                                         ref={el => this.timeFromDropDownRef = el}
                                         timePickerMode={true}
-                                        time={this.state.eventMain.timeFrom}
+                                        value={this.state.eventMain.timeFrom}
                                         onChange={value => {
                                             if (value.activated) {this.emptyTimeFrom = false;}
                                             this.updateEventProperty("timeFrom", value);
@@ -416,7 +416,7 @@ class Event extends Component {
                                     <TimePicker 
                                         ref={el => this.timeToDropDownRef = el}
                                         timePickerMode={true}
-                                        time={this.state.eventMain.timeTo}
+                                        value={this.state.eventMain.timeTo}
                                         onChange={value => {
                                             if (value.activated) {this.emptyTimeTo = false;}
                                             this.updateEventProperty("timeTo", value);

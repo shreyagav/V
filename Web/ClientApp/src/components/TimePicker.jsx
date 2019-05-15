@@ -66,17 +66,29 @@ export class TimePicker extends Component {
     }
 
     setValueFromProps(nextProps) {
-        if (nextProps.time.hours != undefined && nextProps.time.minutes != undefined && nextProps.time.am != undefined && !(nextProps.timePickerMode && nextProps.time.hours === this.state.hours && nextProps.time.minutes === this.state.minutes && nextProps.time.am === this.state.am)) {
-            this.setState({ hours: nextProps.time.hours, minutes: nextProps.time.minutes, am: nextProps.time.am, activated: true });
-        }
-        if (nextProps.number != undefined && !(!nextProps.timePickerMode && nextProps.number === this.state.number)) {
-            this.setState({ number: nextProps.number, activated: true });
+        if (nextProps.value) {
+            if(nextProps.timePickerMode){
+                if (!(
+                    nextProps.value.hours === this.state.hours && 
+                    nextProps.value.minutes === this.state.minutes && 
+                    nextProps.value.am === this.state.am && 
+                    nextProps.value.activated === this.state.activated
+                )) {
+                    this.setState({ hours: nextProps.value.hours, minutes: nextProps.value.minutes, am: nextProps.value.am, activated: nextProps.value.activated });
+                }
+            }
+            else {
+                if (!nextProps.value.number === this.state.number) {
+                    this.setState({ number: nextProps.value.number, activated: nextProps.value.activated });
+                }
+            }
         }
     }
 
     toggle(){
         if(this.state.isOpen){
             this.lastInputTouchedRef = null;
+            this.onChange();
         }
         if(this.state.isOpen) {this.dropDownHeaderRef.focus();}
         this.setState({isOpen: !this.state.isOpen});
@@ -84,13 +96,13 @@ export class TimePicker extends Component {
 
     numberIncrement() {
         if (this.state.number < 99) {
-            this.setState({ number: this.state.number + 1 }, this.onChange)
+            this.setState({ number: this.state.number + 1 })
         } 
     }
 
     numberDecrement() {
         if (this.state.number > 0) {
-            this.setState({ number: this.state.number - 1 }, this.onChange)
+            this.setState({ number: this.state.number - 1 })
         } 
     }
 
@@ -101,7 +113,7 @@ export class TimePicker extends Component {
             this.setState({hours: 1})
         } 
         else {
-            this.setState({ hours: hours + 1 }, this.onChange)
+            this.setState({ hours: hours + 1 })
         }
     }
 
@@ -121,7 +133,7 @@ export class TimePicker extends Component {
         else {
             minutes = minutes + 5;
         }
-        this.setState({ hours: hours, minutes: minutes }, this.onChange);
+        this.setState({ hours: hours, minutes: minutes });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -130,10 +142,10 @@ export class TimePicker extends Component {
                 return true;
             }
         }
-        if (nextProps.timePickerMode && nextProps.time.hours === this.state.hours && nextProps.time.minutes === this.state.minutes && nextProps.time.am === this.state.am) {
+        if (nextProps.timePickerMode && nextProps.value.hours === this.state.hours && nextProps.value.minutes === this.state.minutes && nextProps.value.am === this.state.am && nextProps.value.activated === this.state.activated) {
             return false;
         }
-        if (!nextProps.timePickerMode && nextProps.number === this.state.number) {
+        if (!nextProps.timePickerMode && nextProps.value.number === this.state.number && nextProps.value.activated === this.state.activated) {
             return false;
         }
         return true;
@@ -150,17 +162,17 @@ export class TimePicker extends Component {
     }
     amPmToggler(){
         this.lastInputTouchedRef = this.amPmRef;
-        this.setState({am: !this.state.am}, this.onChange);
+        this.setState({am: !this.state.am});
     }
 
     hoursDecrement() {
         let hours = this.state.hours;
         this.lastInputTouchedRef = this.hoursRef;
         if (hours < 2) {
-            this.setState({ hours: 12 }, this.onChange)
+            this.setState({ hours: 12 })
         } 
         else {
-            this.setState({ hours: hours - 1 }, this.onChange)
+            this.setState({ hours: hours - 1 })
         }
     }
 
@@ -180,7 +192,7 @@ export class TimePicker extends Component {
         else {
             minutes = minutes - 5;
         }
-        this.setState({ hours: hours, minutes: minutes }, this.onChange);
+        this.setState({ hours: hours, minutes: minutes });
     }
 
     performMultipleTimes(callback) {
