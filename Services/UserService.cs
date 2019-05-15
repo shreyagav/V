@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Services.Data;
 using Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -14,13 +16,41 @@ namespace Services
     {
         private UserManager<TRRUser> _userManager;
         private SignInManager<TRRUser> _signinManager;
+        private RoleManager<IdentityRole> _roleManager;
         private ApplicationDbContext _ctx;
 
-        public UserService(UserManager<TRRUser> userManager, SignInManager<TRRUser> signInManager, ApplicationDbContext ctx)
+        public UserService(UserManager<TRRUser> userManager, SignInManager<TRRUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext ctx)
         {
             _userManager = userManager;
             _signinManager = signInManager;
+            _roleManager = roleManager;
             _ctx = ctx;
+        }
+
+        public Option[] GetRolesFromOptions()
+        {
+            return _ctx.Options.Where(a => a.OptionCategoryId == 18).ToArray();
+        }
+
+        public TRRUser[] GetUsersInRole(int id)
+        {
+            return _ctx.UserOptions.Where(a => a.OptionId == id).Include(a => a.User).Select(a=>a.User).ToArray();
+        }
+
+        public async Task<Dictionary<TRRUser, IdentityResult>> AddUsersToRole(TRRUser[] users, IdentityRole role)
+        {
+            Dictionary<TRRUser, IdentityResult> result = new Dictionary<TRRUser, IdentityResult>();
+            foreach(var user in users)
+            {
+                var res = await _userManager.AddToRoleAsync(user, role.Name);
+                result.Add(user, res);
+            }
+            return result;
+        }
+
+        public async Task<IdentityResult> AddRole(IdentityRole role)
+        {
+            return await _roleManager.CreateAsync(role);
         }
 
         public TRRUser FindBy(Expression<Func<TRRUser, bool>> predicate)

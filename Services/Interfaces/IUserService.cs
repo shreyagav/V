@@ -13,5 +13,9 @@ namespace Services.Interfaces
         Task<IdentityResult> SignUp(TRRUser user);
         Task<IdentityResult> AddLogin(TRRUser user);
         TRRUser FindBy(Expression<Func<TRRUser, bool>> predicate);
+        Task<IdentityResult> AddRole(IdentityRole role);
+        Task<Dictionary<TRRUser, IdentityResult>> AddUsersToRole(TRRUser[] users, IdentityRole role);
+        Option[] GetRolesFromOptions();
+        TRRUser[] GetUsersInRole(int id);
     }
 }

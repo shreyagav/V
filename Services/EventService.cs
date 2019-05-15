@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Dto;
 using Services.Data;
@@ -6,18 +7,39 @@ using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services
 {
     public class EventService : IEventService
     {
         private ApplicationDbContext _context;
-        public EventService(ApplicationDbContext context)
+        private readonly UserManager<TRRUser> _userManager;
+        public EventService(ApplicationDbContext context, UserManager<TRRUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+        public async Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids, ClaimsPrincipal user)
+        {
+            var appUser = await _userManager.GetUserAsync(user);
+            List<UserEvent> newAttendies = new List<UserEvent>();
+            foreach(string usrId in ids)
+            {
+                var temp = new UserEvent();
+                temp.Created = DateTime.Now;
+                temp.CreatedBy = appUser;
+                temp.EventId = id;
+                temp.UserId = usrId;
+                newAttendies.Add(temp);
+            }
+            _context.UserEvents.AddRange(newAttendies.ToArray());
+            _context.SaveChanges();
+            return GetEventAttendees(id);
 
+        }
         public EventMainDto ChangeEvent(EventMainDto newEvent)
         {
             CalendarEvent temp;

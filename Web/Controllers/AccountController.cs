@@ -46,12 +46,18 @@ namespace Web.Controllers
                 var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 if(user != null)
                 {
-                    res.UserName = user.UserName;
-                    res.UserRole = user.OldType.ToString();
-                    res.Error = null;
+                    await FillSignInResponse(user, res);
                 }
             }
             return res;
+        }
+
+        private async Task FillSignInResponse(TRRUser user, SignInResponse resp)
+        {
+            resp.UserName = user.UserName;
+            resp.UserType = user.OldType.ToString();
+            resp.UserRoles = await _userManager.GetRolesAsync(user);
+            resp.Error = null;
         }
 
         [HttpPost("[action]")]
@@ -80,8 +86,7 @@ namespace Web.Controllers
                     var res = await _signInManager.PasswordSignInAsync(user, info.Password, false, false);
                     if (res.Succeeded)
                     {
-                        resp.UserName = user.UserName;
-                        resp.UserRole = user.OldType.ToString();
+                        await FillSignInResponse(user, resp);
                     }
                     else
                     {
@@ -110,8 +115,7 @@ namespace Web.Controllers
                 var res = await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
                 if (res.Succeeded)
                 {
-                    resp.UserName = user.UserName;
-                    resp.UserRole = user.OldType.ToString();
+                    await FillSignInResponse(user, resp);
                 }
                 else
                 {

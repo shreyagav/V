@@ -17,5 +17,6 @@ namespace Services.Interfaces
         TRRUser[] GetAllUsers();
         void ImportSystemCodes(SystemCode[] codes);
         void ImportUserDiagnoses(UserDiagnosis[] diag);
+        void AddRole(TRRRole role);
     }
 }

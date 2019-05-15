@@ -39,6 +39,11 @@ namespace Web.Controllers
         {
             return _service.RemoveEventAttendees(id, attendee);
         }
+        [HttpPost("[action]/{id}")]
+        public async Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids)
+        {
+            return await _service.AddEventAttendees(id, ids, User);
+        }
         [HttpGet("[action]/{id}")]
         public EventAttendeeDto[] GetSiteMembers(int id)
         {

@@ -69,8 +69,8 @@ namespace ImportOldData
             //ImportUserOptions(nodes, importService);
             //var nodes = doc.SelectNodes("//table[@name='syscode']");
             //ImportSystemCodes(nodes, importService);
-            var nodes = doc.SelectNodes("//table[@name='diagnosis']");
-            ImportUserDiagnosis(nodes, importService);
+            //var nodes = doc.SelectNodes("//table[@name='diagnosis']");
+            //ImportUserDiagnosis(nodes, importService);
         }
 
         private static void ImportUserDiagnosis(XmlNodeList nodes, IImportService service)
