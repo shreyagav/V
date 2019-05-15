@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.Data;
 
 namespace Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190509143935_system_codes")]
+    partial class system_codes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,8 +250,6 @@ namespace Services.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("OldId");
-
                     b.HasKey("Id");
 
                     b.ToTable("Diagnoses");
@@ -358,8 +358,6 @@ namespace Services.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(50);
-
-                    b.Property<int>("OldId");
 
                     b.HasKey("Id");
 

@@ -29,5 +29,20 @@ namespace Web.Controllers
         {
             return _service.GetEvent(id);
         }
+        [HttpGet("[action]/{id}")]
+        public EventAttendeeDto[] GetEventAttendees(int id)
+        {
+            return _service.GetEventAttendees(id);
+        }
+        [HttpPost("[action]/{id}")]
+        public EventAttendeeDto[] RemoveEventAttendees(int id, EventAttendeeDto attendee)
+        {
+            return _service.RemoveEventAttendees(id, attendee);
+        }
+        [HttpGet("[action]/{id}")]
+        public EventAttendeeDto[] GetSiteMembers(int id)
+        {
+            return _service.GetSiteMembers(id);
+        }
     }
 }

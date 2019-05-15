@@ -36,6 +36,10 @@ namespace Models
         public bool ReleaseSigned { get; set; }
         public bool LiabilitySigned { get; set; }
         public string Comments { get; set; }
+        public int? SiteId { get; set; }
+        public EventSite Site { get; set; }
         public virtual ICollection<UserEvent> Events { get; set; }
+        public virtual ICollection<UserOption> Options { get; set; }
+        public virtual ICollection<UserDiagnosis> Diagnoses { get; set; }
     }
 }

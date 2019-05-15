@@ -11,10 +11,42 @@ namespace Services
     public class ImportService : IImportService
     {
         private ApplicationDbContext _context;
-        public ImportService(ApplicationDbContext context)
+        public ImportService(ApplicationDbContext context)=> _context = context;
+
+        public OptionCategory[] GetAllCategories() => _context.OptionCategories.ToArray();
+        public Diagnosis[] GetAllDiagnoses() => _context.Diagnoses.ToArray();
+        public void ImportUserDiagnoses(UserDiagnosis[] diag)
         {
-            _context = context;
+            _context.UserDiagnoses.AddRange(diag);
+            _context.SaveChanges();
         }
+        public void ImportOptionCategories(OptionCategory[] options)
+        {
+            _context.OptionCategories.AddRange(options);
+            _context.SaveChanges();
+        }
+
+        public void ImportOptions(Option[] opts)
+        {
+            _context.Options.AddRange(opts);
+            _context.SaveChanges();
+        }
+
+        public void ImportUserOptions(UserOption[] uopts)
+        {
+            _context.UserOptions.AddRange(uopts);
+            _context.SaveChanges();
+        }
+        public void ImportSystemCodes(SystemCode[] codes)
+        {
+            _context.SystemCodes.AddRange(codes);
+            _context.SaveChanges();
+        }
+
+        public Option[] GetAllOptions() => _context.Options.ToArray();
+
+        public TRRUser[] GetAllUsers() => _context.Users.ToArray();
+
 
         public string[] ImportUserEvents(IEnumerable<ImportUserEvent> list)
         {

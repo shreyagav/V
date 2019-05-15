@@ -26,6 +26,13 @@ namespace Services.Data
         public DbSet<CalendarEvent> CalendarEvents { get; set; }
         public DbSet<CalendarEventType> CalendarEventTypes { get; set; }
         public DbSet<EventSite> EventSites { get; set; }
+        public DbSet<Option> Options { get; set; }
+        public DbSet<OptionCategory> OptionCategories { get; set; }
+        public DbSet<UserOption> UserOptions { get; set; }
+        public DbSet<Diagnosis> Diagnoses { get; set; }
+        public DbSet<UserDiagnosis> UserDiagnoses { get; set; }
+        public DbSet<SystemCode> SystemCodes { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -39,6 +46,24 @@ namespace Services.Data
                 .HasForeignKey(e => e.UserId);
             modelBuilder.Entity<UserEvent>()
                 .HasKey(ue => new { ue.UserId, ue.EventId });
+            modelBuilder.Entity<UserOption>()
+                            .HasOne(e => e.User)
+                            .WithMany(u => u.Options)
+                            .HasForeignKey(e => e.UserId);
+            modelBuilder.Entity<UserOption>()
+                            .HasOne(e => e.Option)
+                            .WithMany(a=>a.UserOptions)
+                            .HasForeignKey(e => e.OptionId);
+            modelBuilder.Entity<UserOption>().HasKey(o => new { o.OptionId, o.UserId });
+            modelBuilder.Entity<UserDiagnosis>().HasKey(o => new { o.DiagnosisId, o.UserId });
+            modelBuilder.Entity<UserDiagnosis>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Diagnoses)
+                .HasForeignKey(e => e.UserId);
+            modelBuilder.Entity<UserDiagnosis>()
+                            .HasOne(e => e.Diagnosis)
+                            .WithMany(a => a.Users)
+                            .HasForeignKey(e => e.DiagnosisId);
         }
     }
 }

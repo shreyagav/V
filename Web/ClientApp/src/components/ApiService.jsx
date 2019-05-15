@@ -62,4 +62,31 @@ export class Service {
             return data.json();
         }).catch(err => console.error(err));
     }
+    static getEventAttendees(id) {
+        var promice = fetch(host + '/api/Event/GetEventAttendees/' + id);
+        promice.catch(err => console.error(err));
+        return promice.then(data => {
+            return data.json();
+        }).catch(err => console.error(err));
+    }
+    static removeEventAttendee(id, attendee) {
+        var promice = fetch(host + '/api/Event/RemoveEventAttendees/' + id, {
+            method: 'post',
+            body: JSON.stringify(attendee),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        promice.catch(err => console.error(err));
+        return promice.then(data => {
+            return data.json();
+        }).catch(err => console.error(err));
+    }
+    static getSiteMembers(id) {
+        var promice = fetch(host + '/api/Event/GetSiteMembers/' + id);
+        promice.catch(err => console.error(err));
+        return promice.then(data => {
+            return data.json();
+        }).catch(err => console.error(err));
+    }
 }
