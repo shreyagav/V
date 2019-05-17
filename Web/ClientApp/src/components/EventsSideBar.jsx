@@ -36,9 +36,18 @@ class EventsSideBar extends Component {
 
     componentWillMount(){
         document.addEventListener("mousedown", this.handleClick, false);
+        /*window.addEventListener("scroll", (e) => this.scrollHandler(e));*/
         this.setFilters();
     }
-    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
+    componentWillUnmount(){
+        document.removeEventListener("mousedown", this.handleClick, false);
+        /*window.addEventListener("scroll", (e) => this.scrollHandler(e));*/
+    }
+
+    scrollHandler(e){
+        debugger
+        console.log(e.target)
+    }
 
     setFilters() {
         let filters = this.props.filters;
@@ -107,114 +116,114 @@ class EventsSideBar extends Component {
     render() {
         return (
             <div style={{"height": "100%"}} data-simplebar >
-            <div className = 'mt-1 pl-1 pr-1 filters'>
-                <div className='flex-nowrap justify-space-between align-end mb-1'>
-                    <h3>Filters</h3>
-                    <button 
-                        className='round-button medium-round-button grey-outline-button pr-05 pl-05'
-                        onClick={() => this.setFilters()} 
-                    >Clear all</button>
-                </div>
-                <p>Event Title:</p>
-                <div className='input-button-wrapper'>
-                    <input 
-                        placeholder='Event Title'
-                        value={this.state.title}
-                        onChange={(e) => this.setState({title: e.target.value})}
-                        onKeyDown={(e) => {
-                            if(e.keyCode === 13) {this.updateFilter("title", this.state.title)}
+                <div className = 'mt-1 pl-1 pr-1 filters'>
+                    <div className='flex-nowrap justify-space-between align-end mb-1'>
+                        <h3>Filters</h3>
+                        <button 
+                            className='round-button medium-round-button grey-outline-button pr-05 pl-05'
+                            onClick={() => this.setFilters()} 
+                        >Clear all</button>
+                    </div>
+                    <p>Event Title:</p>
+                    <div className='input-button-wrapper'>
+                        <input 
+                            placeholder='Event Title'
+                            value={this.state.title}
+                            onChange={(e) => this.setState({title: e.target.value})}
+                            onKeyDown={(e) => {
+                                if(e.keyCode === 13) {this.updateFilter("title", this.state.title)}
+                            }}
+                        />
+                        <button onClick={() => this.updateFilter("title", this.state.title)}>
+                            <SearchUpSVG />
+                        </button>
+                    </div>
+
+                    <p>From:</p>
+                    <DatePicker 
+                        value={this.state.dateFrom}
+                        maxDate={this.state.dateTo}
+                        ref={el => this.dateStartDropDownRef = el}
+                        onSelect={value => {
+                            this.setState({dateFrom: value});
+                            this.updateFilter("dateFrom", value);
                         }}
                     />
-                    <button onClick={() => this.updateFilter("title", this.state.title)}>
-                        <SearchUpSVG />
-                    </button>
+
+                    <p>To:</p>
+                    <DatePicker 
+                        value={this.state.dateTo}
+                        minDate={this.state.dateFrom}
+                        ref={el => this.dateEndDropDownRef = el}
+                        onSelect={value => {
+                            this.setState({dateTo: value});
+                            this.updateFilter("dateTo", value);
+                        }}
+                    />
+
+                    <p>Start Time:</p>
+                    <TimePicker 
+                        ref={el => this.timeFromDropDownRef = el}
+                        timePickerMode={true} 
+                        value={this.state.timeFrom}
+                        onChange = {value => {
+                            this.setState({timeFrom: value});
+                            this.updateFilter("timeFrom", value);
+                        }}
+                    />
+                    <p>End Time:</p>
+                    <TimePicker 
+                        ref={el => this.timeToDropDownRef = el}
+                        timePickerMode={true} 
+                        value={this.state.timeTo}
+                        onChange = {value => {
+                            this.setState({timeTo: value});
+                            this.updateFilter("timeTo", value);
+                        }}
+                    />
+
+                    <p>Type of event:</p>
+                    <MultiDropDown
+                        ref={el => this.typeOfEventDropDownRef = el}
+                        list={[{name: 'Pool Session', typeID: 0}, {name: 'Flat or White Water Session', typeID: 1}, {name: 'National Event', typeID: 2}, {name: 'Regional Event', typeID: 3}, {name: 'Chapter Planning Party', typeID: 4}]}
+                        keyProperty='typeID'
+                        textProperty='name'
+                        defaultValue={this.state.typeOfEvent}
+                        placeholder='Type of Event'
+                        onDropDownValueChange = {value => {
+                            this.setState({typeOfEvent: value});
+                            this.updateFilter("typeOfEvent", value);
+                        }}
+                    />
+
+                    <p>Status:</p>
+                    <MultiDropDown
+                        ref={el => this.statusDropDownRef = el}
+                        list={[{name: 'Draft'}, {name: 'Published'}, {name: 'Closed'}, {name: 'Deleted'}, {name: 'Cancelled'}]} 
+                        keyProperty='name'
+                        textProperty='name'
+                        defaultValue={this.state.status}
+                        placeholder='Status'
+                        onDropDownValueChange = {value => {
+                            this.setState({status: value});
+                            this.updateFilter("status", value);
+                        }}
+                    />
+
+                    <p>Color:</p>
+                    <MultiDropDown
+                        ref={el => this.colorDropDownRef = el}
+                        list={this.props.store.colorList} 
+                        keyProperty='color'
+                        textProperty='name'
+                        defaultValue={this.state.color}
+                        placeholder='Color'
+                        onDropDownValueChange = {value => {
+                            this.setState({color: value});
+                            this.updateFilter("color", value);
+                        }}
+                    />
                 </div>
-
-                <p>From:</p>
-                <DatePicker 
-                    value={this.state.dateFrom}
-                    maxDate={this.state.dateTo}
-                    ref={el => this.dateStartDropDownRef = el}
-                    onSelect={value => {
-                        this.setState({dateFrom: value});
-                        this.updateFilter("dateFrom", value);
-                    }}
-                />
-
-                <p>To:</p>
-                <DatePicker 
-                    value={this.state.dateTo}
-                    minDate={this.state.dateFrom}
-                    ref={el => this.dateEndDropDownRef = el}
-                    onSelect={value => {
-                        this.setState({dateTo: value});
-                        this.updateFilter("dateTo", value);
-                    }}
-                />
-
-                <p>Start Time:</p>
-                <TimePicker 
-                    ref={el => this.timeFromDropDownRef = el}
-                    timePickerMode={true} 
-                    value={this.state.timeFrom}
-                    onChange = {value => {
-                        this.setState({timeFrom: value});
-                        this.updateFilter("timeFrom", value);
-                    }}
-                />
-                <p>End Time:</p>
-                <TimePicker 
-                    ref={el => this.timeToDropDownRef = el}
-                    timePickerMode={true} 
-                    value={this.state.timeTo}
-                    onChange = {value => {
-                        this.setState({timeTo: value});
-                        this.updateFilter("timeTo", value);
-                    }}
-                />
-
-                <p>Type of event:</p>
-                <MultiDropDown
-                    ref={el => this.typeOfEventDropDownRef = el}
-                    list={[{name: 'Pool Session', typeID: 0}, {name: 'Flat or White Water Session', typeID: 1}, {name: 'National Event', typeID: 2}, {name: 'Regional Event', typeID: 3}, {name: 'Chapter Planning Party', typeID: 4}]}
-                    keyProperty='typeID'
-                    textProperty='name'
-                    defaultValue={this.state.typeOfEvent}
-                    placeholder='Type of Event'
-                    onDropDownValueChange = {value => {
-                        this.setState({typeOfEvent: value});
-                        this.updateFilter("typeOfEvent", value);
-                    }}
-                />
-
-                <p>Status:</p>
-                <MultiDropDown
-                    ref={el => this.statusDropDownRef = el}
-                    list={[{name: 'Draft'}, {name: 'Published'}, {name: 'Closed'}, {name: 'Deleted'}, {name: 'Cancelled'}]} 
-                    keyProperty='name'
-                    textProperty='name'
-                    defaultValue={this.state.status}
-                    placeholder='Status'
-                    onDropDownValueChange = {value => {
-                        this.setState({status: value});
-                        this.updateFilter("status", value);
-                    }}
-                />
-
-                <p>Color:</p>
-                <MultiDropDown
-                    ref={el => this.colorDropDownRef = el}
-                    list={this.props.store.colorList} 
-                    keyProperty='color'
-                    textProperty='name'
-                    defaultValue={this.state.color}
-                    placeholder='Color'
-                    onDropDownValueChange = {value => {
-                        this.setState({color: value});
-                        this.updateFilter("color", value);
-                    }}
-                />
-            </div>
             </div>
         );
     }

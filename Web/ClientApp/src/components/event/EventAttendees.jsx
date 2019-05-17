@@ -25,6 +25,7 @@ class EventAttendees extends Component {
             tempMembers:[],
             siteMembers: []
         };
+        this.modalWindowRef = null;
         this.membersDropDownRef = null;
         this.removeMember = this.removeMember.bind(this);
         this.renderFullNameColumn = this.renderFullNameColumn.bind(this);
@@ -91,21 +92,28 @@ class EventAttendees extends Component {
         return (
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
                 {this.state.loading && <Loader />}
-                {this.state.addingExistingMembers && <Alert
+                {this.state.addingExistingMembers &&
+                <Alert
+                    ref = {el => this.modalWindowRef = el}
                     headerText='Add existing members'
                     onClose={() => this.setState({ addingExistingMembers: false })}
+                    showOkCancelButtons = {true}
+                    onOkButtonClick={() => this.setState({ addingExistingMembers: false })}
+                    onCancelButtonClick={() => this.setState({ addingExistingMembers: false })}
                 >
-                    <MultiDropDown
-                        ref={el => this.membersDropDownRef = el}
-                        list={this.state.siteMembers}
-                        multiSelect={true}
-                        toggleable={false}
-                        keyProperty='id'
-                        textProperty='email'
-                        defaultValue={this.state.tempMembers}
-                        placeholder="Select members"
-                        onDropDownValueChange={value => this.setState({ tempMembers: value })}
-                    />
+                    <div style={{"position": "relative", "height": "100%"}}>
+                        <MultiDropDown
+                            list={this.state.siteMembers}
+                            multiSelect={true}
+                            toggleable={false}
+                            keyProperty='id'
+                            textProperty='email'
+                            defaultValue={this.state.tempMembers}
+                            placeholder="Select members"
+                            onDropDownValueChange={value => this.setState({ tempMembers: value })}
+                            flexibleParentHeight = {this.modalWindowRef}
+                        />
+                    </div>
                 </Alert>}
                 <div className="flex-wrap align-center justify-center mt-2 mb-2">
                     <p className='input-label'>ADD ATTENDEES:</p>

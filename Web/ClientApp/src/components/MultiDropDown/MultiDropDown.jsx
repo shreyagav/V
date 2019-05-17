@@ -50,6 +50,7 @@ class MultiDropDown extends React.Component {
                         onKeyDown={this.props.onKeyDown}
                         onDropDownValueChange={(value) => {this.props.onDropDownValueChange(value)}}
                         toggleable = {this.props.toggleable ? this.props.toggleable : (this.props.hideHeader ? !this.props.hideHeader : true)}
+                        flexibleParentHeight = {this.props.flexibleParentHeight}
                     />
                 }
             </div>

@@ -97,6 +97,8 @@ const createMultiDropDownStore = WrappedComponent => {
 
     fillStore(props) {
         if (props.list !== undefined) {
+            let isOpen = false;
+            if(props.toggleable === false){isOpen = true}
             let value = [];
             if (props.defaultValue !== undefined){
                 value = props.defaultValue;
@@ -131,6 +133,7 @@ const createMultiDropDownStore = WrappedComponent => {
                 list.push(clone);
             });
             this.setState({ 
+                isOpen: isOpen,
                 modifiedList: list,
                 value: value,
                 placeholder: placeholder,

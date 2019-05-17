@@ -1095,4 +1095,6 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
     border-color: #E53E71 !important;
 }
 
+.overflow-auto {overflow: auto;}
+.overflow-hidden {overflow: hidden;}
 

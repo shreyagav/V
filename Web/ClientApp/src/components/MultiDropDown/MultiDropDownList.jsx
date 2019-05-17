@@ -86,54 +86,60 @@ class MultiDropDownList extends React.Component {
 
     setHeight(){
         if(this.simpleBarWrapperRef !== null){
-            let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            let dropDownHeaderHeight = 0;
-            if(this.props.multiDropDownStore.dropDownHeaderRef !== null){
-                dropDownHeaderHeight = this.props.multiDropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
-                if (dropDownHeaderHeight !== this.state.dropDownHeaderHeight){
-                    this.setState({dropDownHeaderHeight: dropDownHeaderHeight});
-                }
-            }
-            let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
-            let bottom = top + dropDownHeaderHeight;
-            let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
-            let toBottom = windowHeight - bottom + dropDownHeaderHeight;
-            let coeff = 0;
-            let openStateIndex = Object.keys(this.props.multiDropDownStore.openStateIndex);
-            openStateIndex.forEach(element => {  
-                let ind = parseInt(element.slice(1));
-                coeff = coeff + this.props.multiDropDownStore.modifiedList[ind][this.props.multiDropDownStore.expandBy].length;
-            })
-            let regularHeight = 45*(this.props.multiDropDownStore.modifiedList.length + coeff);
-            let simpleBarHeight = 0;
-            if (this.props.toggleable) {
-                if (toTop > toBottom){
-                    //* OPENS UP *//
-                    this.opensDown = false;
-                    //simpleBarHeight = Math.floor(toTop);
-                    simpleBarHeight = (Math.floor(toTop/45))*45-1;
-                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
-                    this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px", "boxShadow": "0em -1em 2em #ffffff, 0em -0.25em 0.25em rgba(0, 0, 0, 0.19)"};
-                }
-                else {
-                    /* OPENS DOWN */
-                    this.opensDown = true;
-                    //simpleBarHeight = Math.floor(toBottom);
-                    simpleBarHeight = (Math.floor(toBottom/45))*45-1;
-                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
-                    this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px", "boxShadow": "0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19)"};
-                }
-                //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
+            if (this.props.flexibleParentHeight !== null && this.props.flexibleParentHeight !== undefined){
+                let parentHeight = this.props.flexibleParentHeight;
+                debugger
             }
             else {
-                simpleBarHeight = Math.floor(toBottom);
-                if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
-                this.style = {"height":this.simpleBarHeight};
+                let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                let dropDownHeaderHeight = 0;
+                if(this.props.multiDropDownStore.dropDownHeaderRef !== null){
+                    dropDownHeaderHeight = this.props.multiDropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
+                    if (dropDownHeaderHeight !== this.state.dropDownHeaderHeight){
+                        this.setState({dropDownHeaderHeight: dropDownHeaderHeight});
+                    }
+                }
+                let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
+                let bottom = top + dropDownHeaderHeight;
+                let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
+                let toBottom = windowHeight - bottom + dropDownHeaderHeight;
+                let coeff = 0;
+                let openStateIndex = Object.keys(this.props.multiDropDownStore.openStateIndex);
+                openStateIndex.forEach(element => {  
+                    let ind = parseInt(element.slice(1));
+                    coeff = coeff + this.props.multiDropDownStore.modifiedList[ind][this.props.multiDropDownStore.expandBy].length;
+                })
+                let regularHeight = 45*(this.props.multiDropDownStore.modifiedList.length + coeff);
+                let simpleBarHeight = 0;
+                if (this.props.toggleable) {
+                    if (toTop > toBottom){
+                        //* OPENS UP *//
+                        this.opensDown = false;
+                        //simpleBarHeight = Math.floor(toTop);
+                        simpleBarHeight = (Math.floor(toTop/45))*45-1;
+                        if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                        this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
+                        this.className = "drop-down-list-wrapper";
+                        this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px", "boxShadow": "0em -1em 2em #ffffff, 0em -0.25em 0.25em rgba(0, 0, 0, 0.19)"};
+                    }
+                    else {
+                        /* OPENS DOWN */
+                        this.opensDown = true;
+                        //simpleBarHeight = Math.floor(toBottom);
+                        simpleBarHeight = (Math.floor(toBottom/45))*45-1;
+                        if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                        this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
+                        this.className = "drop-down-list-wrapper";
+                        this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px", "boxShadow": "0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19)"};
+                    }
+                    //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
+                }
+                else {
+                    simpleBarHeight = Math.floor(toBottom);
+                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
+                    this.style = {"height":this.simpleBarHeight};
+                }
             }
         }
     }
@@ -157,6 +163,7 @@ class MultiDropDownList extends React.Component {
     }
 
     handleWheel = (e) => {
+        
         if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {
             if (this.props.multiDropDownStore.isOpen) {
                 this.props.multiDropDownStore.toggle();
@@ -164,7 +171,6 @@ class MultiDropDownList extends React.Component {
             return;
         }
         var cancelScrollEvent = function(e){
-            //debugger
             e.stopImmediatePropagation();
             e.preventDefault();
             e.returnValue = false;
@@ -175,17 +181,36 @@ class MultiDropDownList extends React.Component {
         var wheelDelta = e.deltaY;
         var height = elem.clientHeight;
         var scrollHeight = elem.scrollHeight;
-        var parentTop = this.simpleBarRef.parentElement.getBoundingClientRect().top;
+        var scrolleableElement = this.simpleBarRef.parentElement;
+        var parentTop = scrolleableElement.getBoundingClientRect().top;
         var top = this.simpleBarRef.getBoundingClientRect().top;
         var scrollTop = parentTop - top;
         var isDeltaPositive = wheelDelta > 0;
         if (isDeltaPositive && wheelDelta > scrollHeight - height - scrollTop) {
-            elem.scrollTop = scrollHeight;
+            /*var handle = null;
+            let delta = Math.ceil((scrollHeight - scrolleableElement.scrollTop)/10);
+            var func = ()=>{
+                if(scrolleableElement.scrollTop < scrollHeight){
+                    scrolleableElement.scrollTop += delta;     
+                }else{
+                    clearInterval(handle);
+                }
+            };
+            handle = setInterval(func, 10);*/
+
+
+            /*let delta = Math.ceil((scrollHeight - scrolleableElement.scrollTop)/10);
+            while (scrolleableElement.scrollTop < scrollHeight) {
+                let x = scrolleableElement.scrollTop + delta;
+                scrolleableElement.scrollTop = Math.ceil(x);
+                console.log(scrolleableElement.scrollTop);
+            }*/
+            this.simpleBarRef.parentElement.scrollTop = scrollHeight;
             return cancelScrollEvent(e);
         }
         else {
             if (!isDeltaPositive && -wheelDelta > scrollTop) {
-                elem.scrollTop = 0;
+                this.simpleBarRef.parentElement.scrollTop = 0;
                 return cancelScrollEvent(e);
             }
         }
