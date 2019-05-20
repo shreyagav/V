@@ -17,6 +17,14 @@ class Member extends Component {
             evtId = props.match.params.id
         }
         this.state = {
+            member: {
+                chapter: [],
+                firstName: '',
+                lastName: '', 
+                phone: '',
+                email: '',
+                dateOfBirth: null,
+            },
             activeTabIndex: 0,
             releaseSigned: false,
             liabilitySigned: false,
@@ -55,18 +63,19 @@ class Member extends Component {
 
     handleClick(e) {
         if(this.state.activeTabIndex === 0){
-            if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
+            /*if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
                 this.stateDropDownRef.state.toggle();
-            }
+            }*/
             if(this.dateOfBirthDropDownRef.state.isOpen && !this.dateOfBirthDropDownRef.datePickerRef.contains(e.target)){
                 this.dateOfBirthDropDownRef.toggle();
             }
             if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.chaptersDropDownRef.state.toggle();
             }
+            /*
             if(this.genderDropDownRef.state.isOpen && !this.genderDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.genderDropDownRef.state.toggle();
-            }
+            }*/
         }
         if(this.state.activeTabIndex === 1){
             if(this.joinDateDropDownRef.state.isOpen && !this.joinDateDropDownRef.datePickerRef.contains(e.target)){
@@ -92,6 +101,12 @@ class Member extends Component {
             }
         }
     }
+
+    updateMemberProperty(property, value){
+        let member = this.state.member;
+        member[property] = value;
+        this.setState({member, member}, console.log(this.state));
+    }
     
     render() {
         const pictures = this.state.formattedPicturesList;
@@ -110,33 +125,64 @@ class Member extends Component {
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
                         <li className='input-wrapper'>
                             <p>First Name:</p>
-                            <input type='text' placeholder='First Name'></input>
+                            <input 
+                                type='text' 
+                                placeholder='First Name'
+                                value = {this.state.member.firstName}
+                                onChange={e => this.updateMemberProperty("firstName", e.target.value)}
+                            />
                         </li>
                         <li className='input-wrapper'>
                             <p>Last Name:</p>
-                            <input type='text' placeholder='Last Name'></input>
+                            <input 
+                                type='text' 
+                                placeholder='Last Name'
+                                value = {this.state.member.lastName}
+                                onChange={e => this.updateMemberProperty("lastName", e.target.value)}
+                            />
                         </li>
                         <li>
                             <p>Chapter:</p>
-                            {/*<DropDown 
+                            <MultiDropDown
                                 ref={el => this.chaptersDropDownRef = el}
                                 list={this.props.store.chapterList}
-                                defaultValue={{name:'National'}}
-                            />*/}
+                                multiSelect={false}
+                                keyProperty='id'
+                                textProperty='state'
+                                expandBy='chapters'
+                                expandedTextProperty='name'
+                                expandedKeyProperty='id'
+                                expandedMultiSelect={false}
+                                defaultValue={this.state.member.chapter}
+                                placeholder="Select chapter"
+                                onDropDownValueChange={value => this.updateMemberProperty("chapter", value)}
+                            />
                         </li>
                         <li className='input-wrapper'>
                             <p>Phone #:</p>
-                            <input type='text' placeholder='Phone Number'></input>
+                            <input 
+                                type='text' 
+                                placeholder='Phone Number'
+                                value = {this.state.member.phone}
+                                onChange={e => this.updateMemberProperty("phone", e.target.value)}
+                            />
                         </li>
                         <li className='input-wrapper'>
                             <p>Email:</p>
-                            <input type='text' placeholder='Email'></input>
+                            <input type='text' 
+                                placeholder='Email'
+                                value = {this.state.member.email}
+                                onChange={e => this.updateMemberProperty("email", e.target.email)}
+                            />
                         </li>
                         <li>
                             <p>Date of Birth:</p>
-                            <DatePicker
+                            <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
-                                defaultDateToday={false}
+                                value={this.state.member.dateOfBirth}
+                                onSelect={value => {
+                                    this.updateMemberProperty("dateOfBirth", value);
+                                }}
                             />
                         </li>
                         <li>

@@ -22,6 +22,10 @@ input::-ms-clear {
     display: none;
 }
 
+.italic {
+    font-style: italic;
+    font-weight: 400;
+}
 
 header {
     position: sticky;

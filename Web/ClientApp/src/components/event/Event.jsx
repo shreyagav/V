@@ -318,7 +318,7 @@ class Event extends Component {
                                 this.emptyStartDate = false;
                                 this.updateEventProperty("date", value);
                             }}
-                            />
+                        />
                         </li>
                     {/*<li>
                             <p></p>

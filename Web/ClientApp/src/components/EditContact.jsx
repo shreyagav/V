@@ -8,48 +8,25 @@ class EditContact extends Component {
         super(props);
         this.state = {
             contactIsOpen: false,
-            contactName: '',
-            contactPhone: '',
-            contactEmail: '',
         };
-        this.nameInputRef = null;
-        this.phoneInputRef = null;
-        this.emailInputRef = null;
     }
 
     toggle(){
         this.setState({contactIsOpen: !this.state.contactIsOpen});
     }
 
-    setValue(key, value){
-        const state = this.state;
-        state[key] = value;
-        this.setState(state);
-    }
-
     keyDownHandler(e) {
         switch (e.keyCode) {
             case 13: {
-                //enter
+                /* ENTER */
                 this.toggle();
                 break;
             }
             case 27: {
-                //esc
-                if (this.state.contactIsOpen) {
-                    this.toggle();
-                }
+                /* ESC */
+                if (this.state.contactIsOpen) {this.toggle();}
                 break;
             }
-        }
-    }
-
-    inputKeyDownHandler(e) {
-        if (e.shiftKey && e.keyCode == 9 && this.nameInputRef.contains(e.target)) {
-            this.toggle();
-        }
-        if (!e.shiftKey && e.keyCode === 9 && this.emailInputRef.contains(e.target)) {
-            this.toggle();
         }
     }
 
@@ -65,9 +42,12 @@ class EditContact extends Component {
                         onClick={() => this.toggle()}
                         onKeyDown={(e) => this.keyDownHandler(e)}
                     >
-                        <span className='flex11auto pl-025 pt-05 pb-05'>
-                            {this.state.contactName !== "" ? <strong className='regular-p pb-05'>{this.state.contactName + ', '}</strong>:''}
-                            <p className='regular-p pb-05'>{(this.state.contactPhone !== '' ? (this.state.contactPhone + ', ') : "") + this.state.contactEmail}</p>
+                        <span className='flex11auto pl-5 pt-05 pb-05 '>
+                            {this.props.value.name !== "" ? <strong className='regular-p'>{this.props.value.name}</strong>:''}
+                            {this.props.value.name !== "" && (this.props.value.phone !== '' || this.props.value.email !== '') && <strong className='regular-p'>{', '}</strong>}
+                            <p className='regular-p' style={{"fontSize":"0.9rem"}}>{this.props.value.phone !== '' && this.props.value.phone}</p>
+                            {this.props.value.phone !== '' && this.props.value.email !== '' && <p className='regular-p' style={{"fontSize":"0.9rem"}}>{', '}</p>}
+                            <p className='regular-p' style={{"fontSize":"0.9rem"}}>{this.props.value.email !== '' && this.props.value.email}</p>
                         </span>
                         <button disabled className='arrow-button' >
                             {this.state.contactIsOpen ? <ArrowUpSVG svgClassName='flip90'/> : <EditUpSVG />}
@@ -78,30 +58,44 @@ class EditContact extends Component {
                             <li>
                                 <p>Name:</p>
                                 <input 
-                                    ref={el => this.nameInputRef = el} 
-                                    value={this.state.contactName} 
+                                    value={this.props.value.name} 
                                     type='text' 
-                                    placeholder='' 
-                                    onChange={(e) => this.setValue("contactName", e.target.value)}
-                                    onKeyDown={(e) => this.inputKeyDownHandler(e)}
-                                ></input>
+                                    placeholder='Name' 
+                                    onChange={(e) => {
+                                        let value = this.props.value;
+                                        value.name = e.target.value;
+                                        this.props.onValueChange(value);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.shiftKey && e.keyCode === 9) {this.toggle();}
+                                    }}
+                                />
                             </li>
                             <li>
                                 <p>Phone:</p>
                                 <input 
-                                    ref={el => this.phoneInputRef = el} 
-                                    value={this.state.contactPhone} 
-                                    type='text' placeholder='' 
-                                    onChange={(e) => this.setValue("contactPhone", e.target.value)}></input>
+                                    value={this.props.value.phone}
+                                    type='text' placeholder='Phone'
+                                    onChange={(e) => {
+                                        let value = this.props.value;
+                                        value.phone = e.target.value;
+                                        this.props.onValueChange(value);
+                                    }}
+                                />
                             </li>
                             <li>
                                 <p>Email:</p>
                                 <input 
-                                    ref={el => this.emailInputRef = el} 
-                                    value={this.state.contactEmail}
-                                    type='text' placeholder=''
-                                    onChange={(e) => this.setValue("contactEmail", e.target.value)}
-                                    onKeyDown={(e) => this.inputKeyDownHandler(e)}
+                                    value={this.props.value.email}
+                                    type='text' placeholder='Email'
+                                    onChange={(e) => {
+                                        let value = this.props.value;
+                                        value.email = e.target.value;
+                                        this.props.onValueChange(value);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (!e.shiftKey && e.keyCode === 9) {this.toggle()}
+                                    }}
                                 ></input>
                             </li>
                         </ul>
