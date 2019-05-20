@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TabComponent from '../TabComponent';
-import DropDown from '../DropDown';
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import CloseUpSVG from '../../svg/CloseUpSVG';
 import ArrowUpSVG from '../../svg/ArrowUpSVG';
 import EditUpSVG from '../../svg/EditUpSVG';
@@ -94,10 +94,22 @@ class Chapter extends Component {
                         </li>
                         <li>
                             <p>Region:</p>
-                            <DropDown 
+                            <MultiDropDown
                                 ref={el => this.regionsDropDownRef = el}
-                                list={this.state.regions}
-                                defaultValue={{name:'National'}}
+                                list={this.props.store.chapterList}
+                                multiSelect={false}
+                                keyProperty='id'
+                                textProperty='state'
+                                expandBy='chapters'
+                                expandedTextProperty='name'
+                                expandedKeyProperty='id'
+                                expandedMultiSelect={false}
+                                defaultValue={this.state.eventMain.site}
+                                placeholder="Select chapter"
+                                onDropDownValueChange={value => {
+                                    this.emptyChapter = false;
+                                    this.updateEventProperty("site", value);
+                                }}
                             />
                         </li>
                         <li>
@@ -106,11 +118,11 @@ class Chapter extends Component {
                         </li>
                         <li>
                             <p>Pool Rental</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={el => this.poolRentalDropDownRef = el}
                                 list={[{"name":"YES"}, {"name":"NO"}]}
                                 defaultValue={{name:'NO'}}
-                            />
+                            />*/}
                         </li>
                     </ul>
                     <div className = 'flex-nowrap align-center mt-3 mb-3 ml-1 mr-1'>

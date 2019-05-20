@@ -36,17 +36,41 @@ class EventsSideBar extends Component {
 
     componentWillMount(){
         document.addEventListener("mousedown", this.handleClick, false);
-        /*window.addEventListener("scroll", (e) => this.scrollHandler(e));*/
+        document.addEventListener('wheel', this.handleWheel, {passive : false});
         this.setFilters();
     }
     componentWillUnmount(){
         document.removeEventListener("mousedown", this.handleClick, false);
-        /*window.addEventListener("scroll", (e) => this.scrollHandler(e));*/
+        document.removeEventListener('wheel', this.handleWheel, {passive : false});
     }
 
-    scrollHandler(e){
-        debugger
-        console.log(e.target)
+    handleWheel = (e) => {
+        if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {return;}
+        var cancelScrollEvent = function(e){
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            e.returnValue = false;
+            return false;
+        };
+        var elem = this.simpleBarRef;
+        var wheelDelta = e.deltaY;
+        var height = elem.clientHeight;
+        var scrollHeight = elem.scrollHeight;
+        var parent = elem.parentElement;
+        var parentTop = parent.getBoundingClientRect().top;
+        var top = elem.getBoundingClientRect().top;
+        var scrollTop = parentTop - top;
+        var isDeltaPositive = wheelDelta > 0;
+        if (isDeltaPositive && wheelDelta > scrollHeight - height - scrollTop) {
+            parent.scrollTop = scrollHeight;
+            return cancelScrollEvent(e);
+        }
+        else {
+            if (!isDeltaPositive && -wheelDelta > scrollTop) {
+                parent.scrollTop = 0;
+                return cancelScrollEvent(e);
+            }
+        }
     }
 
     setFilters() {
@@ -116,7 +140,7 @@ class EventsSideBar extends Component {
     render() {
         return (
             <div style={{"height": "100%"}} data-simplebar >
-                <div className = 'mt-1 pl-1 pr-1 filters'>
+                <div ref={el => this.simpleBarRef = el} className = 'mt-1 pl-1 pr-1 filters'>
                     <div className='flex-nowrap justify-space-between align-end mb-1'>
                         <h3>Filters</h3>
                         <button 

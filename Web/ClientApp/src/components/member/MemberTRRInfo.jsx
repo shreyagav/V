@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DropDown from '../DropDown';
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import DatePicker from '../DatePicker';
 import { withStore } from '../store';
 
@@ -71,11 +71,11 @@ class MemberTRRInfo extends Component {
                         </li>
                         <li>
                             <p>Sponsored By:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={this.props.setSponsoredByDropDownRef}
                                 list={[{name:'Sponsored By Option 1'}, {name:'Sponsored By Option 2'}, {name:'Sponsored By Option 3'}]}
                                 placeholder='Sponsored By'
-                            />
+                            />*/}
                         </li>
                         <li className='input-wrapper'>
                             <p>Travel Time:</p>
@@ -88,11 +88,11 @@ class MemberTRRInfo extends Component {
                         </li>
                         <li>
                             <p>Medical:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={this.props.setMedicalDropDownRef}
                                 list={[{name:'Medical Option 1'}, {name:'Medical Option 2'}, {name:'Medical Option 3'}]}
                                 placeholder='Medical'
-                            />
+                            />*/}
                         </li>
                         <li>
                             <p>Injury Date:</p>
@@ -102,27 +102,27 @@ class MemberTRRInfo extends Component {
                         </li>
                         <li>
                             <p>Status:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={this.props.setOldStatusDropDownRef}
                                 list={[{name:'Status 1'}, {name:'Status 2'}, {name:'Status 3'}]}
                                 defaultValue={{name:'Status 1'}}
-                            />
+                            />*/}
                         </li>
                         <li>
                             <p>Role:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={this.props.setOldAuthLevelDropDownRef}
                                 list={[{name:'AuthLevel 1'}, {name:'AuthLevel 2'}, {name:'AuthLevel 3'}]}
                                 defaultValue={{name:'AuthLevel 1'}}
-                            />
+                            />*/}
                         </li>
                         <li>
                             <p>TRR User Type:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={this.props.setUserOldTypeDropDownRef}
                                 list={[{name:'userType 1'}, {name:'userType 2'}, {name:'userType 3'}]}
                                 defaultValue={{name:'userType 1'}}
-                            />
+                            />*/}
                         </li>
                         <li>
                             <p>Comments:</p>

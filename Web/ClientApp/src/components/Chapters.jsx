@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import DropDown from './DropDown';
 import MultiDropDown from './MultiDropDown/MultiDropDown';
 import DatePicker from './DatePicker';
 import CloseUpSVG from '../svg/CloseUpSVG';

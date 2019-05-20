@@ -11,6 +11,7 @@ import Loader from '../Loader';
 import { Service } from '../ApiService';
 import Alert from '../Alert';
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
+import CheckBoxSVG from '../../svg/CheckBoxSVG';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -23,7 +24,8 @@ class EventAttendees extends Component {
             loading: false,
             addingExistingMembers: false,
             tempMembers:[],
-            siteMembers: []
+            siteMembers: [],
+            selectAllCheckboxChecked: false,
         };
         this.modalWindowRef = null;
         this.membersDropDownRef = null;
@@ -31,8 +33,14 @@ class EventAttendees extends Component {
         this.renderFullNameColumn = this.renderFullNameColumn.bind(this);
         this.addNewMember = this.addNewMember.bind(this);
         this.addExistingMember = this.addExistingMember.bind(this);
-        
     }
+
+    componentDidUpdate(){
+        if(this.state.siteMembers.length !== this.state.tempMembers.length && this.state.selectAllCheckboxChecked){
+            this.setState({selectAllCheckboxChecked: false});
+        }
+    }
+
     addNewMember() {
 
     }
@@ -81,6 +89,27 @@ class EventAttendees extends Component {
         );
     }
 
+    selectAllCheckboxOnChange() {
+        let tempMembers = [];
+        if(!this.state.selectAllCheckboxChecked) {
+            //select all checkboxes
+            this.state.siteMembers.forEach(element => tempMembers.push(element.id));
+        }
+        this.setState({selectAllCheckboxChecked: !this.state.selectAllCheckboxChecked, tempMembers: tempMembers});
+    }
+
+    passFocusForward(e) {
+        if(!e.shiftKey) {this.okButtonRef.focus()}
+        else {this.selectAllCheckboxRef.focus()}
+    }
+
+    textPropertyRender(element, textProperty){
+        return <div>
+            {(element["firstName"] !== undefined || element["lastName"] !== undefined) && <span className='name'>{element["firstName"] + ' ' + element["lastName"]}</span>}
+            {element["email"] !== undefined && <span className="email">{element["email"]}</span>}
+        </div>
+    }
+
     render() {
         const members = this.state.members;
         const columns=[
@@ -95,12 +124,31 @@ class EventAttendees extends Component {
                 {this.state.addingExistingMembers &&
                 <Alert
                     ref = {el => this.modalWindowRef = el}
-                    headerText='Add existing members'
+                    headerText='Add members'
                     onClose={() => this.setState({ addingExistingMembers: false })}
-                    showOkCancelButtons = {true}
-                    onOkButtonClick={() => this.setState({ addingExistingMembers: false })}
-                    onCancelButtonClick={() => this.setState({ addingExistingMembers: false })}
-                >
+                >   
+                    <div 
+                        tabIndex={0} 
+                        className='checkBox-wrapper flex-nowrap align-center mb-1'
+                        onClick={() => {this.selectAllCheckboxOnChange()}}
+                        onKeyDown={(e) => {
+                            if(e.keyCode === 32){
+                                //SPACE BAR
+                                this.selectAllCheckboxOnChange()
+                            }
+                        }}
+                        ref = {el => this.selectAllCheckboxRef = el}
+                    >
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                checked={this.state.selectAllCheckboxChecked}
+                                disabled
+                            />
+                            <CheckBoxSVG />
+                        </label>
+                        <span className="checkbox-text">Select All</span>
+                    </div>
                     <div style={{"position": "relative", "height": "100%"}}>
                         <MultiDropDown
                             list={this.state.siteMembers}
@@ -109,10 +157,29 @@ class EventAttendees extends Component {
                             keyProperty='id'
                             textProperty='email'
                             defaultValue={this.state.tempMembers}
-                            placeholder="Select members"
+                            placeholder="Select from the list"
                             onDropDownValueChange={value => this.setState({ tempMembers: value })}
-                            flexibleParentHeight = {this.modalWindowRef}
+                            hideHeader = {true}
+                            flexibleParent = {true}
+                            passFocusForward = {(e) => this.passFocusForward(e)}
+                            textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
                         />
+                        <div className='flex-nowrap' style={{"marginBottom":"-0.5em", "marginTop":"1em"}}>
+                            <button 
+                                ref = {el => this.okButtonRef = el}
+                                className='medium-static-button static-button' 
+                                onClick={() => this.setState({ addingExistingMembers: false })}
+                            >
+                                OK
+                            </button>
+                            <button 
+                                ref = {el => this.cancelButtonRef = el}
+                                className='medium-static-button static-button default-button'
+                                onClick={() => this.setState({ addingExistingMembers: false })}
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </Alert>}
                 <div className="flex-wrap align-center justify-center mt-2 mb-2">

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import DropDown from '../DropDown';
 import Table from '../Table';
 import { withStore } from '../store';
 

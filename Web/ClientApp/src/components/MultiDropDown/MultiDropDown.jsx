@@ -28,11 +28,10 @@ class MultiDropDown extends React.Component {
                         defaultValue={this.props.defaultValue}
                         //onDropDownValueChange = {value => this.setState({stateFilter: value})}
                         onDropDownValueChange={this.props.onDropDownValueChange}
-                        toggleable = {true}
                         onKeyDown={this.props.onKeyDown}
                         placeholder={this.props.placeholder}
                         showParameter={this.props.showParameter}
-                        toggleable = {this.props.toggleable ? this.props.toggleable : (this.props.hideList ? !this.props.hideList : true)}
+                        toggleable = {this.props.toggleable !== undefined ? this.props.toggleable : (this.props.hideList ? !this.props.hideList : true)}
                     />
                 }
                 {!this.props.hideList &&
@@ -49,8 +48,10 @@ class MultiDropDown extends React.Component {
                         defaultValue={this.props.defaultValue}
                         onKeyDown={this.props.onKeyDown}
                         onDropDownValueChange={(value) => {this.props.onDropDownValueChange(value)}}
-                        toggleable = {this.props.toggleable ? this.props.toggleable : (this.props.hideHeader ? !this.props.hideHeader : true)}
-                        flexibleParentHeight = {this.props.flexibleParentHeight}
+                        toggleable = {this.props.toggleable !== undefined ? this.props.toggleable : (this.props.hideHeader ? !this.props.hideHeader : true)}
+                        flexibleParent = {this.props.flexibleParent}
+                        passFocusForward = {(e) => this.props.passFocusForward(e)}
+                        textPropertyRender = {this.props.textPropertyRender}
                     />
                 }
             </div>

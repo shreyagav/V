@@ -1,4 +1,4 @@
-.drop-down {
+/*.drop-down {
     font-weight: 600;
     font-size: inherit;
     position: relative;
@@ -12,10 +12,8 @@
 
 .drop-down-header {
     border: 1px solid #666666;
-    /*min-height: 40px;*/
     display: flex;
     align-items: stretch;
-    /*padding: 0.25rem;*/
     border-radius: 0px;
 }
 
@@ -38,7 +36,6 @@
     flex-wrap: wrap;
     max-width: 100%;
     align-self: center;
-    /*margin-left: 0.6em;*/
     align-items: center;
 }
 
@@ -124,7 +121,7 @@ ul.multi-level-list > li > span {
 .drop-down-header button:focus {
     outline: none;
     border-color: transparent;
-} */
+} 
 
 .unselectButton {
     flex: 0 0 1em;
@@ -135,7 +132,6 @@ ul.multi-level-list > li > span {
 .unselectButton > svg > .SVG {fill: #666666;}
 .unselectButton:hover > svg > .SVG, .unselectButton:focus > svg > .SVG {fill: #0099cc;}
 
-/* list of Chapters */
 .drop-down-list-wrapper {
     position: absolute; 
     display: block; 
@@ -146,7 +142,6 @@ ul.multi-level-list > li > span {
     z-index: 999; 
     border: 1px solid #0099cc;
 }
-
 
 ul.drop-down-list > li {margin-right: 0.9rem; margin-left: 0.9rem; text-transform: uppercase;}
 ul.drop-down-list > li ul.drop-down-list > li {margin-right: 0rem; margin-left: 0rem;}
@@ -229,13 +224,6 @@ ul.drop-down-list > li > div:focus > label::after{
     opacity: 0.5;
 }
 
-/* workaround for EDGE */
-ul.drop-down-list > li label:hover > svg,
-ul.drop-down-list input:focus + svg {
-    border: 1px solid #0099cc;
-}
-/* woraround for EDGE ends */
-
 ul.drop-down-list > li.openChapter span {color: #666666;}
 ul.drop-down-list > li.openChapter svg {border-color: #999999;}
 ul.drop-down-list > li.openChapter input[type=checkbox]:checked + svg > .svg {fill: #666666 !important;}
@@ -252,14 +240,12 @@ ul.drop-down-list > li{
 ul.drop-down-list > li:hover > div, ul.drop-down-list > li:hover > div > span,
 ul.drop-down-list > li:focus > div, ul.drop-down-list > li:focus > div > span {cursor: pointer; color: #0099cc;}
 ul.drop-down-list > li:focus > div {color: #0099cc;}
-/*ul.drop-down-list > li > div > :first-child{flex: 0 0 1rem; margin-left: 3px;}*/
 ul.drop-down-list > li > div > :last-child {flex: 1 1 auto; display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis;}
 ul.drop-down-list > li > div > :last-child > button:last-child {flex: 0 0 0.8rem;}
 ul.drop-down-list > li > div > :last-child svg {flex: 0 0 0.8rem; height: 0.8rem; margin-left: 0.25rem;}
 ul.drop-down-list > li ul.drop-down-list {border-top: 1px solid #ededed; padding-left: 1.25rem;}
 ul.drop-down-list > li ul.drop-down-list > li {
     display: block;
-    /*overflow: hidden;*/
 }
 ul.drop-down-list > li ul.drop-down-list > li:not(:last-child) {border-bottom: 1px solid #ededed;}
 ul.drop-down-list button:focus {border-color:transparent;}
@@ -277,3 +263,4 @@ ul.drop-down-list button:hover > span, ul.drop-down-list button:focus > span {co
     max-width: 3rem;
     margin: 0px !important;
 }
+*/

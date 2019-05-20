@@ -12,11 +12,23 @@ class CalendarSidebar extends Component {
         this.state = {};
     }
 
+    passFocusForward(e){
+        if(e.shiftKey){
+            if(this.nationalEventButton){this.nationalEventButton.focus()}
+        }
+    }
+
     render() {
         return (
         <div style={{"position": "relative", "height": "100%"}}>
             <div style={{"paddingRight": '0.9rem', "paddingLeft": '0.9rem'}}>
-                <button className='big-blue-button mt-1' onClick = {this.props.clearChapterFilter} >National Event Calendar</button>
+                <button 
+                    ref={el => this.nationalEventButton = el}
+                    className='big-blue-button mt-1' 
+                    onClick = {this.props.clearChapterFilter} 
+                >
+                    National Event Calendar
+                </button>
                 <h4>Event calendar By Regions and chapters:</h4>
             </div>
             <MultiDropDown 
@@ -33,6 +45,7 @@ class CalendarSidebar extends Component {
                 onDropDownValueChange = {this.props.onSideBarDropDownValueChange}
                 hideHeader = {true}
                 hideList = {false}
+                passFocusForward = {(e) => this.passFocusForward(e)}
             />
             {/*<MultiDropDownList list={this.props.chapterList} />*/}
         </div>

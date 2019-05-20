@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TabComponent from '../TabComponent';
-import DropDown from '../DropDown';
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import DatePicker from '../DatePicker';
 import TimePicker from '../TimePicker';
 import { withStore } from '../store';
@@ -118,11 +118,11 @@ class Member extends Component {
                         </li>
                         <li>
                             <p>Chapter:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={el => this.chaptersDropDownRef = el}
                                 list={this.props.store.chapterList}
                                 defaultValue={{name:'National'}}
-                            />
+                            />*/}
                         </li>
                         <li className='input-wrapper'>
                             <p>Phone #:</p>
@@ -141,11 +141,11 @@ class Member extends Component {
                         </li>
                         <li>
                             <p>Gender:</p>
-                            <DropDown 
+                            {/*<DropDown 
                                 ref={el => this.genderDropDownRef = el}
                                 list={[{name:'Male'}, {name:'Female'}]}
                                 placeholder='Gender'
-                            />
+                            />*/}
                         </li>
                         <li className='input-wrapper'>
                             <p>Address:</p>
@@ -155,12 +155,12 @@ class Member extends Component {
                             <span></span>
                             <div className='flex-nowrap break-at-500 input-wrapper children-mr-08-when-width-500'>
                                 <input type='text' placeholder='City' style={{"flex":"1 1 auto"}}></input>
-                                <DropDown
+                                {/*<DropDown
                                     ref={el => this.stateDropDownRef = el}
                                     list={stateList} 
                                     placeholder='State'
                                     showParameter='abbreviation'
-                                />
+                                />*/}
                                 <input type='text' placeholder='Zip' maxLength={5} style={{"flex":"0 0 100px"}}></input>
                             </div>
                         </li>

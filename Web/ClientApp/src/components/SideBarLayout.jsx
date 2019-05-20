@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
-import DropDownList from './DropDownList';
 import { withStore } from './store';
 import './Calendar.css'
 import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
