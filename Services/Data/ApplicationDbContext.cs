@@ -32,6 +32,8 @@ namespace Services.Data
         public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<UserDiagnosis> UserDiagnoses { get; set; }
         public DbSet<SystemCode> SystemCodes { get; set; }
+        public DbSet<BudgetLine> EventBudgets { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
