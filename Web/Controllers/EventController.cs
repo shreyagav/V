@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -36,12 +38,25 @@ namespace Web.Controllers
         {
             return _service.GetEventAttendees(id);
         }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> Photo(int id)
+        {
+            Photo p = _service.GetPhotoById(id);
+            byte[] data = await _storageService.GetFile(Path.GetFileName(p.Url));
+            return File(data, "application/octet-stream");
+        }
+
         [HttpGet("[action]/{id}")]
         public Photo[] GetEventPhotos(int id)
         {
-            throw new NotImplementedException();
+            var temp = _service.GetEventPhotos(id);
+            foreach(var a in temp)
+            {
+                a.Url = $"/api/Event/Photo/{a.Id}";
+            }
+            return temp;
         }
-
         [HttpPost("[action]/{id}")]
         public async Task<Photo[]> UploadFile(int id, List<IFormFile> files)
         {
@@ -49,16 +64,23 @@ namespace Web.Controllers
             foreach (var f in files)
             {
                 string url = await _storageService.SaveFile(Guid.NewGuid().ToString(), f.OpenReadStream());
+                Image img = Image.FromStream(f.OpenReadStream());
                 photos.Add(new Photo()
                 {
                     EventId=id,
                     FileName=f.FileName,
                     Uploaded = DateTime.Now,
+                    Width = img.Width,
+                    Height = img.Height,
                     Url = url
                 });
             }
             var arr = photos.ToArray();
             _service.AddPhotos(arr);
+            foreach(var a in arr)
+            {
+                a.Url = $"/api/Event/Photo/{a.Id}";
+            }
             return arr;
         }
         [HttpPost("[action]/{id}")]
@@ -69,7 +91,7 @@ namespace Web.Controllers
         [HttpPost("[action]/{id}")]
         public async Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids)
         {
-            return await _service.AddEventAttendees(id, ids, User);
+            return await _service.AddEventAttendees(id, ids.Distinct<string>().ToArray(), User);
         }
         [HttpGet("[action]/{id}")]
         public EventAttendeeDto[] GetSiteMembers(int id)
@@ -87,6 +109,21 @@ namespace Web.Controllers
         {
             return _service.AddBudgetLines(id, lines);
         }
+
+        [HttpPost("[action]/{id}")]
+        public BudgetLine[] AddBudgetLine(int id, BudgetLine line)
+        {
+            BudgetLine[] arr = new BudgetLine[] { line };
+            return _service.AddBudgetLines(id, arr);
+        }
+
+        [HttpPost("[action]/{id}")]
+        public BudgetLine[] UpdateBudgetLine(int id, BudgetLine line)
+        {
+            
+            return _service.UpdateBudgetLine(id, line);
+        }
+
         [HttpPost("[action]/{id}")]
         public BudgetLine[] DeleteBudgetLine(int id, BudgetLine line)
         {

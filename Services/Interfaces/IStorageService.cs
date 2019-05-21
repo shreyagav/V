@@ -9,5 +9,6 @@ namespace Services.Interfaces
     public interface IStorageService
     {
         Task<string> SaveFile(string name, Stream stream);
+        Task<byte[]> GetFile(string name);
     }
 }

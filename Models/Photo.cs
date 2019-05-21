@@ -11,6 +11,8 @@ namespace Models
         public CalendarEvent Event { get; set; }
         public string FileName { get; set; }
         public DateTime Uploaded { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public string Url { get; set; }
     }
 }

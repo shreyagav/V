@@ -24,14 +24,17 @@ namespace Services
         }
         public async Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids, ClaimsPrincipal user)
         {
-            var appUser = await _userManager.GetUserAsync(user);
+            //TODO: set real user
+            //var appUser = await _userManager.GetUserAsync(user);
             List<UserEvent> newAttendies = new List<UserEvent>();
             foreach(string usrId in ids)
             {
                 var temp = new UserEvent();
                 temp.Created = DateTime.Now;
-                temp.CreatedBy = appUser;
+                //TODO: set real user
+                //temp.CreatedBy = appUser;
                 temp.EventId = id;
+                
                 temp.UserId = usrId;
                 newAttendies.Add(temp);
             }
@@ -54,6 +57,14 @@ namespace Services
             _context.SaveChanges();
             return GetEventBudget(eventId);
         }
+
+        public BudgetLine[] UpdateBudgetLine(int eventId, BudgetLine line)
+        {
+            _context.Entry(line).State = EntityState.Modified;
+            _context.SaveChanges();
+            return GetEventBudget(eventId);
+        }
+
 
         public BudgetLine[] GetEventBudget(int eventId)
         {
@@ -96,7 +107,7 @@ namespace Services
 
         public EventAttendeeDto[] GetEventAttendees(int eventId)
         {
-            return _context.UserEvents
+            var res = _context.UserEvents
                 .Where(ue => ue.EventId == eventId)
                 .Include(e => e.User)
                 .Select(u => new EventAttendeeDto()
@@ -109,6 +120,7 @@ namespace Services
                         Phone = u.User.PhoneNumber
                     })
                 .ToArray();
+            return res;
         }
         public EventAttendeeDto[] RemoveEventAttendees(int eventId, EventAttendeeDto attendee)
         {
@@ -121,8 +133,9 @@ namespace Services
         public EventAttendeeDto[] GetSiteMembers(int eventId)
         {
             int siteId = _context.CalendarEvents.First(a => a.Id == eventId).SiteId;
-            return _context.Users
-                .Where(ue => ue.SiteId == siteId)
+            var ids = _context.UserEvents.Where(ue => ue.EventId == eventId).Select(a=>a.UserId);
+            var res = _context.Users
+                .Where(ue => ue.SiteId == siteId && !ids.Contains(ue.Id))
                 .Select(u => new EventAttendeeDto()
                 {
                     Id = u.Id,
@@ -133,12 +146,23 @@ namespace Services
                     Phone = u.PhoneNumber
                 })
                 .ToArray();
+            return res;
         }
 
         public void AddPhotos(Photo[] arr)
         {
             _context.Photos.AddRange(arr);
             _context.SaveChanges();
+        }
+
+        public Photo[] GetEventPhotos(int id)
+        {
+            return _context.Photos.Where(p => p.EventId == id).ToArray();
+        }
+
+        public Photo GetPhotoById(int id)
+        {
+            return _context.Photos.FirstOrDefault(a => a.Id == id);
         }
     }
 }

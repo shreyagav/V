@@ -85,7 +85,7 @@ class ImageGallery extends Component {
                                             style={index < element.length-1 ? {"marginRight": this.state.margin + "px","flexBasis": innerElement.flexBasis + "%"} : {"flexBasis": innerElement.flexBasis + "%"}}
                                             tabIndex="0"
                                         >
-                                            <img src={innerElement.src} />
+                                            <img src={innerElement.url} />
                                         </div>
                                     )}
                                 </li>

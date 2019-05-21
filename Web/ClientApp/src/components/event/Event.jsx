@@ -71,10 +71,7 @@ class Event extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.nextStep = this.nextStep.bind(this);
         this.updateEventProperty = this.updateEventProperty.bind(this);
-        this.uploadFileChanged = this.uploadFileChanged.bind(this);
-        this.openFileDialog = this.openFileDialog.bind(this);
         this.setActiveStep = this.setActiveStep.bind(this);
-        this.fileRef = null;
         this.emptyTitle = false;
         this.emptyChapter = false;
         this.emptyStartDate = false;
@@ -108,17 +105,7 @@ class Event extends Component {
           component.setState({pictures: jjson})
         });
     }
-    uploadFileChanged(evt) {
-        console.log(evt);
-        console.log(evt.target);
-        console.log(this.fileRef);
-        Service.uploadPictures(evt.target);
-    }
-    openFileDialog() {
-        if (this.fileRef != null) {
-            this.fileRef.click();
-        }
-    }
+
 
     validation() {
         let validationPassed = true;
@@ -269,14 +256,7 @@ class Event extends Component {
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
-                <div style={{ display: 'none' }}>
-                    <input type="file" ref={el => this.fileRef = el} onChange={this.uploadFileChanged} />
-                </div>
-                <button className='medium-static-button static-button default-button'
-                    onClick={this.openFileDialog} 
-                >
-                    open
-                        </button>
+                
                 <TabComponent 
                     inheritParentHeight={false}
                     tabList={['info', 'attendees', 'budget', 'pictures']}
@@ -502,7 +482,7 @@ class Event extends Component {
                     </ul>
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} />}
-                {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} /> }
+                {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} />}
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&

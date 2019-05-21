@@ -20,5 +20,8 @@ namespace Services.Interfaces
         BudgetLine[] AddBudgetLines(int eventId, BudgetLine[] lines);
         void AddPhotos(Photo[] arr);
         BudgetLine[] DeleteBudgetLine(int eventId, BudgetLine line);
+        BudgetLine[] UpdateBudgetLine(int eventId, BudgetLine line);
+        Photo[] GetEventPhotos(int id);
+        Photo GetPhotoById(int id);
     }
 }

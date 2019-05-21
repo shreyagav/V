@@ -33,6 +33,7 @@ class EventAttendees extends Component {
         this.renderFullNameColumn = this.renderFullNameColumn.bind(this);
         this.addNewMember = this.addNewMember.bind(this);
         this.addExistingMember = this.addExistingMember.bind(this);
+        this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
     }
 
     componentDidUpdate(){
@@ -40,7 +41,11 @@ class EventAttendees extends Component {
             this.setState({selectAllCheckboxChecked: false});
         }
     }
-
+    submitMembersToEvent() {
+        this.setState({ loading: true });
+        Service.addEventAttendees(this.state.eventId, this.state.tempMembers)
+            .then(data => this.setState({ members: data, tempMembers: [], loading: false, addingExistingMembers: false }));
+    }
     addNewMember() {
 
     }
@@ -168,14 +173,14 @@ class EventAttendees extends Component {
                             <button 
                                 ref = {el => this.okButtonRef = el}
                                 className='medium-static-button static-button' 
-                                onClick={() => this.setState({ addingExistingMembers: false })}
+                                onClick={this.submitMembersToEvent}
                             >
                                 OK
                             </button>
                             <button 
                                 ref = {el => this.cancelButtonRef = el}
                                 className='medium-static-button static-button default-button'
-                                onClick={() => this.setState({ addingExistingMembers: false })}
+                                onClick={() => this.setState({ addingExistingMembers: false, tempMembers:[] })}
                             >
                                 Cancel
                             </button>
