@@ -34,24 +34,20 @@ export class Service {
 
     static getBudget(eventId) {
         
-        return Service.__get('/api/Event/GetBudget/' + eventId)
+        return Service.__get(host + '/api/Event/GetBudget/' + eventId)
     }
     static deleteBudgetLine(id, line) {
-        //TODO: add host;
-        return Service.__post('/api/Event/DeleteBudgetLine/' + id, line);
+        return Service.__post(host + '/api/Event/DeleteBudgetLine/' + id, line);
     }
     static addBudgetLine(id, line) {
-        //TODO: add host;
-        return Service.__post('/api/Event/AddBudgetLine/' + id, line);
+        return Service.__post(host + '/api/Event/AddBudgetLine/' + id, line);
     }
 
     static updateBudgetLine(id, line) {
-        //TODO: add host;
-        return Service.__post('/api/Event/UpdateBudgetLine/' + id, line);
+        return Service.__post(host + '/api/Event/UpdateBudgetLine/' + id, line);
     }
     static getEventPictures(id) {
-        //TODO: add host;
-        return Service.__get('/api/Event/GetEventPhotos/' + id);//Service.__get('/Pictures.json');//
+        return Service.__get(host + '/api/Event/GetEventPhotos/' + id);//Service.__get('/Pictures.json');//
     }
     static __get(url) {
         var promice = fetch(url);
@@ -79,8 +75,7 @@ export class Service {
         for (var i = 0; i < input.files.length; i++) {
             formData.append('files', input.files[i], input.files[i].name);
         }
-        //TODO: add host;
-        var promice = fetch('/api/Event/UploadFile/' + eventId, { body: formData, method: 'post' });
+        var promice = fetch(host + '/api/Event/UploadFile/' + eventId, { body: formData, method: 'post' });
         promice.catch(err => console.error(err));
         return promice.then(data => {
             return data.json();
