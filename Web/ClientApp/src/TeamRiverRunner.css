@@ -551,9 +551,7 @@ ul.input-fields > li{
 }
 
 @media screen and (min-width: 561px){
-    ul.input-fields > li {
-        flex-flow: row;
-    }
+    ul.input-fields > li {flex-flow: row;}
 
     ul.first-child-text-60 > li > :first-child{
         flex: 0 0 60px;
@@ -907,7 +905,7 @@ button.grey-SVG-button:focus {
     text-overflow: ellipsis;
     text-align: center;
 }
-.children-mr-08-when-width-500 > :nth-child(n):not(:last-child) {margin-right: 0.8rem;}
+.line-of-inputs-wrapper > :nth-child(n):not(:last-child) {margin-right: 0.8rem;}
 .break-at-500-p {margin-top:0px !important; margin-right:0.5rem;}
 @media screen and (max-width: 500px) {
     .table {display: block; }
@@ -917,9 +915,11 @@ button.grey-SVG-button:focus {
         border-bottom: 1px solid #666666 !important;*/
         background-color: #f4f3f2;
     }
-    .break-at-500 {display: block;}
+    .break-at-500 {display: block;} /* Do I still need this??? */
     .break-at-500-p {margin-bottom: 0.8rem;}
-    .children-mr-08-when-width-500 > :nth-child(n):not(:last-child) {margin-right: 0em; margin-bottom: 1rem;}
+    .line-of-inputs-wrapper > :nth-child(n):not(:last-child) {margin-right: 0rem !important;}
+    .line-of-inputs-wrapper > .mark-invalid:nth-child(n) > :nth-child(n) {margin-bottom: 0rem !important;}
+    .line-of-inputs-wrapper > .mark-invalid:nth-child(n) {margin-bottom: 1.5rem !important;}
 }
 
 @media screen and (max-width: 700px) {
@@ -1093,9 +1093,11 @@ li.mark-invalid::after {
     li.mark-invalid::after {bottom: -1.25em;}
 }
 
-li.mark-invalid > div > input,
+li.mark-invalid input,
 li.mark-invalid div.drop-down-header,
-li.mark-invalid > div.time-picker > div.input-button-wrapper {
+li.mark-invalid > div.date-picker > div.input-button-wrapper,
+li.mark-invalid > div.time-picker > div.input-button-wrapper,
+li.mark-invalid label > svg {
     border-color: #E53E71 !important;
 }
 
@@ -1140,7 +1142,7 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
 
 label.radio svg, label.radio::after {border-radius: 50px;}
 
-.ptpb055notNS {padding-top: 0.6em !important; padding-bottom: 0.6em !important;}
+.ptpb055notNS {padding-top: 0.6em !important; padding-bottom: 0.6em !important;width: auto !important;}
 @media screen and (max-width: 560px){
     .ptpb055notNS {padding-top: 0em !important; padding-bottom: 0.2em !important;}
 }

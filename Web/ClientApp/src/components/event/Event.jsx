@@ -109,7 +109,6 @@ class Event extends Component {
     validation() {
         let validationPassed = true;
             if (this.state.activeTabIndex === 0){
-                //debugger
                 if(this.state.eventMain.name.length < 1) {
                     this.emptyTitle = true;
                 }

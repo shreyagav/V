@@ -7,6 +7,7 @@ import { withStore } from '../store';
 import MemberTRRInfo from './MemberTRRInfo';
 import MemberEvents from './MemberEvents';
 import RadioBoxSVG from '../../svg/RadioBoxSVG';
+import Alert from '../Alert';
 
 
 class Member extends Component {
@@ -51,6 +52,7 @@ class Member extends Component {
                 events:[],
             },
             activeTabIndex: 0,
+            showError: false,
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
@@ -62,6 +64,19 @@ class Member extends Component {
         this.statusDropDownRef = null;
         this.authLevelDropDownRef = null;
         this.userTypeDropDownRef = null;
+
+        this.emptyChapter = false;
+        this.emptyFirstName = false;
+        this.emptyLastName = false;
+        this.emptyPhone = false;
+        this.emptyEmail = false;
+        this.emptyDateOfBirth = false;
+        this.emptyGender = false;
+        this.emptyStreetAddress = false;
+        this.emptyCity = false;
+        this.emptyZip = false;
+        this.emptyState = false;
+
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -126,6 +141,50 @@ class Member extends Component {
             {element.name + ', ' + element.abbreviation}
         </span>
     }
+
+    validation() {
+        let validationPassed = true;
+            if (this.state.activeTabIndex === 0){
+                if(this.state.member.chapter.length < 1) {
+                    this.emptyChapter = true;
+                }
+                if(this.state.member.firstName.length < 1) {
+                    this.emptyFirstName = true;
+                }
+                if(this.state.member.lastName.length < 1) {
+                    this.emptyLastName = true;
+                }
+                if(this.state.member.phone.length < 1) {
+                    this.emptyPhone = true;
+                }
+                if(this.state.member.email.length < 1) {
+                    this.emptyEmail = true;
+                }
+                if(this.state.member.dateOfBirth === null) {
+                    this.emptyDateOfBirth = true;
+                }
+                if(this.state.member.gender.male  === false && this.state.member.gender.female  === false) {
+                    this.emptyGender = true;
+                }
+                if(this.state.member.address.streetAddress.length < 1) {
+                    this.emptyStreetAddress = true;
+                }
+                if(this.state.member.address.city.length < 1) {
+                    this.emptyCity = true;
+                }
+                if(this.state.member.address.zip.length < 1) {
+                    this.emptyZip = true;
+                }
+                if(this.state.member.address.state < 1) {
+                    this.emptyState = true;
+                }
+                if (this.emptyChapter || this.emptyFirstName || this.emptyLastName || this.emptyPhone || this.emptyEmail || this.emptyDateOfBirth || this.emptyGender || this.emptyStreetAddress || this.emptyCity || this.emptyZip || this.emptyState){
+                    this.setState({showError: true});
+                    validationPassed = false;
+                }
+            }
+        return validationPassed;
+    }
     
     render() {
         const pictures = this.state.formattedPicturesList;
@@ -142,25 +201,37 @@ class Member extends Component {
                 />
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
-                        <li className='input-wrapper'>
+                        <li className = {this.emptyFirstName ? 'input-wrapper mark-invalid' : 'input-wrapper'}
+                            error-text='Please enter the First Name'
+                        >
                             <p>First Name:</p>
                             <input 
                                 type='text' 
                                 placeholder='First Name'
                                 value = {this.state.member.firstName}
-                                onChange={e => this.updateMemberProperty("firstName", e.target.value)}
+                                onChange={e => {
+                                    if(this.emptyFirstName) {this.emptyFirstName = false;}
+                                    this.updateMemberProperty("firstName", e.target.value);
+                                }}
                             />
                         </li>
-                        <li className='input-wrapper'>
+                        <li className={this.emptyLastName ? 'input-wrapper mark-invalid' : 'input-wrapper'}
+                            error-text='Please enter the Last Name'
+                        >
                             <p>Last Name:</p>
                             <input 
                                 type='text' 
                                 placeholder='Last Name'
                                 value = {this.state.member.lastName}
-                                onChange={e => this.updateMemberProperty("lastName", e.target.value)}
+                                onChange={e => {
+                                    if(this.emptyLastName) {this.emptyLastName = false;}
+                                    this.updateMemberProperty("lastName", e.target.value);
+                                }}
                             />
                         </li>
-                        <li>
+                        <li className = {this.emptyChapter ? 'mark-invalid' : ""}
+                            error-text='Please select the Chapter'
+                        >
                             <p>Chapter:</p>
                             <MultiDropDown
                                 ref={el => this.chaptersDropDownRef = el}
@@ -174,44 +245,69 @@ class Member extends Component {
                                 expandedMultiSelect={false}
                                 defaultValue={this.state.member.chapter}
                                 placeholder="Select chapter"
-                                onDropDownValueChange={value => this.updateMemberProperty("chapter", value)}
+                                onDropDownValueChange={value => {
+                                    if(this.emptyChapter) {this.emptyChapter = false;}
+                                    this.updateMemberProperty("chapter", value);
+                                }}
                             />
                         </li>
-                        <li className='input-wrapper'>
+                        <li className={this.emptyPhone ? 'input-wrapper mark-invalid' : 'input-wrapper'}
+                            error-text='Please enter the Phone Number'
+                        >
                             <p>Phone #:</p>
                             <input 
                                 type='text' 
                                 placeholder='Phone Number'
                                 value = {this.state.member.phone}
-                                onChange={e => this.updateMemberProperty("phone", e.target.value)}
+                                onChange={e => {
+                                    if(this.emptyPhone){this.emptyPhone = false;}
+                                    this.updateMemberProperty("phone", e.target.value)
+                                }}
                             />
                         </li>
-                        <li className='input-wrapper'>
+                        <li className={this.emptyEmail ? 'input-wrapper mark-invalid' : 'input-wrapper'}
+                            error-text='Please enter the Email'
+                        >
                             <p>Email:</p>
                             <input type='text' 
                                 placeholder='Email'
                                 value = {this.state.member.email}
-                                onChange={e => this.updateMemberProperty("email", e.target.value)}
+                                onChange={e => {
+                                    if(this.emptyEmail){this.emptyEmail = false;}
+                                    this.updateMemberProperty("email", e.target.value);
+                                }}
                             />
                         </li>
-                        <li>
+                        <li className={this.emptyDateOfBirth ? 'mark-invalid' : ''}
+                            error-text='Please enter the Date of Birth'
+                        >
                             <p>Date of Birth:</p>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
                                 value={this.state.member.dateOfBirth}
                                 onSelect={value => {
+                                    if(this.emptyDateOfBirth){this.emptyDateOfBirth = false;}
                                     this.updateMemberProperty("dateOfBirth", value);
                                 }}
                             />
                         </li>
-                        <li>
+                        <li className={this.emptyGender ? 'mark-invalid' : ''}
+                            error-text='Please select Gender'
+                            style={{"flex":"0 0 auto !important"}}
+                        >
                             <p>Gender:</p>
                             <div className='flex-wrap justify-left ptpb055notNS'>
 
                                 <div tabIndex={0} className='checkBox-wrapper'
-                                    onClick = {() => this.updateMemberProperty("gender", {male: true, female: false})}
+                                    onClick = {() => {
+                                        if(this.emptyGender){this.emptyGender = false;}
+                                        this.updateMemberProperty("gender", {male: true, female: false});
+                                    }}
                                     onKeyDown={(e) => {
-                                        if(e.keyCode === 32){/* SPACE BAR */ this.updateMemberProperty("gender", {male: true, female: false})}
+                                        if(e.keyCode === 32){
+                                            /* SPACE BAR */ 
+                                            if(this.emptyGender){this.emptyGender = false;}
+                                            this.updateMemberProperty("gender", {male: true, female: false})}
                                     }}
                                     style = {{"marginRight":"0.75rem"}}
                                 >
@@ -223,8 +319,12 @@ class Member extends Component {
                                 </div>
 
                                 <div tabIndex={0} className='checkBox-wrapper'
-                                    onClick = {() => this.updateMemberProperty("gender", {male: false, female: true})}
+                                    onClick = {() => {
+                                        if(this.emptyGender){this.emptyGender = false;}
+                                        this.updateMemberProperty("gender", {male: false, female: true})
+                                    }}
                                     onKeyDown={(e) => {
+                                        if(this.emptyGender){this.emptyGender = false;}
                                         if(e.keyCode === 32){/* SPACE BAR */ this.updateMemberProperty("gender", {male: false, female: true})}
                                     }}
                                 >
@@ -237,13 +337,16 @@ class Member extends Component {
 
                             </div>
                         </li>
-                        <li className='input-wrapper'>
+                        <li className={this.emptyStreetAddress ? 'input-wrapper mark-invalid' : 'input-wrapper'}
+                            error-text='Please enter the Street Address'
+                        >
                             <p>Address:</p>
                             <input 
                                 type='text' 
                                 placeholder='Street Address'
                                 value={this.state.member.address.streetAddress}
                                 onChange={e => {
+                                    if(this.emptyStreetAddress){this.emptyStreetAddress = false;}
                                     let address = this.state.member.address;
                                     address.streetAddress = e.target.value;
                                     this.updateMemberProperty("address", address);
@@ -252,46 +355,61 @@ class Member extends Component {
                         </li>
                         <li>
                             <span></span>
-                            <div className='flex-nowrap break-at-500 input-wrapper children-mr-08-when-width-500'>
-                                <input 
-                                    type='text' 
-                                    placeholder='City' 
+                            <ul className='input-fields flex-nowrap break-at-500 line-of-inputs-wrapper'>
+                                <li 
+                                    className={this.emptyCity ? 'input-wrapper mark-invalid' : 'input-wrapper'} 
+                                    error-text='Enter City'
                                     style={{"flex":"1 1 auto"}}
-                                    value={this.state.member.address.city}
-                                    onChange={e => {
-                                        let address = this.state.member.address;
-                                        address.city = e.target.value;
-                                        this.updateMemberProperty("address", address);
-                                    }}
-                                />
-                                <MultiDropDown
-                                    ref={el => this.stateDropDownRef = el}
-                                    list={stateList}
-                                    multiSelect={false}
-                                    keyProperty='abbreviation'
-                                    textProperty='abbreviation'
-                                    defaultValue={this.state.member.address.state}
-                                    placeholder="State"
-                                    textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
-                                    onDropDownValueChange={value => {
-                                        let address = this.state.member.address;
-                                        address.state = value;
-                                        this.updateMemberProperty("address", address);
-                                    }}
-                                />
-                                <input 
-                                    type='text' 
-                                    placeholder='Zip' 
-                                    maxLength={5} 
+                                >
+                                    <input 
+                                        type='text' 
+                                        placeholder='City' 
+                                        value={this.state.member.address.city}
+                                        onChange={e => {
+                                            if(this.emptyCity){this.emptyCity = false;}
+                                            let address = this.state.member.address;
+                                            address.city = e.target.value;
+                                            this.updateMemberProperty("address", address);
+                                        }}
+                                    />
+                                </li>
+                                <li className={this.emptyState ? 'mark-invalid' : ''} error-text='Select State' style={{"flex":"1 1 auto"}}>
+                                        <MultiDropDown
+                                            ref={el => this.stateDropDownRef = el}
+                                            list={stateList}
+                                            multiSelect={false}
+                                            keyProperty='abbreviation'
+                                            textProperty='abbreviation'
+                                            defaultValue={this.state.member.address.state}
+                                            placeholder="State"
+                                            textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
+                                            onDropDownValueChange={value => {
+                                                if(this.emptyState){this.emptyState = false;}
+                                                let address = this.state.member.address;
+                                                address.state = value;
+                                                this.updateMemberProperty("address", address);
+                                            }}
+                                        />
+                                </li>
+                                <li 
+                                    className={this.emptyZip ? 'input-wrapper mark-invalid' : 'input-wrapper'}
+                                    error-text='Enter Zip'
                                     style={{"flex":"0 0 100px"}}
-                                    value = {this.state.member.address.zip}
-                                    onChange={e => {
-                                        let address = this.state.member.address;
-                                        address.zip = e.target.value;
-                                        this.updateMemberProperty("address", address);
-                                    }}
-                                />
-                            </div>
+                                >
+                                    <input 
+                                        type='text' 
+                                        placeholder='Zip' 
+                                        maxLength={5} 
+                                        value = {this.state.member.address.zip}
+                                        onChange={e => {
+                                            if(this.emptyZip){this.emptyZip = false;}
+                                            let address = this.state.member.address;
+                                            address.zip = e.target.value;
+                                            this.updateMemberProperty("address", address);
+                                        }}
+                                    />
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 }
@@ -314,13 +432,42 @@ class Member extends Component {
                 }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
-                        <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
+                        <button 
+                            className='medium-static-button static-button' 
+                            onClick={() => {
+                                if (this.validation()) {
+                                    this.setState({activeTabIndex: this.state.activeTabIndex-1});
+                                }
+                            }}
+                        >
+                            Back
+                        </button>
                     }
                     {this.state.activeTabIndex < 2 &&
-                        <button className='medium-static-button static-button default-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex+1})}>Next</button>
+                        <button 
+                            className='medium-static-button static-button default-button' 
+                            onClick={() => {
+                                if (this.validation()) {
+                                    this.setState({activeTabIndex: this.state.activeTabIndex+1})
+                                }
+                            }}
+                        >
+                            Next
+                        </button>
                     }
                     {this.state.activeTabIndex === 2 &&
                         <button className='medium-static-button static-button default-button' disabled >Save</button>
+                    }
+                    {this.state.showError && 
+                        <Alert 
+                            headerText = 'Error'
+                            onClose = {()=>this.setState({showError: false})}
+                            showOkButton = {true}
+                            buttonText = "Got IT!"
+                            mode = 'error'
+                        >
+                        <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
+                        </Alert>
                     }
                 </div>
             </div>
