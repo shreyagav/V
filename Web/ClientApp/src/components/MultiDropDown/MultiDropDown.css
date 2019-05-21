@@ -3,6 +3,7 @@
     font-size: inherit;
     position: relative;
     min-height: 2.5rem;
+    height: 100%;
     width: 100%;
 }
 
@@ -27,8 +28,8 @@
 }
 
 .drop-down-header:hover {cursor: pointer;}
-.drop-down-header:focus {border: 1px solid #0099cc;}
-.drop-down-header:focus .drop-down-header-button svg {fill: #0099cc;}
+.drop-down-header:focus, .drop-down-header:hover {border: 1px solid #0099cc;}
+.drop-down-header:focus button .svg, .drop-down-header:hover button .svg {fill: #0099cc !important;}
 
 .drop-down-header > div {text-transform: uppercase;}
 
@@ -130,8 +131,6 @@ ul.drop-down-list > li {margin-right: 0.9rem; margin-left: 0.9rem; text-transfor
 ul.drop-down-list > li ul.drop-down-list > li {margin-right: 0rem; margin-left: 0rem;}
 ul.drop-down-list > li > div,
 ul.drop-down-list > li ul.drop-down-list > li {
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
     display: flex; 
     justify-content: left;
     align-items: center;
@@ -158,7 +157,7 @@ ul.drop-down-list > li span {
     text-overflow: ellipsis;
 }
 
-ul.drop-down-list > li label {
+ul.drop-down-list > li label{
     position: relative;
     margin-right: 0.5rem;
 }
@@ -169,10 +168,10 @@ ul.drop-down-list > li label:focus-within svg {
 }
 
 ul.drop-down-list > li > div:focus span {color: #0099cc !important;}
-ul.drop-down-list > li > div:focus > label > svg {border-color: #0099cc !important;}
+ul.drop-down-list > li > div:focus label > svg, ul.drop-down-list > li > div:hover label > svg {border-color: #0099cc !important;}
 ul.drop-down-list > li > div:focus > button > svg > .svg {fill: #0099cc !important;}
 
-ul.drop-down-list > li label:focus-within::after {
+ul.drop-down-list > li label:focus-within::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -196,7 +195,8 @@ ul.drop-down-list > li label:hover::after{
     opacity: 0.5;
 }
 
-ul.drop-down-list > li > div:focus > label::after{
+ul.drop-down-list > li > div:hover label::after,
+ul.drop-down-list > li > div:focus label::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -209,6 +209,7 @@ ul.drop-down-list > li > div:focus > label::after{
 }
 
 /* workaround for EDGE */
+
 ul.drop-down-list > li label:hover > svg,
 ul.drop-down-list input:focus + svg {
     border: 1px solid #0099cc;
@@ -232,13 +233,12 @@ ul.drop-down-list > li:hover > div, ul.drop-down-list > li:hover > div > span,
 ul.drop-down-list > li:focus > div, ul.drop-down-list > li:focus > div > span {cursor: pointer; color: #0099cc;}
 ul.drop-down-list > li:focus > div {color: #0099cc;}
 /*ul.drop-down-list > li > div > :first-child{flex: 0 0 1rem; margin-left: 3px;}*/
-ul.drop-down-list > li > div > :last-child {flex: 1 1 auto; display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis;}
+ul.drop-down-list > li > div > :last-child {flex: 1 1 auto; align-self: stretch; display: flex; align-items: center; text-overflow: ellipsis;}
 ul.drop-down-list > li > div > :last-child > button:last-child {flex: 0 0 0.8rem;}
-ul.drop-down-list > li > div > :last-child svg {flex: 0 0 0.8rem; height: 0.8rem; margin-left: 0.25rem;}
+ul.drop-down-list > li > div > button:last-child > svg {flex: 0 0 0.8rem; height: 0.8rem; margin-left: 0.25rem;}
 ul.drop-down-list > li ul.drop-down-list {border-top: 1px solid #ededed; padding-left: 1.25rem;}
 ul.drop-down-list > li ul.drop-down-list > li {
     display: block;
-    /*overflow: hidden;*/
 }
 ul.drop-down-list > li ul.drop-down-list > li:not(:last-child) {border-bottom: 1px solid #ededed;}
 ul.drop-down-list button:focus {border-color:transparent;}
@@ -262,3 +262,5 @@ div:hover > button .drop-down-icon .svg, div:focus > button .drop-down-icon .svg
     max-width: 3rem;
     margin: 0px !important;
 }
+
+

@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 import TabComponent from '../TabComponent';
-import DropDown from '../DropDown';
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import CloseUpSVG from '../../svg/CloseUpSVG';
 import ArrowUpSVG from '../../svg/ArrowUpSVG';
 import EditUpSVG from '../../svg/EditUpSVG';
 import { withStore } from '../store';
 import EditContact from '../EditContact';
+import CheckBoxSVG from '../../svg/CheckBoxSVG';
 
 class Chapter extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            firstContactIsOpen: false,
-            secondContactIsOpen: false,
-            thirdContactIsOpen: false,
-            firstContactName: '',
-            firstContactPhone: '',
-            firstContactEmail: '',
-            secondContactName: '',
-            secondContactPhone: '',
-            secondContactEmail: '',
-            thirdContactName: '',
-            thirdContactPhone: '',
-            thirdContactEmail: '',
+            chapter: {
+                chapterName:'',
+                state: '',
+                securityClearance: '',
+                poolRental: false,
+                contactMain: {name: '', phone: '', email: ''},
+                contactGovernment: {name: '', phone: '', email: ''},
+                contactCoordinator: {name: '', phone: '', email: ''},
+                contactNational: {name: '', phone: '', email: ''},
+                contactOutreach: {name: '', phone: '', email: ''}
+            },
             activeTabIndex: 0,
             regions: [],
             members: [],
@@ -55,9 +55,6 @@ class Chapter extends Component {
             if(this.regionsDropDownRef.state.isOpen && !this.regionsDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.regionsDropDownRef.state.toggle(); /* actual */
             }
-            if(this.poolRentalDropDownRef.state.isOpen && !this.poolRentalDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.poolRentalDropDownRef.state.toggle(); /* actual */
-            }
         }
     }
 
@@ -71,6 +68,12 @@ class Chapter extends Component {
         const state = this.state;
         state[key] = value;
         this.setState(state);
+    }
+
+    changeProperty(property, value){
+        let chapter = this.state.chapter;
+        chapter[property] = value;
+        this.setState({chapter, chapter}, console.log(this.state.chapter));
     }
 
     render() {
@@ -90,27 +93,50 @@ class Chapter extends Component {
                     <ul className='input-fields first-child-text-165 mt-3 mb-2 pl-1 pr-1'>
                         <li>
                             <p>Chapter Name:</p>
-                            <input type='text' placeholder=''></input>
+                            <input type='text' 
+                                placeholder='Chapter Name'
+                                value = {this.state.chapter.chapterName} 
+                                onChange={(e) => this.changeProperty("chapterName", e.target.value)}
+                            />
                         </li>
                         <li>
                             <p>Region:</p>
-                            <DropDown 
+                            <MultiDropDown
                                 ref={el => this.regionsDropDownRef = el}
-                                list={this.state.regions}
-                                defaultValue={{name:'National'}}
+                                list={this.props.store.chapterList}
+                                multiSelect={false}
+                                keyProperty='id'
+                                textProperty='state'
+                                defaultValue={this.state.chapter.state}
+                                placeholder="Select state"
+                                onDropDownValueChange={value => {
+                                    this.changeProperty("state", value);
+                                }}
                             />
                         </li>
                         <li>
-                            <p>Security Clearence:</p>
-                            <input type='text' placeholder=''></input>
+                            <p>Security Clearace:</p>
+                            <input type='text' 
+                                placeholder='Security Clearance'
+                                value = {this.state.chapter.securityClearance} 
+                                onChange={(e) => this.changeProperty("securityClearance", e.target.value)}
+                            />
                         </li>
                         <li>
-                            <p>Pool Rental</p>
-                            <DropDown 
-                                ref={el => this.poolRentalDropDownRef = el}
-                                list={[{"name":"YES"}, {"name":"NO"}]}
-                                defaultValue={{name:'NO'}}
-                            />
+                            <p>Pool Rental:</p>
+                            <div 
+                                tabIndex={0} 
+                                className='checkBox-wrapper'
+                                onClick={() => {this.changeProperty("poolRental", !this.state.chapter.poolRental)}}
+                                onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.changeProperty("poolRental", !this.state.chapter.poolRental)}}}
+                                style = {{"marginTop":"0.6rem"}}
+                            >
+                                <label>
+                                    <input type="checkbox" disabled checked={this.state.chapter.poolRental}/>
+                                    <CheckBoxSVG />
+                                </label>
+                                {this.state.chapter.poolRental ? <span className="checkbox-text italic">Yes</span> : <span className="checkbox-text italic">No</span>}
+                            </div>
                         </li>
                     </ul>
                     <div className = 'flex-nowrap align-center mt-3 mb-3 ml-1 mr-1'>
@@ -119,11 +145,31 @@ class Chapter extends Component {
                         <span className='line'></span>
                     </div>
                     <ul className='input-fields first-child-text-165 mt-3 mb-2 pl-1 pr-1'>
-                        <EditContact header={"Main:"}/>
-                        <EditContact header={"Government:"}/>
-                        <EditContact header={"Coordinator:"}/>
-                        <EditContact header={"National:"}/>
-                        <EditContact header={"Outreach:"}/>
+                        <EditContact 
+                            header={"Main:"}
+                            value={this.state.chapter.contactMain}
+                            onValueChange = {value => this.changeProperty("contactMain", value)}
+                        />
+                        <EditContact 
+                            header={"Government:"}
+                            value={this.state.chapter.contactGovernment}
+                            onValueChange = {value => this.changeProperty("contactGovernment", value)}
+                        />
+                        <EditContact 
+                            header={"Coordinator:"}
+                            value={this.state.chapter.contactOutreach}
+                            onValueChange = {value => this.changeProperty("contactOutreach", value)}
+                        />
+                        <EditContact 
+                            header={"National:"}
+                            value={this.state.chapter.contactNational}
+                            onValueChange = {value => this.changeProperty("contactNational", value)}
+                        />
+                        <EditContact 
+                            header={"Outreach:"} 
+                            value={this.state.chapter.contactOutreach}
+                            onValueChange = {value => this.changeProperty("contactOutreach", value)}
+                        />
                     </ul>
                 </div>
                 }

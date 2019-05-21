@@ -119,10 +119,18 @@ class MultiDropDownHeader extends React.Component {
 
     render() {
         const setStyle = () => {
-            if (this.props.toggleable){
+            if (this.props.toggleable === true){
                 if(this.props.multiDropDownStore.isOpen){return {"border":"1px solid #0099cc"}}
             }
-            else return {"border":"0px solid"}
+            else{
+                return {
+                    "border":"0px solid #0099cc",
+                    "margin": "-0.25rem",
+                    "paddingTop": "1rem",
+                    "paddingBottom": "1rem",
+                    "cursor": "auto"
+                }
+            }
         }
         let style = setStyle();
         const list = this.createList();

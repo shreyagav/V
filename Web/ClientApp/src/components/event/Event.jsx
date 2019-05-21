@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TabComponent from '../TabComponent';
-import DropDown from '../DropDown';
 import DatePicker from '../DatePicker';
 import TimePicker from '../TimePicker';
 import { withStore } from '../store';
@@ -347,7 +346,7 @@ class Event extends Component {
                                 this.emptyStartDate = false;
                                 this.updateEventProperty("date", value);
                             }}
-                            />
+                        />
                         </li>
                     {/*<li>
                             <p></p>

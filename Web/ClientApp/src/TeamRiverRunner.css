@@ -22,6 +22,10 @@ input::-ms-clear {
     display: none;
 }
 
+.italic {
+    font-style: italic;
+    font-weight: 400;
+}
 
 header {
     position: sticky;
@@ -1095,4 +1099,48 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
     border-color: #E53E71 !important;
 }
 
+.overflow-auto {overflow: auto;}
+.overflow-hidden {overflow: hidden;}
 
+.email {
+    font-size: 0.85em !important;
+    text-transform: none !important;
+    font-weight: 400 !important;
+    line-height: 1.3 !important;
+}
+
+.name {
+    line-height: 1.2 !important;
+    font-size: 0.9rem !important;
+    text-transform: none !important;
+}
+
+.text-transform-none {
+    text-transform: none !important;
+}
+
+/* check Box */
+.checkBox-wrapper {display: flex; flex-wrap: nowrap; justify-content: left; align-items: center;}
+.checkBox-wrapper label {position: relative; margin-right: 0.5rem; background-color: #ffffff;}
+.checkBox-wrapper:hover {cursor: pointer}
+.checkBox-wrapper:hover label svg, .checkBox-wrapper:focus label svg {border-color: #0099cc !important}
+.checkBox-wrapper:hover label::after,
+.checkBox-wrapper:focus label::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    left: -3px;
+    right: -3px;
+    display: block;
+    border: 3px solid #0099cc;
+    opacity: 0.5;
+}
+.checkBox-wrapper:hover span, .checkBox-wrapper:focus span {color: #0099cc;}
+
+label.radio svg, label.radio::after {border-radius: 50px;}
+
+.ptpb055notNS {padding-top: 0.6em !important; padding-bottom: 0.6em !important;}
+@media screen and (max-width: 560px){
+    .ptpb055notNS {padding-top: 0em !important; padding-bottom: 0.2em !important;}
+}

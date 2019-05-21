@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
-import DropDownList from './DropDownList';
 import { withStore } from './store';
 import './Calendar.css'
 import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
@@ -119,10 +118,11 @@ class SideBarLayout extends Component {
         const BodyContent = this.props.bodyContent;
         if (!this.state.regularCalendar) {maxWidth = {'maxWidth' : '500px'}};
         return (
-          <div className={'lm-wrapper'} >
+          <div className={'lm-wrapper overflow-hidden'} >
             <div 
               ref={el => this.sideBarRef = el} 
-              style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}} 
+              style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}}
+              className='overflow-auto'
             >
               <SideBarContent {...this.props} updateFilters={filters => this.updateFilters(filters)} filters={this.state.filters} />
             </div>
@@ -131,12 +131,15 @@ class SideBarLayout extends Component {
               onClick = {() => this.props.store.set("sideBarIsHidden", true)}
             >
             </div>
+            {/*!this.props.store.narrowScreen &&
+              <div style={{"width":"325px","height":"100%"}}></div>
+            */}
             <div 
               ref={el => this.bodyRef = el} 
               style={mainLevelStyle} 
-              className='flex-nowrap flex-flow-column align-center cw-100'
+              className='flex-nowrap flex-flow-column align-center cw-100 overflow-auto'
             >
-              <BodyContent {...this.props} filters={this.state.filters}/>
+              <BodyContent {...this.props} updateFilters={filters => this.updateFilters(filters)} filters={this.state.filters}/>
             </div>
           </div>
         );

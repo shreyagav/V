@@ -64,20 +64,21 @@ class Alert extends Component {
                         </div>
                     }
                     {this.props.headerText &&
-                        <h3>{this.props.headerText}</h3>
+                        <h3 className='mb-1'>{this.props.headerText}</h3>
                     }
-                    <div className = 'mb-1'>{this.props.children}</div>
+                    <div className = 'modal-content'>{this.props.children}</div>
                     {this.props.showOkButton &&
                         <button 
                             ref = {el => this.singleOkButtonRef = el}
                             className = 'ok-button medium-static-button static-button default-button mt-1' 
                             onClick = {this.props.onClose} 
+                            style={{"marginBottom":"0em"}}
                         >
                             {this.props.buttonText ? this.props.buttonText : "OK"}
                         </button>
                     }
                     {this.props.showOkCancelButtons &&
-                        <div className='flex-nowrap'>
+                        <div className='flex-nowrap mt-1' style={{"marginBottom":"-0.5em"}}>
                             <button 
                                 ref = {el => this.okButtonRef = el}
                                 className='medium-static-button static-button' 
@@ -90,7 +91,7 @@ class Alert extends Component {
                                 className='medium-static-button static-button default-button'
                                 onClick={this.props.onCancelButtonClick}
                             >
-                                {this.props.cancelButtonText ? this.props.cancelButtonText : "OK"}
+                                {this.props.cancelButtonText ? this.props.cancelButtonText : "Cancel"}
                             </button>
                         </div>
                     }

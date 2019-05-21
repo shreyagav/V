@@ -12,7 +12,9 @@ class MultiDropDownList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {       };
+        this.state = {
+            onFocus: false,
+        };
 
         this.lastOpenState = null;
         this.simpleBarRef = null;
@@ -30,11 +32,18 @@ class MultiDropDownList extends React.Component {
             dropDownHeaderHeight: 0,
         };
         this.checkBoxSelected = this.checkBoxSelected.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     componentWillMount(){
+        if(!this.props.toggleable){
+            document.addEventListener("mousedown", this.handleClick, false);
+        }
         document.addEventListener('wheel', this.handleWheel, {passive : false});
         window.addEventListener("resize", this.setHeight);
+        if (this.props.toggleable){
+            this.setState({onFocus: true});
+        }
     }
 
     componentWillUpdate(){
@@ -43,11 +52,12 @@ class MultiDropDownList extends React.Component {
 
     componentDidMount(){
         this.setHeight();
-        this.setFocus();
     }
 
     componentDidUpdate(){
-        this.setFocus();
+        if(this.state.onFocus) {
+            this.setFocus();
+        };
         /*scroll last openned object into view */
         if(this.openStateRef !== null){
             var elem = this.openStateRef;
@@ -61,8 +71,17 @@ class MultiDropDownList extends React.Component {
     }
 
     componentWillUnmount(){
+        if(!this.props.toggleable){
+            document.removeEventListener("mousedown", this.handleClick, false);
+        }
         document.removeEventListener('wheel', this.handleWheel, {passive : false});
         window.removeEventListener("resize", this.setHeight);
+    }
+
+    handleClick(e) {
+        if (!this.simpleBarWrapperRef.contains(e.target)){
+            this.setState({onFocus: false});
+        }
     }
 
     setFocus(){
@@ -86,54 +105,61 @@ class MultiDropDownList extends React.Component {
 
     setHeight(){
         if(this.simpleBarWrapperRef !== null){
-            let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            let dropDownHeaderHeight = 0;
-            if(this.props.multiDropDownStore.dropDownHeaderRef !== null){
-                dropDownHeaderHeight = this.props.multiDropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
-                if (dropDownHeaderHeight !== this.state.dropDownHeaderHeight){
-                    this.setState({dropDownHeaderHeight: dropDownHeaderHeight});
-                }
-            }
-            let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
-            let bottom = top + dropDownHeaderHeight;
-            let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
-            let toBottom = windowHeight - bottom + dropDownHeaderHeight;
-            let coeff = 0;
-            let openStateIndex = Object.keys(this.props.multiDropDownStore.openStateIndex);
-            openStateIndex.forEach(element => {  
-                let ind = parseInt(element.slice(1));
-                coeff = coeff + this.props.multiDropDownStore.modifiedList[ind][this.props.multiDropDownStore.expandBy].length;
-            })
-            let regularHeight = 45*(this.props.multiDropDownStore.modifiedList.length + coeff);
-            let simpleBarHeight = 0;
-            if (this.props.toggleable) {
-                if (toTop > toBottom){
-                    //* OPENS UP *//
-                    this.opensDown = false;
-                    //simpleBarHeight = Math.floor(toTop);
-                    simpleBarHeight = (Math.floor(toTop/45))*45-1;
-                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
-                    this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px", "boxShadow": "0em -1em 2em #ffffff, 0em -0.25em 0.25em rgba(0, 0, 0, 0.19)"};
-                }
-                else {
-                    /* OPENS DOWN */
-                    this.opensDown = true;
-                    //simpleBarHeight = Math.floor(toBottom);
-                    simpleBarHeight = (Math.floor(toBottom/45))*45-1;
-                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
-                    this.className = "drop-down-list-wrapper";
-                    this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px", "boxShadow": "0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19)"};
-                }
-                //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
+            if (this.props.flexibleParent === true){
+                this.simpleBarHeight = '269px';
+                this.className = "drop-down-list-wrapper";
+                this.style = {"height": this.simpleBarHeight, "position": "relative", "borderColor":"#999999"};
             }
             else {
-                simpleBarHeight = Math.floor(toBottom);
-                if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
-                this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
-                this.style = {"height":this.simpleBarHeight};
+                let windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                let dropDownHeaderHeight = 0;
+                if(this.props.multiDropDownStore.dropDownHeaderRef !== null){
+                    dropDownHeaderHeight = this.props.multiDropDownStore.dropDownHeaderRef.getBoundingClientRect().height;
+                    if (dropDownHeaderHeight !== this.state.dropDownHeaderHeight){
+                        this.setState({dropDownHeaderHeight: dropDownHeaderHeight});
+                    }
+                }
+                let top = this.simpleBarWrapperRef.getBoundingClientRect().top;
+                let bottom = top + dropDownHeaderHeight;
+                let toTop = top - 56 - dropDownHeaderHeight; /* 56 - NAVBAR HEIGHT */
+                let toBottom = windowHeight - bottom + dropDownHeaderHeight;
+                let coeff = 0;
+                let openStateIndex = Object.keys(this.props.multiDropDownStore.openStateIndex);
+                openStateIndex.forEach(element => {  
+                    let ind = parseInt(element.slice(1));
+                    coeff = coeff + this.props.multiDropDownStore.modifiedList[ind][this.props.multiDropDownStore.expandBy].length;
+                })
+                let regularHeight = 45*(this.props.multiDropDownStore.modifiedList.length + coeff);
+                let simpleBarHeight = 0;
+                if (this.props.toggleable) {
+                    if (toTop > toBottom){
+                        //* OPENS UP *//
+                        this.opensDown = false;
+                        //simpleBarHeight = Math.floor(toTop);
+                        simpleBarHeight = (Math.floor(toTop/45))*45-1;
+                        if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                        this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
+                        this.className = "drop-down-list-wrapper";
+                        this.style = {"height":this.simpleBarHeight, "bottom":(dropDownHeaderHeight).toString()+'px', "marginBottom":"-1px", "boxShadow": "0em -1em 2em #ffffff, 0em -0.25em 0.25em rgba(0, 0, 0, 0.19)"};
+                    }
+                    else {
+                        /* OPENS DOWN */
+                        this.opensDown = true;
+                        //simpleBarHeight = Math.floor(toBottom);
+                        simpleBarHeight = (Math.floor(toBottom/45))*45-1;
+                        if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                        this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
+                        this.className = "drop-down-list-wrapper";
+                        this.style = {"height":this.simpleBarHeight, "top": "0px", "marginTop":"-1px", "boxShadow": "0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19)"};
+                    }
+                    //simpleBarHeight = (Math.floor((toBottom - 16)/45))*45-1;
+                }
+                else {
+                    simpleBarHeight = Math.floor(toBottom);
+                    if (simpleBarHeight > regularHeight && regularHeight > 0) {simpleBarHeight = regularHeight;}
+                    this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
+                    this.style = {"height":this.simpleBarHeight};
+                }
             }
         }
     }
@@ -157,14 +183,14 @@ class MultiDropDownList extends React.Component {
     }
 
     handleWheel = (e) => {
+        
         if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {
-            if (this.props.multiDropDownStore.isOpen) {
+            if (this.props.multiDropDownStore.toggleable && this.props.multiDropDownStore.isOpen) {
                 this.props.multiDropDownStore.toggle();
             }
             return;
         }
         var cancelScrollEvent = function(e){
-            //debugger
             e.stopImmediatePropagation();
             e.preventDefault();
             e.returnValue = false;
@@ -175,17 +201,36 @@ class MultiDropDownList extends React.Component {
         var wheelDelta = e.deltaY;
         var height = elem.clientHeight;
         var scrollHeight = elem.scrollHeight;
-        var parentTop = this.simpleBarRef.parentElement.getBoundingClientRect().top;
+        var scrolleableElement = this.simpleBarRef.parentElement;
+        var parentTop = scrolleableElement.getBoundingClientRect().top;
         var top = this.simpleBarRef.getBoundingClientRect().top;
         var scrollTop = parentTop - top;
         var isDeltaPositive = wheelDelta > 0;
         if (isDeltaPositive && wheelDelta > scrollHeight - height - scrollTop) {
-            elem.scrollTop = scrollHeight;
+            /*var handle = null;
+            let delta = Math.ceil((scrollHeight - scrolleableElement.scrollTop)/10);
+            var func = ()=>{
+                if(scrolleableElement.scrollTop < scrollHeight){
+                    scrolleableElement.scrollTop += delta;     
+                }else{
+                    clearInterval(handle);
+                }
+            };
+            handle = setInterval(func, 10);*/
+
+
+            /*let delta = Math.ceil((scrollHeight - scrolleableElement.scrollTop)/10);
+            while (scrolleableElement.scrollTop < scrollHeight) {
+                let x = scrolleableElement.scrollTop + delta;
+                scrolleableElement.scrollTop = Math.ceil(x);
+                console.log(scrolleableElement.scrollTop);
+            }*/
+            this.simpleBarRef.parentElement.scrollTop = scrollHeight;
             return cancelScrollEvent(e);
         }
         else {
             if (!isDeltaPositive && -wheelDelta > scrollTop) {
-                elem.scrollTop = 0;
+                this.simpleBarRef.parentElement.scrollTop = 0;
                 return cancelScrollEvent(e);
             }
         }
@@ -227,10 +272,12 @@ class MultiDropDownList extends React.Component {
                 e.preventDefault();
                 break;
             case 27://ESC
-                this.props.multiDropDownStore.set("setFocusToIndex", 0);
-                this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
-                this.props.multiDropDownStore.set("openStateIndex", []);
-                this.props.multiDropDownStore.toggle();
+                if(this.props.toggleable){
+                    this.props.multiDropDownStore.set("setFocusToIndex", 0);
+                    this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
+                    this.props.multiDropDownStore.set("openStateIndex", []);
+                    this.props.multiDropDownStore.toggle();
+                }
                 break;
             case 38: //Up Arrow
                 e.preventDefault();
@@ -298,6 +345,10 @@ class MultiDropDownList extends React.Component {
                 }
                 break;
             case 9: // TAB
+                if(!this.props.toggleable && this.props.passFocusForward) {
+                    this.setState({onFocus: false});
+                    this.props.passFocusForward(e);
+                }
                 e.preventDefault();
                 break;
             default: break;
@@ -310,6 +361,7 @@ class MultiDropDownList extends React.Component {
             <div
                 className={this.className}
                 style={this.props.multiDropDownStore.isOpen || !this.props.toggleable ? this.style : {"display":"none"}}
+                onFocus = {() => {if(this.state.onFocus !== true){ this.setState({onFocus: true}) }}}
             >
                 <SimpleBar>
                 <ul className='drop-down-list' 
@@ -326,7 +378,7 @@ class MultiDropDownList extends React.Component {
                                 tabIndex='0'
                                 onKeyDown = {(e) => this.keyDownHandler(e, index, -1, element)}
                             >
-                                {this.props.multiSelect &&
+                                {this.props.multiSelect && this.props.expandBy &&
                                     <label>
                                         <input 
                                             type="checkbox" 
@@ -351,12 +403,37 @@ class MultiDropDownList extends React.Component {
                                                 this.props.onDropDownValueChange(element[this.props.multiDropDownStore.keyProperty]);
                                                 this.props.multiDropDownStore.toggle();
                                             }
+                                            else {
+                                                this.checkBoxSelected(index, -1); 
+                                                this.props.multiDropDownStore.set("setFocusToIndex", index);
+                                                this.props.multiDropDownStore.set("setFocusToInnerIndex", -1); 
+                                            }
                                         }
                                     }}
-                                >
+                                >   
+                                    {this.props.multiSelect && !this.props.expandBy &&
+                                        <label>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
+                                                onChange={() => {
+                                                    this.checkBoxSelected(index, -1); 
+                                                    this.props.multiDropDownStore.set("setFocusToIndex", index);
+                                                    this.props.multiDropDownStore.set("setFocusToInnerIndex", -1);
+                                                }} 
+                                            />
+                                            {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
+                                        </label>
+                                    }
                                     {element.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>}
                                     {element.img && <span className='drop-down-icon'>{element.img}</span>}
-                                    <span>{element[this.props.textProperty]}</span>
+                                    {
+                                        this.props.textPropertyRender!== undefined 
+                                        ? 
+                                        this.props.textPropertyRender(element, this.props.textProperty)
+                                        :
+                                        <span>{element[this.props.textProperty]}</span>
+                                    }
                                     {this.props.expandBy && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
                                 </button>
                             </div>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import DropDown from '../DropDown';
+import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import DatePicker from '../DatePicker';
+import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import { withStore } from '../store';
 
 class MemberTRRInfo extends Component {
@@ -8,23 +9,30 @@ class MemberTRRInfo extends Component {
     render() {
         return (
             <div>
-                <div className='flex-nowrap justify-left align-center mb-1 mt-3 ml-1 mr-1'>
+                <div 
+                    tabIndex={0} 
+                    className='checkBox-wrapper mb-05 ml-1 mt-3 mr-1'
+                    onClick={() => this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned)}
+                    onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned);}}}
+                >
                     <label>
-                        <input type="checkbox" checked={this.props.data.releaseSigned} onChange={this.props.releaseSignedOnChange} />
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 12 12" >
-                            <polygon className='svg' points="5.3,11 4.2,11 0,5.3 1.1,4.4 4.7,9.4 10.9,1 12,1.8 " />
-                        </svg>
+                        <input type="checkbox" disabled checked={this.props.member.releaseSigned}/>
+                        <CheckBoxSVG />
                     </label>
-                    <p className='pl-05' style={{"textTransform":"uppercase", "fontWeight":"500"}}>Release Signed</p>
+                    <span style={{"textTransform":"uppercase", "fontWeight":"500"}}>Release Signed</span> 
                 </div>
-                <div className='flex-nowrap justify-left align-center mb-05 ml-1 mr-1'>
+
+                <div 
+                    tabIndex={0} 
+                    className='checkBox-wrapper mb-05 ml-1 mr-1'
+                    onClick={() => this.props.updateMemberProperty("liabilitySigned", !this.props.member.liabilitySigned)}
+                    onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.props.updateMemberProperty("liabilitySigned", !this.props.member.liabilitySigned);}}}
+                >
                     <label>
-                        <input type="checkbox" checked={this.props.data.liabilitySigned} onChange={this.props.liabilitySignedOnChange} />
-                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 12 12" >
-                            <polygon className='svg' points="5.3,11 4.2,11 0,5.3 1.1,4.4 4.7,9.4 10.9,1 12,1.8 " />
-                        </svg>
+                        <input type="checkbox" disabled checked={this.props.member.liabilitySigned}/>
+                        <CheckBoxSVG />
                     </label>
-                    <p className='pl-05' style={{"textTransform":"uppercase", "fontWeight":"500"}}>Liability Signed</p>
+                    <span style={{"textTransform":"uppercase", "fontWeight":"500"}}>Liability Signed</span> 
                 </div>
                 <div className = 'flex-nowrap align-center mt-2 mb-2 ml-1 mr-1'>
                     <span className='line'></span>
@@ -34,23 +42,28 @@ class MemberTRRInfo extends Component {
                 <div className='flex-nowrap justify-left align-center ml-1 mr-1'>
                     <ul className='input-fields first-child-text-125'>
                         <li>
-                            <div className='flex-nowrap justify-left align-center' style={{"marginTop":"0.65rem"}}>
+                            <div 
+                                tabIndex={0} 
+                                className='checkBox-wrapper'
+                                onClick={() => this.props.updateMemberProperty("activeMember", !this.props.member.activeMember)}
+                                onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.props.updateMemberProperty("activeMember", !this.props.member.activeMember);}}}
+                                style = {{"marginTop":"0.6rem"}}
+                            >
                                 <label>
-                                    <input type="checkbox" checked={this.props.data.activeMember} onChange={this.props.activeMemberOnChange} />
-                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 12 12" >
-                                        <polygon className='svg' points="5.3,11 4.2,11 0,5.3 1.1,4.4 4.7,9.4 10.9,1 12,1.8 " />
-                                    </svg>
+                                    <input type="checkbox" disabled checked={this.props.member.activeMember}/>
+                                    <CheckBoxSVG />
                                 </label>
-                                <p className='pl-05' style={{"marginTop":"0px"}}>Active</p>
+                                <span style={{"textTransform":"uppercase"}}>Active</span> 
                             </div>
-                            {!this.props.data.activeMember &&
+
+                            {!this.props.member.activeMember &&
                                 <div className='flex-nowrap justify-left align-center break-at-500'>
                                     <p className='break-at-500-p'>Deactive Cause:</p>
                                     <input 
                                         type='text' 
                                         placeholder='Deactive Cause' 
-                                        value={this.props.data.deactiveCause}
-                                        onChange={this.props.onDeactiveCauseChange}
+                                        value={this.props.member.deactiveCause}
+                                        onChange={e => this.props.updateMemberProperty("deactiveCause", e.target.value)}
                                     />
                                 </div>
                             }
@@ -65,16 +78,23 @@ class MemberTRRInfo extends Component {
                 <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
                         <li>
                             <p>Join Date:</p>
-                            <DatePicker
+                            <DatePicker 
                                 ref={this.props.setJoinDateDropDownRef}
+                                value={this.props.member.joinDate}
+                                onSelect={value => {this.props.updateMemberProperty("joinDate", value)}}
                             />
                         </li>
                         <li>
                             <p>Sponsored By:</p>
-                            <DropDown 
+                            <MultiDropDown
                                 ref={this.props.setSponsoredByDropDownRef}
                                 list={[{name:'Sponsored By Option 1'}, {name:'Sponsored By Option 2'}, {name:'Sponsored By Option 3'}]}
-                                placeholder='Sponsored By'
+                                multiSelect={false}
+                                keyProperty='name'
+                                textProperty='name'
+                                defaultValue={this.props.member.sponsoredBy}
+                                placeholder="Sponsored By"
+                                onDropDownValueChange={value => this.props.updateMemberProperty("sponsoredBy", value)}
                             />
                         </li>
                         <li className='input-wrapper'>
@@ -82,54 +102,76 @@ class MemberTRRInfo extends Component {
                             <input 
                                 type='text' 
                                 placeholder='Travel Time' 
-                                value={this.props.data.travelTime}
-                                onChange={this.props.onTravelTimeChange}
+                                value={this.props.member.travelTime}
+                                onChange={e => this.props.updateMemberProperty("travelTime", e.target.value)}
                             />
                         </li>
                         <li>
                             <p>Medical:</p>
-                            <DropDown 
+                            <MultiDropDown
                                 ref={this.props.setMedicalDropDownRef}
                                 list={[{name:'Medical Option 1'}, {name:'Medical Option 2'}, {name:'Medical Option 3'}]}
-                                placeholder='Medical'
+                                multiSelect={false}
+                                keyProperty='name'
+                                textProperty='name'
+                                defaultValue={this.props.member.medical}
+                                placeholder="Medical"
+                                onDropDownValueChange={value => this.props.updateMemberProperty("medical", value)}
                             />
                         </li>
                         <li>
                             <p>Injury Date:</p>
-                            <DatePicker
+                            <DatePicker 
                                 ref={this.props.setInjuryDateDropDownRef}
+                                value={this.props.member.injuryDate}
+                                onSelect={value => {this.props.updateMemberProperty("injuryDate", value)}}
                             />
                         </li>
                         <li>
                             <p>Status:</p>
-                            <DropDown 
-                                ref={this.props.setOldStatusDropDownRef}
+                            <MultiDropDown
+                                ref={this.props.setStatusDropDownRef}
                                 list={[{name:'Status 1'}, {name:'Status 2'}, {name:'Status 3'}]}
-                                defaultValue={{name:'Status 1'}}
+                                multiSelect={false}
+                                keyProperty='name'
+                                textProperty='name'
+                                defaultValue={this.props.member.status}
+                                placeholder="Status"
+                                onDropDownValueChange={value => this.props.updateMemberProperty("status", value)}
                             />
                         </li>
                         <li>
                             <p>Role:</p>
-                            <DropDown 
-                                ref={this.props.setOldAuthLevelDropDownRef}
+                            <MultiDropDown
+                                ref={this.props.setAuthLevelDropDownRef}
                                 list={[{name:'AuthLevel 1'}, {name:'AuthLevel 2'}, {name:'AuthLevel 3'}]}
-                                defaultValue={{name:'AuthLevel 1'}}
+                                multiSelect={false}
+                                keyProperty='name'
+                                textProperty='name'
+                                defaultValue={this.props.member.authLevel}
+                                placeholder="Select Authentification Level"
+                                onDropDownValueChange={value => this.props.updateMemberProperty("authLevel", value)}
                             />
                         </li>
                         <li>
                             <p>TRR User Type:</p>
-                            <DropDown 
-                                ref={this.props.setUserOldTypeDropDownRef}
+                            <MultiDropDown
+                                ref={this.props.setUserTypeDropDownRef}
                                 list={[{name:'userType 1'}, {name:'userType 2'}, {name:'userType 3'}]}
-                                defaultValue={{name:'userType 1'}}
+                                multiSelect={false}
+                                keyProperty='name'
+                                textProperty='name'
+                                defaultValue={this.props.member.userType}
+                                placeholder="Select User Type"
+                                onDropDownValueChange={value => this.props.updateMemberProperty("userType", value)}
                             />
                         </li>
                         <li>
                             <p>Comments:</p>
                             <textarea 
                                 placeholder='Comments'
-                                value={this.props.data.comments}
-                                onChange={this.props.onCommentsChange}
+                                value={this.props.member.comments}
+                                onChange={e => this.props.updateMemberProperty("comments", e.target.value)}
                             />
                         </li>
                     </ul>
