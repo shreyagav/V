@@ -62,7 +62,9 @@ namespace Models
         public int OldEventCount { get; set; }
         public int OldEventMultiOrder { get; set; }
         public int OldEventRepeat { get; set; }
+        public decimal ProjectedCost { get; set; }
         public Char OldEventVisibility { get; set; }
         public ICollection<UserEvent> Events { get; set; }
+        public ICollection<BudgetLine> Budget { get; set; }
     }
 }

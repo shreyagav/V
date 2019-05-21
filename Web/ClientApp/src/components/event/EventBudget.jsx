@@ -5,6 +5,7 @@ import CloseUpSVG from '../../svg/CloseUpSVG';
 import EditUpSVG from '../../svg/EditUpSVG';
 import Table from '../Table';
 import Loader from '../Loader';
+import Alert from '../Alert';
 
 class EventBudget extends Component {
     static displayName = EventBudget.name;
@@ -12,25 +13,9 @@ class EventBudget extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            eventId: props.eventId,
-            budget: [],
-            loadData: false
+            addingLine: false,
+            line: {}
         };
-    }
-    componentDidMount() {
-        var component = this;
-        this.setState({ loadData: true });
-        fetch('/Budget.json')
-            .then(function (data) { return data.json(); })
-            .then(function (jjson) {
-                component.setState({ budget: jjson});
-            })
-            .then(function () {
-                setTimeout(() => component.setState({loadData: false}), 1500)
-            });
-    }
-    componentWillUnmount() {
-        fetch('/Budget.json');
     }
 
     removeItem(){
@@ -42,7 +27,6 @@ class EventBudget extends Component {
     }
 
     renderNameColumn(value, row, index, col) {
-        console.log(row);
         return (
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
                 <span style={{"flex":"1 1 auto"}} className="big-bold">{row['name']}</span>
@@ -65,24 +49,44 @@ class EventBudget extends Component {
     }
 
     render() {
-        const budget = this.state.budget;
+        const budget = this.props.budget;
         const columns=[
             {title:"Name", accesor:"name", className:"borders-when-display-block", render: this.renderNameColumn},
             {title:"Description", accesor:"description"},
             {title:"Cost", accesor:"cost"}
         ];
-        if (this.state.loadData) {
-            return (
-                <Loader />
-            );
-        } 
-        else {
             return (
                 <div style={{ "width": "100%", "maxWidth": "600px" }}>
+                    {this.state.loading && <Loader />}
+                    {this.state.addingLine && <Alert
+                        headerText='Add existing members'
+                        onClose={() => this.setState({ addingLine: false })}
+                    >
+                        <table>
+                            <tr>
+                                <td>Name</td>
+                            </tr>
+                            <tr>
+                                <td><input value={this.state.line.name} /></td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                            </tr>
+                            <tr>
+                                <td><input value={this.state.line.description} /></td>
+                            </tr>
+                            <tr>
+                                <td>Cost</td>
+                            </tr>
+                            <tr>
+                                <td><input value={this.state.line.cost} /></td>
+                            </tr>
+                        </table>
+                    </Alert>}
                     <ul className='input-fields first-child-text-240 mt-3 mb-1 pl-1 pr-1'>
                         <li className='number-field'>
                             <p className='input-label'>Entered Projected Cost:</p>
-                            <input />
+                            <input value={this.props.projectedCost} />
                         </li>
                         <li className='number-field'>
                             <p className='input-label'>Calculated Projected Cost:</p>
@@ -91,12 +95,11 @@ class EventBudget extends Component {
                     </ul>
                     <div className="flex-wrap align-center justify-center mb-2">
                         <p className='input-label'>ADD NEW ITEM:</p>
-                        <button disabled className='big-static-button static-button' >Add Item</button>
+                        <button className='big-static-button static-button' onClick={() => this.setState({ addingLine:true})} >Add Item</button>
                     </div>
                     <Table columns={columns} data={budget} />
                 </div>
             );
-        }
     }
 }
 

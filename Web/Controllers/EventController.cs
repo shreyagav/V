@@ -15,9 +15,11 @@ namespace Web.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _service;
-        public EventController(IEventService service)
+        private readonly IStorageService _storageService;
+        public EventController(IEventService service, IStorageService storageService)
         {
             _service = service;
+            _storageService = storageService;
         }
         [HttpPost("[action]")]
         public EventMainDto ChangeEvent(EventMainDto evnt)
@@ -34,6 +36,31 @@ namespace Web.Controllers
         {
             return _service.GetEventAttendees(id);
         }
+        [HttpGet("[action]/{id}")]
+        public Photo[] GetEventPhotos(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("[action]/{id}")]
+        public async Task<Photo[]> UploadFile(int id, List<IFormFile> files)
+        {
+            List<Photo> photos = new List<Photo>(); 
+            foreach (var f in files)
+            {
+                string url = await _storageService.SaveFile(Guid.NewGuid().ToString(), f.OpenReadStream());
+                photos.Add(new Photo()
+                {
+                    EventId=id,
+                    FileName=f.FileName,
+                    Uploaded = DateTime.Now,
+                    Url = url
+                });
+            }
+            var arr = photos.ToArray();
+            _service.AddPhotos(arr);
+            return arr;
+        }
         [HttpPost("[action]/{id}")]
         public EventAttendeeDto[] RemoveEventAttendees(int id, EventAttendeeDto attendee)
         {
@@ -48,6 +75,22 @@ namespace Web.Controllers
         public EventAttendeeDto[] GetSiteMembers(int id)
         {
             return _service.GetSiteMembers(id);
+        }
+
+        [HttpGet("[action]/{id}")]
+        public BudgetLine[] GetBudget(int id)
+        {
+            return _service.GetEventBudget(id);
+        }
+        [HttpPost("[action]/{id}")]
+        public BudgetLine[] AddBudgetLines(int id, BudgetLine[] lines)
+        {
+            return _service.AddBudgetLines(id, lines);
+        }
+        [HttpPost("[action]/{id}")]
+        public BudgetLine[] DeleteBudgetLine(int id, BudgetLine line)
+        {
+            return _service.DeleteBudgetLine(id, line);
         }
     }
 }

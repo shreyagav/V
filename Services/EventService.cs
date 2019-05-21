@@ -40,6 +40,26 @@ namespace Services
             return GetEventAttendees(id);
 
         }
+
+        public BudgetLine[] DeleteBudgetLine(int eventId, BudgetLine line)
+        {
+            _context.EventBudgets.Remove(line);
+            _context.SaveChanges();
+            return GetEventBudget(eventId);
+        }
+
+        public BudgetLine[] AddBudgetLines(int eventId, BudgetLine[] lines)
+        {
+            _context.EventBudgets.AddRange(lines);
+            _context.SaveChanges();
+            return GetEventBudget(eventId);
+        }
+
+        public BudgetLine[] GetEventBudget(int eventId)
+        {
+            return _context.EventBudgets.Where(a => a.EventId == eventId).ToArray();
+        }
+
         public EventMainDto ChangeEvent(EventMainDto newEvent)
         {
             CalendarEvent temp;
@@ -113,6 +133,12 @@ namespace Services
                     Phone = u.PhoneNumber
                 })
                 .ToArray();
+        }
+
+        public void AddPhotos(Photo[] arr)
+        {
+            _context.Photos.AddRange(arr);
+            _context.SaveChanges();
         }
     }
 }

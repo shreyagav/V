@@ -72,7 +72,10 @@ class Event extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.nextStep = this.nextStep.bind(this);
         this.updateEventProperty = this.updateEventProperty.bind(this);
-
+        this.uploadFileChanged = this.uploadFileChanged.bind(this);
+        this.openFileDialog = this.openFileDialog.bind(this);
+        this.setActiveStep = this.setActiveStep.bind(this);
+        this.fileRef = null;
         this.emptyTitle = false;
         this.emptyChapter = false;
         this.emptyStartDate = false;
@@ -105,6 +108,17 @@ class Event extends Component {
         .then(function(jjson){
           component.setState({pictures: jjson})
         });
+    }
+    uploadFileChanged(evt) {
+        console.log(evt);
+        console.log(evt.target);
+        console.log(this.fileRef);
+        Service.uploadPictures(evt.target);
+    }
+    openFileDialog() {
+        if (this.fileRef != null) {
+            this.fileRef.click();
+        }
     }
 
     validation() {
@@ -141,22 +155,28 @@ class Event extends Component {
         return validationPassed;
     }
 
-    nextStep() {
-        if (this.state.activeTabIndex == 0) {
-            var me = this;
-            var event = Object.assign({}, this.state.eventMain);
-            event.id = this.state.eventId;
-            this.setState({ loading: true });
-            Service.changeEvent(event).then((data) => {
-                Service.getEventAttendees(data.id)
-                    .then(attendees => {
-                        setTimeout(() => { me.setState({ activeTabIndex: me.state.activeTabIndex + 1, members: attendees, eventId: data.id, loading: false }); }, 500);
-                    })
-            });
-
-        } else {
-            this.setState({ activeTabIndex: this.state.activeTabIndex + 1 });
+    setActiveStep(num) {
+        switch (this.state.activeTabIndex) {
+            case 0:
+                if (!this.validation()) return;
+                var me = this;
+                var event = Object.assign({}, this.state.eventMain);
+                event.id = this.state.eventId;
+                this.setState({ loading: true });
+                Service.changeEvent(event).then((data) => {
+                    Service.getEventAttendees(data.id)
+                        .then(attendees => {
+                            setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
+                        })
+                });
+                break;
+            default:
+                this.setState({ activeTabIndex: num });
         }
+    }
+
+    nextStep() {
+        this.setActiveStep(this.state.activeTabIndex + 1);
 
     }
 
@@ -250,10 +270,18 @@ class Event extends Component {
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
+                <div style={{ display: 'none' }}>
+                    <input type="file" ref={el => this.fileRef = el} onChange={this.uploadFileChanged} />
+                </div>
+                <button className='medium-static-button static-button default-button'
+                    onClick={this.openFileDialog} 
+                >
+                    open
+                        </button>
                 <TabComponent 
                     inheritParentHeight={false}
                     tabList={['info', 'attendees', 'budget', 'pictures']}
-                    wasSelected={(index) => this.setState({activeTabIndex: index})}
+                    wasSelected={(index) => this.setActiveStep(index)}
                     activeTabIndex={this.state.activeTabIndex}
                     tabEqualWidth={true}
                 />
@@ -480,23 +508,13 @@ class Event extends Component {
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
                         <button className='medium-static-button static-button' 
-                            onClick={() => {
-                                if (this.validation()) {
-                                    this.setState({activeTabIndex: this.state.activeTabIndex-1})
-                                }
-                            }}
+                            onClick={() => {this.setActiveStep(this.state.activeTabIndex-1)}}
                         >
                             Back
                         </button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' 
-                            onClick={() => {
-                                if (this.validation()) {
-                                    this.nextStep();
-                                }
-                            }}
-                        >
+                        <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>
                             Next
                         </button>
                     }

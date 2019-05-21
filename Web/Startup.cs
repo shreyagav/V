@@ -32,6 +32,7 @@ namespace Web
             services.AddTransient<IListService, ListService>();
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<IChapterService, ChapterService>();
+            services.AddTransient<IStorageService, StorageService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));
