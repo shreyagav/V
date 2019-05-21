@@ -1115,6 +1115,10 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
     text-transform: none !important;
 }
 
+.text-transform-none {
+    text-transform: none !important;
+}
+
 /* check Box */
 .checkBox-wrapper {display: flex; flex-wrap: nowrap; justify-content: left; align-items: center;}
 .checkBox-wrapper label {position: relative; margin-right: 0.5rem; background-color: #ffffff;}
@@ -1134,3 +1138,9 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
 }
 .checkBox-wrapper:hover span, .checkBox-wrapper:focus span {color: #0099cc;}
 
+label.radio svg, label.radio::after {border-radius: 50px;}
+
+.ptpb055notNS {padding-top: 0.6em !important; padding-bottom: 0.6em !important;}
+@media screen and (max-width: 560px){
+    .ptpb055notNS {padding-top: 0em !important; padding-bottom: 0.2em !important;}
+}

@@ -6,6 +6,7 @@ import TimePicker from '../TimePicker';
 import { withStore } from '../store';
 import MemberTRRInfo from './MemberTRRInfo';
 import MemberEvents from './MemberEvents';
+import RadioBoxSVG from '../../svg/RadioBoxSVG';
 
 
 class Member extends Component {
@@ -24,27 +25,43 @@ class Member extends Component {
                 phone: '',
                 email: '',
                 dateOfBirth: null,
+                gender: {
+                    male: false,
+                    female: false,
+                },
+                address: {
+                    streetAddress: '',
+                    city: '',
+                    state: [],
+                    zip: '',
+                },
+                releaseSigned: false,
+                liabilitySigned: false,
+                activeMember: false,
+                deactiveCause: '',
+                joinDate: null,
+                sponsoredBy: [],
+                travelTime: '',
+                medical: [],
+                injuryDate: null,
+                status: [],
+                authLevel: [],
+                userType: [],
+                comments: '',
+                events:[],
             },
             activeTabIndex: 0,
-            releaseSigned: false,
-            liabilitySigned: false,
-            activeMember: false,
-            deactiveCause: "",
-            travelTime: "",
-            comments:"",
-            events:[],
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
         this.chaptersDropDownRef = null;
-        this.genderDropDownRef = null;
         this.joinDateDropDownRef = null;
         this.sponsoredByDropDownRef = null;
         this.medicalDropDownRef = null;
         this.injuryDateDropDownRef = null;
-        this.oldStatusDropDownRef = null;
-        this.oldAuthLevelDropDownRef = null;
-        this.userOldTypeDropDownRef = null;
+        this.statusDropDownRef = null;
+        this.authLevelDropDownRef = null;
+        this.userTypeDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -63,19 +80,15 @@ class Member extends Component {
 
     handleClick(e) {
         if(this.state.activeTabIndex === 0){
-            /*if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-                this.stateDropDownRef.state.toggle();
-            }*/
             if(this.dateOfBirthDropDownRef.state.isOpen && !this.dateOfBirthDropDownRef.datePickerRef.contains(e.target)){
                 this.dateOfBirthDropDownRef.toggle();
             }
             if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.chaptersDropDownRef.state.toggle();
             }
-            /*
-            if(this.genderDropDownRef.state.isOpen && !this.genderDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.genderDropDownRef.state.toggle();
-            }*/
+            if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
+                this.stateDropDownRef.state.toggle();
+            }
         }
         if(this.state.activeTabIndex === 1){
             if(this.joinDateDropDownRef.state.isOpen && !this.joinDateDropDownRef.datePickerRef.contains(e.target)){
@@ -90,14 +103,14 @@ class Member extends Component {
             if(this.injuryDateDropDownRef.state.isOpen && !this.injuryDateDropDownRef.datePickerRef.contains(e.target)){
                 this.injuryDateDropDownRef.toggle();
             }
-            if(this.oldStatusDropDownRef.state.isOpen && !this.oldStatusDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.oldStatusDropDownRef.state.toggle();
+            if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
+                this.statusDropDownRef.state.toggle();
             }
-            if(this.oldAuthLevelDropDownRef.state.isOpen && !this.oldAuthLevelDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.oldAuthLevelDropDownRef.state.toggle();
+            if(this.authLevelDropDownRef.state.isOpen && !this.authLevelDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
+                this.authLevelDropDownRef.state.toggle();
             }
-            if(this.userOldTypeDropDownRef.state.isOpen && !this.userOldTypeDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.userOldTypeDropDownRef.state.toggle();
+            if(this.userTypeDropDownRef.state.isOpen && !this.userTypeDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
+                this.userTypeDropDownRef.state.toggle();
             }
         }
     }
@@ -106,6 +119,12 @@ class Member extends Component {
         let member = this.state.member;
         member[property] = value;
         this.setState({member, member}, console.log(this.state));
+    }
+
+    stateNameAndAbbrRender(element, textProperty){
+        return <span className='text-transform-none'>
+            {element.name + ', ' + element.abbreviation}
+        </span>
     }
     
     render() {
@@ -172,7 +191,7 @@ class Member extends Component {
                             <input type='text' 
                                 placeholder='Email'
                                 value = {this.state.member.email}
-                                onChange={e => this.updateMemberProperty("email", e.target.email)}
+                                onChange={e => this.updateMemberProperty("email", e.target.value)}
                             />
                         </li>
                         <li>
@@ -187,47 +206,107 @@ class Member extends Component {
                         </li>
                         <li>
                             <p>Gender:</p>
-                            {/*<DropDown 
-                                ref={el => this.genderDropDownRef = el}
-                                list={[{name:'Male'}, {name:'Female'}]}
-                                placeholder='Gender'
-                            />*/}
+                            <div className='flex-wrap justify-left ptpb055notNS'>
+
+                                <div tabIndex={0} className='checkBox-wrapper'
+                                    onClick = {() => this.updateMemberProperty("gender", {male: true, female: false})}
+                                    onKeyDown={(e) => {
+                                        if(e.keyCode === 32){/* SPACE BAR */ this.updateMemberProperty("gender", {male: true, female: false})}
+                                    }}
+                                    style = {{"marginRight":"0.75rem"}}
+                                >
+                                    <label className='radio'>
+                                        <input type="radio" disabled checked={this.state.member.gender.male}/>
+                                        <RadioBoxSVG />
+                                    </label>
+                                    <span className="checkbox-text">Male</span>
+                                </div>
+
+                                <div tabIndex={0} className='checkBox-wrapper'
+                                    onClick = {() => this.updateMemberProperty("gender", {male: false, female: true})}
+                                    onKeyDown={(e) => {
+                                        if(e.keyCode === 32){/* SPACE BAR */ this.updateMemberProperty("gender", {male: false, female: true})}
+                                    }}
+                                >
+                                    <label className='radio'>
+                                        <input type="radio" disabled checked={this.state.member.gender.female}/>
+                                        <RadioBoxSVG />
+                                    </label>
+                                    <span className="checkbox-text">Female</span>
+                                </div>
+
+                            </div>
                         </li>
                         <li className='input-wrapper'>
                             <p>Address:</p>
-                            <input type='text' placeholder='Street Address'></input>
+                            <input 
+                                type='text' 
+                                placeholder='Street Address'
+                                value={this.state.member.address.streetAddress}
+                                onChange={e => {
+                                    let address = this.state.member.address;
+                                    address.streetAddress = e.target.value;
+                                    this.updateMemberProperty("address", address);
+                                }}
+                            />
                         </li>
                         <li>
                             <span></span>
                             <div className='flex-nowrap break-at-500 input-wrapper children-mr-08-when-width-500'>
-                                <input type='text' placeholder='City' style={{"flex":"1 1 auto"}}></input>
-                                {/*<DropDown
+                                <input 
+                                    type='text' 
+                                    placeholder='City' 
+                                    style={{"flex":"1 1 auto"}}
+                                    value={this.state.member.address.city}
+                                    onChange={e => {
+                                        let address = this.state.member.address;
+                                        address.city = e.target.value;
+                                        this.updateMemberProperty("address", address);
+                                    }}
+                                />
+                                <MultiDropDown
                                     ref={el => this.stateDropDownRef = el}
-                                    list={stateList} 
-                                    placeholder='State'
-                                    showParameter='abbreviation'
-                                />*/}
-                                <input type='text' placeholder='Zip' maxLength={5} style={{"flex":"0 0 100px"}}></input>
+                                    list={stateList}
+                                    multiSelect={false}
+                                    keyProperty='abbreviation'
+                                    textProperty='abbreviation'
+                                    defaultValue={this.state.member.address.state}
+                                    placeholder="State"
+                                    textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
+                                    onDropDownValueChange={value => {
+                                        let address = this.state.member.address;
+                                        address.state = value;
+                                        this.updateMemberProperty("address", address);
+                                    }}
+                                />
+                                <input 
+                                    type='text' 
+                                    placeholder='Zip' 
+                                    maxLength={5} 
+                                    style={{"flex":"0 0 100px"}}
+                                    value = {this.state.member.address.zip}
+                                    onChange={e => {
+                                        let address = this.state.member.address;
+                                        address.zip = e.target.value;
+                                        this.updateMemberProperty("address", address);
+                                    }}
+                                />
                             </div>
                         </li>
                     </ul>
                 }
                 {this.state.activeTabIndex === 1 && 
                     <MemberTRRInfo 
-                        data = {this.state}
-                        releaseSignedOnChange = {() => this.setState({releaseSigned: !this.state.releaseSigned})}
-                        liabilitySignedOnChange = {() => this.setState({liabilitySigned: !this.state.liabilitySigned})}
-                        activeMemberOnChange = {() => this.setState({activeMember: !this.state.activeMember})}
-                        onDeactiveCauseChange = {event => this.setState({deactiveCause: event.target.value})}
                         setJoinDateDropDownRef = {el => this.joinDateDropDownRef = el}
                         setSponsoredByDropDownRef = {el => this.sponsoredByDropDownRef = el}
-                        onTravelTimeChange = {event => this.setState({travelTime: event.target.value})}
                         setMedicalDropDownRef = {el => this.medicalDropDownRef = el}
                         setInjuryDateDropDownRef = {el => this.injuryDateDropDownRef = el}
-                        setOldStatusDropDownRef = {el => this.oldStatusDropDownRef = el}
-                        setOldAuthLevelDropDownRef = {el => this.oldAuthLevelDropDownRef = el}
-                        setUserOldTypeDropDownRef = {el => this.userOldTypeDropDownRef = el} 
-                        onCommentsChange = {event => this.setState({comments: event.target.value})}
+                        setStatusDropDownRef = {el => this.statusDropDownRef = el}
+                        setAuthLevelDropDownRef = {el => this.authLevelDropDownRef = el}
+                        setUserTypeDropDownRef = {el => this.userTypeDropDownRef = el} 
+
+                        member = {this.state.member}
+                        updateMemberProperty = {(property, value) => this.updateMemberProperty(property, value)}
                     />
                 }
                 {this.state.activeTabIndex === 2 && 
