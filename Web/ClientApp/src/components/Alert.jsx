@@ -71,7 +71,7 @@ class Alert extends Component {
                         <button 
                             ref = {el => this.singleOkButtonRef = el}
                             className = 'ok-button medium-static-button static-button default-button mt-1' 
-                            onClick = {this.props.onClose} 
+                            onClick = {this.props.onOkButtonClick} 
                             style={{"marginBottom":"0em"}}
                         >
                             {this.props.buttonText ? this.props.buttonText : "OK"}

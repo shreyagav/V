@@ -183,6 +183,7 @@ class TestPage extends Component {
                             onClose = {()=>this.setState({showError: false})}
                             showOkButton = {true}
                             buttonText = "Got IT!"
+                            onOkButtonClick = {()=>this.setState({showError: false})}
                             mode = 'error'
                         >
                             <span>Here is some Alert Text YAY!</span>

@@ -35,6 +35,7 @@
     max-height: calc(100% - 2em);
     min-width: calc(400px - 2em);
     max-width: calc(100% - 2em);
+    width: fit-content;
     background-color: #f7f7f7;
     border: #999999 1px solid;
     display: flex;

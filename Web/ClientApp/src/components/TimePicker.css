@@ -7,11 +7,11 @@
     max-width: 80px;
 }
 
-.time-picker > div:first-child {
+.time-picker > div:first-child, .number-picker > div:first-child {
     border: 1px solid #666666;
 }
 
-.time-picker input {
+.time-picker input, .number-picker input {
     border: 0px solid;
     background-color: inherit;
 }

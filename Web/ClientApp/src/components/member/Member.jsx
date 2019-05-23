@@ -8,6 +8,7 @@ import MemberTRRInfo from './MemberTRRInfo';
 import MemberEvents from './MemberEvents';
 import RadioBoxSVG from '../../svg/RadioBoxSVG';
 import Alert from '../Alert';
+import RadioButton from '../RadioButton';
 
 
 class Member extends Component {
@@ -293,48 +294,30 @@ class Member extends Component {
                         </li>
                         <li className={this.emptyGender ? 'mark-invalid' : ''}
                             error-text='Please select Gender'
-                            style={{"flex":"0 0 auto !important"}}
                         >
                             <p>Gender:</p>
-                            <div className='flex-wrap justify-left ptpb055notNS'>
-
-                                <div tabIndex={0} className='checkBox-wrapper'
-                                    onClick = {() => {
-                                        if(this.emptyGender){this.emptyGender = false;}
-                                        this.updateMemberProperty("gender", {male: true, female: false});
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if(e.keyCode === 32){
-                                            /* SPACE BAR */ 
-                                            if(this.emptyGender){this.emptyGender = false;}
-                                            this.updateMemberProperty("gender", {male: true, female: false})}
-                                    }}
+                            <div className='flex-wrap justify-left radio-inline-wrapper'>
+                                <RadioButton
                                     style = {{"marginRight":"0.75rem"}}
-                                >
-                                    <label className='radio'>
-                                        <input type="radio" disabled checked={this.state.member.gender.male}/>
-                                        <RadioBoxSVG />
-                                    </label>
-                                    <span className="checkbox-text">Male</span>
-                                </div>
-
-                                <div tabIndex={0} className='checkBox-wrapper'
-                                    onClick = {() => {
-                                        if(this.emptyGender){this.emptyGender = false;}
-                                        this.updateMemberProperty("gender", {male: false, female: true})
+                                    radioGroupElement = {this.state.member.gender}
+                                    radioButtonValue = 'male'
+                                    onClick = {(value) => {
+                                        this.updateMemberProperty("gender", value);
+                                        this.emptyGender = false;
                                     }}
-                                    onKeyDown={(e) => {
-                                        if(this.emptyGender){this.emptyGender = false;}
-                                        if(e.keyCode === 32){/* SPACE BAR */ this.updateMemberProperty("gender", {male: false, female: true})}
+                                    labelClassName = "checkbox-text"
+                                    labelText = 'Male'
+                                />
+                                <RadioButton
+                                    radioGroupElement = {this.state.member.gender}
+                                    radioButtonValue = 'female'
+                                    onClick = {(value) => {
+                                        this.updateMemberProperty("gender", value);
+                                        this.emptyGender = false;
                                     }}
-                                >
-                                    <label className='radio'>
-                                        <input type="radio" disabled checked={this.state.member.gender.female}/>
-                                        <RadioBoxSVG />
-                                    </label>
-                                    <span className="checkbox-text">Female</span>
-                                </div>
-
+                                    labelClassName = "checkbox-text"
+                                    labelText = 'Female'
+                                />
                             </div>
                         </li>
                         <li className={this.emptyStreetAddress ? 'input-wrapper mark-invalid' : 'input-wrapper'}

@@ -6,6 +6,7 @@ import EditUpSVG from '../../svg/EditUpSVG';
 import Table from '../Table';
 import Loader from '../Loader';
 import Alert from '../Alert';
+import TimePicker from '../TimePicker';
 import { Service } from '../ApiService';
 
 class EventBudget extends Component {
@@ -18,12 +19,16 @@ class EventBudget extends Component {
             budget: [],
             eventId: props.eventId,
             calculatedCost: 0,
-            line: {}
+            line: {
+                name: '',
+                description: '',
+                price: 0,
+                cost: 0,
+                amount: 1,
+            }
         };
+        this.emptyName = false;
         this.addLine = this.addLine.bind(this);
-        this.changeLineDescription = this.changeLineDescription.bind(this);
-        this.changeLineName = this.changeLineName.bind(this);
-        this.changeLineCost = this.changeLineCost.bind(this);
         this.removeItem = this.removeItem.bind(this);
         this.renderNameColumn = this.renderNameColumn.bind(this);
         this.editItem = this.editItem.bind(this);
@@ -40,23 +45,12 @@ class EventBudget extends Component {
         return cost;
     }
 
-    changeLineDescription(evt) {
+    changeLineProperty(property, value){
         var line = this.state.line;
-        line.description = evt.target.value;
-        this.setState({ line: line });
+        line[property] = value;
+        this.setState({ line: line }); 
     }
 
-    changeLineName(evt) {
-        var line = this.state.line;
-        line.name = evt.target.value;
-        this.setState({ line: line });
-    }
-
-    changeLineCost(evt) {
-        var line = this.state.line;
-        line.cost = evt.target.value;
-        this.setState({ line: line });
-    }
     addLine() {
         this.setState({ loading: true });
         var line = this.state.line;
@@ -104,6 +98,15 @@ class EventBudget extends Component {
         );
     }
 
+    addLineValidationPassed() {
+        let validationPassed = true;
+        if (this.state.line.name && this.state.line.name !== '') {
+            this.emptyName = true;
+            validationPassed = false;
+        }
+        return validationPassed;
+    }
+
     render() {
         const budget = this.state.budget;
         const columns=[
@@ -114,34 +117,103 @@ class EventBudget extends Component {
             return (
                 <div style={{ "width": "100%", "maxWidth": "600px" }}>
                     {this.state.loading && <Loader />}
-                    {this.state.addingLine && <Alert
-                        headerText='Add existing members'
-                        onClose={() => this.setState({ addingLine: false })}
-                    >
-                        <table>
-                            <tr>
-                                <td>Name</td>
-                            </tr>
-                            <tr>
-                                <td><input value={this.state.line.name} onChange={this.changeLineName} /></td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                            </tr>
-                            <tr>
-                                <td><input value={this.state.line.description} onChange={this.changeLineDescription} /></td>
-                            </tr>
-                            <tr>
-                                <td>Cost</td>
-                            </tr>
-                            <tr>
-                                <td><input value={this.state.line.cost} onChange={this.changeLineCost} /></td>
-                            </tr>
-                            <tr>
-                                <td><button onClick={this.addLine}>Save</button></td>
-                            </tr>
-                        </table>
-                    </Alert>}
+                    {this.state.addingLine && 
+                        <Alert
+                            headerText='Add Item'
+                            showOkButton = {true}
+                            buttonText = "Save"
+                            onOkButtonClick = {() => {
+                                if(this.addLineValidationPassed){
+                                    this.addLine()
+                                }
+                            }}
+                            onClose={() => this.setState({ addingLine: false })}
+                            setFocusTo={this.firstInputRef}
+                        >
+                            <ul className='input-fields first-child-text-110 mt-1 mb-1'>
+                                <li className={this.emptyName ? 'mark-invalid' : ''} error-text='Please enter Item Name'>
+                                    <p>Name:</p>
+                                    <div className='input-button-wrapper'>
+                                        <input 
+                                            ref = {el => this.firstInputRef = el}
+                                            type='text' 
+                                            placeholder='Event Title'
+                                            value={this.state.line.name}
+                                            onChange={(e) => {
+                                                this.emptyName = false;
+                                                this.changeLineProperty('name', e.target.value)}
+                                            }
+                                        />
+                                        {this.state.line.name && this.state.line.name !== "" &&
+                                            <button onClick={() => {
+                                                this.emptyName = true;
+                                                this.changeLineProperty('name', '')}
+                                            }>
+                                                <CloseUpSVG />
+                                            </button>
+                                        }
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>Description:</p>
+                                    <div className='input-button-wrapper'>
+                                        <input type='text' 
+                                            placeholder='Description'
+                                            value={this.state.line.description}
+                                            onChange={(e) => this.changeLineProperty('description', e.target.value)}
+                                        />
+                                        {this.state.line.description && this.state.line.description !== "" &&
+                                            <button onClick={() => this.changeLineProperty('description', '')}>
+                                                <CloseUpSVG />
+                                            </button>
+                                        }
+                                    </div>
+                                </li>
+                                <li className={this.emptyName ? 'mark-invalid' : ''} error-text='Please enter Item Name'>
+                                    <p>Price:</p>
+                                    <div className='input-button-wrapper'>
+                                        <input type='number' 
+                                            placeholder='$'
+                                            value={this.state.line.price > 0 ? this.state.line.price : ""}
+                                            onChange={(e) => {
+                                                this.emptyName = false;
+                                                this.changeLineProperty('price', e.target.value)}
+                                            }
+                                        />
+                                        {this.state.line.price > 0 &&
+                                            <button onClick={() => this.changeLineProperty('price', 0)}>
+                                                <CloseUpSVG />
+                                            </button>
+                                        }
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>Amount:</p>
+                                    <ul className='input-fields-child-ul justify-space-between flex-wrap'>
+                                        <li style={{"flex": "1 1 auto", "maxWidth":"100px", "marginRight":"1em"}}>
+                                            <div className='input-button-wrapper'>
+                                                <input type='number' 
+                                                    placeholder='Amount'
+                                                    value={this.state.line.amount}
+                                                    onChange={(e) => this.changeLineProperty('amount', e.target.value)}
+                                                />
+                                                {this.state.line.amount > 1 &&
+                                                    <button onClick={() => this.changeLineProperty('amount', 1)}>
+                                                        <CloseUpSVG />
+                                                    </button>
+                                                }
+                                            </div>
+                                        </li>
+                                        {this.state.line.price > 0 && this.state.line.amount > 0 && 
+                                            <li style={{"flex": "0 0 auto"}}>
+                                                <p style={{"marginRight":"0em"}}>Total: ${(this.state.line.price * this.state.line.amount).toFixed(2)}</p>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            </ul>
+                        </Alert>
+                    }
                     <ul className='input-fields first-child-text-240 mt-3 mb-1 pl-1 pr-1'>
                         <li className='number-field'>
                             <p className='input-label'>Entered Projected Cost:</p>
