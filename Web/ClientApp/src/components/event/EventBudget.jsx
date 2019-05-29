@@ -16,23 +16,21 @@ class EventBudget extends Component {
         super(props);
         this.state = {
             addingLine: false,
+            removingLine: false,
             budget: [],
             eventId: props.eventId,
             calculatedCost: 0,
-            line: {
-                name: '',
-                description: '',
-                price: 0,
-                cost: 0,
-                amount: 1,
-            }
+            line: {},
+            headerText: '',
         };
         this.emptyName = false;
         this.addLine = this.addLine.bind(this);
         this.removeItem = this.removeItem.bind(this);
         this.renderNameColumn = this.renderNameColumn.bind(this);
         this.editItem = this.editItem.bind(this);
+        this.addLineValidationPassed = this.addLineValidationPassed.bind(this);
     }
+
     componentDidMount() {
         this.setState({ loading: true });
         Service.getBudget(this.state.eventId)
@@ -52,6 +50,7 @@ class EventBudget extends Component {
     }
 
     addLine() {
+        debugger
         this.setState({ loading: true });
         var line = this.state.line;
         line["eventId"] = this.state.eventId;
@@ -65,25 +64,26 @@ class EventBudget extends Component {
         }
     }
 
-    removeItem(row) {
+    removeItem() {//removed parameter b/c now line to delete is state.line
         this.setState({ loading: true });
-        Service.deleteBudgetLine(this.state.eventId, row)
-            .then(data => this.setState({ loading: false, budget: data, calculatedCost: this.getCalculatedCost(data) }));
+        Service.deleteBudgetLine(this.state.eventId, this.state.line)
+            .then(data => this.setState({ loading: false,line:{}, removingLine: false, budget: data, calculatedCost: this.getCalculatedCost(data) }));
     }
 
     editItem(row) {
         var line = Object.assign({}, row);
-        this.setState({ line: line, addingLine: true });
+        this.setState({ line: line, addingLine: true, headerText: 'Edit Item' });
     }
 
     renderNameColumn(value, row, index, col) {
         return (
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
-                <span style={{"flex":"1 1 auto"}} className="big-bold">{row['name']}</span>
+                <span style={{"flex":"1 1 auto"}} className="big-bold">{row['name']+' '+ <strong>row["quantity"]</strong>}</span>
                 <button 
                     className='round-button small-round-button light-grey-outline-button' 
                     style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                    onClick={() => this.removeItem(row)}
+                    onClick={() => {
+                        this.setState({removingLine: true, line:row})}}//added line:row to define which line is going to be removed
                 >
                     <CloseUpSVG />
                 </button>
@@ -98,9 +98,19 @@ class EventBudget extends Component {
         );
     }
 
+    renderTotalColumn(value, row, index, col) {
+        return (
+            <li key={index} className="table-content">
+                <span>{
+                    (row['price'] * row['quantity']).toFixed(2)
+                }</span>
+            </li>
+        );
+    }
+
     addLineValidationPassed() {
         let validationPassed = true;
-        if (this.state.line.name && this.state.line.name !== '') {
+        if (this.state.line.name === '') {
             this.emptyName = true;
             validationPassed = false;
         }
@@ -112,30 +122,29 @@ class EventBudget extends Component {
         const columns=[
             {title:"Name", accesor:"name", className:"borders-when-display-block", render: this.renderNameColumn},
             {title:"Description", accesor:"description"},
-            {title:"Cost", accesor:"cost"}
+            {title:"Price", accesor:"price"},
+            {title:"Total", accesor:"quantity", render: this.renderTotalColumn}
         ];
             return (
                 <div style={{ "width": "100%", "maxWidth": "600px" }}>
                     {this.state.loading && <Loader />}
                     {this.state.addingLine && 
                         <Alert
-                            headerText='Add Item'
+                            headerText={this.state.headerText}
                             showOkButton = {true}
                             buttonText = "Save"
                             onOkButtonClick = {() => {
-                                if(this.addLineValidationPassed){
+                                if(this.addLineValidationPassed()){
                                     this.addLine()
-                                }
+                                } else {this.forceUpdate();}
                             }}
                             onClose={() => this.setState({ addingLine: false })}
-                            setFocusTo={this.firstInputRef}
                         >
                             <ul className='input-fields first-child-text-110 mt-1 mb-1'>
                                 <li className={this.emptyName ? 'mark-invalid' : ''} error-text='Please enter Item Name'>
                                     <p>Name:</p>
                                     <div className='input-button-wrapper'>
                                         <input 
-                                            ref = {el => this.firstInputRef = el}
                                             type='text' 
                                             placeholder='Event Title'
                                             value={this.state.line.name}
@@ -145,10 +154,7 @@ class EventBudget extends Component {
                                             }
                                         />
                                         {this.state.line.name && this.state.line.name !== "" &&
-                                            <button onClick={() => {
-                                                this.emptyName = true;
-                                                this.changeLineProperty('name', '')}
-                                            }>
+                                            <button onClick={() => this.changeLineProperty('name', '')}>
                                                 <CloseUpSVG />
                                             </button>
                                         }
@@ -169,7 +175,7 @@ class EventBudget extends Component {
                                         }
                                     </div>
                                 </li>
-                                <li className={this.emptyName ? 'mark-invalid' : ''} error-text='Please enter Item Name'>
+                                <li>
                                     <p>Price:</p>
                                     <div className='input-button-wrapper'>
                                         <input type='number' 
@@ -193,20 +199,21 @@ class EventBudget extends Component {
                                         <li style={{"flex": "1 1 auto", "maxWidth":"100px", "marginRight":"1em"}}>
                                             <div className='input-button-wrapper'>
                                                 <input type='number' 
-                                                    placeholder='Amount'
-                                                    value={this.state.line.amount}
-                                                    onChange={(e) => this.changeLineProperty('amount', e.target.value)}
+                                                    placeholder='#'
+                                                    value={this.state.line.quantiti}
+                                                    onClick={(event) => event.target.select()}
+                                                    onChange={(e) => this.changeLineProperty('quantity', e.target.value)}
                                                 />
-                                                {this.state.line.amount > 1 &&
-                                                    <button onClick={() => this.changeLineProperty('amount', 1)}>
+                                                {this.state.line.quantity > 1 &&
+                                                    <button onClick={() => this.changeLineProperty('quantity', 1)}>
                                                         <CloseUpSVG />
                                                     </button>
                                                 }
                                             </div>
                                         </li>
-                                        {this.state.line.price > 0 && this.state.line.amount > 0 && 
+                                        {this.state.line.price > 0 && this.state.line.quantity > 0 && 
                                             <li style={{"flex": "0 0 auto"}}>
-                                                <p style={{"marginRight":"0em"}}>Total: ${(this.state.line.price * this.state.line.amount).toFixed(2)}</p>
+                                                <p style={{"marginRight":"0em"}}>Total: ${(this.state.line.price * this.state.line.quantity).toFixed(2)}</p>
                                             </li>
                                         }
                                     </ul>
@@ -214,21 +221,65 @@ class EventBudget extends Component {
                             </ul>
                         </Alert>
                     }
+
+                    {this.state.removingLine && 
+                        <Alert
+                            upperText = 'Are you sure you want to delete this item?'
+                            headerText = {this.state.line.name}
+                            onClose = {()=>this.setState({removingLine: false,line:{}})}//added line:null
+                            mode = 'warning'
+                            showOkCancelButtons = {true}
+                            onCancelButtonClick = {() => this.setState({removingLine: false, line:{}})}//added line:null
+                            onOkButtonClick = {() => this.removeItem()}//removed row from the parameter b/c here it wasn't row it was event
+                        >
+                            {this.state.line.description.length > 0 && 
+                                <p className='italic mb-2' style={{"textAlign":"center"}}>
+                                    {this.state.line.description}
+                                </p>
+                            }
+                            <ul className='flex-wrap justify-space-between mt-1'>
+                                {this.state.line.proce > 0 &&
+                                    <li className='flex-nowrap mr-1 mb-1'>
+                                        <p className='uppercase-text bold-text pr-05'>Price: </p>
+                                        <span>{'$'+ this.state.line.price}</span>
+                                    </li>
+                                }
+                                <li className='flex-nowrap mr-1 mb-1'>
+                                    <p className='uppercase-text bold-text pr-05'>Amount: </p>
+                                    <span>{this.state.line.quantity}</span>
+                                </li>
+                                {this.state.line.quantity > 1 &&
+                                    <li className='flex-nowrap mb-1'>
+                                        <p className='uppercase-text bold-text pr-05'>Total: </p>
+                                        <span>{(this.state.line.price * this.state.line.quantity).toFixed(2)}</span>
+                                    </li>
+                                }
+                            </ul>
+                        </Alert>
+                    }
+
                     <ul className='input-fields first-child-text-240 mt-3 mb-1 pl-1 pr-1'>
                         <li className='number-field'>
-                            <p className='input-label'>Entered Projected Cost:</p>
-                            <input value={this.props.projectedCost} />
+                            <p className='input-label'>Enter Projected Cost:</p>
+                            <input type='number' placeholder='$' value={this.props.projectedCost} />
                         </li>
-                        <li className='number-field'>
-                            <p className='input-label'>Calculated Projected Cost:</p>
-                            <input value={this.state.calculatedCost} />
-                        </li>
+                        {(budget.length === 0 || budget.length === undefined )&&
+                            <span className='text-center text-transform-none'>Add Items one by one, to create a list which can help calculate event's budget</span>
+                        }
+                        {budget.length > 0 &&
+                            <li className='number-field'>
+                                <p className='input-label'>Calculated Projected Cost:</p>
+                                <input readOnly={true} placeholder='$' type='number' value={this.state.calculatedCost} />
+                            </li>
+                        }
                     </ul>
                     <div className="flex-wrap align-center justify-center mb-2">
                         <p className='input-label'>ADD NEW ITEM:</p>
-                        <button className='big-static-button static-button' onClick={() => this.setState({ addingLine:true})} >Add Item</button>
+                        <button className='big-static-button static-button' onClick={() => this.setState({ addingLine:true, headerText: 'Add Item'})} >Add Item</button>
                     </div>
-                    <Table columns={columns} data={budget} />
+                    {budget.length > 0 &&
+                        <Table columns={columns} data={budget} />
+                    }
                 </div>
             );
     }

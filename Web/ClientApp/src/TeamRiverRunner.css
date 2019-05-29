@@ -25,9 +25,7 @@ a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
 button {background: #ffffff;}
-input::-ms-clear {
-    display: none;
-}
+input::-ms-clear {display: none;} /* no clear cross in browsers */
 
 .italic {
     font-style: italic;
@@ -49,7 +47,7 @@ p {
     font-size: inherit;
     color: inherit;
     margin: 0px;
-    line-height: 100%;
+    /*line-height: 100%;*/
     display: block;
 }
 
@@ -94,6 +92,16 @@ h4, .h4 {
 
 .blue-border-on-focus-within:hover {border-color: #0099cc !important;}
 .blue-border-on-focus-within:focus-within {border-color: #0099cc !important;}
+
+.mt-0 {margin-top: 0 !important;}
+.mr-0 {margin-right: 0 !important;}
+.mb-0 {margin-bottom: 0 !important;}
+.ml-0 {margin-left: 0 !important;}
+
+.pt-0 {padding-top: 0 !important;}
+.pr-0 {padding-right: 0 !important;}
+.pb-0 {padding-bottom: 0 !important;}
+.pl-0 {padding-left: 0 !important;}
 
 .mb-05 {margin-bottom: 0.5rem !important;}
 .mb-1 {margin-bottom: 1rem !important;}
@@ -190,17 +198,15 @@ textarea {
     color: #666666;
 }
 
-input:not(:read-only):hover, input:focus, textarea:focus, textarea:hover {border-color: #0099cc !important;}
-input:read-only {
-    background-color: #f7f7f7;
+input:not(:disabled):not(:read-only):hover, 
+input:not(:disabled):not(:read-only):focus, 
+textarea:not(:disabled):not(:read-only):focus, 
+textarea:not(:disabled):not(:read-only):hover {border-color: #0099cc !important;}
+
+input:disabled {
+    background-color: #f7f7f7 !important;
+    border-color: #999999 !important;
 }
-/*
-input[type=checkbox], input[type=radio] {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 1px solid #666666;
-    background: white;
-}*/
 
 input,
 .buttonlike-checkbox label > span {
@@ -445,21 +451,38 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
 }
 
 .medium-round-button,
-.medium-round-icon {
+.medium-round-icon,
+.status-indicator {
     font-size: 0.8rem;
     font-weight: 600;
-    line-height: 1;
-    height: 1.5rem;
     min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0rem 0.5rem 0.075rem 0.5rem;
+    display: flex;
+    align-items: center; 
 }
 
-.medium-round-button > span,
-.medium-round-icon > span {
+.status-indicator {
+    border-radius: 999px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.draft {background-color: #AB4189;}
+.published {background-color: #0099cc;}
+.cancelled {background-color: #fe7b22;}
+
+.medium-round-button + .medium-round-button {
+    margin-left: 0.5rem;
+}
+
+/*.medium-round-button > :nth-child(n),
+.medium-round-icon > :nth-child(n) {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
-}
+} */
 
 .medium-round-button > svg,
 .medium-round-icon > svg {
@@ -647,6 +670,13 @@ ul.input-fields > li > p:first-child {
     justify-items: stretch;
 }
 
+.input-fields > li > p + span {
+    text-transform: none;
+    font-weight: 400 !important;
+    margin-top: 0.6rem;
+    margin-bottom: 1rem;
+}
+
 .regular-p { 
     text-transform: none !important;
     white-space: pre-wrap !important;
@@ -739,11 +769,13 @@ button.grey-SVG-button:focus {
 .align-end {align-items: flex-end;}
 .align-start {align-items: flex-start;} 
 .align-self-stretch {align-self: stretch !important;}
+.align-self-center {align-self: center !important;}
 .justify-center {justify-content: center;}
 .justify-stretch {justify-content: stretch;}
 .justify-left {justify-content: left;}
 .justify-space-between {justify-content: space-between;}
 .justify-self-stretch {justify-self: stretch !important;}
+.justify-self-center {justify-self: center !important;}
 .flex11auto {flex: 1 1 auto;}
 .flex01auto {flex: 0 1 auto;}
 .w-100 {width: 100%;}
@@ -834,10 +866,9 @@ button.grey-SVG-button:focus {
     flex: 0 0 100%;
     padding: 0.65em;
 }
-.input-button-wrapper > input {cursor: pointer;}
 .input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
 .input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
-.input-button-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
+.input-button-wrapper > input {cursor: pointer; text-overflow:ellipsis; width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
 .input-button-wrapper > input:focus,
 .input-button-wrapper:focus > input {border-color: #0099cc;}
 .input-button-wrapper:hover, .input-button-wrapper:focus {border-color: #0099cc !important;}
@@ -1130,6 +1161,10 @@ li.mark-invalid label > svg {
 
 .text-transform-none {
     text-transform: none !important;
+}
+
+.text-center {
+    text-align: center !important;
 }
 
 /* check Box */

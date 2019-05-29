@@ -50,8 +50,10 @@ class Event extends Component {
                 groupId: 0,
                 date: new Date(),
             },
+            eventStatus: "draft",
             eventId: evtId,
             showError: false,
+            showDialog: false,
         };
         this.defaultTimeValue = {
             activated: false,
@@ -79,6 +81,7 @@ class Event extends Component {
         this.emptyTimeTo = false;
         this.emptyType = false;
         this.emptyColor = false;
+        this.headerText = '';
     }
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
@@ -105,7 +108,6 @@ class Event extends Component {
           component.setState({pictures: jjson})
         });
     }
-
 
     validation() {
         let validationPassed = true;
@@ -162,7 +164,6 @@ class Event extends Component {
 
     nextStep() {
         this.setActiveStep(this.state.activeTabIndex + 1);
-
     }
 
     onTestChange(newVal){
@@ -249,20 +250,118 @@ class Event extends Component {
         this.setState({ eventMain: temp });
     }
 
+    onPublishButtonClick() {
+        let onOkButtonClick = () => {
+            // Publish Event
+            this.setState({eventStatus: 'published', showDialog: false});
+        };
+        let dialogContent = () => { 
+            return <div>
+                <span>Are you sure you want to publish event</span>
+                <h3>{this.state.eventMain.name + "?"}</h3>
+            </div>
+        }
+        if (!this.validation()) {
+            this.setState({showDialog: false});
+            return;
+        } else {
+            this.headerText = 'Publish event';
+            this.onOkButtonClick = onOkButtonClick;
+            this.dialogContent = dialogContent();
+            this.setState({showDialog: true});
+        }
+    }
+
+    onCancelEventButtonClick() {
+        let onOkButtonClick = () => {
+            // Cancel Event
+            this.setState({eventStatus: 'cancelled', showDialog: false});
+        };
+        let dialogContent = () => { 
+            return <div>
+                <span>Are you sure you want to cancel event</span>
+                <h3>{this.state.eventMain.name + "?"}</h3>
+            </div>
+        }
+        if (!this.validation()) {
+            this.setState({showDialog: false});
+            return;
+        } else {
+            this.headerText = 'Cancell event';
+            this.onOkButtonClick = onOkButtonClick;
+            this.dialogContent = dialogContent();
+            this.setState({showDialog: true});
+        }
+    }
+
+    onMoveToDraftsButtonClick() {
+        let onOkButtonClick = () => {
+            // Move to Drafts Event
+            this.setState({eventStatus: 'draft', showDialog: false});
+        };
+        let dialogContent = () => { 
+            return <div>
+                <span>Are you sure you want move to drafts event</span>
+                <h3>{this.state.eventMain.name + "?"}</h3>
+            </div>
+        }
+        debugger
+        if (!this.validation()) {
+            this.setState({showDialog: false});
+            return;
+        } else {
+            this.headerText = 'Move to drafts';
+            this.onOkButtonClick = onOkButtonClick;
+            this.dialogContent = dialogContent();
+            this.setState({showDialog: true});
+        }
+    }
+
     render() {
         const pictures = this.state.formattedPicturesList;
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
-                
-                <TabComponent 
-                    inheritParentHeight={false}
-                    tabList={['info', 'attendees', 'budget', 'pictures']}
-                    wasSelected={(index) => this.setActiveStep(index)}
-                    activeTabIndex={this.state.activeTabIndex}
-                    tabEqualWidth={true}
-                />
+                <div className = 'flex-wrap flex-flow-column'>
+                    {this.state.eventStatus === 'draft' && 
+                        <div className = 'w-100 flex-wrap justify-space-between align-center mb-2'>
+                            <div className='status-indicator draft'>Draft</div>
+                            <div className = 'flex-wrap align-center'>
+                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onPublishButtonClick()}>
+                                    Publish
+                                </button>
+                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onCancelEventButtonClick()}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    {this.state.eventStatus === 'published' && 
+                        <div className = 'w-100 flex-wrap justify-space-between align-center mb-2'>
+                            <div className='status-indicator published'>Published</div>
+                            <div className = 'flex-wrap align-center'>
+                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onMoveToDraftsButtonClick()}>Move to drafts</button>
+                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onCancelEventButtonClick()}>Cancel</button>
+                            </div>
+                        </div>
+                    }
+                    {this.state.eventStatus === 'cancelled' && 
+                        <div className = 'w-100 flex-wrap justify-space-between align-center mb-2'>
+                            <div className='status-indicator cancelled'>Cancelled</div>
+                            <div className = 'flex-wrap align-center'>
+                                <button className='round-button medium-round-button grey-outline-button'>Publish</button>
+                            </div>
+                        </div>
+                    }
+                    <TabComponent 
+                        inheritParentHeight={false}
+                        tabList={['info', 'attendees', 'budget', 'pictures']}
+                        wasSelected={(index) => this.setActiveStep(index)}
+                        activeTabIndex={this.state.activeTabIndex}
+                        tabEqualWidth={true}
+                    />
+                </div>
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
                         <li 
@@ -506,10 +605,25 @@ class Event extends Component {
                         headerText = 'Error'
                         onClose = {()=>this.setState({showError: false})}
                         showOkButton = {true}
+                        onOkButtonClick = {()=>this.setState({showError: false})}
                         buttonText = "Got IT!"
                         mode = 'error'
                     >
                        <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
+                    </Alert>
+                }
+
+                {this.state.showDialog && 
+                    <Alert 
+                        headerText = {this.headerText}
+                        onClose = {() => this.setState({showDialog: false})}
+                        showOkCancelButtons = {true}
+                        onCancelButtonClick = {() => this.setState({showDialog: false})}
+                        onOkButtonClick = {() => this.onOkButtonClick()}
+                        cancelButtonText = "Cancel"
+                        okButtonText = "Ok"
+                    >
+                       {this.dialogContent}
                     </Alert>
                 }
             </div>

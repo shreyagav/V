@@ -34,8 +34,9 @@
     padding: 2em;
     max-height: calc(100% - 2em);
     min-width: calc(400px - 2em);
-    max-width: calc(100% - 2em);
-    width: fit-content;
+    max-width: 500px;
+    /*max-width: calc(100% - 2em);*/
+    width: calc(100% - 2em);
     background-color: #f7f7f7;
     border: #999999 1px solid;
     display: flex;
@@ -53,17 +54,32 @@
 .success {border-color: #8bba19;}
 .error {border-color: #E53E71;}
 
+.warning h3 {color: #fe7b22 !important;}
+.success h3 {color:  #8bba19 !important;}
+.error h3 {color: #E53E71 !important;}
+
 .modal-img-wrapper {
     width: 5em;
     height: 5em;
     padding: 1em;
     border-radius: 100px;
-    border: 3px solid #0099cc;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #0099cc;
 }
 
-.warning .modal-img-wrapper {border: 3px solid #fe7b22;}
-.success .modal-img-wrapper {border: 3px solid #8bba19;}
-.error .modal-img-wrapper {border: 3px solid #E53E71;}
+@media screen and (max-width: 500px){
+    .modal-img-wrapper {
+        width: 16vw;
+        height: 16vw;
+        padding: 3.2vw;
+        border-width: 0.6vw;
+    }
+}
+
+.warning .modal-img-wrapper {border-color: #fe7b22;}
+.success .modal-img-wrapper {border-color:#8bba19;}
+.error .modal-img-wrapper {border-color: #E53E71;}
 
 .modal-img-wrapper > svg {width: 100%; height: 100%;}
 .modal-img-wrapper > svg .svg {fill: #0099cc;}
@@ -83,9 +99,13 @@
 }
 .modal-close-button:hover > svg > .svg, .modal-close-button:focus {border-color: transparent; outline: none;}
 
-.warning .ok-button:hover, .warning .ok-button:focus {background-color: #fe7b22 !important; border-color: #fe7b22 !important;}
-.success .ok-button:hover, .success .ok-button:focus {background-color: #8bba19 !important; border-color:  #8bba19 !important;}
-.error .ok-button:hover, .error .ok-button:focus {background-color: #E53E71 !important; border-color: #E53E71 !important;}
+.warning .regular-button:hover, .warning .regular-button:focus {border-color: #fe7b22 !important; color: #fe7b22 !important;}
+.success .regular-button:hover, .success .regular-button:focus {border-color:  #8bba19 !important; color:  #8bba19 !important;}
+.error .regular-button:hover, .error .regular-button:focus {border-color: #E53E71 !important; color: #E53E71 !important;}
+
+.warning .default-button:hover, .warning .default-button:focus {background-color: #fe7b22 !important; border-color: #fe7b22 !important;}
+.success .default-button:hover, .success .default-button:focus {background-color: #8bba19 !important; border-color:  #8bba19 !important;}
+.error .default-button:hover, .error .default-button:focus {background-color: #E53E71 !important; border-color: #E53E71 !important;}
 
 .modal-close-button > svg {width: 100%; height: 100%;}
 .modal-close-button > svg > .svg {fill: #cccccc}

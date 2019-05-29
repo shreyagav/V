@@ -48,6 +48,9 @@ class Alert extends Component {
                     >
                         <CloseUpSVG />
                     </button>
+                    {this.props.upperText && 
+                        <p className='mb-1' style={{"textAlign":"center"}}>{this.props.upperText}</p>
+                    }
                     {this.props.mode === 'error' &&
                         <div className='modal-img-wrapper mb-1'>
                             <CloseUpSVG />
@@ -70,7 +73,7 @@ class Alert extends Component {
                     {this.props.showOkButton &&
                         <button 
                             ref = {el => this.singleOkButtonRef = el}
-                            className = 'ok-button medium-static-button static-button default-button mt-1' 
+                            className = 'medium-static-button static-button default-button mt-1' 
                             onClick = {this.props.onOkButtonClick} 
                             style={{"marginBottom":"0em"}}
                         >
@@ -81,7 +84,7 @@ class Alert extends Component {
                         <div className='flex-nowrap mt-1' style={{"marginBottom":"-0.5em"}}>
                             <button 
                                 ref = {el => this.okButtonRef = el}
-                                className='medium-static-button static-button' 
+                                className='regular-button medium-static-button static-button' 
                                 onClick={this.props.onOkButtonClick}
                             >
                                     {this.props.okButtonText ? this.props.okButtonText : "OK"}
