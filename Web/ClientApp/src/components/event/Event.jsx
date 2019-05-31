@@ -150,16 +150,21 @@ class Event extends Component {
                 event.id = this.state.eventId;
                 this.setState({ loading: true });
                 Service.changeEvent(event).then((data) => {
-                    Service.getEventAttendees(data.id)
-                        .then(attendees => {
-                            setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
-                        })
+                    if (num == 1) {
+                        Service.getEventAttendees(data.id)
+                            .then(attendees => {
+                                setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
+                            })
+                    } else {
+                        me.setState({ activeTabIndex: num, eventId: data.id, loading: false });
+                    }
                 });
                 break;
             default:
                 this.setState({ activeTabIndex: num });
         }
     }
+
 
     nextStep() {
         this.setActiveStep(this.state.activeTabIndex + 1);
