@@ -3,58 +3,45 @@ import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import DatePicker from '../DatePicker';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import { withStore } from '../store';
+import CheckBox from '../CheckBox';
 
 class MemberTRRInfo extends Component {
 
     render() {
         return (
             <div>
-                <div 
-                    tabIndex={0} 
-                    className='checkBox-wrapper mb-05 ml-1 mt-3 mr-1'
-                    onClick={() => this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned)}
-                    onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned);}}}
-                >
-                    <label>
-                        <input type="checkbox" disabled checked={this.props.member.releaseSigned}/>
-                        <CheckBoxSVG />
-                    </label>
-                    <span style={{"textTransform":"uppercase", "fontWeight":"500"}}>Release Signed</span> 
-                </div>
+                <CheckBox 
+                    className = 'mb-05 ml-1 mt-3 mr-1'
+                    onClick = {() => this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned)}
+                    checked = {this.props.member.releaseSigned}
+                    labelClassName = 'uppercase-text bold-text'
+                    labelText = 'Release Signed'
+                />
 
-                <div 
-                    tabIndex={0} 
-                    className='checkBox-wrapper mb-05 ml-1 mr-1'
-                    onClick={() => this.props.updateMemberProperty("liabilitySigned", !this.props.member.liabilitySigned)}
-                    onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.props.updateMemberProperty("liabilitySigned", !this.props.member.liabilitySigned);}}}
-                >
-                    <label>
-                        <input type="checkbox" disabled checked={this.props.member.liabilitySigned}/>
-                        <CheckBoxSVG />
-                    </label>
-                    <span style={{"textTransform":"uppercase", "fontWeight":"500"}}>Liability Signed</span> 
-                </div>
+                <CheckBox 
+                    className = 'mb-05 ml-1 mt-1 mr-1'
+                    onClick = {() => this.props.updateMemberProperty("liabilitySigned", !this.props.member.liabilitySigned)}
+                    checked = {this.props.member.liabilitySigned}
+                    labelClassName = 'uppercase-text bold-text'
+                    labelText = 'Liability Signed'
+                />
+
                 <div className = 'flex-nowrap align-center mt-2 mb-2 ml-1 mr-1'>
                     <span className='line'></span>
                         <p className='pr-05 pl-05'><strong>ACTIVE</strong></p>
                     <span className='line'></span>
                 </div>
+
                 <div className='flex-nowrap justify-left align-center ml-1 mr-1'>
                     <ul className='input-fields first-child-text-125'>
                         <li>
-                            <div 
-                                tabIndex={0} 
-                                className='checkBox-wrapper'
-                                onClick={() => this.props.updateMemberProperty("activeMember", !this.props.member.activeMember)}
-                                onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.props.updateMemberProperty("activeMember", !this.props.member.activeMember);}}}
+                            <CheckBox 
                                 style = {{"marginTop":"0.6rem"}}
-                            >
-                                <label>
-                                    <input type="checkbox" disabled checked={this.props.member.activeMember}/>
-                                    <CheckBoxSVG />
-                                </label>
-                                <span style={{"textTransform":"uppercase"}}>Active</span> 
-                            </div>
+                                onClick = {() => this.props.updateMemberProperty("activeMember", !this.props.member.activeMember)}
+                                checked = {this.props.member.activeMember}
+                                labelClassName = 'uppercase-text bold-text'
+                                labelText = 'Active'
+                            />
 
                             {!this.props.member.activeMember &&
                                 <div className='flex-nowrap justify-left align-center break-at-500'>

@@ -42,8 +42,8 @@ class Calendar extends Component {
         this.navigateToEventView = this.navigateToEventView.bind(this);
     }
     navigateToEventView(id) {
-        //this.props.history.push('/event-view/' + id);
-        this.props.history.push('/event-edit/' + id);
+        this.props.history.push('/event-view/' + id);
+        //this.props.history.push('/event-edit/' + id);
     }
     setSelectedChapters(arr) {
         this.setState({ selectedChapters: arr });

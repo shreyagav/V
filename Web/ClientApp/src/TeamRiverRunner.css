@@ -10,6 +10,14 @@
     font-variant: normal;
     color: #666666;
 }
+/* clearing browser settings for numeric inputs */
+input, button {display: block;}
+input[type=number] {-moz-appearance: textfield;}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+  margin: 0; /* Removes leftover margin */
+}
 
 label {margin: 0rem;}
 ul {list-style: none; margin: 0px !important;}
@@ -18,13 +26,11 @@ a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
 button {background: #ffffff;}
-input::-ms-clear {
-    display: none;
-}
+input::-ms-clear {display: none;} /* no clear cross in browsers */
 
 .italic {
-    font-style: italic;
-    font-weight: 400;
+    font-style: italic !important;
+    font-weight: 400 !important;
 }
 
 header {
@@ -42,7 +48,7 @@ p {
     font-size: inherit;
     color: inherit;
     margin: 0px;
-    line-height: 100%;
+    /*line-height: 100%;*/
     display: block;
 }
 
@@ -66,12 +72,10 @@ h3, .h3 {
     padding-bottom: 1rem; */
 }
 h4, .h4 {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.25em;
+    font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
 }
 
 .input-label {
@@ -87,6 +91,16 @@ h4, .h4 {
 
 .blue-border-on-focus-within:hover {border-color: #0099cc !important;}
 .blue-border-on-focus-within:focus-within {border-color: #0099cc !important;}
+
+.mt-0 {margin-top: 0 !important;}
+.mr-0 {margin-right: 0 !important;}
+.mb-0 {margin-bottom: 0 !important;}
+.ml-0 {margin-left: 0 !important;}
+
+.pt-0 {padding-top: 0 !important;}
+.pr-0 {padding-right: 0 !important;}
+.pb-0 {padding-bottom: 0 !important;}
+.pl-0 {padding-left: 0 !important;}
 
 .mb-05 {margin-bottom: 0.5rem !important;}
 .mb-1 {margin-bottom: 1rem !important;}
@@ -110,6 +124,8 @@ h4, .h4 {
 .pl-025 {padding-left: 0.25rem !important}
 .pl-05 {padding-left: 0.5rem !important}
 .pl-1 {padding-left: 1rem !important}
+.mr-05 {margin-right: 0.5rem !important}
+.ml-05 {margin-left: 0.5rem !important}
 .mr-1 {margin-right: 1rem !important}
 .ml-1 {margin-left: 1rem !important}
 
@@ -120,12 +136,15 @@ h4, .h4 {
 
 .mediaMin500-pl-pr-025 {padding-right: 0.5rem !important; padding-left: 0.5rem !important}
 
+.hideIfWiderThan500 {display: none;}
+@media screen and (max-width: 500px){
+    .hideIfWiderThan500 {display: block;}
+}
 
 @media screen and (max-width: 700px){
     h1, .h1 {font-size: 8vw;}
     h2, .h2 {font-size: 6.4vw;}
     h3, .h3 {font-size: 4.8vw;}
-    h4, .h4 {font-size: 3.2vw;}
 }
 
 @media screen and (max-width: 500px){
@@ -133,7 +152,7 @@ h4, .h4 {
     .mediaMin500-pl-pr-025 {padding-right: 0vw !important; padding-left: 0vw !important}
 
     .mb-05 {margin-bottom: 1.6vw !important;}
-    .mb-1 {margin-bottom: 3.2vw !important;}
+    /*.mb-1 {margin-bottom: 3.2vw !important;}*/
     .mb-2 {margin-bottom: 6.4vw !important;}
     .mb-3 {margin-bottom: 8.4vw !important;}
     .mt-05 {margin-top: 1.6vw !important;}
@@ -166,10 +185,18 @@ h4, .h4 {
 b, strong {font-weight: 700 !important; font-size: inherit; color: inherit;}
 
 small {
-    font-size: 0.8em;
+    font-size: 0.8em !important;
     line-height: 1;
     color: inherit;
     font-weight: inherit;
+}
+
+.table-mini-header {
+    flex: 0 0 85px !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    color: #999999 !important;
+    font-weight: 600 !important;
 }
 
 /* input & checkbox */
@@ -181,16 +208,18 @@ textarea {
     padding-right: 2.5em;
     font-weight: 500;
     color: #666666;
+    display: block;
 }
 
-input:hover, input:focus, textarea:focus, textarea:hover {border-color: #0099cc !important;}
-/*
-input[type=checkbox], input[type=radio] {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 1px solid #666666;
-    background: white;
-}*/
+input:not(:disabled):not(:read-only):hover, 
+input:not(:disabled):not(:read-only):focus, 
+textarea:not(:disabled):not(:read-only):focus, 
+textarea:not(:disabled):not(:read-only):hover {border-color: #0099cc !important;}
+
+input:disabled {
+    background-color: #f7f7f7 !important;
+    border-color: #999999 !important;
+}
 
 input,
 .buttonlike-checkbox label > span {
@@ -376,7 +405,7 @@ button.big-blue-button {
     font-size: 1em;
     line-height: 1;
     position: relative;
-    margin: 0.5em;
+    margin: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -435,21 +464,48 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
 }
 
 .medium-round-button,
-.medium-round-icon {
+.medium-round-icon,
+.status-indicator {
     font-size: 0.8rem;
     font-weight: 600;
-    line-height: 1;
-    height: 1.5rem;
     min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0rem 0.5rem 0.075rem 0.5rem;
+    display: flex;
+    align-items: center; 
 }
 
-.medium-round-button > span,
-.medium-round-icon > span {
+.status-indicator {
+    border-radius: 999px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.status-wrapper {
+    padding: 0.25rem;
+    border-radius: 999px;
+    background-color: #f4f3f2;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.draft {background-color: #AB4189;}
+.published {background-color: #0099cc;}
+.cancelled {background-color: #fe7b22;}
+
+.medium-round-button + .medium-round-button {
+    margin-left: 0.5rem;
+}
+
+/*.medium-round-button > :nth-child(n),
+.medium-round-icon > :nth-child(n) {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
-}
+} */
 
 .medium-round-button > svg,
 .medium-round-icon > svg {
@@ -519,7 +575,8 @@ ul.main-nav a:hover .svg, ul.main-nav a:focus .svg,
 .dark-grey-text {color: #666666 !important;}
 .light-grey-text {color: #999999 !important;}
 .blue-text {color: #0099cc !important;}
-.uppercase-text {text-transform: uppercase;}
+.uppercase-text {text-transform: uppercase !important;}
+.bold-text{font-weight: 500 !important;}
 
 /* label-input-wrapper */
 
@@ -551,9 +608,7 @@ ul.input-fields > li{
 }
 
 @media screen and (min-width: 561px){
-    ul.input-fields > li {
-        flex-flow: row;
-    }
+    ul.input-fields > li {flex-flow: row;}
 
     ul.first-child-text-60 > li > :first-child{
         flex: 0 0 60px;
@@ -636,6 +691,13 @@ ul.input-fields > li > p:first-child {
     flex-wrap: nowrap;
     align-items: flex-start;
     justify-items: stretch;
+}
+
+.input-fields > li > p + span {
+    text-transform: none;
+    font-weight: 400 !important;
+    margin-top: 0.6rem;
+    margin-bottom: 1rem;
 }
 
 .regular-p { 
@@ -730,11 +792,13 @@ button.grey-SVG-button:focus {
 .align-end {align-items: flex-end;}
 .align-start {align-items: flex-start;} 
 .align-self-stretch {align-self: stretch !important;}
+.align-self-center {align-self: center !important;}
 .justify-center {justify-content: center;}
 .justify-stretch {justify-content: stretch;}
 .justify-left {justify-content: left;}
 .justify-space-between {justify-content: space-between;}
 .justify-self-stretch {justify-self: stretch !important;}
+.justify-self-center {justify-self: center !important;}
 .flex11auto {flex: 1 1 auto;}
 .flex01auto {flex: 0 1 auto;}
 .w-100 {width: 100%;}
@@ -825,10 +889,9 @@ button.grey-SVG-button:focus {
     flex: 0 0 100%;
     padding: 0.65em;
 }
-.input-button-wrapper > input {cursor: pointer;}
 .input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
 .input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
-.input-button-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
+.input-button-wrapper > input {cursor: pointer; text-overflow:ellipsis; width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
 .input-button-wrapper > input:focus,
 .input-button-wrapper:focus > input {border-color: #0099cc;}
 .input-button-wrapper:hover, .input-button-wrapper:focus {border-color: #0099cc !important;}
@@ -907,7 +970,7 @@ button.grey-SVG-button:focus {
     text-overflow: ellipsis;
     text-align: center;
 }
-.children-mr-08-when-width-500 > :nth-child(n):not(:last-child) {margin-right: 0.8rem;}
+.line-of-inputs-wrapper > :nth-child(n):not(:last-child) {margin-right: 0.8rem;}
 .break-at-500-p {margin-top:0px !important; margin-right:0.5rem;}
 @media screen and (max-width: 500px) {
     .table {display: block; }
@@ -917,9 +980,11 @@ button.grey-SVG-button:focus {
         border-bottom: 1px solid #666666 !important;*/
         background-color: #f4f3f2;
     }
-    .break-at-500 {display: block;}
+    .break-at-500 {display: block;} /* Do I still need this??? */
     .break-at-500-p {margin-bottom: 0.8rem;}
-    .children-mr-08-when-width-500 > :nth-child(n):not(:last-child) {margin-right: 0em; margin-bottom: 1rem;}
+    .line-of-inputs-wrapper > :nth-child(n):not(:last-child) {margin-right: 0rem !important;}
+    .line-of-inputs-wrapper > .mark-invalid:nth-child(n) > :nth-child(n) {margin-bottom: 0rem !important;}
+    .line-of-inputs-wrapper > .mark-invalid:nth-child(n) {margin-bottom: 1.5rem !important;}
 }
 
 @media screen and (max-width: 700px) {
@@ -942,8 +1007,8 @@ button.grey-SVG-button:focus {
     font-weight: 500;
 }
 .icon-text-set span.chapter {
-    border: 1px solid #dddddd;
-    background-color: #dddddd;
+    border: 1px solid #f4f3f2;
+    background-color: #f4f3f2;
     border-radius: 10px;
     padding: 0.25rem 0.25rem 0.30rem 0.35rem;
 }
@@ -1093,9 +1158,11 @@ li.mark-invalid::after {
     li.mark-invalid::after {bottom: -1.25em;}
 }
 
-li.mark-invalid > div > input,
+li.mark-invalid input,
 li.mark-invalid div.drop-down-header,
-li.mark-invalid > div.time-picker > div.input-button-wrapper {
+li.mark-invalid > div.date-picker > div.input-button-wrapper,
+li.mark-invalid > div.time-picker > div.input-button-wrapper,
+li.mark-invalid label > svg {
     border-color: #E53E71 !important;
 }
 
@@ -1119,6 +1186,10 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
     text-transform: none !important;
 }
 
+.text-center {
+    text-align: center !important;
+}
+
 /* check Box */
 .checkBox-wrapper {display: flex; flex-wrap: nowrap; justify-content: left; align-items: center;}
 .checkBox-wrapper label {position: relative; margin-right: 0.5rem; background-color: #ffffff;}
@@ -1140,7 +1211,36 @@ li.mark-invalid > div.time-picker > div.input-button-wrapper {
 
 label.radio svg, label.radio::after {border-radius: 50px;}
 
-.ptpb055notNS {padding-top: 0.6em !important; padding-bottom: 0.6em !important;}
+.radio-inline-wrapper {
+    display: flex;
+    justify-content: left;
+    padding-top: 0.6em !important; 
+    padding-bottom: 0.6em !important;
+    /*width: auto !important;*/
+}
+
+li.mark-invalid > div.radio-inline-wrapper {
+    border-bottom: 1px solid #E53E71 !important;
+}
+
 @media screen and (max-width: 560px){
-    .ptpb055notNS {padding-top: 0em !important; padding-bottom: 0.2em !important;}
+    .radio-inline-wrapper {
+        padding-top: 0em !important; 
+        padding-bottom: 0.2em !important;
+    }
+}
+
+.currency-input-wrapper {
+    position: relative;
+}
+
+.currency-input-wrapper > input {
+    padding-left: 1.25em;
+}
+
+.currency-input-wrapper::after {
+    position: absolute;
+    content: '$';
+    left: 0.75em;
+    top: 10px;
 }
