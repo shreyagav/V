@@ -76,20 +76,24 @@ class EventAttendees extends Component {
                     {row['memberTypeId'] === '1' ? <VeteranUpSVG /> : <VolunteerUpSVG />}
                 </span>
                 <span style={{"flex":"1 1 auto"}} className="big-bold">{row['firstName'] + ' ' + row['lastName']}</span>
-                <button 
-                    className='round-button small-round-button light-grey-outline-button' 
-                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                    onClick={() => this.removeMember(row)}
-                >
-                    <CloseUpSVG />
-                </button>
-                <button 
-                    className='round-button small-round-button light-grey-outline-button' 
-                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                    onClick={() => this.editMember()}
-                >
-                    <EditUpSVG />
-                </button>
+                {this.props.editsPermitted !== false &&
+                    <button 
+                        className='round-button small-round-button light-grey-outline-button' 
+                        style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
+                        onClick={() => this.removeMember(row)}
+                    >
+                        <CloseUpSVG />
+                    </button>
+                }
+                {this.props.editsPermitted !== false &&
+                    <button 
+                        className='round-button small-round-button light-grey-outline-button' 
+                        style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
+                        onClick={() => this.editMember()}
+                    >
+                        <EditUpSVG />
+                    </button>
+                }
             </li>
         );
     }
@@ -187,13 +191,15 @@ class EventAttendees extends Component {
                         </div>
                     </div>
                 </Alert>}
-                <div className="flex-wrap align-center justify-center mt-2 mb-2">
-                    <p className='input-label'>ADD ATTENDEES:</p>
-                    <span>
-                        <button disabled className='big-static-button static-button' onClick={this.addNewMember}>Create New</button>
-                        <button className='big-static-button static-button' onClick={this.addExistingMember}>Add Member</button>
-                    </span>
-                </div>
+                {this.props.editsPermitted !== false &&
+                    <div className="flex-wrap align-center justify-center mb-2">
+                        <p className='input-label'>ADD ATTENDEES:</p>
+                        <span>
+                            {/*<button disabled className='big-static-button static-button' onClick={this.addNewMember}>Create New</button>*/}
+                            <button className='big-static-button static-button' onClick={this.addExistingMember}>Add Member</button>
+                        </span>
+                    </div>
+                }
                 <Table columns={columns} data={members} />
             </div>
         );

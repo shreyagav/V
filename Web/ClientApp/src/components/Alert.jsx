@@ -48,9 +48,6 @@ class Alert extends Component {
                     >
                         <CloseUpSVG />
                     </button>
-                    {this.props.upperText && 
-                        <p className='mb-1' style={{"textAlign":"center"}}>{this.props.upperText}</p>
-                    }
                     {this.props.mode === 'error' &&
                         <div className='modal-img-wrapper mb-1'>
                             <CloseUpSVG />
@@ -66,14 +63,15 @@ class Alert extends Component {
                             <CheckBoxSVG />
                         </div>
                     }
-                    {this.props.headerText &&
-                        <h3 className='mb-1'>{this.props.headerText}</h3>
-                    }
-                    <div className = 'modal-content'>{this.props.children}</div>
+                    <div className = 'modal-content mb-1'>
+                        {this.props.headerText && <h3>{this.props.headerText}</h3>}
+                        {this.props.text && <p className='mt-05 alertText'>{this.props.text}</p>}
+                    </div>
+                    <div className = 'modal-content mb-1'>{this.props.children}</div>
                     {this.props.showOkButton &&
                         <button 
                             ref = {el => this.singleOkButtonRef = el}
-                            className = 'medium-static-button static-button default-button mt-1' 
+                            className = 'medium-static-button static-button default-button' 
                             onClick = {this.props.onOkButtonClick} 
                             style={{"marginBottom":"0em"}}
                         >
@@ -81,7 +79,7 @@ class Alert extends Component {
                         </button>
                     }
                     {this.props.showOkCancelButtons &&
-                        <div className='flex-nowrap mt-1' style={{"marginBottom":"-0.5em"}}>
+                        <div className='flex-nowrap' style={{"marginBottom":"-0.5em"}}>
                             <button 
                                 ref = {el => this.okButtonRef = el}
                                 className='regular-button medium-static-button static-button' 

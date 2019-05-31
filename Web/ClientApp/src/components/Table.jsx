@@ -36,8 +36,13 @@ class Table extends Component {
                                 return (col.render(element[col.accesor], element, index, col))
                             } 
                             else return (
-                                <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
-                                    {element[col.accesor]}
+                                <li key={index} className={"table-content "}>
+                                    {this.props.addHeadersForNarrowScreen === true && 
+                                        <span className='hideIfWiderThan500 table-mini-header'>
+                                            {col.title + ": "}
+                                        </span>
+                                    }
+                                    <span className={col.className}>{element[col.accesor]}</span>
                                 </li>
                             )
                         })

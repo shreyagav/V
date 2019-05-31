@@ -11,6 +11,7 @@
     color: #666666;
 }
 /* clearing browser settings for numeric inputs */
+input, button {display: block;}
 input[type=number] {-moz-appearance: textfield;}
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -28,8 +29,8 @@ button {background: #ffffff;}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
 
 .italic {
-    font-style: italic;
-    font-weight: 400;
+    font-style: italic !important;
+    font-weight: 400 !important;
 }
 
 header {
@@ -71,12 +72,10 @@ h3, .h3 {
     padding-bottom: 1rem; */
 }
 h4, .h4 {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.25em;
+    font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
 }
 
 .input-label {
@@ -125,6 +124,8 @@ h4, .h4 {
 .pl-025 {padding-left: 0.25rem !important}
 .pl-05 {padding-left: 0.5rem !important}
 .pl-1 {padding-left: 1rem !important}
+.mr-05 {margin-right: 0.5rem !important}
+.ml-05 {margin-left: 0.5rem !important}
 .mr-1 {margin-right: 1rem !important}
 .ml-1 {margin-left: 1rem !important}
 
@@ -135,12 +136,15 @@ h4, .h4 {
 
 .mediaMin500-pl-pr-025 {padding-right: 0.5rem !important; padding-left: 0.5rem !important}
 
+.hideIfWiderThan500 {display: none;}
+@media screen and (max-width: 500px){
+    .hideIfWiderThan500 {display: block;}
+}
 
 @media screen and (max-width: 700px){
     h1, .h1 {font-size: 8vw;}
     h2, .h2 {font-size: 6.4vw;}
     h3, .h3 {font-size: 4.8vw;}
-    h4, .h4 {font-size: 3.2vw;}
 }
 
 @media screen and (max-width: 500px){
@@ -148,7 +152,7 @@ h4, .h4 {
     .mediaMin500-pl-pr-025 {padding-right: 0vw !important; padding-left: 0vw !important}
 
     .mb-05 {margin-bottom: 1.6vw !important;}
-    .mb-1 {margin-bottom: 3.2vw !important;}
+    /*.mb-1 {margin-bottom: 3.2vw !important;}*/
     .mb-2 {margin-bottom: 6.4vw !important;}
     .mb-3 {margin-bottom: 8.4vw !important;}
     .mt-05 {margin-top: 1.6vw !important;}
@@ -181,10 +185,18 @@ h4, .h4 {
 b, strong {font-weight: 700 !important; font-size: inherit; color: inherit;}
 
 small {
-    font-size: 0.8em;
+    font-size: 0.8em !important;
     line-height: 1;
     color: inherit;
     font-weight: inherit;
+}
+
+.table-mini-header {
+    flex: 0 0 85px !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    color: #999999 !important;
+    font-weight: 600 !important;
 }
 
 /* input & checkbox */
@@ -196,6 +208,7 @@ textarea {
     padding-right: 2.5em;
     font-weight: 500;
     color: #666666;
+    display: block;
 }
 
 input:not(:disabled):not(:read-only):hover, 
@@ -392,7 +405,7 @@ button.big-blue-button {
     font-size: 1em;
     line-height: 1;
     position: relative;
-    margin: 0.5em;
+    margin: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -466,6 +479,16 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     border-radius: 999px;
     text-transform: uppercase;
     color: #ffffff;
+}
+
+.status-wrapper {
+    padding: 0.25rem;
+    border-radius: 999px;
+    background-color: #f4f3f2;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .draft {background-color: #AB4189;}
@@ -984,8 +1007,8 @@ button.grey-SVG-button:focus {
     font-weight: 500;
 }
 .icon-text-set span.chapter {
-    border: 1px solid #dddddd;
-    background-color: #dddddd;
+    border: 1px solid #f4f3f2;
+    background-color: #f4f3f2;
     border-radius: 10px;
     padding: 0.25rem 0.25rem 0.30rem 0.35rem;
 }
@@ -1205,4 +1228,19 @@ li.mark-invalid > div.radio-inline-wrapper {
         padding-top: 0em !important; 
         padding-bottom: 0.2em !important;
     }
+}
+
+.currency-input-wrapper {
+    position: relative;
+}
+
+.currency-input-wrapper > input {
+    padding-left: 1.25em;
+}
+
+.currency-input-wrapper::after {
+    position: absolute;
+    content: '$';
+    left: 0.75em;
+    top: 10px;
 }

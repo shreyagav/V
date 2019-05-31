@@ -6,7 +6,6 @@ import { withStore } from '../store';
 import EventAttendees from './EventAttendees';
 import EventBudget from './EventBudget';
 import EventPictures from './EventPictures';
-import {SimpleDropDown} from '../SimpleDropDown/SimpleDropDown'
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { Service } from '../ApiService';
 import CloseUpSVG from '../../svg/CloseUpSVG';
@@ -49,8 +48,9 @@ class Event extends Component {
                 color: "#666666",
                 groupId: 0,
                 date: new Date(),
+                eventStatus: "draft",
+                projectedCost: 0,
             },
-            eventStatus: "draft",
             eventId: evtId,
             showError: false,
             showDialog: false,
@@ -253,21 +253,18 @@ class Event extends Component {
     onPublishButtonClick() {
         let onOkButtonClick = () => {
             // Publish Event
-            this.setState({eventStatus: 'published', showDialog: false});
+            let event = this.state.eventMain;
+            event.eventStatus = 'published';
+            this.setState({eventMain: event, showDialog: false});
         };
-        let dialogContent = () => { 
-            return <div>
-                <span>Are you sure you want to publish event</span>
-                <h3>{this.state.eventMain.name + "?"}</h3>
-            </div>
-        }
         if (!this.validation()) {
             this.setState({showDialog: false});
             return;
         } else {
             this.headerText = 'Publish event';
             this.onOkButtonClick = onOkButtonClick;
-            this.dialogContent = dialogContent();
+            this.dialogText = "Are you sure you want to publish event?";
+            this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
     }
@@ -275,21 +272,18 @@ class Event extends Component {
     onCancelEventButtonClick() {
         let onOkButtonClick = () => {
             // Cancel Event
-            this.setState({eventStatus: 'cancelled', showDialog: false});
+            let event = this.state.eventMain;
+            event.eventStatus = 'cancelled';
+            this.setState({eventMain: event, showDialog: false});
         };
-        let dialogContent = () => { 
-            return <div>
-                <span>Are you sure you want to cancel event</span>
-                <h3>{this.state.eventMain.name + "?"}</h3>
-            </div>
-        }
         if (!this.validation()) {
             this.setState({showDialog: false});
             return;
         } else {
             this.headerText = 'Cancell event';
             this.onOkButtonClick = onOkButtonClick;
-            this.dialogContent = dialogContent();
+            this.dialogText = "Are you sure you want to cancel event?";
+            this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
     }
@@ -297,35 +291,32 @@ class Event extends Component {
     onMoveToDraftsButtonClick() {
         let onOkButtonClick = () => {
             // Move to Drafts Event
-            this.setState({eventStatus: 'draft', showDialog: false});
+            let event = this.state.eventMain;
+            event.eventStatus = 'draft';
+            this.setState({eventMain: event, showDialog: false});
         };
-        let dialogContent = () => { 
-            return <div>
-                <span>Are you sure you want move to drafts event</span>
-                <h3>{this.state.eventMain.name + "?"}</h3>
-            </div>
-        }
-        debugger
         if (!this.validation()) {
             this.setState({showDialog: false});
             return;
         } else {
             this.headerText = 'Move to drafts';
             this.onOkButtonClick = onOkButtonClick;
-            this.dialogContent = dialogContent();
+            this.dialogText = "Are you sure you want to move event to drafts?";
+            this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
     }
 
     render() {
         const pictures = this.state.formattedPicturesList;
+        console.log("eventStatus = "+this.state.eventMain.eventStatus);
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
-                <div className = 'flex-wrap flex-flow-column'>
-                    {this.state.eventStatus === 'draft' && 
-                        <div className = 'w-100 flex-wrap justify-space-between align-center mb-2'>
+                <div className = 'flex-wrap flex-flow-column mb-3'>
+                    {(this.state.eventMain.eventStatus === 'draft' || this.state.eventMain.eventStatus === undefined) && 
+                        <div className = 'status-wrapper mb-2'>
                             <div className='status-indicator draft'>Draft</div>
                             <div className = 'flex-wrap align-center'>
                                 <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onPublishButtonClick()}>
@@ -337,8 +328,8 @@ class Event extends Component {
                             </div>
                         </div>
                     }
-                    {this.state.eventStatus === 'published' && 
-                        <div className = 'w-100 flex-wrap justify-space-between align-center mb-2'>
+                    {this.state.eventMain.eventStatus === 'published' && 
+                        <div className = 'status-wrapper mb-2'>
                             <div className='status-indicator published'>Published</div>
                             <div className = 'flex-wrap align-center'>
                                 <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onMoveToDraftsButtonClick()}>Move to drafts</button>
@@ -346,24 +337,24 @@ class Event extends Component {
                             </div>
                         </div>
                     }
-                    {this.state.eventStatus === 'cancelled' && 
-                        <div className = 'w-100 flex-wrap justify-space-between align-center mb-2'>
+                    {this.state.eventMain.eventStatus === 'cancelled' && 
+                        <div className = 'status-wrapper mb-2'>
                             <div className='status-indicator cancelled'>Cancelled</div>
                             <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button'>Publish</button>
+                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onPublishButtonClick()}>Publish</button>
                             </div>
                         </div>
                     }
                     <TabComponent 
                         inheritParentHeight={false}
-                        tabList={['info', 'attendees', 'budget', 'pictures']}
+                        tabList={['information', 'attendees', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
                         tabEqualWidth={true}
                     />
                 </div>
                 {this.state.activeTabIndex === 0 &&
-                    <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
+                    <ul className='input-fields first-child-text-125 mt-1 pl-1 pr-1'>
                         <li 
                             className={this.emptyTitle ? 'mark-invalid' : ''}
                             error-text='Please enter the Event Title'
@@ -580,20 +571,22 @@ class Event extends Component {
                     </ul>
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} />}
-                {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} />}
+                {this.state.activeTabIndex === 2 && 
+                    <EventBudget 
+                        eventId={this.state.eventId} 
+                        projectedCost={this.state.eventMain.projectedCost} 
+                        onProjectedCostChange={value => this.updateEventProperty("projectedCost", value)}
+                    />
+                }
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
                         <button className='medium-static-button static-button' 
                             onClick={() => {this.setActiveStep(this.state.activeTabIndex-1)}}
-                        >
-                            Back
-                        </button>
+                        >Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>
-                            Next
-                        </button>
+                        <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>Next</button>
                     }
                     {this.state.activeTabIndex === 3 &&
                         <button className='medium-static-button static-button default-button' disabled >Save</button>
@@ -616,6 +609,7 @@ class Event extends Component {
                 {this.state.showDialog && 
                     <Alert 
                         headerText = {this.headerText}
+                        text = {this.dialogText}
                         onClose = {() => this.setState({showDialog: false})}
                         showOkCancelButtons = {true}
                         onCancelButtonClick = {() => this.setState({showDialog: false})}
