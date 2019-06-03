@@ -48,16 +48,20 @@ namespace Models.Dto
             TimeTo = new TimeDto(evt.EndTime);
             Color = evt.Color;
             Date = evt.Date;
+            EventStatus = evt.Status.ToString().ToLower();
+            ProjectedCost = evt.ProjectedCost;
         }
 
         public int Id { get; set; }
         public String Name { get; set; }
         public String Description { get; set; }
         public int EventType { get; set; }
+        public string EventStatus { get; set; }
         public int Site { get; set; }
         public TimeDto TimeFrom { get; set; }
         public TimeDto TimeTo { get; set; }
         public DateTime Date { get; set; }
         public string Color { get; set; }
+        public decimal ProjectedCost { get; set; }
     }
 }

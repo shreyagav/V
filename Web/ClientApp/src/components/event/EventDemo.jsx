@@ -31,18 +31,11 @@ class EventDemo extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location && this.props.location.state && this.props.location.state.date) {
-            var temp = this.state.eventMain;
-            temp.date = this.props.location.state.date;
-            this.setState({ eventMain: temp });
-        }
         var component = this;
         if (this.state.eventId != 0) {
             Service.getEvent(this.state.eventId)
                 .then(data => {
                     data.date = new Date(data.date);
-                    data.timeFrom["activated"] = true;
-                    data.timeTo["activated"] = true;
                     component.setState({ eventMain: data, loading: false });
                 })
                 .catch(exception => component.setState({ error: exception, loading: false }));
@@ -144,7 +137,7 @@ class EventDemo extends Component {
         let eventDate = '';
         let eventTime = '';
         let eventType = '';
-        if(this.props.store.chapterList.length > 0){
+        if (this.props.store.chapterList.length > 0 && !this.state.loading) {
             let state = this.props.store.chapterList.find(element => {
                 return element.chapters.find(innerElement => {return innerElement.id === this.state.eventMain.site})
             });

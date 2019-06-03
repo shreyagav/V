@@ -4,10 +4,11 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Models
 {
-    public enum EventStatus { New, Draft, Published, Closed, Deleted, Cancelled};
+    public enum EventStatus { Draft, Published, Cancelled, Deleted };
     public class CalendarEvent
     {
         public CalendarEvent() {
@@ -25,9 +26,12 @@ namespace Models
             Color = newEvent.Color;
             StartTime = newEvent.TimeFrom.ToInt();
             EndTime = newEvent.TimeTo.ToInt();
-            Date = newEvent.Date;
+            Date = newEvent.Date.Date;
             SiteId = newEvent.Site;
             EventTypeId = newEvent.EventType;
+            
+            Status = (EventStatus)Enum.Parse(typeof(EventStatus), Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(newEvent.EventStatus));
+            ProjectedCost = newEvent.ProjectedCost;
             return this;
         }
 

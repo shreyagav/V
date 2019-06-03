@@ -72,6 +72,8 @@ class Event extends Component {
         this.typeOfEventDropDownRef = null;
         this.handleClick = this.handleClick.bind(this);
         this.nextStep = this.nextStep.bind(this);
+        this.updateEvent = this.updateEvent.bind(this);
+        this.fixMainEventData = this.fixMainEventData.bind(this);
         this.updateEventProperty = this.updateEventProperty.bind(this);
         this.setActiveStep = this.setActiveStep.bind(this);
         this.emptyTitle = false;
@@ -95,20 +97,18 @@ class Event extends Component {
         if (this.state.eventId != 0) {
             Service.getEvent(this.state.eventId)
                 .then(data => {
-                    data.date = new Date(data.date);
-                    data.timeFrom["activated"] = true;
-                    data.timeTo["activated"] = true;
-                    component.setState({ eventMain: data, loading: false });
+                    
+                    component.setState({ eventMain: component.fixMainEventData(data), loading: false });
                 })
                 .catch(exception => component.setState({ error: exception, loading: false }));
         }
-        fetch('/Pictures.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({pictures: jjson})
-        });
     }
-
+    fixMainEventData(data) {
+        data.date = new Date(data.date);
+        data.timeFrom["activated"] = true;
+        data.timeTo["activated"] = true;
+        return data;
+    }
     validation() {
         let validationPassed = true;
             if (this.state.activeTabIndex === 0){
@@ -142,23 +142,39 @@ class Event extends Component {
         return validationPassed;
     }
 
+    updateEvent() {
+        var event = Object.assign({}, this.state.eventMain);
+        event.id = this.state.eventId;
+        this.setState({ loading: true });
+        return Service.changeEvent(event);
+    }
+
     setActiveStep(num) {
+        var me = this;
+        var afterStep = (data) => {
+            me.setState({ activeTabIndex: num, eventId: data.id, loading: false });
+        }
+
+        if (num == 1) {
+            afterStep = (data) => {
+                Service.getEventAttendees(data.id)
+                    .then(attendees => {
+                        setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
+                    })
+            }
+        }
+
         switch (this.state.activeTabIndex) {
             case 0:
                 if (!this.validation()) return;
+                this.updateEvent().then((data) => {
+                    afterStep(me.fixMainEventData(data));
+                });
+                break;
+            case 2:
                 var me = this;
-                var event = Object.assign({}, this.state.eventMain);
-                event.id = this.state.eventId;
-                this.setState({ loading: true });
-                Service.changeEvent(event).then((data) => {
-                    if (num == 1) {
-                        Service.getEventAttendees(data.id)
-                            .then(attendees => {
-                                setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
-                            })
-                    } else {
-                        me.setState({ activeTabIndex: num, eventId: data.id, loading: false });
-                    }
+                this.updateEvent().then((data) => {
+                    afterStep(me.fixMainEventData(data));
                 });
                 break;
             default:
@@ -260,7 +276,9 @@ class Event extends Component {
             // Publish Event
             let event = this.state.eventMain;
             event.eventStatus = 'published';
-            this.setState({eventMain: event, showDialog: false});
+            this.updateEvent().then(data => {
+                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading: false });
+            });
         };
         if (!this.validation()) {
             this.setState({showDialog: false});
@@ -279,7 +297,10 @@ class Event extends Component {
             // Cancel Event
             let event = this.state.eventMain;
             event.eventStatus = 'cancelled';
-            this.setState({eventMain: event, showDialog: false});
+            this.updateEvent().then(data => {
+                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading:false });
+            });
+            
         };
         if (!this.validation()) {
             this.setState({showDialog: false});
@@ -298,7 +319,9 @@ class Event extends Component {
             // Move to Drafts Event
             let event = this.state.eventMain;
             event.eventStatus = 'draft';
-            this.setState({eventMain: event, showDialog: false});
+            this.updateEvent().then(data => {
+                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading: false });
+            });
         };
         if (!this.validation()) {
             this.setState({showDialog: false});
