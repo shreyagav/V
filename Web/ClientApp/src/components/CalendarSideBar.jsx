@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import MultiDropDownList from './MultiDropDown/MultiDropDownList';
 import MultiDropDown from './MultiDropDown/MultiDropDown';
 import './Calendar.css'
 import { withMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
@@ -10,26 +9,36 @@ class CalendarSidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.passFocusForward = this.passFocusForward.bind(this);
     }
 
     passFocusForward(e){
         if(e.shiftKey){
-            if(this.nationalEventButton){this.nationalEventButton.focus()}
+            if(this.nationalEventButton){
+                this.nationalEventButton.focus();
+                return true;
+            }
+        } else {
+            if(!this.props.store.narrowScreen) {
+                this.props.forwardToContentRef.focus();
+                return true;
+            }
         }
+        return false;
     }
 
     render() {
         return (
         <div style={{"position": "relative", "height": "100%"}}>
-            <div style={{"paddingRight": '0.9rem', "paddingLeft": '0.9rem'}}>
-                <button 
-                    ref={el => this.nationalEventButton = el}
-                    className='big-blue-button mt-1' 
-                    onClick = {this.props.clearChapterFilter} 
-                >
-                    National Event Calendar
-                </button>
-                <h4>Event calendar By Regions and chapters:</h4>
+            <div className='flex-nowrap justify-space-between align-end mb-1 pl-1 pr-1 mt-1'>
+                <h3>Chapters</h3>
+                {this.props.chapterFilter.length > 0 && 
+                    <button 
+                        ref={el => {this.nationalEventButton = el; this.props.setBackToSideBarRef(el);}}
+                        className='round-button medium-round-button grey-outline-button pr-05 pl-05'
+                        onClick = {this.props.clearChapterFilter}
+                    >Select All</button>
+                }
             </div>
             <MultiDropDown 
                 list={this.props.store.chapterList}
@@ -45,9 +54,8 @@ class CalendarSidebar extends Component {
                 onDropDownValueChange = {this.props.onSideBarDropDownValueChange}
                 hideHeader = {true}
                 hideList = {false}
-                passFocusForward = {(e) => this.passFocusForward(e)}
+                passFocusForward = {this.passFocusForward}
             />
-            {/*<MultiDropDownList list={this.props.chapterList} />*/}
         </div>
         );
     }

@@ -50,7 +50,7 @@ class MultiDropDown extends React.Component {
                         onDropDownValueChange={(value) => {this.props.onDropDownValueChange(value)}}
                         toggleable = {this.props.toggleable !== undefined ? this.props.toggleable : (this.props.hideHeader ? !this.props.hideHeader : true)}
                         flexibleParent = {this.props.flexibleParent}
-                        passFocusForward = {(e) => this.props.passFocusForward(e)}
+                        passFocusForward = {this.props.passFocusForward}
                         textPropertyRender = {this.props.textPropertyRender}
                     />
                 }
