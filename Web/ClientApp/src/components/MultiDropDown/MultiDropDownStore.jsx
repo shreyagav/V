@@ -103,7 +103,7 @@ const createMultiDropDownStore = WrappedComponent => {
             let openStateIndex = this.state.openStateIndex;
             if (props.defaultValue !== undefined){
                 value = props.defaultValue;
-                if(value.length === 0 && Object.keys(this.state.openStateIndex).length > 0){
+                if ((value == null || value.length === 0) && Object.keys(this.state.openStateIndex).length > 0){
                     openStateIndex = [];
                 }
             }
@@ -168,10 +168,12 @@ const createMultiDropDownStore = WrappedComponent => {
                 let subArray = modifiedListElement[expandBy];
                 for (let j=0; j < subArray.length; j++){
                     let element = subArray[j];
-                    for (let x=0; x < defaultValue.length; x++){
-                        if (element[expandedKeyProperty] === defaultValue[x]){
-                            element.checked = true;
-                            modifiedListElement.checked = 0; // some children are checked
+                    if (defaultValue != null) {
+                        for (let x = 0; x < defaultValue.length; x++) {
+                            if (element[expandedKeyProperty] === defaultValue[x]) {
+                                element.checked = true;
+                                modifiedListElement.checked = 0; // some children are checked
+                            }
                         }
                     }
                 }

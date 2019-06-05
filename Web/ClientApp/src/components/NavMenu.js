@@ -67,7 +67,7 @@ class NavMenu extends Component {
             <ul className="flex-nowrap main-nav">
                 <li>
                     <Link to="/">
-                        <ChaptersSVG />
+                        <CalendarSVG />
                         <span>Calendar</span>
                     </Link>
                 </li>
@@ -103,13 +103,13 @@ class NavMenu extends Component {
                 </li>}
                 {user == null && (<li>
                     <Link to="/SignIn">
-                        <UserSVG />
+                        <SignInSVG />
                         <span style={{ 'textTransform': "none" }}>Sign In</span>
                     </Link>
                 </li>)}
                 {user != null && (<li>
                     <a href="javascript:" onClick={this.signOut}>
-                        <UserSVG />
+                        <SignOutSVG />
                         <span style={{ 'textTransform': "none" }}>Sign Out</span>
                     </a>
                 </li>)}
