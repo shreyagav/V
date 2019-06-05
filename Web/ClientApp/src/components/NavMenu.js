@@ -47,9 +47,8 @@ class NavMenu extends Component {
               <TabComponent 
                   inheritParentHeight = {true}
                   tabList={["table", "list"]}
-                  proceedInOrder={false}
                   wasSelected={(index) => {if(index===0){this.props.store.set('tableStileView',true)} else {this.props.store.set('tableStileView', false)}}}
-                  tabEqualWidth={true}
+                  activeTabIndex={!this.props.store.tableStileView ? 1 : 0}
               />
             </li>
           </ul>

@@ -73,8 +73,11 @@ class EventPictures extends Component {
                     <div style={{ display: 'none' }}>
                         <input type="file" ref={el => this.fileRef = el} onChange={this.uploadFileChanged} />
                     </div>
+                    {this.state.pictures.length === 0 && 
+                        <p className='message-block mb-2'>There are no pictures uploaded yet.</p>
+                    }
                     {this.props.editsPermitted !== false &&
-                        <div className="flex-wrap align-center justify-center mt-2">
+                        <div className="flex-wrap align-center justify-center">
                             <p className='input-label'>Upload a picture:</p>
                             <button className='big-static-button static-button' onClick={this.openFileDialog}>Browse</button>
                         </div>

@@ -173,7 +173,7 @@ class EventAttendees extends Component {
                             passFocusForward = {(e) => this.passFocusForward(e)}
                             textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
                         />
-                        <div className='flex-nowrap' style={{"marginBottom":"-0.5em", "marginTop":"1em"}}>
+                        <div className='flex-nowrap justify-center' style={{"marginBottom":"-0.5em", "marginTop":"1em"}}>
                             <button 
                                 ref = {el => this.okButtonRef = el}
                                 className='medium-static-button static-button' 
@@ -191,16 +191,19 @@ class EventAttendees extends Component {
                         </div>
                     </div>
                 </Alert>}
+                {members.length === 0 && 
+                    <p className='message-block mb-2'>There are no attendees registered for the event.</p>
+                }
                 {this.props.editsPermitted !== false &&
                     <div className="flex-wrap align-center justify-center mb-2">
                         <p className='input-label'>ADD ATTENDEES:</p>
                         <span>
                             {/*<button disabled className='big-static-button static-button' onClick={this.addNewMember}>Create New</button>*/}
-                            <button className='big-static-button static-button' onClick={this.addExistingMember}>Add Member</button>
+                            <button className='big-static-button static-button' onClick={this.addExistingMember}>Add Members</button>
                         </span>
                     </div>
                 }
-                <Table columns={columns} data={members} />
+                {members.length > 0 && <Table columns={columns} data={members} />}
             </div>
         );
     }
