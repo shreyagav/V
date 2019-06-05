@@ -128,7 +128,6 @@ class EventBudget extends Component {
 
     addLineValidationPassed() {
         let validationPassed = true;
-        debugger
         if (this.state.line.name === '' || this.state.line.name === null || this.state.line.name === undefined) {
             this.emptyName = true;
             validationPassed = false;
@@ -137,6 +136,8 @@ class EventBudget extends Component {
     }
 
     render() {
+        console.log("this.props.projectedCost");
+        console.log(this.props);
         const budget = this.state.budget;
         const columns=[
             {title:"Name", accesor:"name", className:"borders-when-display-block", render: this.renderNameColumn},
@@ -276,7 +277,7 @@ class EventBudget extends Component {
                     }
 
                     <ul className='input-fields first-child-text-240 mb-1 pl-1 pr-1'>
-                        {(this.props.editsPermitted !== false || this.props.projectedCost > 0 ) &&
+                        {(!(this.props.editsPermitted === false && this.props.projectedCost === 0) || this.props.projectedCost > 0 ) &&
                             <li className='number-field'>
                                 <p className='input-label'>Entered Projected Cost:</p>
                                 <div className='input-button-wrapper currency-input-wrapper'>
@@ -292,9 +293,6 @@ class EventBudget extends Component {
                                 </div>
                             </li>
                         }
-                        {(budget.length === 0 || budget.length === undefined ) &&
-                            <span className='text-center text-transform-none'>Add Items one by one, to create a list which can help calculate event's budget</span>
-                        }
                         {budget.length > 0 &&
                             <li className='number-field'>
                                 <p className='input-label'>Calculated Projected Cost:</p>
@@ -302,6 +300,9 @@ class EventBudget extends Component {
                             </li>
                         }
                     </ul>
+                    {(budget.length === 0 || budget.length === undefined ) &&
+                        <p className='message-block mb-2'>There are no items yet. Add Items to the list to calculate event's budget.</p>
+                    }
                     {this.props.editsPermitted !== false && 
                         <div className="flex-wrap align-center justify-center mb-2">
                             <p className='input-label'>ADD NEW ITEM:</p>

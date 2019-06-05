@@ -29,7 +29,7 @@
 
 .drop-down-header:hover {cursor: pointer;}
 .drop-down-header:focus, .drop-down-header:hover {border: 1px solid #0099cc;}
-.drop-down-header:focus button .svg, .drop-down-header:hover button .svg {fill: #0099cc !important;}
+.drop-down-header:focus button .svg, .drop-down-header:hover > button .svg {fill: #0099cc !important;}
 
 .drop-down-header > div {text-transform: uppercase;}
 

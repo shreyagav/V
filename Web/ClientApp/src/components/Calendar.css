@@ -244,7 +244,7 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
     width: 325px;
     position: fixed;
     overflow: hidden;
-    top: 65px;
+    top: 70px;
     bottom: 0px;
     left: 0rem;
     z-index: 2000;

@@ -132,6 +132,16 @@ class EventDemo extends Component {
     }
 
     render() {
+        let tabSatellite = () => {
+            return <div className = 'status-wrapper mb-2'>
+                        <div className={eventStatus + ' status-indicator'}>{eventStatus}</div>
+                            <div className = 'flex-wrap align-center'>
+                                <button className='round-button medium-round-button grey-outline-button' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
+                                    Edit Event
+                                </button>
+                            </div>
+                    </div>
+        }
         let chapter = {};
         let eventDate = '';
         let eventTime = '';
@@ -162,7 +172,7 @@ class EventDemo extends Component {
         let eventStatus = this.state.eventMain.eventStatus;
         if (eventStatus === undefined) {eventStatus = "draft"}
         return (
-            <div className='flex-nowrap flex-flow-column justify-center align-center pr-1 pl-1' >
+            <div className='flex-nowrap flex-flow-column justify-center align-center pt-2 pb-2 pr-1 pl-1' >
                 {this.state.loading && <Loader/>}
                 <h1 className='mb-2'>{this.state.eventMain.name}</h1>
                 {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
@@ -180,7 +190,6 @@ class EventDemo extends Component {
                         tabList={['information', 'attendees', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
-                        tabEqualWidth={true}
                     />
                 </div>}
                 {this.state.activeTabIndex === 0 && 

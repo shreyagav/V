@@ -363,12 +363,12 @@ class Event extends Component {
                 <div className = 'flex-wrap flex-flow-column mb-3'>
                     {(this.state.eventMain.eventStatus === 'draft' || this.state.eventMain.eventStatus === undefined) && 
                         <div className = 'status-wrapper mb-2'>
-                            <div className='status-indicator draft'>Draft</div>
+                            <div className='status-indicator draft ml-025 mt-025'>Draft</div>
                             <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onPublishButtonClick()}>
+                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>
                                     Publish
                                 </button>
-                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onCancelEventButtonClick()}>
+                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onCancelEventButtonClick()}>
                                     Cancel
                                 </button>
                             </div>
@@ -376,18 +376,18 @@ class Event extends Component {
                     }
                     {this.state.eventMain.eventStatus === 'published' && 
                         <div className = 'status-wrapper mb-2'>
-                            <div className='status-indicator published'>Published</div>
+                            <div className='status-indicator published ml-025 mt-025'>Published</div>
                             <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onMoveToDraftsButtonClick()}>Move to drafts</button>
-                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onCancelEventButtonClick()}>Cancel</button>
+                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onMoveToDraftsButtonClick()}>Move to drafts</button>
+                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onCancelEventButtonClick()}>Cancel</button>
                             </div>
                         </div>
                     }
                     {this.state.eventMain.eventStatus === 'cancelled' && 
                         <div className = 'status-wrapper mb-2'>
-                            <div className='status-indicator cancelled'>Cancelled</div>
+                            <div className='status-indicator cancelled ml-025 mt-025'>Cancelled</div>
                             <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button' onClick = {() => this.onPublishButtonClick()}>Publish</button>
+                                <button className='round-button medium-round-button grey-outline-button  ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>Publish</button>
                             </div>
                         </div>
                     }
@@ -396,7 +396,6 @@ class Event extends Component {
                         tabList={['information', 'attendees', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
-                        tabEqualWidth={true}
                     />
                 </div>
                 {this.state.activeTabIndex === 0 &&

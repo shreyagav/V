@@ -223,7 +223,10 @@ export class TimePicker extends Component {
             this.clearButtonOnClick(e);
         }
         else {
-            e.preventDefault();
+            if(e.keyCode !== 9){
+                /* not TAB */
+                e.preventDefault();
+            }
         }
     }
 

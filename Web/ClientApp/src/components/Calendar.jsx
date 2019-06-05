@@ -290,61 +290,67 @@ class Calendar extends Component {
                     <div className='flex-flow-column'>
                         <div className='flex-wrap justify-space-between align-center'>
                             <h1 className='h2 uppercase-text pl-025'>
+                                {"event"+" "}
                                 <strong>
-                                    Event Calendar
-                        </strong>
-                    </h1>
-                    <span>
-                        {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
-                        <button
-                            style={{'flexShrink' : '0'}}
-                            className='round-button medium-round-button grey-outline-button' 
-                            onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
-                        >
-                            <span>today</span>
-                        </button>
+                                    Calendar
+                                </strong>
+                            </h1>
+                            <span>
+                                {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
+                                <button
+                                    style={{'flexShrink' : '0'}}
+                                    className='round-button medium-round-button grey-outline-button' 
+                                    onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
+                                >
+                                    <span>today</span>
+                                </button>
+                                }
+                            </span>
+                        </div>
+                        {this.props.chapterFilter.length > 0 &&
+                            <MultiDropDown 
+                                toggleable={false}
+                                list={this.props.store.chapterList}
+                                multiSelect={true}
+                                keyProperty='id'
+                                textProperty='state'
+                                expandBy='chapters'
+                                expandedTextProperty='name'
+                                expandedKeyProperty='id'
+                                expandedMultiSelect={true}
+                                defaultValue={this.props.chapterFilter}
+                                placeholder='National'
+                                onDropDownValueChange = {value => this.props.onBodyDropDownValueChange(value)}
+                                hideHeader = {false}
+                                hideList = {true}
+                            />
                         }
-                    </span>
                     </div>
-                    <MultiDropDown 
-                            toggleable={false}
-                            list={this.props.store.chapterList}
-                            multiSelect={true}
-                            keyProperty='id'
-                            textProperty='state'
-                            expandBy='chapters'
-                            expandedTextProperty='name'
-                            expandedKeyProperty='id'
-                            expandedMultiSelect={true}
-                            defaultValue={this.props.chapterFilter}
-                            placeholder='National'
-                            onDropDownValueChange = {value => this.props.onBodyDropDownValueChange(value)}
-                            hideHeader = {false}
-                            hideList = {true}
-                    />
-                    {/*<MultiDropDownHeader toggleable={false} placeholder='National'/>*/}
-                </div>
-                <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
-                    <button className='h1 square-button-height' 
-                        onClick={() => this.onArrowClick(false)}
-                        //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
-                    >
-                        <ArrowUpSVG svgClassName='flip0'/>
-                    </button>
-                    <button 
-                        className="h1 uppercase-text flex11auto align-self-stretch no-outline-button" 
-                        onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
-                        onKeyDown={(e) => this.buttonKeyDownHandler(e)}
-                    >
-                        {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
-                    </button>
-                    <button className='h1 square-button-height'
-                        onClick={() => this.onArrowClick(true)}
-                        //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
-                    >
-                        <ArrowUpSVG svgClassName='flip180' />
-                    </button>
-                </div>
+                    <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
+                        <button className='h1 square-button-height' 
+                            onClick={() => this.onArrowClick(false)}
+                            onKeyDown={(e) => {
+                                if(e.keyCode === 9 && e.shiftKey) {
+                                    this.props.backToSideBarRef.focus();
+                                    e.preventDefault();
+                                }
+                            }}
+                        >
+                            <ArrowUpSVG svgClassName='flip0'/>
+                        </button>
+                        <button 
+                            ref = {this.props.setForwardToContentRef}
+                            className="h1 uppercase-text flex11auto align-self-stretch no-outline-button" 
+                            onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
+                        >
+                            {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
+                        </button>
+                        <button className='h1 square-button-height'
+                            onClick={() => this.onArrowClick(true)}
+                        >
+                            <ArrowUpSVG svgClassName='flip180' />
+                        </button>
+                    </div>
 
                     {this.state.regularCalendar && this.props.store.tableStileView &&
                         <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>

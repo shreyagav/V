@@ -25,6 +25,9 @@ class SideBarLayout extends Component {
         this.longTouch = false;
         this.startTouch = this.startTouch.bind(this);
         this.moveTouch = this.moveTouch.bind(this);
+
+        this.forwardToContentRef = null;
+        this.backToSideBarRef = null;
     }
 
     componentWillMount() {
@@ -125,7 +128,12 @@ class SideBarLayout extends Component {
               style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}}
               className='overflow-auto'
             >
-              <SideBarContent {...this.props} updateFilters={filters => this.updateFilters(filters)} filters={this.state.filters} />
+              <SideBarContent {...this.props} 
+                updateFilters={filters => this.updateFilters(filters)} 
+                filters={this.state.filters} 
+                setBackToSideBarRef = {el => this.backToSideBarRef = el}
+                forwardToContentRef = {this.forwardToContentRef}
+              />
             </div>
             <div 
               className = {(this.props.store.narrowScreen && !this.props.store.sideBarIsHidden) ? "black-layer-visible" : "black-layer-invisible"}
@@ -140,7 +148,12 @@ class SideBarLayout extends Component {
               style={mainLevelStyle} 
               className='flex-nowrap flex-flow-column align-center cw-100 overflow-auto'
             >
-              <BodyContent {...this.props} updateFilters={filters => this.updateFilters(filters)} filters={this.state.filters}/>
+              <BodyContent {...this.props} 
+                updateFilters={filters => this.updateFilters(filters)} 
+                filters={this.state.filters}
+                setForwardToContentRef = {el => this.forwardToContentRef = el}
+                backToSideBarRef = {this.backToSideBarRef}
+              />
             </div>
           </div>
         );

@@ -126,11 +126,16 @@ h4, .h4 {
 .pl-1 {padding-left: 1rem !important}
 .mr-05 {margin-right: 0.5rem !important}
 .ml-05 {margin-left: 0.5rem !important}
+.mr-025 {margin-right: 0.25rem !important}
+.ml-025 {margin-left: 0.25rem !important}
+.mb-025 {margin-bottom: 0.25rem !important;}
+.mt-025 {margin-top: 0.25rem !important;}
 .mr-1 {margin-right: 1rem !important}
 .ml-1 {margin-left: 1rem !important}
 
 .p-05 {padding: 0.5rem !important}
 .m-05 {margin: 0.5rem !important}
+.m-025 {margin: 0.25rem !important}
 .p-1 {padding: 1rem !important}
 .m-1 {margin: 1rem !important}
 
@@ -473,6 +478,7 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     padding: 0rem 0.5rem 0.075rem 0.5rem;
     display: flex;
     align-items: center; 
+    overflow: hidden;
 }
 
 .status-indicator {
@@ -482,11 +488,12 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
 }
 
 .status-wrapper {
-    padding: 0.25rem;
+    padding: 0rem 0.25rem 0.25rem 0rem;
     border-radius: 999px;
     background-color: #f4f3f2;
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
 }
@@ -494,10 +501,6 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
 .draft {background-color: #AB4189;}
 .published {background-color: #0099cc;}
 .cancelled {background-color: #fe7b22;}
-
-.medium-round-button + .medium-round-button {
-    margin-left: 0.5rem;
-}
 
 /*.medium-round-button > :nth-child(n),
 .medium-round-icon > :nth-child(n) {
@@ -1244,3 +1247,15 @@ li.mark-invalid > div.radio-inline-wrapper {
     left: 0.75em;
     top: 10px;
 }
+
+.message-block {
+    width: 100%;
+}
+
+p.message-block {
+    width:100%;
+    text-align: center;
+    font-style: italic;
+    text-transform: none !important;
+}
+
