@@ -13,6 +13,7 @@ class EventDemo extends Component {
 
     constructor(props) {
         super(props);
+        props.store.refreshUserInfo();
         let evtId = 0;
         if (props.match.params.id) {
             evtId = props.match.params.id
@@ -58,7 +59,7 @@ class EventDemo extends Component {
                     Service.getEventAttendees(data.id)
                         .then(attendees => {
                             setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
-                        })
+                        }).catch(err => { setTimeout(() => { me.setState({ activeTabIndex: num, members: [], eventId: data.id, loading: false }); }, 500); });
                 });
                 break;
             default:
@@ -145,6 +146,7 @@ class EventDemo extends Component {
         let eventDate = '';
         let eventTime = '';
         let eventType = '';
+        const user = this.props.store.userInfo;
         if (this.props.store.chapterList.length > 0 && !this.state.loading) {
             let state = this.props.store.chapterList.find(element => {
                 return element.chapters.find(innerElement => {return innerElement.id === this.state.eventMain.site})
@@ -173,22 +175,23 @@ class EventDemo extends Component {
             <div className='flex-nowrap flex-flow-column justify-center align-center pt-2 pb-2 pr-1 pl-1' >
                 {this.state.loading && <Loader/>}
                 <h1 className='mb-2'>{this.state.eventMain.name}</h1>
-                <div className = 'flex-wrap flex-flow-column mb-3'>
-                    <div className = 'status-wrapper mb-2'>
-                        <div className={eventStatus + ' status-indicator ml-025 mt-025'}>{eventStatus}</div>
-                        <div className = 'flex-wrap align-center'>
-                            <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
+                {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                    <div className='flex-wrap flex-flow-column mb-3'>
+                    <div className='status-wrapper mb-2'>
+                        <div className={eventStatus + ' status-indicator'}>{eventStatus}</div>
+                        <div className='flex-wrap align-center'>
+                            <button className='round-button medium-round-button grey-outline-button' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
                                 Edit Event
                             </button>
                         </div>
                     </div>
-                    <TabComponent 
+                    <TabComponent
                         inheritParentHeight={false}
                         tabList={['information', 'attendees', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
                     />
-                </div>
+                </div>}
                 {this.state.activeTabIndex === 0 && 
                     <div className='flex-wrap flex-flow-column justify-center align-center' style={{"maxWidth":"900px"}}>
                         <ul className='icon-text-set mb-1'>
@@ -216,7 +219,8 @@ class EventDemo extends Component {
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} editsPermitted={false}/> }
                 {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} editsPermitted={false} projectedCost={this.state.eventMain.projectedCost}/>}
-                {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId} editsPermitted={false}/> }
+                {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
+                {!(user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site))) && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
                 {/*<div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&
                         <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Dto;
@@ -22,17 +23,16 @@ namespace Services
             _context = context;
             _userManager = userManager;
         }
+        [Authorize]
         public async Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids, ClaimsPrincipal user)
         {
-            //TODO: set real user
-            //var appUser = await _userManager.GetUserAsync(user);
+            var appUser = await _userManager.GetUserAsync(user);
             List<UserEvent> newAttendies = new List<UserEvent>();
             foreach(string usrId in ids)
             {
                 var temp = new UserEvent();
                 temp.Created = DateTime.Now;
-                //TODO: set real user
-                //temp.CreatedBy = appUser;
+                temp.CreatedBy = appUser;
                 temp.EventId = id;
                 
                 temp.UserId = usrId;

@@ -8,9 +8,11 @@ import EventDemo from './components/event/EventDemo';
 import  Events from './components/Events'
 import  Chapter from './components/chapter/Chapter'
 import SideBarLayout from './components/SideBarLayout'
+import SimpleLayout from './components/SimpleLayout'
 import EventsSideBar from './components/EventsSideBar'
 import Calendar from './components/Calendar'
 import NavMenu from './components/NavMenu'
+import ComingSoon from './components/ComingSoon'
 import { createStore } from './components/store'
 import SignIn  from './components/account/SignIn';
 import SignUp from './components/account/SignUp';
@@ -48,15 +50,17 @@ class App extends Component {
                   </div>}/>
                   <Route path='/events' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
                   <Route path='/members' render={(match)=><div><NavMenu /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
-                  <Route path='/event-edit/:id' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
-                  <Route path='/new-event' render={(match) => <div><NavMenu /><Event {...match} /></div>} />
-                  <Route path='/chapters' render={(match) => <div><NavMenu /><Chapters {...match} /></div>} />
-                  <Route path='/new-member' render={(match) => <div><NavMenu /><Member {...match} /></div>} />
-                  <Route path='/SignIn' component={SignIn} />
-                  <Route path='/SignUp' component={SignUp} />
-                  <Route path='/new-event' component={Event} />
-                  <Route path='/event-view/:id' render={(match) => <div><NavMenu /><EventDemo {...match} /></div>} />
-                  <Route path='/new-chapter' render={(match) => <div><NavMenu /><Chapter {...match} /></div>} />
+                  <Route path='/event-edit/:id' render={(match) => <div><NavMenu /><SimpleLayout><Event {...match} /></SimpleLayout></div>} />
+                  <Route path='/new-event' render={(match) => <div><NavMenu /><SimpleLayout><Event {...match} /></SimpleLayout></div>} />
+                  <Route path='/chapters' render={(match) => <div><NavMenu /><SimpleLayout><Chapters {...match} /></SimpleLayout></div>} />
+                  <Route path='/new-member' render={(match) => <div><NavMenu /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
+                  <Route path='/profile' render={(match) => <div><NavMenu /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
+                  <Route path='/SignIn' render={(match) => <div><SimpleLayout><SignIn {...match} /></SimpleLayout></div>} />
+                  <Route path='/reports' render={(match) => <div><NavMenu /><SimpleLayout><ComingSoon {...match} /></SimpleLayout></div>} />
+                  <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>}/>
+                  <Route path='/event-view/:id' render={(match) => <div><NavMenu /><SimpleLayout><EventDemo {...match} /></SimpleLayout></div>} />
+                  <Route path='/new-chapter' render={(match) => <div><NavMenu /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
+
                   <Route path='/test' component={TestPage} />
                   </Switch>
           </BrowserRouter>

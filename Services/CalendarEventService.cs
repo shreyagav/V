@@ -2,6 +2,7 @@
 using Models;
 using Models.Dto;
 using Services.Data;
+using Services.Helpers;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -26,15 +27,15 @@ namespace Services
         public EventListRow[] GetFilteredEvents(EventListFilter filter)
         {
             var events = _context.CalendarEvents.Where(evt =>
-                 (filter.From.HasValue && evt.Date > filter.From.Value)
-                 && (filter.To.HasValue && evt.Date < filter.To.Value)
-                 && (string.IsNullOrEmpty(filter.Name) || evt.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase))
-                 && (string.IsNullOrEmpty(filter.TimeFrom) || evt.StartTime > ConvertTime(filter.TimeFrom))
-                 && (string.IsNullOrEmpty(filter.TimeTo) || evt.EndTime > ConvertTime(filter.TimeTo))
-                 && (filter.Sites == null || filter.Sites.Length == 0 || filter.Sites.Contains(evt.Site.Id))
+                 (filter.DateFrom.HasValue && evt.Date > filter.DateFrom.Value)
+                 && (filter.DateTo.HasValue && evt.Date < filter.DateTo.Value)
+                 && (string.IsNullOrEmpty(filter.Title) || evt.Name.Contains(filter.Title, StringComparison.OrdinalIgnoreCase))
+                 && (filter.TimeFrom == null || evt.StartTime > filter.TimeFrom.ToInt())
+                 && (filter.TimeTo == null || evt.EndTime > filter.TimeTo.ToInt())
+                 && (filter.Chapters == null || filter.Chapters.Length == 0 || filter.Chapters.Contains(evt.Site.Id))
                  && (!filter.Status.HasValue || filter.Status.Value == evt.Status)
                  && (string.IsNullOrEmpty(filter.Color) || evt.Color == filter.Color)
-            ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt=>new EventListRow() {Name = evt.Name,Chapter=evt.Site.Name,Color=evt.Color,Date=evt.Date.ToString("d"),Id=evt.Id,Status=evt.Status,Time=$"{IntTimeToStr(evt.StartTime)} - {IntTimeToStr(evt.EndTime)}", Type=evt.EventType.Title }) .ToArray();
+            ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt=>new EventListRow() {Name = evt.Name,Chapter=evt.Site.Name,Color=evt.Color,Date=evt.Date.ToString("d"),Id=evt.Id,Status=evt.Status,Time=$"{Converters.IntTimeToStr(evt.StartTime)} - {Converters.IntTimeToStr(evt.EndTime)}", Type=evt.EventType.Title }) .ToArray();
             return events;
         }
 
@@ -84,19 +85,6 @@ namespace Services
         public TRRUser GetUserByOldId(int id)
         {
             return _context.Users.FirstOrDefault(a => a.OldId == id);
-        }
-
-        private string IntTimeToStr(int val)
-        {
-            string am = val < 1200 ? "AM" : "PM";
-            string hours = (val < 1200 ? val / 100 : (val / 100) - 12).ToString().PadLeft(2,'0');
-            if(hours == "00" && val == 1200)
-            {
-                hours = "12";
-                am = "PM";
-            }
-            string minutes = (val%100).ToString().PadLeft(2, '0');
-            return $"{hours}:{minutes} {am}";
         }
 
         private EventView RawToView(CalendarEvent evt)

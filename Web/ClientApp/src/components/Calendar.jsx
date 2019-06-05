@@ -16,6 +16,7 @@ class Calendar extends Component {
     
     constructor(props) {
         super(props);
+        props.store.refreshUserInfo();
         this.state = {
             calendar: [],
             currentYear: null,
@@ -50,6 +51,7 @@ class Calendar extends Component {
         this.getEventsForMonth(this.state.currentYear, this.state.currentMonth+1, arr);
     }
     componentWillMount() {
+        this.props.store.set("withListSwitch", true);
         let today = new Date();
         this.todayYear = today.getFullYear();
         this.todayMonth = today.getMonth();
@@ -67,7 +69,6 @@ class Calendar extends Component {
         Service.getCalendarEvents(month + 1, year, sites).then(data => component.setState({ events: data, loading: false })).catch(err => component.setState({ loading: false }));
     }
     componentWillReceiveProps(props) {
-        console.log(props);
         var ids = props.chapterFilter.slice(0);
         if (this.state.selectedChapters.length != ids.length) {
             
@@ -275,6 +276,7 @@ class Calendar extends Component {
         const calendar = this.calendarUpdate();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         var maxWidth = {};
+        const user = this.props.store.userInfo;
         if (!this.state.regularCalendar) { maxWidth = { 'maxWidth': '500px' } };
         if (this.state.loadData) {
             return (
@@ -380,7 +382,7 @@ class Calendar extends Component {
                                             <div className={element.className}>
                                                 <span>
                                                     <strong>{element.label}</strong>
-                                                    <Link to={{ pathname: "/new-event", state: { date: element.date } }} className="round-button small-round-button light-grey-outline-button"><PlusSVG /></Link>
+                                                    {user && (user.authType == "Secretary" || user.authType == "Admin") && <Link to={{ pathname: "/new-event", state: { date: element.date } }} className="round-button small-round-button light-grey-outline-button"><PlusSVG /></Link>}
                                                 </span>
                                                 {dayOfEvents &&
                                                     <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
@@ -406,9 +408,7 @@ class Calendar extends Component {
                                                         </ul>
                                                     }
                                                 </div>
-                                                <a className='round-button medium-round-button light-grey-outline-button' href='./new-event'>
-                                                    <PlusSVG />
-                                                </a>
+                                                {user && (user.authType == "Secretary" || user.authType == "Admin") && <Link to={{ pathname: "/new-event", state: { date: element.date } }} className="round-button small-round-button light-grey-outline-button"><PlusSVG /></Link>}
                                             </div>
                                         }
                                     </li>

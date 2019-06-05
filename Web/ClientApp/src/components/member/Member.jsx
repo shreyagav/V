@@ -9,34 +9,31 @@ import MemberEvents from './MemberEvents';
 import RadioBoxSVG from '../../svg/RadioBoxSVG';
 import Alert from '../Alert';
 import RadioButton from '../RadioButton';
+import { Service } from '../ApiService';
 
 
 class Member extends Component {
 
     constructor(props) {
         super(props);
-        let evtId = 0;
+        props.store.refreshUserInfo();
+        let userId = "";
         if (props.match.params.id) {
-            evtId = props.match.params.id
+            userId = props.match.params.id
         }
         this.state = {
             member: {
-                chapter: [],
+                siteId: 0,
                 firstName: '',
                 lastName: '', 
                 phone: '',
                 email: '',
                 dateOfBirth: null,
-                gender: {
-                    male: false,
-                    female: false,
-                },
-                address: {
+                gender: '',
                     streetAddress: '',
                     city: '',
-                    state: [],
+                    state: '',
                     zip: '',
-                },
                 releaseSigned: false,
                 liabilitySigned: false,
                 activeMember: false,
@@ -44,16 +41,16 @@ class Member extends Component {
                 joinDate: null,
                 sponsoredBy: [],
                 travelTime: '',
-                medical: [],
+                medical: 0,
                 injuryDate: null,
-                status: [],
-                authLevel: [],
-                userType: [],
+                authLevel: 0,
+                userType: 0,
                 comments: '',
                 events:[],
             },
             activeTabIndex: 0,
             showError: false,
+            userId: userId
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
@@ -79,19 +76,23 @@ class Member extends Component {
         this.emptyState = false;
 
         this.handleClick = this.handleClick.bind(this);
+        this.saveMemberInfo = this.saveMemberInfo.bind(this);
     }
 
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     componentDidMount() {
-        var component = this;
-        fetch('../Events2.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({events: jjson})
-        })
-        .then(console.log(this.state.events));
+        this.setState({ loading: true });
+        Service.getProfile().then(data => {
+            if (data.dateOfBirth != null) {
+                data.dateOfBirth = new Date(data.dateOfBirth);
+            }
+            if (data.injuryDate != null) {
+                data.injuryDate = new Date(data.injuryDate);
+            }
+            this.setState({ loading: false, member: data });
+        });
     }
 
     handleClick(e) {
@@ -105,19 +106,19 @@ class Member extends Component {
             if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.stateDropDownRef.state.toggle();
             }
+            if (this.medicalDropDownRef.state.isOpen && !this.medicalDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
+                this.medicalDropDownRef.state.toggle();
+            }
+            if (this.injuryDateDropDownRef.state.isOpen && !this.injuryDateDropDownRef.datePickerRef.contains(e.target)) {
+                this.injuryDateDropDownRef.toggle();
+            }
         }
-        if(this.state.activeTabIndex === 1){
+        if(this.state.activeTabIndex === 2){
             if(this.joinDateDropDownRef.state.isOpen && !this.joinDateDropDownRef.datePickerRef.contains(e.target)){
                 this.joinDateDropDownRef.toggle();
             }
             if(this.sponsoredByDropDownRef.state.isOpen && !this.sponsoredByDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.sponsoredByDropDownRef.state.toggle();
-            }
-            if(this.medicalDropDownRef.state.isOpen && !this.medicalDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.medicalDropDownRef.state.toggle();
-            }
-            if(this.injuryDateDropDownRef.state.isOpen && !this.injuryDateDropDownRef.datePickerRef.contains(e.target)){
-                this.injuryDateDropDownRef.toggle();
             }
             if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
                 this.statusDropDownRef.state.toggle();
@@ -129,6 +130,13 @@ class Member extends Component {
                 this.userTypeDropDownRef.state.toggle();
             }
         }
+    }
+
+    saveMemberInfo() {
+        this.setState({ loading: true });
+        Service.setProfile(this.state.member).then(data => {
+            this.setState({ loading: false });
+        });
     }
 
     updateMemberProperty(property, value){
@@ -146,7 +154,7 @@ class Member extends Component {
     validation() {
         let validationPassed = true;
             if (this.state.activeTabIndex === 0){
-                if(this.state.member.chapter.length < 1) {
+                if(this.state.member.siteId == 0) {
                     this.emptyChapter = true;
                 }
                 if(this.state.member.firstName.length < 1) {
@@ -155,29 +163,17 @@ class Member extends Component {
                 if(this.state.member.lastName.length < 1) {
                     this.emptyLastName = true;
                 }
-                if(this.state.member.phone.length < 1) {
-                    this.emptyPhone = true;
-                }
+                //if(this.state.member.phone.length < 1) {
+                //    this.emptyPhone = true;
+                //}
                 if(this.state.member.email.length < 1) {
                     this.emptyEmail = true;
-                }
-                if(this.state.member.dateOfBirth === null) {
-                    this.emptyDateOfBirth = true;
                 }
                 if(this.state.member.gender.male  === false && this.state.member.gender.female  === false) {
                     this.emptyGender = true;
                 }
-                if(this.state.member.address.streetAddress.length < 1) {
-                    this.emptyStreetAddress = true;
-                }
-                if(this.state.member.address.city.length < 1) {
-                    this.emptyCity = true;
-                }
-                if(this.state.member.address.zip.length < 1) {
+                if (this.state.member.zip == null ||this.state.member.zip.length < 1) {
                     this.emptyZip = true;
-                }
-                if(this.state.member.address.state < 1) {
-                    this.emptyState = true;
                 }
                 if (this.emptyChapter || this.emptyFirstName || this.emptyLastName || this.emptyPhone || this.emptyEmail || this.emptyDateOfBirth || this.emptyGender || this.emptyStreetAddress || this.emptyCity || this.emptyZip || this.emptyState){
                     this.setState({showError: true});
@@ -186,16 +182,33 @@ class Member extends Component {
             }
         return validationPassed;
     }
-    
+    renderHeader() {
+        if (this.props.match.path == '/profile') {
+            return (<h1 className='uppercase-text mb-2'>My<strong> Profile</strong></h1>)
+        } else if (this.props.match.path == '/new-member') {
+            return (<h1 className='uppercase-text mb-2'>New<strong> Member</strong></h1>)
+        } else {
+            return (<h1 className='uppercase-text mb-2'>Edit<strong> Member</strong></h1>)
+        }
+    }
+    getTabs() {
+        if (this.props.match.path == '/profile') {
+            return ['my info', 'my events'];
+        } else {
+            return ['personal info', 'events', 'TRR info'];
+        }
+    }
+
     render() {
         const pictures = this.state.formattedPicturesList;
-        const stateList = [{"name": "Alabama", "abbreviation": "AL"},{"name":"Alaska", "abbreviation":"AK"},{"name":"Arizona", "abbreviation": "AZ"},{"name":"Arkansas", "abbreviation":"AR"},{"name":"California", "abbreviation":"CA"},{"name":"Colorado", "abbreviation":"CO"},{"name":"Connecticut", "abbreviation":"CT"},{"name":"Delaware", "abbreviation":"DE"},{"name":"Florida", "abbreviation":"FL"},{"name":"Georgia", "abbreviation":"GA"},{"name":"Hawaii", "abbreviation":"HI"},{"name":"Idaho", "abbreviation":"ID"},{"name":"Illinois", "abbreviation":"IL"},{"name":"Indiana", "abbreviation":"IN"},{"name":"Iowa", "abbreviation":"IA"},{"name":"Kansas", "abbreviation":"KS"},{"name":"Kentucky", "abbreviation":"KY"},{"name":"Louisiana", "abbreviation":"LA"},{"name":"Maine", "abbreviation":"ME"},{"name":"Maryland", "abbreviation":"MD"},{"name":"Massachusetts", "abbreviation":"MA"},{"name":"Michigan", "abbreviation":"MI"},{"name":"Minnesota", "abbreviation":"MN"},{"name":"Mississippi", "abbreviation":"MS"},{"name":"Missouri", "abbreviation":"MO"},{"name":"Montana", "abbreviation":"MT"},{"name":"Nebraska", "abbreviation":"NE"},{"name":"Nevada", "abbreviation":"NV"},{"name":"New Hampshire", "abbreviation":"NH"},{"name":"New Jersey", "abbreviation":"NJ"},{"name":"New Mexico", "abbreviation":"NM"},{"name":"New York", "abbreviation":"NY"},{"name":"North Carolina", "abbreviation":"NC"},{"name":"North Dakota", "abbreviation":"ND"},{"name":"Ohio", "abbreviation":"OH"},{"name":"Oklahoma", "abbreviation":"OK"},{"name":"Oregon", "abbreviation":"OR"},{"name":"Pennsylvania", "abbreviation":"PA"},{"name":"Rhode Island", "abbreviation":"RI"},{"name":"South Carolina", "abbreviation":"SC"},{"name":"South Dakota", "abbreviation":"SD"},{"name":"Tennessee", "abbreviation":"TN"},{"name":"Texas", "abbreviation":"TX"},{"name":"Utah", "abbreviation":"UT"},{"name":"Vermont", "abbreviation":"VT"},{"name":"Virginia", "abbreviation":"VA"},{"name":"Washington", "abbreviation":"WA"},{"name":"West Virginia", "abbreviation":"WV"},{"name":"Wisconsin", "abbreviation":"WI"},{"name":"Wyoming", "abbreviation":"WY"}];
+        const stateList = [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }];
+
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
-                <h1 className='uppercase-text mb-2'>New<strong> Member</strong></h1>
+                {this.renderHeader()}
                 <TabComponent 
                     inheritParentHeight={false}
-                    tabList={['personal info', 'TRR info', 'events']}
+                    tabList={this.getTabs()}
                     wasSelected={(index) => this.setState({activeTabIndex: index})}
                     activeTabIndex={this.state.activeTabIndex}
                     tabEqualWidth={true}
@@ -244,11 +257,12 @@ class Member extends Component {
                                 expandedTextProperty='name'
                                 expandedKeyProperty='id'
                                 expandedMultiSelect={false}
-                                defaultValue={this.state.member.chapter}
+                                defaultValue={this.state.member.siteId}
                                 placeholder="Select chapter"
                                 onDropDownValueChange={value => {
                                     if(this.emptyChapter) {this.emptyChapter = false;}
-                                    this.updateMemberProperty("chapter", value);
+                                    this.updateMemberProperty("siteId", value);
+                                    console.log(this.state.member, value);
                                 }}
                             />
                         </li>
@@ -291,7 +305,15 @@ class Member extends Component {
                                     this.updateMemberProperty("dateOfBirth", value);
                                 }}
                             />
-                        </li>
+                    </li>
+                    <li>
+                        <p>Injury Date:</p>
+                        <DatePicker
+                            ref={el => this.injuryDateDropDownRef = el}
+                            value={this.state.member.injuryDate}
+                            onSelect={value => { this.updateMemberProperty("injuryDate", value) }}
+                        />
+                    </li>
                         <li className={this.emptyGender ? 'mark-invalid' : ''}
                             error-text='Please select Gender'
                         >
@@ -300,7 +322,7 @@ class Member extends Component {
                                 <RadioButton
                                     style = {{"marginRight":"0.75rem"}}
                                     radioGroupElement = {this.state.member.gender}
-                                    radioButtonValue = 'male'
+                                    radioButtonValue = 'M'
                                     onClick = {(value) => {
                                         this.updateMemberProperty("gender", value);
                                         this.emptyGender = false;
@@ -310,7 +332,7 @@ class Member extends Component {
                                 />
                                 <RadioButton
                                     radioGroupElement = {this.state.member.gender}
-                                    radioButtonValue = 'female'
+                                    radioButtonValue = 'F'
                                     onClick = {(value) => {
                                         this.updateMemberProperty("gender", value);
                                         this.emptyGender = false;
@@ -327,12 +349,10 @@ class Member extends Component {
                             <input 
                                 type='text' 
                                 placeholder='Street Address'
-                                value={this.state.member.address.streetAddress}
+                                value={this.state.member.streetAddress}
                                 onChange={e => {
                                     if(this.emptyStreetAddress){this.emptyStreetAddress = false;}
-                                    let address = this.state.member.address;
-                                    address.streetAddress = e.target.value;
-                                    this.updateMemberProperty("address", address);
+                                    this.updateMemberProperty("streetAddress", e.target.value);
                                 }}
                             />
                         </li>
@@ -347,12 +367,10 @@ class Member extends Component {
                                     <input 
                                         type='text' 
                                         placeholder='City' 
-                                        value={this.state.member.address.city}
+                                        value={this.state.member.city}
                                         onChange={e => {
                                             if(this.emptyCity){this.emptyCity = false;}
-                                            let address = this.state.member.address;
-                                            address.city = e.target.value;
-                                            this.updateMemberProperty("address", address);
+                                            this.updateMemberProperty("city", e.target.value);
                                         }}
                                     />
                                 </li>
@@ -363,14 +381,12 @@ class Member extends Component {
                                             multiSelect={false}
                                             keyProperty='abbreviation'
                                             textProperty='abbreviation'
-                                            defaultValue={this.state.member.address.state}
+                                            defaultValue={this.state.member.state}
                                             placeholder="State"
                                             textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
                                             onDropDownValueChange={value => {
                                                 if(this.emptyState){this.emptyState = false;}
-                                                let address = this.state.member.address;
-                                                address.state = value;
-                                                this.updateMemberProperty("address", address);
+                                                this.updateMemberProperty("state", value);
                                             }}
                                         />
                                 </li>
@@ -383,25 +399,43 @@ class Member extends Component {
                                         type='text' 
                                         placeholder='Zip' 
                                         maxLength={5} 
-                                        value = {this.state.member.address.zip}
+                                        value = {this.state.member.zip}
                                         onChange={e => {
                                             if(this.emptyZip){this.emptyZip = false;}
-                                            let address = this.state.member.address;
-                                            address.zip = e.target.value;
-                                            this.updateMemberProperty("address", address);
+                                            this.updateMemberProperty("zip", e.target.value);
                                         }}
                                     />
                                 </li>
                             </ul>
-                        </li>
+                    </li>
+                    <li className='input-wrapper'>
+                        <p>Travel Time:</p>
+                        <input
+                            type='text'
+                            placeholder='Travel Time'
+                            value={this.state.member.travelTime}
+                            onChange={e => this.updateMemberProperty("travelTime", e.target.value)}
+                        />
+                    </li>
+                    <li>
+                        <p>Medical:</p>
+                        <MultiDropDown
+                            ref={el=>this.medicalDropDownRef=el}
+                            list={[{ name: 'Inpatient', id: 42 }, { name: 'Outpatient', id: 43 }, { name: 'Vet Center', id: 44 }, { name: 'Other', id: 45 }, { name: 'None', id: 46 }, { name: 'Unknown', id: 94 }]}
+                            multiSelect={false}
+                            keyProperty='id'
+                            textProperty='name'
+                            defaultValue={this.state.member.medical}
+                            placeholder="Medical"
+                            onDropDownValueChange={value => this.updateMemberProperty("medical", value)}
+                        />
+                    </li>
                     </ul>
                 }
-                {this.state.activeTabIndex === 1 && 
+                {this.state.activeTabIndex === 2 && 
                     <MemberTRRInfo 
                         setJoinDateDropDownRef = {el => this.joinDateDropDownRef = el}
                         setSponsoredByDropDownRef = {el => this.sponsoredByDropDownRef = el}
-                        setMedicalDropDownRef = {el => this.medicalDropDownRef = el}
-                        setInjuryDateDropDownRef = {el => this.injuryDateDropDownRef = el}
                         setStatusDropDownRef = {el => this.statusDropDownRef = el}
                         setAuthLevelDropDownRef = {el => this.authLevelDropDownRef = el}
                         setUserTypeDropDownRef = {el => this.userTypeDropDownRef = el} 
@@ -410,8 +444,8 @@ class Member extends Component {
                         updateMemberProperty = {(property, value) => this.updateMemberProperty(property, value)}
                     />
                 }
-                {this.state.activeTabIndex === 2 && 
-                    <MemberEvents events={this.state.events}/>
+                {this.state.activeTabIndex === 1 &&
+                    <MemberEvents events={this.state.member.events} />
                 }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
@@ -438,14 +472,15 @@ class Member extends Component {
                             Next
                         </button>
                     }
-                    {this.state.activeTabIndex === 2 &&
-                        <button className='medium-static-button static-button default-button' disabled >Save</button>
+                    {this.state.activeTabIndex !== 1 &&
+                        <button className='medium-static-button static-button default-button' onClick={this.saveMemberInfo}>Save</button>
                     }
                     {this.state.showError && 
                         <Alert 
                             headerText = 'Error'
                             onClose = {()=>this.setState({showError: false})}
-                            showOkButton = {true}
+                            showOkButton={true}
+                            onOkButtonClick={() => this.setState({ showError: false })}
                             buttonText = "Got IT!"
                             mode = 'error'
                         >

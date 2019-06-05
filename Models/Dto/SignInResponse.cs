@@ -11,5 +11,6 @@ namespace Models.Dto
         public IList<string> UserRoles { get; set; }
         public string UserType { get; set; }
         public string AuthType { get; set; }
+        public int? ChapterId { get; set; }
     }
 }

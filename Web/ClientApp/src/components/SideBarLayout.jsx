@@ -31,7 +31,8 @@ class SideBarLayout extends Component {
     }
 
     componentWillMount() {
-        if (this.props.store.narrowScreen) {this.props.store.set("sideBarIsHidden", true);}
+        if (this.props.store.narrowScreen) { this.props.store.set("sideBarIsHidden", true); }
+        this.props.store.set("withSideBar", true);
     }
 
     componentDidMount(){
@@ -52,7 +53,7 @@ class SideBarLayout extends Component {
 
   updateFilters(filters){
     this.setState({filters: filters}, console.log(this.state.filters));
-    alert("time to refresh the Table");
+    //alert("time to refresh the Table");
   }
 
   startTouch(e) {

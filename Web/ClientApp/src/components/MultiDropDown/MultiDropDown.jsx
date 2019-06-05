@@ -30,7 +30,8 @@ class MultiDropDown extends React.Component {
                         onDropDownValueChange={this.props.onDropDownValueChange}
                         onKeyDown={this.props.onKeyDown}
                         placeholder={this.props.placeholder}
-                        showParameter={this.props.showParameter}
+                    showParameter={this.props.showParameter}
+                    disabled={this.props.disabled !== undefined ? this.props.disabled : false}
                         toggleable = {this.props.toggleable !== undefined ? this.props.toggleable : (this.props.hideList ? !this.props.hideList : true)}
                     />
                 }
