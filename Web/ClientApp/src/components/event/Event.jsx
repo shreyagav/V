@@ -16,6 +16,7 @@ class Event extends Component {
 
     constructor(props) {
         super(props);
+        props.store.refreshUserInfo();
         let evtId = 0;
         if (props.match.params.id) {
             evtId = props.match.params.id
@@ -76,6 +77,7 @@ class Event extends Component {
         this.fixMainEventData = this.fixMainEventData.bind(this);
         this.updateEventProperty = this.updateEventProperty.bind(this);
         this.setActiveStep = this.setActiveStep.bind(this);
+        this.onSaveClick = this.onSaveClick.bind(this);
         this.emptyTitle = false;
         this.emptyChapter = false;
         this.emptyStartDate = false;
@@ -86,8 +88,21 @@ class Event extends Component {
         this.headerText = '';
     }
     componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
-    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
+    componentWillUnmount() { document.removeEventListener("mousedown", this.handleClick, false); }
+    componentWillReceiveProps(props) {
+        this.setDefaultChapter(props);
+    }
+
+    setDefaultChapter(props) {
+        if (props.store.userInfo != null && this.state.eventId == 0 && props.store.userInfo.authType == "Secretary") {
+            var temp = this.state.eventMain;
+            temp.site = props.store.userInfo.chapterId;
+            this.setState({ eventMain: temp });
+        }
+    }
+
     componentDidMount() {
+        this.setDefaultChapter(this.props);
         if (this.props.location && this.props.location.state && this.props.location.state.date) {
             var temp = this.state.eventMain;
             temp.date = this.props.location.state.date;
@@ -148,7 +163,10 @@ class Event extends Component {
         this.setState({ loading: true });
         return Service.changeEvent(event);
     }
-
+    onSaveClick() {
+        if (this.validation())
+            this.updateEvent().then(() => { this.props.history.push('/');})
+    }
     setActiveStep(num) {
         var me = this;
         var afterStep = (data) => {
@@ -161,6 +179,7 @@ class Event extends Component {
                     .then(attendees => {
                         setTimeout(() => { me.setState({ activeTabIndex: num, members: attendees, eventId: data.id, loading: false }); }, 500);
                     })
+                    .catch(err => { alert(err) });
             }
         }
 
@@ -337,7 +356,6 @@ class Event extends Component {
 
     render() {
         const pictures = this.state.formattedPicturesList;
-        console.log("eventStatus = "+this.state.eventMain.eventStatus);
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.state.loading && <Loader/>}
@@ -424,7 +442,8 @@ class Event extends Component {
                                 expandedKeyProperty='id'
                                 expandedMultiSelect={false}
                                 defaultValue={this.state.eventMain.site}
-                                placeholder="Select chapter"
+                            placeholder="Select chapter"
+                            disabled={!(this.props.store.userInfo && this.props.store.userInfo.authType=="Admin")}
                                 onDropDownValueChange={value => {
                                     this.emptyChapter = false;
                                     this.updateEventProperty("site", value);
@@ -616,9 +635,7 @@ class Event extends Component {
                     {this.state.activeTabIndex < 3 &&
                         <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>Next</button>
                     }
-                    {this.state.activeTabIndex === 3 &&
-                        <button className='medium-static-button static-button default-button' disabled >Save</button>
-                    }
+                    <button className='medium-static-button static-button default-button' onClick={this.onSaveClick} >Save & Exit</button>
                 </div>
                 
                 {this.state.showError && 

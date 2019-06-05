@@ -75,14 +75,20 @@ class EventsSideBar extends Component {
 
     setFilters() {
         let filters = this.props.filters;
+        let datefrom = new Date();
+        datefrom.setDate(1);
+        let dateto = new Date();
+        dateto.setMonth(dateto.getMonth() + 1);
+        dateto.setDate(1);
         let initialTitle = '';
-        let initialDateFrom = null;
-        let initialDateTo = null;
+        let initialDateFrom = datefrom;
+        let initialDateTo = dateto;
         let initialTimeFrom = {activated: false, hours: 8, minutes: 0, am: true};
         let initialTimeTo = {activated: false, hours: 8, minutes: 0, am: true};
         let initialTypeOfEvent = '';
         let initialStatus = '';
         let initialColor = '';
+        filters.splice(0, filters.length);
         filters.push({name: "title", value: initialTitle});
         filters.push({name: "dateFrom", value: initialDateFrom});
         filters.push({name: "dateTo", value: initialDateTo});
@@ -90,7 +96,8 @@ class EventsSideBar extends Component {
         filters.push({name: "timeTo", value: initialTimeTo});
         filters.push({name: "typeOfEvent", value: initialTypeOfEvent});
         filters.push({name: "status", value: initialStatus});
-        filters.push({name: "color", value: initialColor});
+        filters.push({ name: "color", value: initialColor });
+        filters.push({ name: "chapters", value: [] });
 
         let initialState = {
             title: initialTitle, 

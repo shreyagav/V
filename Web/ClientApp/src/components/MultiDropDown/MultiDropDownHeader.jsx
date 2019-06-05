@@ -21,7 +21,7 @@ class MultiDropDownHeader extends React.Component {
     }
 
     headerClickHandler(e) {
-        if (e.target === this.headerRef){
+        if (e.target === this.headerRef && !this.props.disabled) {
             this.props.multiDropDownStore.toggle();
         }
     }
@@ -140,7 +140,7 @@ class MultiDropDownHeader extends React.Component {
                 tabIndex={this.props.toggleable ? '0':'-1'} 
                 className='drop-down-header'
                 style={style}
-                onClick={() => this.props.multiDropDownStore.toggle()}
+                onClick={() => { if (!this.props.disabled) this.props.multiDropDownStore.toggle(); }}
                 onKeyDown={(e) => this.headerKeyDownHandler(e)}
             >
                 <ul 

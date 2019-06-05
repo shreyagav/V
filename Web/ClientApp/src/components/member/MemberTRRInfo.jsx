@@ -80,47 +80,19 @@ class MemberTRRInfo extends Component {
                                 keyProperty='name'
                                 textProperty='name'
                                 defaultValue={this.props.member.sponsoredBy}
-                                placeholder="Sponsored By"
+                            placeholder="Sponsored By"
+                            disabled={true}
                                 onDropDownValueChange={value => this.props.updateMemberProperty("sponsoredBy", value)}
                             />
                         </li>
-                        <li className='input-wrapper'>
-                            <p>Travel Time:</p>
-                            <input 
-                                type='text' 
-                                placeholder='Travel Time' 
-                                value={this.props.member.travelTime}
-                                onChange={e => this.props.updateMemberProperty("travelTime", e.target.value)}
-                            />
-                        </li>
-                        <li>
-                            <p>Medical:</p>
-                            <MultiDropDown
-                                ref={this.props.setMedicalDropDownRef}
-                                list={[{name:'Medical Option 1'}, {name:'Medical Option 2'}, {name:'Medical Option 3'}]}
-                                multiSelect={false}
-                                keyProperty='name'
-                                textProperty='name'
-                                defaultValue={this.props.member.medical}
-                                placeholder="Medical"
-                                onDropDownValueChange={value => this.props.updateMemberProperty("medical", value)}
-                            />
-                        </li>
-                        <li>
-                            <p>Injury Date:</p>
-                            <DatePicker 
-                                ref={this.props.setInjuryDateDropDownRef}
-                                value={this.props.member.injuryDate}
-                                onSelect={value => {this.props.updateMemberProperty("injuryDate", value)}}
-                            />
-                        </li>
+
                         <li>
                             <p>Status:</p>
                             <MultiDropDown
                                 ref={this.props.setStatusDropDownRef}
-                                list={[{name:'Status 1'}, {name:'Status 2'}, {name:'Status 3'}]}
+                                list={[{name:'Staff', id:53}, {name:'Paddler', id: 54}]}
                                 multiSelect={false}
-                                keyProperty='name'
+                                keyProperty='id'
                                 textProperty='name'
                                 defaultValue={this.props.member.status}
                                 placeholder="Status"
@@ -144,9 +116,9 @@ class MemberTRRInfo extends Component {
                             <p>TRR User Type:</p>
                             <MultiDropDown
                                 ref={this.props.setUserTypeDropDownRef}
-                                list={[{name:'userType 1'}, {name:'userType 2'}, {name:'userType 3'}]}
+                                list={[{ name: 'Staff', id: 53 }, { name: 'Paddler', id: 54 }]}
                                 multiSelect={false}
-                                keyProperty='name'
+                                keyProperty='id'
                                 textProperty='name'
                                 defaultValue={this.props.member.userType}
                                 placeholder="Select User Type"

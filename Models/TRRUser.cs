@@ -7,6 +7,7 @@ using System.Text;
 namespace Models
 {
     public enum TRRUserType { Paddler=53, Staff=54};
+    public enum Medical { Inpatient = 42, Outpatient = 43, VetCenter = 44, Other = 45, None = 46, Unknown = 94 };
     public class TRRUser : IdentityUser
     {
         public int OldId { get; set; }
@@ -16,6 +17,9 @@ namespace Models
         public string LastName { get; set; }
         public string AltPhone { get; set; }
         public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
         [Column(TypeName = "Date")]
         public DateTime? DateOfBirth { get; set; }
         public int OldSiteId { get; set; }
@@ -30,7 +34,7 @@ namespace Models
         public string DeactiveCause { get; set; }
         public int BranchId { get; set; }
         public int OldStatus { get; set; }
-        public int Medical { get; set; }
+        public Medical Medical { get; set; }
         [Column(TypeName = "Date")]
         public DateTime? DateInjured { get; set; }
         public bool ReleaseSigned { get; set; }

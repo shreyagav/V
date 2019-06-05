@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { withStore } from './../store';
+import Loader from '../Loader';
+import Alert from '../Alert';
 class SignIn extends Component {
     static displayName = SignIn.name;
 
     constructor(props) {
         super(props);
         this.state = {
-            waitingForServer: false,
+            loading: false,
+            error: null,
             signInData: {
                 UserName: "",
                 Password: "",
@@ -35,7 +38,7 @@ class SignIn extends Component {
         this.setState({ signInData: user });
     }
     submitSignInInfo() {
-        this.setState({ waitingForServer: true });
+        this.setState({ loading: true });
 
         fetch('/api/account/signin', {
             headers: {
@@ -48,14 +51,14 @@ class SignIn extends Component {
             .then(res => res.json())
             .then(json => {
                 if (json.error != null) {
-                    this.setState({ waitingForServer: false, error: json.error });
+                    this.setState({ loading: false, error: json.error });
                 } else {
                     var userInfo = { userName: json.userName, userRole: json.userRole };
                     this.props.store.set('userInfo', userInfo);
                     this.props.history.push(this.props.location.state && this.props.location.state.redirectUrl ? this.props.location.state.redirectUrl : '/');
                 }
             })
-            .catch(err => this.setState({ waitingForServer: false, error: err }));
+            .catch(err => this.setState({ loading: false, error: err }));
     }
     goToRegister() {
         this.props.history.push('/SignUp');
@@ -67,7 +70,7 @@ class SignIn extends Component {
                     <img src="images/logo.svg" />
                 </div>
                 <h2 className='mb-2 mt-2 flex-nowrap justify-center'><strong>Sign In</strong></h2>
-                {this.state.waitingForServer ? (<p>Authenticating</p>) : (
+                {this.state.loading && <Loader />}
                     <form>
                         <div>
                             <p className='mb-1'><strong>Sign In using your existing account:</strong></p>
@@ -90,8 +93,18 @@ class SignIn extends Component {
                             <button type="button" className='medium-static-button static-button' onClick={this.goToRegister}>Register</button>
                             <button type="button" className='medium-static-button static-button default-button' onClick={this.submitSignInInfo}>Sign In</button>
                         </div>
-                    </form>)}
-
+                    </form>
+                {this.state.error !=null &&
+                    <Alert
+                    headerText="Error"
+                    text={this.state.error}
+                    mode="error"
+                    onClose={() => this.setState({ error: null })}
+                    showOkButton={true}
+                    onOkButtonClick={() => this.setState({ error: null })}
+                    >
+                    </Alert>
+                }
             </div>
         );
     }

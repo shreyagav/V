@@ -1,4 +1,4 @@
-﻿const host = "https://trr.azurewebsites.net";
+﻿const host = "";//"https://trr.azurewebsites.net";
 export class Service {
     static getCalendarEvents(month, year, sites) {
         return Service.__post(host + '/api/Calendar/GetMonthEvents', { month, year, sites })
@@ -49,12 +49,41 @@ export class Service {
     static getEventPictures(id) {
         return Service.__get(host + '/api/Event/GetEventPhotos/' + id);//Service.__get('/Pictures.json');//
     }
+    static getProfile() {
+        return Service.__get(host + '/api/Profile/Get');
+    }
+    static setProfile(info) {
+        return Service.__post(host + '/api/Profile/Set',info);
+    }
+
     static __get(url) {
-        var promice = fetch(url);
-        promice.catch(err => console.error(err));
-        return promice.then(data => {
-            return data.json();
-        }).catch(err => console.error(err));
+        //var promice = fetch(url).then(resp => {
+        //    if (!resp.ok) {
+        //        throw Error(resp.statusText);
+        //    }
+        //    return resp;
+        //});
+        //promice.catch(err => { throw Error(err); });
+        //return promice.then(data => {
+        //    return data.json();
+        //}, err => {  });
+        return fetch(url).then(response  => {
+            if (response .ok) {
+                const contentType = response.headers.get('Content-Type') || '';
+                if (contentType.includes('application/json')) {
+                    return response.json().catch(error => {
+                        return Promise.reject(new Error('Invalid JSON: ' + error.message));
+                    });
+                }
+                return Promise.reject(new Error('Invalid content type: ' + contentType));
+            }
+            if (response.status == 404) {
+                return Promise.reject(new Error('Page not found: ' + url));
+            }
+            return Promise.reject(new Error('HTTP error: ' + response.status));
+        }).catch(error => {
+            return Promise.reject(new Error(error.message));
+        });
     }
     
     static __post(url, data) {

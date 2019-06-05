@@ -57,6 +57,18 @@ namespace Web.Controllers
             resp.UserName = user.UserName;
             resp.UserType = user.OldType.ToString();
             resp.UserRoles = await _userManager.GetRolesAsync(user);
+            if (resp.UserRoles.Contains("Admin"))
+            {
+                resp.AuthType = "Admin";
+            }else if (resp.UserRoles.Contains("Secretary"))
+            {
+                resp.AuthType = "Secretary";
+            }
+            else
+            {
+                resp.AuthType = "Member";
+            }
+            resp.ChapterId = user.SiteId;
             resp.Error = null;
         }
 
@@ -86,6 +98,7 @@ namespace Web.Controllers
                     var res = await _signInManager.PasswordSignInAsync(user, info.Password, false, false);
                     if (res.Succeeded)
                     {
+                        var addToRoleRes = await _userManager.AddToRoleAsync(user, "Member");
                         await FillSignInResponse(user, resp);
                     }
                     else

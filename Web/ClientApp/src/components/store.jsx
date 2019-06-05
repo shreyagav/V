@@ -11,7 +11,18 @@ const createStore = WrappedComponent => {
       chapterList: [],
       colorList: [{name: 'Cosmic', color: '#794068'}, {name: 'Violet', color: '#AB4189'}, {name: 'Cerise', color: '#E53E71'}, {name: 'Pink', color: '#f577a3'}, {name: 'Tango', color: '#d16c35'}, {name: 'Pumpkin', color: '#fe7b22'}, {name: 'Supernova', color: '#fec037'}, {name: 'Gorse', color: '#ffe32e'}, {name: 'Lime', color: '#8bba19'}, {name: 'Java', color: '#3aa6a0'}, {name: 'Sky', color: '#0099cc'}, {name: 'Gray', color: '#666666'}],
       eventTypes:[],
-      userInfo:null,
+        userInfo: null,
+        refreshUserInfo: () => {
+            var component = this;
+            fetch('/api/Account/GetUser')
+                .then(function (data) { return data.json(); })
+                .then(function (jjson) {
+                    if (jjson.error == null) {
+                        var userInfo = { userName: jjson.userName, userRoles: jjson.userRoles, authType: jjson.authType, chapterId: jjson.chapterId };
+                        component.setState({ userInfo: userInfo });
+                    }
+                });
+        },
       get: key => {
         return this.state[key]
       },
@@ -31,15 +42,8 @@ const createStore = WrappedComponent => {
         this.checkIfNarrowScreen();
         var component = this;
         window.addEventListener("resize", () => this.checkIfNarrowScreen(), false);
-        fetch('/api/Account/GetUser')
-            .then(function (data) { return data.json(); })
-            .then(function (jjson) {
-                if (jjson.error == null) {
-                    var userInfo = { userName: jjson.userName, userRole: jjson.userRole };
-                    component.setState({ userInfo: userInfo });
-                }
-            });
-    }
+      }
+
 
     componentDidMount() {
         var component = this;
@@ -67,8 +71,9 @@ const createStore = WrappedComponent => {
 }
 
 const withStore = WrappedComponent => {
-  return class extends React.Component {
-    render() {
+    return class extends React.Component {
+
+      render() {
       return (
         <StoreContext.Consumer>
           {context => <WrappedComponent store={context} {...this.props} />}

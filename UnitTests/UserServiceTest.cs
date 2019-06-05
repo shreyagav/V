@@ -144,7 +144,7 @@ namespace UnitTests
                                         usr.OldStatus = int.Parse(node.InnerText);
                                         break;
                                     case "user_medical":
-                                        usr.Medical = int.Parse(node.InnerText);
+                                        usr.Medical = (Medical)int.Parse(node.InnerText);
                                         break;
                                     case "user_date_injured":
                                         usr.DateInjured = DateTime.Parse(node.InnerText);
