@@ -5,6 +5,9 @@ import MembersSVG from '../svg/MembersSVG';
 import ReportsSVG from '../svg/ReportsSVG';
 import LogoSVG from '../svg/LogoSVG';
 import UserSVG from '../svg/UserSVG';
+import  CalendarSVG from '../svg/CalendarSVG';
+import SignInSVG from '../svg/SignInSVG';
+import SignOutSVG from '../svg/SignOutSVG';
 import TabComponent from './TabComponent';
 import MenuSVG from '../svg/MenuSVG';
 
@@ -81,19 +84,24 @@ class NavMenu extends Component {
               <ReportsSVG />
               <span>Reports</span>
             </a>
-                </li>
-                {this.props.store.userInfo == null && (<li>
-                    <a href="/SignIn">
-                        <UserSVG />
-                        <span style={{ 'textTransform': "none" }}>Sign In</span>
-                    </a>
-                </li>)}
-                {this.props.store.userInfo != null && (<li>
-                    <a href="javascript:" onClick={this.signOut}>
-                        <UserSVG />
-                        <span style={{ 'textTransform': "none" }}>Sign Out</span>
-                    </a>
-                </li>)}
+          </li>
+          {this.props.store.userInfo == null && 
+            <li>
+              <a href="/SignIn">
+                <SignInSVG />
+                  <span style={{ 'textTransform': "none" }}>Sign In</span>
+              </a>
+            </li>
+          }
+          {this.props.store.userInfo != null && 
+          <li>
+            <a href="javascript:" onClick={this.signOut}>
+              {/*<UserSVG />*/}
+              <SignOutSVG />
+              <span style={{ 'textTransform': "none" }}>Sign Out</span>
+            </a>
+          </li>
+          }
         </ul>
       </header>
     );
