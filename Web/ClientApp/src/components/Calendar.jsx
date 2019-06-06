@@ -10,6 +10,7 @@ import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
 import MultiDropDownHeader from './MultiDropDown/MultiDropDownHeader';
 import { Service } from './ApiService';
 import MultiDropDown from './MultiDropDown/MultiDropDown';
+import TabComponent from './TabComponent';
 
 class Calendar extends Component {
     static displayName = Calendar.name;
@@ -27,7 +28,8 @@ class Calendar extends Component {
             chapters: [],
             events: [],
             selectedChapters: [],
-            loading: false
+            loading: false,
+            tableStileView: true
         };
         this.todayYear = null;
         this.todayMonth = null;
@@ -51,7 +53,6 @@ class Calendar extends Component {
         this.getEventsForMonth(this.state.currentYear, this.state.currentMonth+1, arr);
     }
     componentWillMount() {
-        this.props.store.set("withListSwitch", true);
         let today = new Date();
         this.todayYear = today.getFullYear();
         this.todayMonth = today.getMonth();
@@ -251,7 +252,7 @@ class Calendar extends Component {
     }
 
     calendarUpdate = () => {
-      if (this.props.store.tableStileView) {
+      if (this.state.tableStileView) {
         return this.state.calendar;
       }
       else {
@@ -294,6 +295,13 @@ class Calendar extends Component {
                                 <strong>
                                     Calendar
                                 </strong>
+                                {this.props.store.narrowScreen && <TabComponent
+                                    inheritParentHeight={true}
+                                    tabList={["table", "list"]}
+                                    proceedInOrder={false}
+                                    wasSelected={(index) => this.setState({ tableStileView: index === 0 }) }
+                                    tabEqualWidth={true}
+                                />}
                             </h1>
                             <span>
                                 {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
@@ -352,7 +360,7 @@ class Calendar extends Component {
                         </button>
                     </div>
 
-                    {this.state.regularCalendar && this.props.store.tableStileView &&
+                    {this.state.regularCalendar && this.state.tableStileView &&
                         <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>
                             <li>Su</li>
                             <li>Mo</li>
@@ -372,12 +380,12 @@ class Calendar extends Component {
                                 return (
                                     <li
                                         key={index}
-                                        className={this.props.store.tableStileView ? element.className : element.className + ' listStyleView'}
+                                        className={this.state.tableStileView ? element.className : element.className + ' listStyleView'}
                                         tabIndex='0'
                                         onKeyDown={(e) => this.calendarKeyDownHandler(e, index)}
                                         ref={el => this.setRef(el, index)}
                                     >
-                                        {this.props.store.tableStileView
+                                        {this.state.tableStileView
                                             ?
                                             <div className={element.className}>
                                                 <span>

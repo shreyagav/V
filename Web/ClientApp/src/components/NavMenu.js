@@ -8,7 +8,6 @@ import UserSVG from '../svg/UserSVG';
 import  CalendarSVG from '../svg/CalendarSVG';
 import SignInSVG from '../svg/SignInSVG';
 import SignOutSVG from '../svg/SignOutSVG';
-import TabComponent from './TabComponent';
 import MenuSVG from '../svg/MenuSVG';
 import { Link } from 'react-router-dom';
 
@@ -21,6 +20,7 @@ class NavMenu extends Component {
     super(props);
       this.state = {};
       this.signOut = this.signOut.bind(this);
+      console.log(props.match.path);
   }
 
     signOut() {
@@ -39,7 +39,7 @@ class NavMenu extends Component {
   }
 
     render() {
-        const showLogo = !this.props.store.narrowScreen || (this.props.store.narrowScreen && !this.props.store.withSideBar && !this.props.store.withListSwitch);
+        const showLogo = !this.props.store.narrowScreen;
         const user = this.props.store.userInfo;
     return (
       <header className="main-nav-wrapper">
@@ -49,15 +49,6 @@ class NavMenu extends Component {
                     {this.props.store.withSideBar && <li>
                         <MenuSVG onClick={() => this.toggleChapters()} />
                     </li>}
-                    {this.props.store.withListSwitch && <li>
-                        <TabComponent
-                            inheritParentHeight={true}
-                            tabList={["table", "list"]}
-                            proceedInOrder={false}
-                            wasSelected={(index) => { if (index === 0) { this.props.store.set('tableStileView', true) } else { this.props.store.set('tableStileView', false) } }}
-                            tabEqualWidth={true}
-                        />
-                    </li>}
                 </ul>}
             
             {showLogo && <Link to="/" style={{ "width": "260px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
@@ -65,37 +56,37 @@ class NavMenu extends Component {
             </Link>}
         
             <ul className="flex-nowrap main-nav">
-                <li>
+                {this.props.match.path != "/" && <li>
                     <Link to="/">
                         <CalendarSVG />
                         <span>Calendar</span>
                     </Link>
-                </li>
-                {user && user.authType=="Admin" && <li>
+                </li>}
+                {this.props.match.path != "/chapters" && user && user.authType=="Admin" && <li>
                     <Link to="/chapters">
                         <ChaptersSVG />
                         <span>Chapters</span>
                     </Link>
                 </li>}
-                {user && (user.authType == "Admin" || user.authType == "Secretary" )&&  <li>
+                {this.props.match.path != "/events" && user && (user.authType == "Admin" || user.authType == "Secretary" )&&  <li>
                     <Link to="/events">
                         <EventSVG />
                         <span>Events</span>
                     </Link>
                 </li>}
-                {user && (user.authType == "Admin" || user.authType == "Secretary") &&<li>
+                {this.props.match.path != "/members" && user && (user.authType == "Admin" || user.authType == "Secretary") &&<li>
                     <Link to="/members">
                         <MembersSVG />
                         <span>Members</span>
                     </Link>
                 </li>}
-                {user && (user.authType == "Admin" || user.authType == "Secretary") && <li>
+                {this.props.match.path != "/reports" && user && (user.authType == "Admin" || user.authType == "Secretary") && <li>
                     <Link to="/reports">
                         <ReportsSVG />
                         <span>Reports</span>
                     </Link>
                 </li>}
-                {user && <li>
+                {this.props.match.path != "/profile" && user && <li>
                     <Link to="/profile">
                         <UserSVG />
                         <span>Profile</span>
