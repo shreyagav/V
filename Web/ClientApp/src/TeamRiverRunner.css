@@ -440,7 +440,7 @@ button.default-button:hover, button.default-button:focus {
 .no-outline-button, .no-outline-button:hover, .no-outline-button:focus, .no-outline-button::after {border: 0px solid !important;}
 .no-outline-button:not(:disabled):hover, .no-outline-button:focus {color: #0099cc !important;}
 
-div.round-icon, div.round-button {margin-right: 0.5rem;}
+div.round-icon, div.round-button {margin-right: 0.5em;}
 .round-button,
 .round-icon {
     border: 1px solid;
@@ -527,13 +527,18 @@ div.round-icon, div.round-button {margin-right: 0.5rem;}
     padding: 5px;
 }
 
+@media screen and (max-width: 375px){
+    ul.main-nav span.sign-in{display: none;}
+}
+
 @media screen and (max-width: 900px){
-    ul.main-nav span{display: none;}
+    ul.main-nav span:not(.sign-in){display: none;}
     div.round-button {margin: 0rem;}
     ul.main-nav a:focus div {border-color: #0099cc;}
     ul.main-nav a:focus {outline: none;}
 }
 ul.main-nav > li {font-size: 0.8rem; padding: 0.2rem; display: flex; align-items: center;}
+ul.main-nav > li:not(:last-child) {margin-right: 0.25em;}
 ul.main-nav a {display: flex; flex-wrap: nowrap; align-items: center;}
 ul.main-nav span {white-space: nowrap; font-weight: 600; font-size: 0.8rem;}
 ul.main-nav > li:not(:last-child) span {text-transform: uppercase;}
@@ -1097,13 +1102,16 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     -webkit-transform: rotate(270deg);
 }
 
-.select-on-hover:hover > span:last-child {
+.blue-link:hover > span {
     /*text-decoration: underline;*/
-    color: #999999 !important;
+    color: #0099cc !important;
+    text-decoration: underline !important;
 }
 
-.select-on-hover:hover > span:first-child {
-    background-color: #999999 !important;
+.blue-link:hover > .blue-link-invert {
+    background-color: #0099cc !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
 }
 
 .nonselect {

@@ -72,7 +72,7 @@ class NewEvents extends Component {
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{ "alignItems": "stretch" }}>
                 <span style={{ 'backgroundColor': row['color'] }}></span>
                 <Link to={"/event-view/" + row["id"]}>
-                    <span className="display-flex flex-flow-column flex-nowrap justify-left link">
+                    <span className="display-flex flex-flow-column flex-nowrap justify-left blue-link link">
                         <span style={{ "fontSize": "1.1em" }}>{value}</span>
                         <span className='chapter'>{row['chapter']}</span>
                     </span>

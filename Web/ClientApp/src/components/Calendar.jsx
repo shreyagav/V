@@ -394,8 +394,8 @@ class Calendar extends Component {
                                                 </span>
                                                 {dayOfEvents &&
                                                     <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
-                                                        <li className='select-on-hover' key={index} onClick={e => this.navigateToEventView(event.id)}>
-                                                            <span style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
+                                                        <li className='blue-link' key={index} onClick={e => this.navigateToEventView(event.id)}>
+                                                            <span className='blue-link-invert' style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
                                                             <span style={this.props.store.narrowScreen ? { 'color': event.color, "maxHeight": "2.2em" } : { 'color': event.color }}>{event.name}</span>
                                                         </li>
                                                     )}
