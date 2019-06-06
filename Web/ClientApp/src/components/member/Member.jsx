@@ -23,6 +23,7 @@ class Member extends Component {
         }
         this.state = {
             member: {
+                id: userId,
                 siteId: 0,
                 firstName: '',
                 lastName: '', 
@@ -83,8 +84,7 @@ class Member extends Component {
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     componentDidMount() {
-        this.setState({ loading: true });
-        Service.getProfile().then(data => {
+        var onSuccess = (data) => {
             if (data.dateOfBirth != null) {
                 data.dateOfBirth = new Date(data.dateOfBirth);
             }
@@ -92,7 +92,16 @@ class Member extends Component {
                 data.injuryDate = new Date(data.injuryDate);
             }
             this.setState({ loading: false, member: data });
-        });
+        };
+
+        this.setState({ loading: true });
+        if (this.props.match.path == '/profile' ) {
+            Service.getProfile().then(onSuccess);
+        } else if (this.props.match.path == '/new-member') {
+
+        } else if (this.state.userId != null && this.state.userId !="") {
+            Service.getProfileById(this.state.userId).then(onSuccess);
+        }
     }
 
     handleClick(e) {

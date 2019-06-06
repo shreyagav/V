@@ -8,6 +8,7 @@ import VeteranUpSVG from '../svg/VeteranUpSVG';
 import CloseUpSVG from '../svg/CloseUpSVG';
 import EditUpSVG from '../svg/EditUpSVG';
 import Loader from './Loader';
+import { Link } from 'react-router-dom';
 
 class Members extends Component {
 
@@ -75,10 +76,12 @@ class Members extends Component {
                 <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
                     {row['oldType'] === 54 ? <VeteranUpSVG /> : <VolunteerUpSVG />}
                 </span>
-                <span style={{"display":"flex", "flexFlow":"column", "flexWrap":"nowrap","flex":"1 1 auto"}}>
+                <Link to={"/member/" + row["id"]}>
+                    <span style={{ "display": "flex", "flexFlow": "column", "flexWrap": "nowrap", "flex": "1 1 auto" }} className="blue-link link">
                     <span style={{"fontSize":"1.1em", "flex":"1 1 auto"}}>{row['firstName'] + ' ' + row['lastName']}</span>
                     <span style={{ "flex": "1 1 auto" }} className='chapter'>{row['siteName']}</span>
-                </span>
+                    </span>
+                </Link>
                 <button 
                     className='round-button small-round-button light-grey-outline-button' 
                     style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 

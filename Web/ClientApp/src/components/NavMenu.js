@@ -29,7 +29,8 @@ class NavMenu extends Component {
             .then(function (data) { return data.json(); })
             .then(function (jjson) {
                 if (jjson.result=='ok')
-                    me.props.store.set('userInfo',null);
+                    me.props.store.set('userInfo', null);
+                    me.props.history.push('/');
             });
     }
 

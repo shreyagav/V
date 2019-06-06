@@ -52,6 +52,9 @@ export class Service {
     static getProfile() {
         return Service.__get(host + '/api/Profile/Get');
     }
+    static getProfileById(id) {
+        return Service.__get(host + '/api/Profile/GetById/'+id);
+    }
     static setProfile(info) {
         return Service.__post(host + '/api/Profile/Set',info);
     }
