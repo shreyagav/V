@@ -28,11 +28,12 @@ class SideBarLayout extends Component {
 
         this.forwardToContentRef = null;
         this.backToSideBarRef = null;
+        props.store.refreshUserInfo();
+        props.store.set("withSideBar", true);
     }
 
     componentWillMount() {
         if (this.props.store.narrowScreen) { this.props.store.set("sideBarIsHidden", true); }
-        this.props.store.set("withSideBar", true);
     }
 
     componentDidMount(){

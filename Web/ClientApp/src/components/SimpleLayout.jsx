@@ -5,12 +5,9 @@ class SimpleLayout extends Component {
 
     constructor(props) {
         super(props);
+        props.store.refreshUserInfo();
+        props.store.set("withSideBar", false);
     }
-
-    componentWillMount() {
-        this.props.store.set("withSideBar", false);
-    }
-
 
     render() {
         return ( this.props.children );
