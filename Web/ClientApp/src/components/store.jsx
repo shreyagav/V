@@ -6,7 +6,8 @@ const createStore = WrappedComponent => {
   return class extends React.Component {
     state = {
       sideBarIsHidden: false,
-      narrowScreen: false,
+        narrowScreen: false,
+        withListSwitch: false,
       tableStileView: true,
       chapterList: [],
       colorList: [{name: 'Cosmic', color: '#794068'}, {name: 'Violet', color: '#AB4189'}, {name: 'Cerise', color: '#E53E71'}, {name: 'Pink', color: '#f577a3'}, {name: 'Tango', color: '#d16c35'}, {name: 'Pumpkin', color: '#fe7b22'}, {name: 'Supernova', color: '#fec037'}, {name: 'Gorse', color: '#ffe32e'}, {name: 'Lime', color: '#8bba19'}, {name: 'Java', color: '#3aa6a0'}, {name: 'Sky', color: '#0099cc'}, {name: 'Gray', color: '#666666'}],
