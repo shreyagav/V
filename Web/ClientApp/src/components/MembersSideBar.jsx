@@ -59,7 +59,8 @@ class EventsSideBar extends Component {
         this.props.updateFilters(filters);
     }
 
-    updateFilter(filterName, value){
+    updateFilter(filterName, value) {
+        console.log(filterName, value);
         let filters = this.props.filters;
         let element = filters.find(element => element.name === filterName); 
         element.value = value;
@@ -105,14 +106,14 @@ class EventsSideBar extends Component {
                     </button>
                 </div>
                 
-                <p>Role:</p>
+                <p>Type:</p>
                 <MultiDropDown
                     ref={el => this.roleDropDownRef = el}
-                    list={[{name: 'Veteran', img: <VeteranUpSVG />},{name: 'Volunteer', img: <VolunteerUpSVG />}]} 
-                    keyProperty='name'
+                    list={[{name: 'Paddler', img: <VeteranUpSVG />, id:54},{name: 'Stuff', img: <VolunteerUpSVG />, id:53}]} 
+                    keyProperty='id'
                     textProperty='name'
                     defaultValue={this.state.role}
-                    placeholder='Role'
+                    placeholder='Type'
                     onDropDownValueChange = {value => {
                         this.setState({role: value});
                         this.updateFilter("role", value);

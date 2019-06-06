@@ -55,6 +55,9 @@ export class Service {
     static setProfile(info) {
         return Service.__post(host + '/api/Profile/Set',info);
     }
+    static getFilteredMembers(filter) {
+        return Service.__post(host + '/api/Profile/GetFiltered', filter);
+    }
 
     static __get(url) {
         //var promice = fetch(url).then(resp => {

@@ -27,6 +27,12 @@ namespace Models.Dto
             Zip = user.Zip;
             Medical = user.Medical;
             InjuryDate = user.DateInjured;
+            OldType = user.OldType;
+            if (user.Site != null)
+            {
+                SiteName = user.Site.Name;
+                StateName = user.Site.GroupName;
+            }
         }
 
         public void Map(TRRUser user)
@@ -51,6 +57,8 @@ namespace Models.Dto
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int? SiteId { get; set; }
+        public string SiteName { get; set; }
+        public string StateName { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -59,6 +67,7 @@ namespace Models.Dto
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
+        public TRRUserType OldType { get; set; }
         public Medical Medical { get; set; }
         public DateTime? InjuryDate { get; set; }
         public IEnumerable<EventListRow> Events { get; set; }
