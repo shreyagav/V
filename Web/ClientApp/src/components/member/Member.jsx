@@ -207,11 +207,10 @@ class Member extends Component {
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.renderHeader()}
                 <TabComponent 
-                    inheritParentHeight={false}
+                    fixedHeight={true}
                     tabList={this.getTabs()}
                     wasSelected={(index) => this.setState({activeTabIndex: index})}
                     activeTabIndex={this.state.activeTabIndex}
-                    tabEqualWidth={true}
                 />
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>

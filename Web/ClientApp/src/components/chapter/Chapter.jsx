@@ -82,11 +82,10 @@ class Chapter extends Component {
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 <h1 className='uppercase-text mb-2'>New<strong>Chapter</strong></h1>
                 <TabComponent 
-                    inheritParentHeight = {false}
+                    fixedHeight={true}
                     tabList = {['General Info', 'Members']}
                     wasSelected = {(index) => this.setState({activeTabIndex: index})}
                     activeTabIndex = {this.state.activeTabIndex}
-                    tabEqualWidth = {true}
                 />
                 {this.state.activeTabIndex === 0 &&
                 <div style={{"width":"100%", "maxWidth":"600px"}}>

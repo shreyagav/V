@@ -9,10 +9,8 @@ class TabComponent extends React.Component {
     }
 
     render() {
-        let style = {}
-        if (this.props.inheritParentHeight) {style = {'height': '100%'}}
         return (
-            <ul className={'tab-component' + (this.props.inheritParentHeight ? " not-shrinkable-font" : "")} style={style}>
+            <ul className={'tab-component' + (!this.props.fixedHeight ? " not-shrinkable-font height-auto" : "")} style={this.props.style}>
                 {this.props.tabList.map((element, index) => 
                     <li 
                         tabIndex='0' key={index} 

@@ -2,7 +2,7 @@
 
 ul.tab-component {
     /*width: 100%; */
-    font-size: 1em;
+    font-size: 1rem;
     max-width: 100%;
     border: 1px solid #666666;
     border-radius:999px;
@@ -13,7 +13,7 @@ ul.tab-component {
     flex-wrap: nowrap;
     text-transform: uppercase;
     position: relative; 
-    height: 3em;
+    height: 3rem;
 
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -41,7 +41,7 @@ ul.tab-component > li {
 }
 
 ul.tab-component > li:not(:first-child) {
-    margin-left: -0.2rem;
+    margin-left: -0.2em;
 }
 
 ul.tab-component > li:hover:not(.selected),
@@ -71,7 +71,8 @@ ul.tab-component > li.selected:focus::after,
 
 ul.tab-component > li > p {
     font-size: inherit;
-    margin: 0.5rem;
+    line-height: 1;
+    margin: 0.4em;
 }
 
 @media screen and (max-width: 500px) {

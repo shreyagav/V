@@ -92,16 +92,18 @@ class NavMenu extends Component {
                         <span>Profile</span>
                     </Link>
                 </li>}
+        </ul>
+        <ul className="flex-nowrap main-nav">
                 {user == null && (<li>
                     <Link to="/SignIn">
                         <SignInSVG />
-                        <span style={{ 'textTransform': "none" }}>Sign In</span>
+                        <span className='sign-in' style={{ 'textTransform': "none" }}>Sign In</span>
                     </Link>
                 </li>)}
                 {user != null && (<li>
                     <a href="javascript:" onClick={this.signOut}>
                         <SignOutSVG />
-                        <span style={{ 'textTransform': "none" }}>Sign Out</span>
+                        <span className='sign-in' style={{ 'textTransform': "none" }}>Sign Out</span>
                     </a>
                 </li>)}
         </ul>

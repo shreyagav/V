@@ -392,7 +392,7 @@ class Event extends Component {
                         </div>
                     }
                     <TabComponent 
-                        inheritParentHeight={false}
+                        fixedHeight={true}
                         tabList={['information', 'attendees', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
