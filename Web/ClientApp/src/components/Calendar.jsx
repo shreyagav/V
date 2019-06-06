@@ -287,31 +287,31 @@ class Calendar extends Component {
             );
         } else {
             return (
-                <div>
+                <div div className='pl-025 pr-025'>
                     <div className='flex-flow-column'>
                         <div className='flex-wrap justify-space-between align-center'>
-                            <h1 className='h2 uppercase-text pl-025'>
-                                {"event"+" "}
-                                <strong>
-                                    Calendar
-                                </strong>
-                                {this.props.store.narrowScreen && <TabComponent
-                                    inheritParentHeight={true}
-                                    tabList={["table", "list"]}
-                                    proceedInOrder={false}
-                                    wasSelected={(index) => this.setState({ tableStileView: index === 0 }) }
-                                    tabEqualWidth={true}
-                                />}
-                            </h1>
+                            <div className='flex-wrap justify-left align-center'>
+                                <h1 className='h2 uppercase-text mr-1'>
+                                    {"event"+" "}<strong>Calendar</strong>
+                                </h1>
+                                {this.props.store.narrowScreen && 
+                                    <TabComponent
+                                        style={{'fontSize':'0.85rem','height':'24px'}}
+                                        tabList={["table", "list"]}
+                                        wasSelected={(index) => this.setState({ tableStileView: index === 0 }) }
+                                        activeTabIndex={this.state.tableStileView ? 0 : 1}
+                                    />
+                                }
+                            </div>
                             <span>
                                 {!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && 
-                                <button
-                                    style={{'flexShrink' : '0'}}
-                                    className='round-button medium-round-button grey-outline-button' 
-                                    onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
-                                >
-                                    <span>today</span>
-                                </button>
+                                    <button
+                                        style={{'flexShrink' : '0'}}
+                                        className='round-button medium-round-button grey-outline-button' 
+                                        onClick={() => this.createCalendar(this.todayYear, this.todayMonth)}
+                                    >
+                                        <span>today</span>
+                                    </button>
                                 }
                             </span>
                         </div>
