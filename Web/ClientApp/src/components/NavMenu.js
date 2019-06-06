@@ -5,6 +5,9 @@ import MembersSVG from '../svg/MembersSVG';
 import ReportsSVG from '../svg/ReportsSVG';
 import LogoSVG from '../svg/LogoSVG';
 import UserSVG from '../svg/UserSVG';
+import  CalendarSVG from '../svg/CalendarSVG';
+import SignInSVG from '../svg/SignInSVG';
+import SignOutSVG from '../svg/SignOutSVG';
 import TabComponent from './TabComponent';
 import MenuSVG from '../svg/MenuSVG';
 import { Link } from 'react-router-dom';
@@ -64,7 +67,7 @@ class NavMenu extends Component {
             <ul className="flex-nowrap main-nav">
                 <li>
                     <Link to="/">
-                        <ChaptersSVG />
+                        <CalendarSVG />
                         <span>Calendar</span>
                     </Link>
                 </li>
@@ -100,13 +103,13 @@ class NavMenu extends Component {
                 </li>}
                 {user == null && (<li>
                     <Link to="/SignIn">
-                        <UserSVG />
+                        <SignInSVG />
                         <span style={{ 'textTransform': "none" }}>Sign In</span>
                     </Link>
                 </li>)}
                 {user != null && (<li>
                     <a href="javascript:" onClick={this.signOut}>
-                        <UserSVG />
+                        <SignOutSVG />
                         <span style={{ 'textTransform': "none" }}>Sign Out</span>
                     </a>
                 </li>)}
