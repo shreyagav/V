@@ -72,16 +72,21 @@ class Members extends Component {
 
     renderFullNameColumn(value, row, index, col) {
         return (
-            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"display":"flex", "alignItems":"center"}}>
+            <li 
+                key={index} 
+                className={col.className ? "table-content " + col.className : "table-content"} 
+                style={{"display":"flex", "alignItems":"center"}}
+            >
                 <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
                     {row['oldType'] === 54 ? <VeteranUpSVG /> : <VolunteerUpSVG />}
                 </span>
                 <Link to={"/member/" + row["id"]}>
                     <span style={{ "display": "flex", "flexFlow": "column", "flexWrap": "nowrap", "flex": "1 1 auto" }} className="blue-link link">
-                    <span style={{"fontSize":"1.1em", "flex":"1 1 auto"}}>{row['firstName'] + ' ' + row['lastName']}</span>
-                    <span style={{ "flex": "1 1 auto" }} className='chapter'>{row['siteName']}</span>
+                        <span style={{"fontSize":"1.1em", "flex":"1 1 auto"}}>{row['firstName'] + ' ' + row['lastName']}</span>
+                        <span style={{ "flex": "1 1 auto" }} className='chapter'>{row['siteName']}</span>
                     </span>
                 </Link>
+                {/*
                 <button 
                     className='round-button small-round-button light-grey-outline-button' 
                     style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
@@ -89,13 +94,16 @@ class Members extends Component {
                 >
                     <CloseUpSVG />
                 </button>
-                <button 
-                    className='round-button small-round-button light-grey-outline-button' 
-                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                    onClick={() => this.editMember()}
-                >
-                    <EditUpSVG />
-                </button>
+                <Link to={"/member/" + row["id"]}>
+                    <button 
+                        className='round-button small-round-button light-grey-outline-button' 
+                        style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
+                        onClick={() => this.editMember()}
+                    >
+                        <EditUpSVG />
+                    </button>
+                </Link>
+                */}
             </li>
         );
     }
@@ -143,7 +151,7 @@ class Members extends Component {
                             onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
                 </div>
-                <Table columns={columns} data={members} className={"break-at-700"}/>
+                <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
             </div>
         );
     }

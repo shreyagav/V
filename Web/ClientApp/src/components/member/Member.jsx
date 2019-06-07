@@ -51,6 +51,7 @@ class Member extends Component {
             },
             activeTabIndex: 0,
             showError: false,
+            showDeleteMemberDialog: false,
             userId: userId
         };
         this.stateDropDownRef = null;
@@ -456,6 +457,7 @@ class Member extends Component {
                     <MemberEvents events={this.state.member.events} />
                 }
                 <div className='flex-wrap mt-2'>
+                    <button className='medium-static-button static-button' onClick={() => this.setState({showDeleteMemberDialog: true})}>Delete</button>
                     {this.state.activeTabIndex > 0 &&
                         <button 
                             className='medium-static-button static-button' 
@@ -481,21 +483,39 @@ class Member extends Component {
                         </button>
                     }
                     {this.state.activeTabIndex !== 1 &&
-                        <button className='medium-static-button static-button default-button' onClick={this.saveMemberInfo}>Save</button>
-                    }
-                    {this.state.showError && 
-                        <Alert 
-                            headerText = 'Error'
-                            onClose = {()=>this.setState({showError: false})}
-                            showOkButton={true}
-                            onOkButtonClick={() => this.setState({ showError: false })}
-                            buttonText = "Got IT!"
-                            mode = 'error'
-                        >
-                        <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
-                        </Alert>
+                        <button className='medium-static-button static-button' onClick={this.saveMemberInfo}>Save</button>
                     }
                 </div>
+                {this.state.showError && 
+                    <Alert 
+                        headerText = 'Error'
+                        onClose = {()=>this.setState({showError: false})}
+                        showOkButton={true}
+                        onOkButtonClick={() => this.setState({ showError: false })}
+                        buttonText = "Got IT!"
+                        mode = 'error'
+                    >
+                        <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
+                    </Alert>
+                }
+                {this.state.showDeleteMemberDialog && 
+                    <Alert 
+                        headerText = 'Delete'
+                        text = 'Are you sure you want to delete this Member?'
+                        onClose = {()=>this.setState({showDeleteMemberDialog: false})}
+                        showOkCancelButtons = {true}
+                        onCancelButtonClick = {()=>this.setState({showDeleteMemberDialog: false})}
+                        onOkButtonClick = {() => this.deleteMember()}
+                        cancelButtonText = "Cancel"
+                        okButtonText = "Delete"
+                        mode = 'warning'
+                    >
+                        <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
+                        <p style={{"textAlign":"center"}}>
+                            This action cannot be undone. Delete anyway?
+                        </p>
+                    </Alert>
+                }
             </div>
         );
     }

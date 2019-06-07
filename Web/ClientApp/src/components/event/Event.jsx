@@ -538,7 +538,7 @@ class Event extends Component {
                             <ul className='input-fields-child-ul time-fields'>
                                 <li 
                                     className={this.emptyTimeFrom ? 'mark-invalid' : ''}
-                                    error-text='Please enter the time event starts'
+                                    error-text='Please enter the time'
                                 >
                                     <TimePicker 
                                         ref={el => this.timeFromDropDownRef = el}
@@ -553,7 +553,7 @@ class Event extends Component {
                                 <li><p>to:</p></li>
                                 <li
                                     className={this.emptyTimeTo ? 'mark-invalid' : ''}
-                                    error-text='Please enter the time event ends'
+                                    error-text='Please enter the time'
                                 >
                                     <TimePicker 
                                         ref={el => this.timeToDropDownRef = el}
@@ -634,7 +634,7 @@ class Event extends Component {
                     {this.state.activeTabIndex < 3 &&
                         <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>Next</button>
                     }
-                    <button className='medium-static-button static-button default-button' onClick={this.onSaveClick} >Save & Exit</button>
+                    <button className='medium-static-button static-button' onClick={this.onSaveClick} >Save & Exit</button>
                 </div>
                 
                 {this.state.showError && 

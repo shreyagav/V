@@ -310,7 +310,7 @@ class EventBudget extends Component {
                         </div>
                     }
                     {budget.length > 0 &&
-                        <Table columns={columns} data={budget} addHeadersForNarrowScreen={true}/>
+                        <Table columns={columns} data={budget} className={"break-at-500"} addHeadersForNarrowScreen={true}/>
                     }
                 </div>
             );

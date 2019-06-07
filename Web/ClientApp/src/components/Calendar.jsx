@@ -29,7 +29,6 @@ class Calendar extends Component {
             events: [],
             selectedChapters: [],
             loading: false,
-            tableStileView: true
         };
         this.todayYear = null;
         this.todayMonth = null;
@@ -252,7 +251,7 @@ class Calendar extends Component {
     }
 
     calendarUpdate = () => {
-      if (this.state.tableStileView) {
+      if (this.props.store.tableStileView) {
         return this.state.calendar;
       }
       else {
@@ -298,8 +297,8 @@ class Calendar extends Component {
                                     <TabComponent
                                         style={{'fontSize':'0.85rem','height':'24px'}}
                                         tabList={["table", "list"]}
-                                        wasSelected={(index) => this.setState({ tableStileView: index === 0 }) }
-                                        activeTabIndex={this.state.tableStileView ? 0 : 1}
+                                        wasSelected={(index) => this.props.store.set("tableStileView", index === 0)}
+                                        activeTabIndex={this.props.store.tableStileView ? 0 : 1}
                                     />
                                 }
                             </div>
@@ -360,7 +359,7 @@ class Calendar extends Component {
                         </button>
                     </div>
 
-                    {this.state.regularCalendar && this.state.tableStileView &&
+                    {this.state.regularCalendar && this.props.store.tableStileView &&
                         <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>
                             <li>Su</li>
                             <li>Mo</li>
@@ -380,12 +379,12 @@ class Calendar extends Component {
                                 return (
                                     <li
                                         key={index}
-                                        className={this.state.tableStileView ? element.className : element.className + ' listStyleView'}
+                                        className={this.props.store.tableStileView ? element.className : element.className + ' listStyleView'}
                                         tabIndex='0'
                                         onKeyDown={(e) => this.calendarKeyDownHandler(e, index)}
                                         ref={el => this.setRef(el, index)}
                                     >
-                                        {this.state.tableStileView
+                                        {this.props.store.tableStileView
                                             ?
                                             <div className={element.className}>
                                                 <span>
@@ -408,8 +407,8 @@ class Calendar extends Component {
                                                     <strong>{element.label}</strong>
                                                     {dayOfEvents &&
                                                         <ul className='calendar-events-list'>{dayOfEvents.events.map((event, index) =>
-                                                            <li key={index}>
-                                                                <span style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
+                                                            <li className='blue-link' key={index} onClick={e => this.navigateToEventView(event.id)}>
+                                                                <span className='blue-link-invert' style={{ 'backgroundColor': event.color }}>{event.hours.toString() + ':' + ('0' + event.minutes.toString()).slice(-2) + ' ' + (event.am ? "AM" : "PM")}</span>
                                                                 <span style={this.props.store.narrowScreen ? { 'color': event.color, "maxHeight": "2.2em" } : { 'color': event.color }}>{event.name}</span>
                                                             </li>
                                                         )}

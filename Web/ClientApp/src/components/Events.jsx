@@ -123,7 +123,7 @@ class NewEvents extends Component {
                         onDropDownValueChange={value => this.updateFilter("chapters", value)}
                     />
                 </div>
-                <Table columns={columns} data={eventsList} />
+                <Table columns={columns} data={eventsList} className={"break-at-700"} addHeadersForNarrowScreen={true} />
             </div>
         );
     }

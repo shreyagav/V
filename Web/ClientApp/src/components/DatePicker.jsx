@@ -71,6 +71,7 @@ class DatePicker extends Component {
     }
 
     toggle(){
+        this.clearTimeoutAndInterval();
         if (this.setState.isOpen) {
             this.setState({isOpen: !this.state.isOpen, setFocusTo: -1});
         }
@@ -316,8 +317,6 @@ class DatePicker extends Component {
             break;
 
           case 38: //Up Arrow 
-          //debugger
-          
           //if(this.state.setFocusTo >= 0 )//
           {
             //console.log(element.date);
@@ -493,6 +492,23 @@ class DatePicker extends Component {
         }
     }
 
+    performMultipleTimes(callback) {
+        if(this.intervalVariable > 0) {return;}
+        callback();
+        this.timeoutVariable = setTimeout (() => {
+          this.intervalVariable = setInterval (() => {
+            callback();
+          }, 100);
+        }, 300);
+    }
+
+    clearTimeoutAndInterval() {
+        clearTimeout(this.timeoutVariable);
+        clearInterval(this.intervalVariable);
+        this.timeoutVariable = 0;
+        this.intervalVariable = 0;
+    }
+
     render() {
         const calendar = this.state.calendar;
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -547,8 +563,18 @@ class DatePicker extends Component {
                     >
                         <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
                             <button className='arrow-button' 
-                                onClick={() => this.onArrowClick(false)}
-                                onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                                //onClick={() => this.onArrowClick(false)}
+                                //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                                onMouseDown={() => this.performMultipleTimes(() => this.onArrowClick(false))}
+                                onMouseUp={() => this.clearTimeoutAndInterval()}
+                                onMouseOut={() => this.clearTimeoutAndInterval()}
+                                onKeyDown={(e) => {
+                                    if(e.keyCode === 13) {
+                                        this.performMultipleTimes(() => this.onArrowClick(false));
+                                        e.preventDefault();
+                                    }
+                                }}
+                                onKeyUp = {() => this.clearTimeoutAndInterval()}
                             >
                                 <ArrowUpSVG />
                             </button>
@@ -561,8 +587,16 @@ class DatePicker extends Component {
                                 {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
                             </button>
                             <button className='arrow-button'
-                                onClick={() => this.onArrowClick(true)}
-                                onKeyDown={(e) => this.buttonKeyDownHandler(e)}
+                                onMouseDown={() => this.performMultipleTimes(() => this.onArrowClick(true))}
+                                onMouseUp={() => this.clearTimeoutAndInterval()}
+                                onMouseOut={() => this.clearTimeoutAndInterval()}
+                                onKeyDown={(e) => {
+                                    if(e.keyCode === 13) {
+                                        this.performMultipleTimes(() => this.onArrowClick(true));
+                                        e.preventDefault();
+                                    }
+                                }}
+                                onKeyUp = {() => this.clearTimeoutAndInterval()}
                             >
                                 <ArrowUpSVG svgClassName='flip180' />
                             </button>
@@ -589,7 +623,7 @@ class DatePicker extends Component {
                                         tabIndex={disabled ? -1 : 0}
                                         onKeyDown={e => {if(!disabled){ this.calendarKeyDownHandler(e, index, element)}}}
                                         onClick={() => {if(!disabled){this.onSelect(element.date)}}}
-                                        onFocus={(el) => {if(!disabled){this.setFocusToRef = el}}}
+                                        onFocus={(e) => {if(!disabled){this.setFocusToRef = e.target}}}
                                         ref={el => {
                                             if (index === this.state.setFocusTo || (this.state.setFocusTo === -1 && actToday)) {
                                                 this.setFocusToRef = el;

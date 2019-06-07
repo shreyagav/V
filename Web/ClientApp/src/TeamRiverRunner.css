@@ -141,9 +141,12 @@ h4, .h4 {
 
 .mediaMin500-pl-pr-025 {padding-right: 0.5rem !important; padding-left: 0.5rem !important}
 
-.hideIfWiderThan500 {display: none;}
+.table-mini-header {display: none;}
 @media screen and (max-width: 500px){
-    .hideIfWiderThan500 {display: block;}
+    .break-at-500 .table-mini-header {display: block;}
+}
+@media screen and (max-width: 700px){
+    .break-at-700 .table-mini-header {display: block;}
 }
 
 @media screen and (max-width: 700px){
@@ -531,7 +534,7 @@ div.round-icon, div.round-button {margin-right: 0.5em;}
     ul.main-nav span.sign-in{display: none;}
 }
 
-@media screen and (max-width: 900px){
+@media screen and (max-width: 700px){
     ul.main-nav span:not(.sign-in){display: none;}
     div.round-button {margin: 0rem;}
     ul.main-nav a:focus div {border-color: #0099cc;}
@@ -541,7 +544,7 @@ ul.main-nav > li {font-size: 0.8rem; padding: 0.2rem; display: flex; align-items
 ul.main-nav > li:not(:last-child) {margin-right: 0.25em;}
 ul.main-nav a {display: flex; flex-wrap: nowrap; align-items: center;}
 ul.main-nav span {white-space: nowrap; font-weight: 600; font-size: 0.8rem;}
-ul.main-nav > li:not(:last-child) span {text-transform: uppercase;}
+ul.main-nav > li span {text-transform: uppercase;}
 ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
 
 .light-grey-outline-icon, .light-grey-outline-button {border-color: #cccccc; color: #cccccc;}
@@ -1102,13 +1105,13 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     -webkit-transform: rotate(270deg);
 }
 
-.blue-link:hover > span {
+.blue-link:hover > span, a:focus .blue-link > span {
     /*text-decoration: underline;*/
     color: #0099cc !important;
     text-decoration: underline !important;
 }
 
-.blue-link:hover > .blue-link-invert {
+.blue-link:hover > .blue-link-invert, a:focus .blue-link > .blue-link-invert {
     background-color: #0099cc !important;
     color: #ffffff !important;
     text-decoration: none !important;

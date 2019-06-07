@@ -44,17 +44,19 @@ class NavMenu extends Component {
         const user = this.props.store.userInfo;
     return (
       <header className="main-nav-wrapper">
-        {this.props.store.narrowScreen 
-          && 
-          <ul className="flex-nowrap main-nav">
-                    {this.props.store.withSideBar && <li>
-                        <MenuSVG onClick={() => this.toggleChapters()} />
-                    </li>}
-                </ul>}
+            {this.props.store.narrowScreen && this.props.store.withSideBar &&
+              <ul className="flex-nowrap main-nav">
+                    <li>
+                      <MenuSVG onClick={() => this.toggleChapters()} />
+                    </li>
+              </ul>
+            }
             
-            {showLogo && <Link to="/" style={{ "width": "260px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
+            {showLogo && 
+              <Link to="/" style={{ "width": "260px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
                 <LogoSVG />
-            </Link>}
+              </Link>
+            }
         
             <ul className="flex-nowrap main-nav">
                 {this.props.match.path != "/" && <li>

@@ -178,9 +178,9 @@ class EventDemo extends Component {
                 {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
                     <div className='flex-wrap flex-flow-column mb-3'>
                     <div className='status-wrapper mb-2'>
-                        <div className={eventStatus + ' status-indicator'}>{eventStatus}</div>
+                        <div className={eventStatus + ' status-indicator ml-025 mt-025'}>{eventStatus}</div>
                         <div className='flex-wrap align-center'>
-                            <button className='round-button medium-round-button grey-outline-button' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
+                            <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
                                 Edit Event
                             </button>
                         </div>

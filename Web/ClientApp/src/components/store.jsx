@@ -5,8 +5,9 @@ const StoreContext = React.createContext()
 const createStore = WrappedComponent => {
   return class extends React.Component {
     state = {
+      tableStileView: true,
       sideBarIsHidden: false,
-        narrowScreen: false,
+      narrowScreen: false,
       chapterList: [],
       colorList: [{name: 'Cosmic', color: '#794068'}, {name: 'Violet', color: '#AB4189'}, {name: 'Pink', color: '#f577a3'}, {name: 'Tango', color: '#d16c35'}, {name: 'Pumpkin', color: '#fe7b22'}, {name: 'Supernova', color: '#efb135'}, {name: 'Lime', color: '#8bba19'}, {name: 'Java', color: '#3aa6a0'}, {name: 'Teal', color: '#047884'}, {name: 'Gray', color: '#666666'}],
       eventTypes:[],

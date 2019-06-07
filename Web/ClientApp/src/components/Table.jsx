@@ -38,7 +38,7 @@ class Table extends Component {
                             else return (
                                 <li key={index} className={"table-content "}>
                                     {this.props.addHeadersForNarrowScreen === true && 
-                                        <span className='hideIfWiderThan500 table-mini-header'>
+                                        <span className='table-mini-header'>
                                             {col.title + ": "}
                                         </span>
                                     }
