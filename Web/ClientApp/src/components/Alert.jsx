@@ -48,26 +48,28 @@ class Alert extends Component {
                     >
                         <CloseUpSVG />
                     </button>
-                    {this.props.mode === 'error' &&
-                        <div className='modal-img-wrapper mb-1'>
-                            <CloseUpSVG />
-                        </div>
-                    }
-                    {this.props.mode === 'warning' &&
-                        <div className='modal-img-wrapper mb-1'>
-                            <ExclamationSVG />
-                        </div>
-                    }
-                    {this.props.mode === 'success' &&
-                        <div className='modal-img-wrapper mb-1'>
-                            <CheckBoxSVG />
-                        </div>
-                    }
-                    <div className = 'modal-content mb-1'>
+                    <div className='flex-nowrap align-center justify-center mb-05'>
+                        {this.props.mode === 'error' &&
+                            <div className='modal-img-wrapper mr-05'>
+                                <CloseUpSVG />
+                            </div>
+                        }
+                        {this.props.mode === 'warning' &&
+                            <div className='modal-img-wrapper mr-05'>
+                                <ExclamationSVG />
+                            </div>
+                        }
+                        {this.props.mode === 'success' &&
+                            <div className='modal-img-wrapper mr-05'>
+                                <CheckBoxSVG />
+                            </div>
+                        }
                         {this.props.headerText && <h3>{this.props.headerText}</h3>}
-                        {this.props.text && <p className='mt-05 alertText'>{this.props.text}</p>}
                     </div>
-                    <div className = 'modal-content mb-1'>{this.props.children}</div>
+                    <div className = 'modal-content mb-1'>
+                        {this.props.text && <p className='alertText'>{this.props.text}</p>}
+                    </div>
+                    <div className = 'modal-content mb-1 mt-05'>{this.props.children}</div>
                     {this.props.showOkButton &&
                         <button 
                             ref = {el => this.singleOkButtonRef = el}
@@ -79,7 +81,7 @@ class Alert extends Component {
                         </button>
                     }
                     {this.props.showOkCancelButtons &&
-                        <div className='flex-nowrap' style={{"marginBottom":"-0.5em"}}>
+                        <div className='flex-nowrap'>
                             <button 
                                 ref = {el => this.okButtonRef = el}
                                 className='regular-button medium-static-button static-button' 

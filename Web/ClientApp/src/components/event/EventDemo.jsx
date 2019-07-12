@@ -6,7 +6,13 @@ import EventBudget from './EventBudget';
 import { withStore } from '../store';
 import TimeUpSVG from '../../svg/TimeUpSVG';
 import DateUpSVG from '../../svg/DateUpSVG';
+import ChaptersUpSVG from '../../svg/ChaptersUpSVG';
+import EventUpSVG from '../../svg/EventUpSVG';
+import CheckBoxSVG from '../../svg/CheckBoxSVG';
+import Status from '../Status';
+import EditUpSVG from '../../svg/EditUpSVG';
 import Loader from '../Loader';
+import Alert from '../Alert';
 import { Service } from '../ApiService';
 
 class EventDemo extends Component {
@@ -28,7 +34,10 @@ class EventDemo extends Component {
             eventMain: {},
             eventId: evtId,
             loading: evtId!=0,
+            attending: false,
+            showAlert: false,
         };
+        this.onAttendanceChanged = this.onAttendanceChanged.bind(this);
     }
 
     componentDidMount() {
@@ -71,25 +80,6 @@ class EventDemo extends Component {
         this.setActiveStep(this.state.activeTabIndex + 1);
     }
 
-    /*componentDidMount(){
-        var component = this;
-        fetch('/Members.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({members: jjson})
-        });
-        fetch('/Budget.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({budget: jjson})
-        });
-        fetch('/Pictures.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({pictures: jjson})
-        });
-    } */
-
     navigateToEventEdit(id) {
         //this.props.history.push('/event-view/' + id);
         this.props.history.push('/event-edit/' + id);
@@ -129,6 +119,18 @@ class EventDemo extends Component {
             newImageList.push(newArray);
         }
         this.setState(() => ({formattedPicturesList: newImageList}));
+    }
+
+    onAttendanceChanged(index){
+        // YES
+        if(index === 0) {
+            this.setState({attending: true});
+        }
+        // NO
+        if(index === 1){
+            //debugger
+            this.setState({showAlert: true});
+        }
     }
 
     render() {
@@ -174,17 +176,34 @@ class EventDemo extends Component {
         return (
             <div className='flex-nowrap flex-flow-column justify-center align-center pt-2 pb-2 pr-1 pl-1' >
                 {this.state.loading && <Loader/>}
-                <h1 className='mb-2'>{this.state.eventMain.name}</h1>
+                <h1 className='flex-nowrap align-center mt-1 mb-3'>
+                    {this.state.eventMain.name}
+                    {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                        <button className='round-button scaleable-button grey-outline-button ml-1 mt-1' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
+                            <EditUpSVG />
+                        </button>
+                    }
+                </h1>
+                <div className='flex-nowrap justify-center align-center mb-3'>
+                    <span style={{'textTransform':"uppercase", 'marginRight':"0.5em", "fontWeight": "500"}}>Attend the Event</span>
+                    <TabComponent
+                        style={{'fontSize':'0.85rem','height':'24px'}}
+                        tabList={["yes", "no"]}
+                        wasSelected={(index) => this.onAttendanceChanged(index)}
+                        activeTabIndex={this.state.attending ? 0 : 1}
+                    />
+                    {/*<button class="round-button medium-round-button grey-outline-button">Cannot Make It</button>*/}
+                </div>
                 {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
-                    <div className='flex-wrap flex-flow-column mb-3'>
-                    <div className='status-wrapper mb-2'>
+                <div className='flex-wrap flex-flow-column mb-3'>
+                    {/*<div className='status-wrapper mb-2'>
                         <div className={eventStatus + ' status-indicator ml-025 mt-025'}>{eventStatus}</div>
                         <div className='flex-wrap align-center'>
                             <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
                                 Edit Event
                             </button>
                         </div>
-                    </div>
+                    </div>*/}
                     <TabComponent
                         fixedHeight={true}
                         tabList={['information', 'attendees', 'budget', 'pictures']}
@@ -193,27 +212,38 @@ class EventDemo extends Component {
                     />
                 </div>}
                 {this.state.activeTabIndex === 0 && 
-                    <div className='flex-wrap flex-flow-column justify-center align-center' style={{"maxWidth":"900px"}}>
-                        <ul className='icon-text-set mb-1'>
-                            <li>
-                                <DateUpSVG />
-                                <span>{eventDate}</span>
-                            </li>
-                            <li>
-                                <TimeUpSVG />
-                                <span>{eventTime}</span>
-                            </li>
-                            <li>
-                                <span><strong>Chapter:</strong></span>
-                                <span className='chapter'>{chapter.name !== undefined && chapter.name}</span>
-                            </li>
-                            <li>
-                                <span><strong>Type of Event:</strong></span>
-                                <span>{eventType}</span>
-                            </li>
-                        </ul>
-                        <span className='mb-3'>
-                            Here goes some quite long event description. And some more words to show how long the description can actually be. Here goes some quite long event description. And some more words to show how long the description can actuallu be.
+                    <div className='flex-wrap flex-flow-column justify-center align-center mb-1' style={{"maxWidth":"900px"}}>
+                        <div className='flex-nowrap justify-space-between align-top mb-1' style={{"width":"100%"}}>
+                            <ul className='icon-text-set'>
+                                {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                                    <li>
+                                        <Status eventStatus={eventStatus} />
+                                    </li>
+                                }
+                                <li>
+                                    <DateUpSVG />
+                                    <span>{eventDate}</span>
+                                </li>
+                                <li>
+                                    <TimeUpSVG />
+                                    <span>{eventTime}</span>
+                                </li>
+                                <li>
+                                    <ChaptersUpSVG />
+                                    <span className='chapter'>{chapter.name !== undefined && chapter.name}</span>
+                                </li>
+                                <li>
+                                    <EventUpSVG />
+                                    <span>{eventType}</span>
+                                </li>
+                            </ul>
+                            {/*<button style={{"flex": "0 0 auto"}} class="medium-static-button static-button">Attend</button>*/}
+                            {/*user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                                <Status eventStatus={eventStatus} />
+                            */}
+                        </div>
+                        <span className='mb-1'>
+                            Here goes some quite long event description. And some more words to show how long the description can actually be. Here goes some quite long event description. And some more words to show how long the description can actually be.
                         </span>
                     </div>
                 }
@@ -229,6 +259,20 @@ class EventDemo extends Component {
                         <button className='medium-static-button static-button default-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex+1})}>Next</button>
                     }
                 </div>*/}
+                {this.state.showAlert && 
+                    <Alert 
+                        headerText = 'cancel attendance'
+                        onClose = {()=>this.setState({showAlert: false})}
+                        mode = 'warning'
+                        showOkCancelButtons = {true}
+                        onCancelButtonClick = {()=>this.setState({showAlert: false})}
+                        onOkButtonClick = {()=>this.setState({attending: false, showAlert: false})}
+                        cancelButtonText = "I will Go"
+                        okButtonText = "I will not Go"
+                    >
+                        <span>Are you sure you do not want to attend this event anymore?</span>
+                    </Alert>
+                }
             </div>
         );
     }

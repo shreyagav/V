@@ -230,7 +230,7 @@ class EventsSideBar extends Component {
                     <p>Status:</p>
                     <MultiDropDown
                         ref={el => this.statusDropDownRef = el}
-                        list={[{name: 'Draft'}, {name: 'Published'}, {name: 'Closed'}, {name: 'Deleted'}, {name: 'Cancelled'}]} 
+                        list={[{name: 'Draft'}, {name: 'Published'}, {name: 'Closed'}, {name: 'Deleted'}, {name: 'Canceled'}]} 
                         keyProperty='name'
                         textProperty='name'
                         defaultValue={this.state.status}

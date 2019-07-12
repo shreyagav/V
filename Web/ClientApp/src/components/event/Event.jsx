@@ -9,6 +9,7 @@ import EventPictures from './EventPictures';
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { Service } from '../ApiService';
 import CloseUpSVG from '../../svg/CloseUpSVG';
+import Status from '../Status';
 import Alert from '../Alert';
 import Loader from '../Loader';
 
@@ -315,7 +316,7 @@ class Event extends Component {
         let onOkButtonClick = () => {
             // Cancel Event
             let event = this.state.eventMain;
-            event.eventStatus = 'cancelled';
+            event.eventStatus = 'canceled';
             this.updateEvent().then(data => {
                 this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading:false });
             });
@@ -325,7 +326,7 @@ class Event extends Component {
             this.setState({showDialog: false});
             return;
         } else {
-            this.headerText = 'Cancell event';
+            this.headerText = 'Cancel event';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to cancel event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
@@ -355,42 +356,30 @@ class Event extends Component {
     }
 
     render() {
+        let eventStatus = this.state.eventMain.eventStatus;
+        if (eventStatus === undefined) {eventStatus = "draft"}
         const pictures = this.state.formattedPicturesList;
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
                 {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
                 <div className = 'flex-wrap flex-flow-column mb-3'>
-                    {(this.state.eventMain.eventStatus === 'draft' || this.state.eventMain.eventStatus === undefined) && 
+
                         <div className = 'status-wrapper mb-2'>
-                            <div className='status-indicator draft ml-025 mt-025'>Draft</div>
+                            <Status eventStatus={eventStatus} className='ml-025 mt-025' />
                             <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>
+                                {eventStatus !== 'published' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>
                                     Publish
-                                </button>
-                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onCancelEventButtonClick()}>
+                                </button>}
+                                {eventStatus !== 'canceled' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onCancelEventButtonClick()}>
                                     Cancel
-                                </button>
+                                </button>}
+                                {eventStatus !== 'canceled' && eventStatus !== 'draft' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onMoveToDraftsButtonClick()}>
+                                    Move to drafts
+                                </button>}
                             </div>
                         </div>
-                    }
-                    {this.state.eventMain.eventStatus === 'published' && 
-                        <div className = 'status-wrapper mb-2'>
-                            <div className='status-indicator published ml-025 mt-025'>Published</div>
-                            <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onMoveToDraftsButtonClick()}>Move to drafts</button>
-                                <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onCancelEventButtonClick()}>Cancel</button>
-                            </div>
-                        </div>
-                    }
-                    {this.state.eventMain.eventStatus === 'cancelled' && 
-                        <div className = 'status-wrapper mb-2'>
-                            <div className='status-indicator cancelled ml-025 mt-025'>Cancelled</div>
-                            <div className = 'flex-wrap align-center'>
-                                <button className='round-button medium-round-button grey-outline-button  ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>Publish</button>
-                            </div>
-                        </div>
-                    }
+
                     <TabComponent 
                         fixedHeight={true}
                         tabList={['information', 'attendees', 'budget', 'pictures']}

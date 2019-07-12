@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Models
 {
-    public enum EventStatus { Draft, Published, Cancelled, Deleted };
+    public enum EventStatus { Draft, Published, Canceled, Deleted };
     public class CalendarEvent
     {
         public CalendarEvent() {

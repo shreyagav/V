@@ -5,6 +5,7 @@ const StoreContext = React.createContext()
 const createStore = WrappedComponent => {
   return class extends React.Component {
     state = {
+      bodyNoScroll: false,
       tableStileView: true,
       sideBarIsHidden: false,
       narrowScreen: false,
