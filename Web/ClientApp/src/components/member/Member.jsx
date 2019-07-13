@@ -6,6 +6,7 @@ import TimePicker from '../TimePicker';
 import { withStore } from '../store';
 import MemberTRRInfo from './MemberTRRInfo';
 import MemberEvents from './MemberEvents';
+import MemberOptions from './MemberOptions';
 import RadioBoxSVG from '../../svg/RadioBoxSVG';
 import Alert from '../Alert';
 import RadioButton from '../RadioButton';
@@ -49,6 +50,7 @@ class Member extends Component {
                 userType: 0,
                 comments: '',
                 events:[],
+                options: [],
             },
             activeTabIndex: 0,
             showError: false,
@@ -206,7 +208,7 @@ class Member extends Component {
         if (this.props.match.path == '/profile') {
             return ['my info', 'my events'];
         } else {
-            return ['personal info', 'events', 'TRR info'];
+            return ['personal info', 'events', 'TRR info', 'options'];
         }
     }
 
@@ -457,6 +459,9 @@ class Member extends Component {
                 }
                 {this.state.activeTabIndex === 1 &&
                     <MemberEvents events={this.state.member.events} />
+                }
+                {this.state.activeTabIndex === 3 &&
+                    <MemberOptions member={this.state.member} />
                 }
                 <div className='flex-wrap mt-2'>
                     <button className='medium-static-button static-button' onClick={() => this.setState({showDeleteMemberDialog: true})}>Delete</button>

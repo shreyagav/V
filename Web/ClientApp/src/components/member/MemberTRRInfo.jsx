@@ -9,9 +9,9 @@ class MemberTRRInfo extends Component {
 
     render() {
         return (
-            <div>
+            <div className = 'ml-1 mt-3 mr-1'>
                 <CheckBox 
-                    className = 'mb-05 ml-1 mt-3 mr-1'
+                    className = 'mb-05'
                     onClick = {() => this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned)}
                     checked = {this.props.member.releaseSigned}
                     labelClassName = 'uppercase-text bold-text'
@@ -19,20 +19,20 @@ class MemberTRRInfo extends Component {
                 />
 
                 <CheckBox 
-                    className = 'mb-05 ml-1 mt-1 mr-1'
+                    className = 'mb-05'
                     onClick = {() => this.props.updateMemberProperty("liabilitySigned", !this.props.member.liabilitySigned)}
                     checked = {this.props.member.liabilitySigned}
                     labelClassName = 'uppercase-text bold-text'
                     labelText = 'Liability Signed'
                 />
 
-                <div className = 'flex-nowrap align-center mt-2 mb-2 ml-1 mr-1'>
+                <div className = 'flex-nowrap align-center mt-2 mb-2'>
                     <span className='line'></span>
                         <p className='pr-05 pl-05'><strong>ACTIVE</strong></p>
                     <span className='line'></span>
                 </div>
 
-                <div className='flex-nowrap justify-left align-center ml-1 mr-1'>
+                <div className='flex-nowrap justify-left align-center'>
                     <ul className='input-fields first-child-text-125'>
                         <li>
                             <CheckBox 
@@ -57,12 +57,12 @@ class MemberTRRInfo extends Component {
                         </li>
                     </ul>
                 </div>
-                <div className = 'flex-nowrap align-center mt-2 mb-2 ml-1 mr-1'>
+                <div className = 'flex-nowrap align-center mt-2 mb-2'>
                     <span className='line'></span>
                     <p className='pr-05 pl-05'><strong>INFO</strong></p>
                     <span className='line'></span>
                 </div>
-                <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
+                <ul className='input-fields first-child-text-125 mt-3'>
                         <li>
                             <p>Join Date:</p>
                             <DatePicker 
