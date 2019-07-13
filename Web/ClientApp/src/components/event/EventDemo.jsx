@@ -213,7 +213,7 @@ class EventDemo extends Component {
                             </li>
                         </ul>
                         <span className='mb-3'>
-                            Here goes some quite long event description. And some more words to show how long the description can actually be. Here goes some quite long event description. And some more words to show how long the description can actuallu be.
+                        {this.state.eventMain.description}
                         </span>
                     </div>
                 }

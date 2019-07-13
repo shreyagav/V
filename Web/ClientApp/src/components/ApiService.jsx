@@ -62,6 +62,11 @@ export class Service {
         return Service.__post(host + '/api/Profile/GetFiltered', filter);
     }
 
+    static getMembersReport() {
+        return Service.__get(host + '/api/Reports/Members');
+    }
+
+
     static __get(url) {
         //var promice = fetch(url).then(resp => {
         //    if (!resp.ok) {

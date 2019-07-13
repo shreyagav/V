@@ -46,19 +46,24 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public UserProfileDto[] GetFiltered(ProfileFilterDto filter)
         {
+            if(!string.IsNullOrEmpty(filter.Name))
+                filter.Name = $"%{filter.Name}%";
+            if (!string.IsNullOrEmpty(filter.Zip))
+                filter.Zip = $"%{filter.Zip}%";
+
             var res = _ctx.Users.Include(a=>a.Site).Where(a =>
-                (string.IsNullOrEmpty(filter.Name) || a.FirstName.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)
-                || a.LastName.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)
-                || a.Email.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)
-                || a.UserName.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)
-                )
-                && ((filter.DateFrom.HasValue && a.DateOfBirth.HasValue && a.DateOfBirth.Value > filter.DateFrom.Value) || (!filter.DateFrom.HasValue && !a.DateOfBirth.HasValue))
-                && ((filter.DateTo.HasValue && a.DateOfBirth.HasValue && a.DateOfBirth.Value < filter.DateTo.Value) || (!filter.DateTo.HasValue && !a.DateOfBirth.HasValue))
+                (string.IsNullOrEmpty(filter.Name) || (EF.Functions.Like(a.FirstName,filter.Name)
+                || EF.Functions.Like(a.LastName, filter.Name)
+                || EF.Functions.Like(a.Email, filter.Name)
+                || EF.Functions.Like(a.UserName, filter.Name)
+                ))
+                && (!filter.DateFrom.HasValue ||(a.DateOfBirth.HasValue && a.DateOfBirth.Value > filter.DateFrom.Value))
+                && (!filter.DateTo.HasValue || (a.DateOfBirth.HasValue && a.DateOfBirth.Value < filter.DateTo.Value))
                 && (!filter.Role.HasValue || a.OldType == filter.Role.Value)
-                && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && a.Zip.Contains(filter.Zip, StringComparison.OrdinalIgnoreCase)))
-                && (filter.Chapters == null || filter.Chapters.Length == 0 || filter.Chapters.Contains(a.SiteId.Value))
+                && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && EF.Functions.Like(a.Zip, filter.Zip)))
+                && ((filter.Chapters == null || filter.Chapters.Length == 0) || filter.Chapters.Contains(a.SiteId.Value))
                 )
-                .Take(1000).Select(a => new UserProfileDto(a)).ToArray();
+                .Take(100).Select(a => new UserProfileDto(a)).ToArray();
             return res;
         }
 

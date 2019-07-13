@@ -23,6 +23,7 @@ import Members from './components/Members';
 import Member from './components/member/Member';
 import MembersSideBar from './components/MembersSideBar'
 import TestPage from './components/TestPage';
+import MembersReport from './components/reports/MembersReport';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -61,6 +62,7 @@ class App extends Component {
                   <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>}/>
                   <Route path='/event-view/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventDemo {...match} /></SimpleLayout></div>} />
                   <Route path='/new-chapter' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
+                  <Route path='/members-report' render={(match) => <div><NavMenu {...match} /><SimpleLayout><MembersReport {...match} /></SimpleLayout></div>} />
 
                   <Route path='/test' component={TestPage} />
                   </Switch>

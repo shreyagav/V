@@ -10,6 +10,7 @@ import RadioBoxSVG from '../../svg/RadioBoxSVG';
 import Alert from '../Alert';
 import RadioButton from '../RadioButton';
 import { Service } from '../ApiService';
+import Loader from '../Loader';
 
 
 class Member extends Component {
@@ -215,6 +216,7 @@ class Member extends Component {
 
         return (
             <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
+                {this.state.loading && <Loader />}
                 {this.renderHeader()}
                 <TabComponent 
                     fixedHeight={true}
