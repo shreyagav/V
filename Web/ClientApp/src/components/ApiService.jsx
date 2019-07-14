@@ -66,7 +66,25 @@ export class Service {
         return Service.__get(host + '/api/Reports/Members');
     }
 
+    static selfSignUp(id) {
+        return Service.__get(host + '/api/Event/Attend/'+id);
+    }
+    static selfSignOff(id) {
+        return Service.__get(host + '/api/Event/UnAttend/' + id);
+    }
 
+    static getOptionList() {
+        return Service.__get(host + '/api/Profile/GetAllOptions');
+    }
+    static getUserOptions(id) {
+        return Service.__get(host + '/api/Profile/getUserOptions/'+id);
+    }
+    static addUserOption(id, opt) {
+        return Service.__post(host + '/api/Profile/addUserOption/' + id, opt);
+    }
+    static deleteUserOption(id, opt) {
+        return Service.__post(host + '/api/Profile/deleteUserOption/' + id, opt);
+    }
     static __get(url) {
         //var promice = fetch(url).then(resp => {
         //    if (!resp.ok) {

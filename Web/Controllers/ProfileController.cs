@@ -24,7 +24,47 @@ namespace Web.Controllers
             _userManager = userManager;
             _ctx = ctx;
         }
+        [HttpGet("[action]/{id}")]
+        public UserOptionDto[] GetUserOptions(string id)
+        {
+            return _ctx.UserOptions.Include(o => o.Option).Where(o => o.UserId == id).Select(o => new UserOptionDto { CategoryId = o.Option.OptionCategoryId, Description = o.Description, OptionId = o.OptionId }).ToArray();
+        }
 
+        [HttpPost("[action]/{id}")]
+        public UserOptionDto[] DeleteUserOption(string id, UserOptionDto opt)
+        {
+            var temp = _ctx.UserOptions.FirstOrDefault(a => a.UserId == id && a.OptionId == opt.OptionId);
+            _ctx.UserOptions.Remove(temp);
+            _ctx.SaveChanges();
+            return GetUserOptions(id);
+        }
+
+        [HttpPost("[action]/{id}")]
+        public UserOptionDto[] AddUserOption(string id, UserOptionDto opt)
+        {
+            var temp = new UserOption()
+            {
+                Description = opt.Description,
+                OptionId = opt.OptionId,
+                UserId = id
+            };
+            _ctx.UserOptions.Add(temp);
+            _ctx.SaveChanges();
+            return GetUserOptions(id);
+        }
+
+        [HttpGet("[action]")]
+        public OptionCategoryDto[] GetAllOptions()
+        {
+            var cat = _ctx.OptionCategories
+                .Include(a=>a.Options)
+                .Select(a=>new OptionCategoryDto {
+                    CategoryId =a.Id,
+                    CategoryName = a.Name,
+                    Options =a.Options.Select(b=>new OptionDto {Id=b.Id,Name=b.Title,Description=b.Description}).ToArray()})
+                .ToArray();
+            return cat.Where(c=>c.Options.Length>0).ToArray();
+        }
 
         [HttpGet("[action]")]
         public async Task<UserProfileDto> Get()

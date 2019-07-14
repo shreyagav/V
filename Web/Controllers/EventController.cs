@@ -30,9 +30,23 @@ namespace Web.Controllers
             return _service.ChangeEvent(evnt);
         }
         [HttpGet("[action]/{id}")]
-        public EventMainDto GetEventById(int id)
+        public async Task<EventMainDto> GetEventById(int id)
         {
-            return _service.GetEvent(id);
+            return await _service.GetEvent(id,User);
+        }
+        [Authorize]
+        [HttpGet("[action]/{id}")]
+        public async Task<EventMainDto> Attend(int id)
+        {
+            await _service.AddEventAttendees(id, User);
+            return await GetEventById(id);
+        }
+        [Authorize]
+        [HttpGet("[action]/{id}")]
+        public async Task<EventMainDto> UnAttend(int id)
+        {
+            await _service.RemoveEventAttendees(id, User);
+            return await GetEventById(id);
         }
         //[Authorize(Roles = "Admin, Secretary")]
         [HttpGet("[action]/{id}")]
