@@ -464,12 +464,13 @@ button.big-blue-button {
     border: 1px solid #0099cc;
     color: #0099cc;
 }
-
+/*
 @media screen and (max-width: 500px){
     .static-button {font-size: 3.2vw; height: 8.4vw;}
     .medium-static-button {width: 25.6vw;}
     .big-static-button {width: 32vw;}
 }
+*/
 
 button.default-button {
     background-color: #666666 !important;
@@ -658,21 +659,15 @@ ul.main-nav a:hover .svg, ul.main-nav a:focus .svg,
 /* input-fields */
 
 ul.input-fields input[type='text']:focus{border-color: #0099cc}
-
-ul.input-fields {
-    width: 100%;
-    max-width: 600px;
-    font-weight: 600;
-}
-
-ul.input-fields > li{
-    display: flex;
-    align-items: flex-start;
+ul.input-fields {width: 100%; max-width: 600px; font-weight: 600;}
+ul.input-fields > li{ display: flex; align-items: flex-start;}
+ul.input-fields > li:not(:last-child) > :last-child:not(label),
+ul.input-fields .add-margin {
+    margin-bottom: 1rem !important;
 }
 
 @media screen and (min-width: 561px){
     ul.input-fields > li {flex-flow: row;}
-
     ul.first-child-text-60 > li > :first-child{
         flex: 0 0 60px;
         text-align: right;
@@ -689,25 +684,24 @@ ul.input-fields > li{
         flex: 0 0 125px;
         text-align: right;
     }
+    ul.first-child-text-145 > li > :first-child{
+        flex: 0 0 145px;
+        text-align: right;
+    }
     ul.first-child-text-165 > li > :first-child{
         flex: 0 0 165px;
         text-align: right;
     }
-
     ul.first-child-text-240 > li > :first-child{
         flex: 0 0 240px;
         text-align: right;
     }
-
-    ul.input-fields > li > :last-child:not(label):not(:only-child),
-    ul.input-fields .add-margin {
-        margin-left: 1rem !important;
-    }
-
-    ul.input-fields > li:not(:last-child) > :last-child:not(label),
+    ul.input-fields:not(.input-fields-narrow) > li > :last-child:not(label):not(:only-child),
+    ul.input-fields .add-margin {margin-left: 1rem !important;}
+    /*ul.input-fields > li:not(:last-child) > :last-child:not(label),
     ul.input-fields .add-margin {
         margin-bottom: 1rem !important;
-    }
+    }*/
 }
 
 @media screen and (max-width: 560px){
@@ -718,7 +712,10 @@ ul.input-fields > li{
     ul.input-fields > li:first-child > p:first-child {
         margin-top: 0rem !important;
     }
-    .number-field {flex-flow: row !important; align-items: flex-start !important;}
+    ul.input-fields p {
+        margin-top: 0em !important;
+    }
+    ul.input-fields-child-ul > li:not(:last-child) {margin-bottom: 1rem !important;}
 }
 @media screen and (min-width: 561px){
     .input-fields-child-ul {
@@ -726,24 +723,29 @@ ul.input-fields > li{
     }
 }
 
-.number-field > :nth-child(n):not(:first-child) {
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+ul.input-fields-narrow  > li {
+    flex-flow: column !important;
+    align-items: stretch !important;
 }
+ul.input-fields-narrow p {margin-top: 0em !important;}
 
 ul.input-fields > li > div {
     width: 100%;
     flex-wrap: nowrap;
 }
 
-ul.input-fields p {
+ul.input-fields:not(.no-uppercase) p {
     text-transform: uppercase;
+}
+
+ul.input-fields p {
+    line-height: 1;
     white-space: nowrap;
     margin-top: 0.8em;
 }
 
 ul.input-fields-child-ul p {
-    margin: 0.8em 1em 1em 0em;
+    margin: 0.8em 1em 0em 0em;
 }
 
 ul.input-fields > li > :first-child,
@@ -946,9 +948,12 @@ button.grey-SVG-button:focus {
 /* INPUT-BUTTON-WRAPPER */
 
 .input-button-wrapper {display: block; position: relative;}
-.input-button-wrapper > button {position: absolute; width: 2.5em; height: 2.5em; top: 1px; right: 1px; border: 0px solid;}
-.input-button-wrapper > button .svg {fill: #666666;}
-.input-button-wrapper > button > svg {
+.input-button-wrapper > button, 
+.input-button-wrapper > .icon {position: absolute; width: 2.5em; height: 2.5em; top: 1px; right: 1px; border: 0px solid;}
+.input-button-wrapper > .icon {left: 1px;}
+.input-button-wrapper > button .svg, .input-button-wrapper > .icon .svg {fill: #666666;}
+.input-button-wrapper > button > svg,
+.input-button-wrapper > svg.icon {
     display: -ms-flexbox;
     display: flex;
     height: 100%;
@@ -958,13 +963,15 @@ button.grey-SVG-button:focus {
 }
 .input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
 .input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
-.input-button-wrapper > input {cursor: pointer; text-overflow:ellipsis; width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666; padding-right: 2.5em;}
-.input-button-wrapper > input:focus,
-.input-button-wrapper:focus > input {border-color: #0099cc;}
+.input-button-wrapper > input {cursor: pointer; text-overflow:ellipsis; width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #999999; padding-right: 2.5em;}
+.input-button-wrapper > input:focus, .input-button-wrapper:focus > input {border-color: #0099cc;}
 .input-button-wrapper:hover, .input-button-wrapper:focus {border-color: #0099cc !important;}
-.input-button-wrapper:focus > button:disabled > svg > .svg,
-.input-button-wrapper:hover > button:disabled > svg > .svg{fill: #0099cc !important;}
-.input-button-wrapper:hover > button:disabled {cursor: pointer !important;}
+
+.input-button-wrapper:focus > svg.icon > .svg,
+/*.input-button-wrapper:hover > svg.icon > .svg,*/
+.input-button-wrapper > input:focus + svg.icon > .svg,
+.input-button-wrapper > input:hover + svg.icon > .svg {fill: #0099cc !important;}
+.input-button-wrapper:hover > button {cursor: pointer !important;}
 .input-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666;}
 
 /* FILTERS */
@@ -1098,7 +1105,7 @@ button.grey-SVG-button:focus {
     .login-form > :nth-child(n){margin-left: 3.2wv !important; margin-right: 3.2wv !important;}
 }
 .login-form > h2 > strong {text-transform: uppercase;}
-.login-form > div > img {width: 60%;}
+/*.login-form > div > img {width: 60%;}*/
 .login-form button p, .login-form span p, .login-form a {white-space: nowrap;}
 .login-form a:hover {color: #0099cc;}
 
@@ -1333,6 +1340,7 @@ p.message-block {
 .wh-bcg {
     position: fixed;
     display: flex;
+    justify-content: center;
     overflow-y: auto;
     background-color: #ffffff;
     top: 0px;

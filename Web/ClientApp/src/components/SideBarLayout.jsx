@@ -147,7 +147,7 @@ class SideBarLayout extends Component {
             <div 
               ref={el => this.bodyRef = el} 
               style={mainLevelStyle} 
-              className='flex-nowrap flex-flow-column align-center cw-100 overflow-auto'
+              className='sbl-bodyWrapper flex-nowrap flex-flow-column align-center cw-100 overflow-auto'
             >
               <BodyContent {...this.props} 
                 updateFilters={filters => this.updateFilters(filters)} 

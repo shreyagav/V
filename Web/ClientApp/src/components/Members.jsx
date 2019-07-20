@@ -65,8 +65,9 @@ class Members extends Component {
     }
 
     handleClick(e) {
-        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-            this.chaptersDropDownRef.state.toggle();
+        //debugger
+        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
+            this.chaptersDropDownRef.toggle();
         }
     }
 
@@ -151,7 +152,12 @@ class Members extends Component {
                             onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
                 </div>
-                <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
+                {members.length > 0 &&
+                    <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
+                }
+                {members.length === 0 && !this.state.loadData && 
+                    <p className='message-block mt-2'>There are no members for selected chapters.</p>
+                }
             </div>
         );
     }

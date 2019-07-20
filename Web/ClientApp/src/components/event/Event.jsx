@@ -51,7 +51,7 @@ class Event extends Component {
                 groupId: 0,
                 date: new Date(),
                 eventStatus: "draft",
-                projectedCost: 0,
+                projectedCost: '0',
             },
             eventId: evtId,
             showError: false,
@@ -215,14 +215,14 @@ class Event extends Component {
 
     handleClick(e) {
         if(this.state.activeTabIndex === 0){
-            if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-                this.colorDropDownRef.state.toggle();
+            if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.dropDownRef.contains(e.target)) {
+                this.colorDropDownRef.toggle();
             }
-            if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-                this.typeOfEventDropDownRef.state.toggle();
+            if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.dropDownRef.contains(e.target)) {
+                this.typeOfEventDropDownRef.toggle();
             }
-            /*if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.dayDropDownRef.state.toggle();
+            /*if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.dropDownRef.contains(e.target)){
+                this.dayDropDownRef.toggle();
             }
             if(this.numberDropDownRef.state.isOpen && !this.numberDropDownRef.timeNumberPickerRef.contains(e.target)){
                 this.numberDropDownRef.toggle();
@@ -239,8 +239,8 @@ class Event extends Component {
             /*if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
                 this.dateEndDropDownRef.toggle();
             }*/
-            if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.chaptersDropDownRef.state.toggle();
+            if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
+                this.chaptersDropDownRef.toggle();
             }
         }
     }
@@ -286,6 +286,7 @@ class Event extends Component {
     }
 
     updateEventProperty(property, value) {
+        //debugger
         var temp = this.state.eventMain;
         temp[property] = value;
         this.setState({ eventMain: temp });
@@ -364,7 +365,6 @@ class Event extends Component {
                 {this.state.loading && <Loader/>}
                 <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
                 <div className = 'flex-wrap flex-flow-column mb-3'>
-
                         <div className = 'status-wrapper mb-2'>
                             <Status eventStatus={eventStatus} className='ml-025 mt-025' />
                             <div className = 'flex-wrap align-center'>

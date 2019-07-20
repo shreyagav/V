@@ -114,14 +114,14 @@ class EventsSideBar extends Component {
     }
 
     handleClick(e) {
-        if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-            this.colorDropDownRef.state.toggle();
+        if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.dropDownRef.contains(e.target)) {
+            this.colorDropDownRef.toggle();
         }
-        if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-            this.statusDropDownRef.state.toggle();
+        if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.dropDownRef.contains(e.target)) {
+            this.statusDropDownRef.toggle();
         }
-        if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-            this.typeOfEventDropDownRef.state.toggle();
+        if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.dropDownRef.contains(e.target)) {
+            this.typeOfEventDropDownRef.toggle();
         }
         if(this.timeFromDropDownRef.state.isOpen && !this.timeFromDropDownRef.timeNumberPickerRef.contains(e.target)){
             this.timeFromDropDownRef.toggle();

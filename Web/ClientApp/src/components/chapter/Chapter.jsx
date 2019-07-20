@@ -52,8 +52,8 @@ class Chapter extends Component {
 
     handleClick(e) {
         if(this.state.activeTabIndex === 0){
-            if(this.regionsDropDownRef.state.isOpen && !this.regionsDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.regionsDropDownRef.state.toggle(); /* actual */
+            if(this.regionsDropDownRef.state.isOpen && !this.regionsDropDownRef.dropDownRef.contains(e.target)){
+                this.regionsDropDownRef.toggle(); /* actual */
             }
         }
     }

@@ -2,8 +2,8 @@
     font-weight: 600;
     font-size: inherit;
     position: relative;
-    min-height: 2.5em;
-    height: 100%;
+    /*min-height: 2.5em;*/
+    /* height: 100%; */
     width: 100%;
 }
 
@@ -128,7 +128,7 @@ ul.multi-level-list > li > span {
 
 ul.drop-down-list > li {margin-right: 0.9em; margin-left: 0.9em; text-transform: uppercase;}
 ul.drop-down-list > li ul.drop-down-list > li {margin-right: 0em; margin-left: 0em;}
-ul.drop-down-list > li > div,
+ul.drop-down-list > li > button, /* !!!! */
 ul.drop-down-list > li ul.drop-down-list > li {
     display: flex; 
     justify-content: left;
@@ -136,13 +136,13 @@ ul.drop-down-list > li ul.drop-down-list > li {
     min-height: 2.75em;
 }
 
-ul.drop-down-list > li > div {
+ul.drop-down-list > li {
     display: flex;
     text-overflow: ellipsis;
 }
 
-ul.drop-down-list > li > div, ul.drop-down-list > li > div > button {flex: 1 1 auto;}
-ul.drop-down-list > li > div > button > span {flex: 1 1 auto;}
+ul.drop-down-list > li, ul.drop-down-list > li > button {flex: 1 1 auto;}
+ul.drop-down-list > li > button > span {flex: 1 1 auto;}
 
 ul.drop-down-list > li span {
     font-size: inherit;
@@ -166,11 +166,15 @@ ul.drop-down-list > li label:focus-within svg {
     border-color: #0099cc !important;
 }
 
-ul.drop-down-list > li > div:focus span {color: #0099cc !important;}
-ul.drop-down-list > li > div:focus label > svg, ul.drop-down-list > li > div:hover label > svg {border-color: #0099cc !important;}
-ul.drop-down-list > li > div:focus > button > svg > .svg {fill: #0099cc !important;}
+ul.drop-down-list > li:focus > button > span,
+ul.drop-down-list > li:hover > button > span {color: #0099cc !important;}
+ul.drop-down-list > li:focus > button > svg,
+ul.drop-down-list > li:focus > button > label > svg,
+ul.drop-down-list > li:hover > button > svg,
+ul.drop-down-list > li:hover > button > label > svg {border-color: #0099cc !important;}
+ul.drop-down-list > li:focus > button > svg > .svg {fill: #0099cc !important;}
 
-ul.drop-down-list > li label:focus-within::after{
+ul.drop-down-list > li > button > label:focus-within::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -182,7 +186,7 @@ ul.drop-down-list > li label:focus-within::after{
     opacity: 0.5;
 }
 
-ul.drop-down-list > li label:hover::after{
+ul.drop-down-list > li > button > label:hover::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -194,8 +198,8 @@ ul.drop-down-list > li label:hover::after{
     opacity: 0.5;
 }
 
-ul.drop-down-list > li > div:hover label::after,
-ul.drop-down-list > li > div:focus label::after{
+ul.drop-down-list > li:hover > button > label::after,
+ul.drop-down-list > li:focus > button > label::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -209,11 +213,11 @@ ul.drop-down-list > li > div:focus label::after{
 
 /* workaround for EDGE */
 
-ul.drop-down-list > li label:hover > svg,
+ul.drop-down-list > li > button > label:hover > svg,
 ul.drop-down-list input:focus + svg {
     border: 1px solid #0099cc;
 }
-/* woraround for EDGE ends */
+/* workaround for EDGE ends */
 
 ul.drop-down-list > li.openChapter span {color: #666666;}
 ul.drop-down-list > li.openChapter svg {border-color: #999999;}
@@ -228,16 +232,15 @@ ul.drop-down-list > li{
     justify-content: center;
 }
 
-ul.drop-down-list > li:hover > div, ul.drop-down-list > li:hover > div > span,
-ul.drop-down-list > li:focus > div, ul.drop-down-list > li:focus > div > span {cursor: pointer; color: #0099cc;}
-ul.drop-down-list > li:focus > div {color: #0099cc;}
-ul.drop-down-list > li > div > :last-child {flex: 1 1 auto; align-self: stretch; display: flex; align-items: center; text-overflow: ellipsis;}
-ul.drop-down-list > li > div > :last-child > button:last-child {flex: 0 0 0.8em;}
-ul.drop-down-list > li > div > button:last-child > svg {flex: 0 0 0.8em; height: 0.8em; margin-left: 0.25em;}
+ul.drop-down-list > li:hover, ul.drop-down-list > li:hover > span,
+ul.drop-down-list > li:focus, ul.drop-down-list > li:focus > span {cursor: pointer; color: #0099cc;}
+ul.drop-down-list > li:focus {color: #0099cc;}
+ul.drop-down-list > li > button {flex: 1 1 auto; align-self: stretch; display: flex; align-items: center; text-overflow: ellipsis;}
+ul.drop-down-list > li > button > button:last-child {flex: 0 0 0.8em;}
+ul.drop-down-list > li > button > svg {flex: 0 0 0.8em; height: 0.8em; margin-left: 0.25em;}
 ul.drop-down-list > li ul.drop-down-list {border-top: 1px solid #ededed; padding-left: 1.25em;}
-ul.drop-down-list > li ul.drop-down-list > li {
-    display: block;
-}
+ul.drop-down-list > li ul.drop-down-list > li {display: flex; flex-wrap: wrap; justify-content: left;}
+/*ul.drop-down-list > li ul.drop-down-list > li {display: block;}*/
 ul.drop-down-list > li ul.drop-down-list > li:not(:last-child) {border-bottom: 1px solid #ededed;}
 ul.drop-down-list button:focus {border-color:transparent;}
 ul.drop-down-list button:focus .svg, ul.drop-down-list button:hover .svg {fill: #0099cc;}
@@ -248,7 +251,9 @@ ul.drop-down-list button:hover > span, ul.drop-down-list button:focus > span {co
 .drop-down-icon {flex: 0 0 auto !important; margin: 0 0.5em 0 0 !important;}
 .drop-down-icon svg {height: 1.2em !important;}
 .drop-down-icon .svg {fill: #666666 !important;}
-div:hover > button .drop-down-icon .svg, div:focus > button .drop-down-icon .svg {fill: #0099cc !important;}
+
+/* !!!!!!!!!!!!!!!!!!! */
+li:hover > button .drop-down-icon .svg, li:focus > button .drop-down-icon .svg {fill: #0099cc !important;}
 
 .colorIndicator {
     flex: 0 0 1em !important;
@@ -260,3 +265,5 @@ div:hover > button .drop-down-icon .svg, div:focus > button .drop-down-icon .svg
     max-width: 3em;
     margin: 0px !important;
 }
+
+

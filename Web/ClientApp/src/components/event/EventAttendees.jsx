@@ -12,6 +12,7 @@ import { Service } from '../ApiService';
 import Alert from '../Alert';
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
+import SearchUpSVG from '../../svg/SearchUpSVG';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -25,10 +26,14 @@ class EventAttendees extends Component {
             addingExistingMembers: false,
             tempMembers:[],
             siteMembers: [],
+            filteredMembers: [],
             selectAllCheckboxChecked: false,
+            attendeeFilter: '',
         };
+        this.substractHeightElRef = null;
         this.modalWindowRef = null;
         this.membersDropDownRef = null;
+        this.filterTimeout = null;
         this.removeMember = this.removeMember.bind(this);
         this.renderFullNameColumn = this.renderFullNameColumn.bind(this);
         this.addNewMember = this.addNewMember.bind(this);
@@ -37,23 +42,27 @@ class EventAttendees extends Component {
     }
 
     componentDidUpdate(){
-        if(this.state.siteMembers.length !== this.state.tempMembers.length && this.state.selectAllCheckboxChecked){
+        if(this.state.filteredMembers.length !== this.state.tempMembers.length && this.state.selectAllCheckboxChecked){
             this.setState({selectAllCheckboxChecked: false});
         }
     }
+
     submitMembersToEvent() {
         this.setState({ loading: true });
         Service.addEventAttendees(this.state.eventId, this.state.tempMembers)
-            .then(data => this.setState({ members: data, tempMembers: [], loading: false, addingExistingMembers: false }));
+            .then(data => this.setState({ members: data, tempMembers: [], loading: false, addingExistingMembers: false, attendeeFilter: '' }));
     }
+
     addNewMember() {
 
     }
+
     addExistingMember() {
         this.setState({ loading: true });
         Service.getSiteMembers(this.state.eventId)
-            .then(data => { this.setState({ siteMembers: data, loading: false, addingExistingMembers: true }) });
+            .then(data => { this.setState({ siteMembers: data, filteredMembers: data, loading: false, addingExistingMembers: true }) });
     }
+
     removeMember(member) {
         var me = this;
         this.setState({ loading: true })
@@ -68,6 +77,41 @@ class EventAttendees extends Component {
     editMember() {
         alert("edit this member");
     }
+
+    filterMemberList = (list, filter) => {
+        let filteredList = [];
+        /* remove all " " at the beginning and double ' ' inside the filter expression if they are there */
+        filter = filter.replace(/\,+/g, ' ');
+        filter = filter.toLowerCase().replace(/\s+/g, ' ');
+        if (filter !== '') {
+            let filterList = [];
+            for(let i=0; i < list.length; i++){
+                /* create an array of filters*/
+                if (filter.indexOf(" ") > -1) {
+                    filterList = filter.split(" ");
+                } else {
+                    filterList.push(filter);
+                }
+            }
+            /* check if filter criteria were met */
+            for (let j=0; j < list.length; j++){
+                //if(j===1115){debugger}
+                let filterCriteriaWereMet = true;
+                for (let i=0; i < filterList.length; i++){
+                    if(!(list[j].firstName.toLowerCase().includes(filterList[i]) || list[j].lastName.toLowerCase().includes(filterList[i]) || list[j].email.toLowerCase().includes(filterList[i]) || list[j].phone.toLowerCase().includes(filterList[i]))){
+                        filterCriteriaWereMet = false;
+                    }
+                }
+                /* end of check if filter criteria were met */
+                if (filterCriteriaWereMet) {
+                    filteredList.push(list[j]);
+                }
+            }
+        } else {
+            filteredList = list;
+        }
+        return filteredList;
+    } 
 
     renderFullNameColumn(value, row, index, col) {
         return (
@@ -102,7 +146,7 @@ class EventAttendees extends Component {
         let tempMembers = [];
         if(!this.state.selectAllCheckboxChecked) {
             //select all checkboxes
-            this.state.siteMembers.forEach(element => tempMembers.push(element.id));
+            this.state.filteredMembers.forEach(element => tempMembers.push(element.id));
         }
         this.setState({selectAllCheckboxChecked: !this.state.selectAllCheckboxChecked, tempMembers: tempMembers});
     }
@@ -119,6 +163,19 @@ class EventAttendees extends Component {
         </div>
     }
 
+    onAttendeeFilterChange(value){
+        this.setState({attendeeFilter: value,filteredMembers: this.filterMemberList(this.state.siteMembers, value)});
+        //if(this.filterTimeout){
+        //    clearTimeout(this.filterTimeout);
+            
+        //}
+        //this.filterTimeout = setTimeout(()=>this.setState({filteredMembers: this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)}),300);
+    }
+
+    onAddExistingMembersWindowClose() {
+        this.setState({ addingExistingMembers: false, attendeeFilter: ''})
+    }
+
     render() {
         const members = this.state.members;
         const columns=[
@@ -126,71 +183,71 @@ class EventAttendees extends Component {
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", className:'word-break'}
         ];
-
         return (
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
                 {this.state.loading && <Loader />}
                 {this.state.addingExistingMembers &&
-                <Alert
-                    ref = {el => this.modalWindowRef = el}
-                    headerText='Add members'
-                    onClose={() => this.setState({ addingExistingMembers: false })}
-                >   
-                    <div 
-                        tabIndex={0} 
-                        className='checkBox-wrapper flex-nowrap align-center mb-1'
-                        onClick={() => {this.selectAllCheckboxOnChange()}}
-                        onKeyDown={(e) => {
-                            if(e.keyCode === 32){
-                                //SPACE BAR
-                                this.selectAllCheckboxOnChange()
-                            }
-                        }}
-                        ref = {el => this.selectAllCheckboxRef = el}
-                    >
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                checked={this.state.selectAllCheckboxChecked}
-                                disabled
+                    <div className = 'wh-bcg' style={{"opacity":"1"}}>
+                        <div className = 'flex-nowrap flex-flow-column' style={{"width":"100%", 'maxWidth':"600px", "backgroundColor":"#ffffff"}}>
+                            <h2 className='m-1'>Add Members</h2>
+                            <div className='flex-nowrap justify-center align-center mb-1 mr-1 ml-1'>
+                                <div
+                                    tabIndex={0} 
+                                    className='checkBox-wrapper flex-nowrap align-center mr-1'
+                                    style={{"flex":"0 0 auto"}}
+                                    onClick={() => {this.selectAllCheckboxOnChange()}}
+                                    onKeyDown={(e) => {
+                                        if(e.keyCode === 32){
+                                            //SPACE BAR
+                                            this.selectAllCheckboxOnChange()
+                                        }
+                                    }}
+                                    ref = {el => this.selectAllCheckboxRef = el}
+                                >
+                                    <label>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={this.state.selectAllCheckboxChecked}
+                                            disabled
+                                        />
+                                        <CheckBoxSVG />
+                                    </label>
+                                    <span className="checkbox-text" style={{"fontSize":"0.9rem"}}>Select All<strong>{" "+ this.state.filteredMembers.length.toString()}</strong></span>
+                                </div>
+                                <div className='input-button-wrapper' style={{"flex":"1 1 auto"}}>
+                                    <input 
+                                        style={{"paddingLeft":"2.5rem"}}
+                                        placeholder='Search members'
+                                        value={this.state.attendeeFilter}
+                                        onChange={(e) => this.onAttendeeFilterChange(e.target.value)}
+                                    />
+                                    <SearchUpSVG svgClassName='icon'/>
+                                    <button onClick={() => this.setState({filteredMembers: this.state.siteMembers, attendeeFilter: ''})}>
+                                        <CloseUpSVG />
+                                    </button>
+                                </div>
+                            </div>
+                            <MultiDropDown
+                                list={this.state.filteredMembers}
+                                multiSelect={true}
+                                toggleable={false}
+                                keyProperty='id'
+                                textProperty='email'
+                                defaultValue={this.state.tempMembers}
+                                placeholder="Select from the list"
+                                onDropDownValueChange={value => this.setState({ tempMembers: value })}
+                                hideHeader = {true}
+                                substractHeight = {80}
+                                passFocusForward = {(e) => this.passFocusForward(e)}
+                                textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
                             />
-                            <CheckBoxSVG />
-                        </label>
-                        <span className="checkbox-text">Select All</span>
-                    </div>
-                    <div style={{"position": "relative", "height": "100%"}}>
-                        <MultiDropDown
-                            list={this.state.siteMembers}
-                            multiSelect={true}
-                            toggleable={false}
-                            keyProperty='id'
-                            textProperty='email'
-                            defaultValue={this.state.tempMembers}
-                            placeholder="Select from the list"
-                            onDropDownValueChange={value => this.setState({ tempMembers: value })}
-                            hideHeader = {true}
-                            flexibleParent = {true}
-                            passFocusForward = {(e) => this.passFocusForward(e)}
-                            textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
-                        />
-                        <div className='flex-nowrap justify-center' style={{"marginBottom":"-0.5em", "marginTop":"1em"}}>
-                            <button 
-                                ref = {el => this.okButtonRef = el}
-                                className='medium-static-button static-button' 
-                                onClick={this.submitMembersToEvent}
-                            >
-                                OK
-                            </button>
-                            <button 
-                                ref = {el => this.cancelButtonRef = el}
-                                className='medium-static-button static-button default-button'
-                                onClick={() => this.setState({ addingExistingMembers: false, tempMembers:[] })}
-                            >
-                                Cancel
-                            </button>
+                            <div className='flex-nowrap justify-center mt-05 mb-05 mr-1 ml-1'>
+                                <button ref = {el => this.okButtonRef = el} className='medium-static-button static-button' onClick={this.submitMembersToEvent}>OK</button>
+                                <button ref = {el => this.cancelButtonRef = el} className='medium-static-button static-button default-button' onClick={() => this.setState({ addingExistingMembers: false, tempMembers:[], attendeeFilter: '' })}> Cancel </button>
+                            </div>
                         </div>
                     </div>
-                </Alert>}
+                }
                 {members.length === 0 && 
                     <p className='message-block mb-2'>There are no attendees registered for the event.</p>
                 }

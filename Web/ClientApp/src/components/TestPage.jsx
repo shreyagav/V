@@ -33,8 +33,8 @@ class TestPage extends Component {
     componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     handleClick(e) {
-        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-            this.chaptersDropDownRef.state.toggle();
+        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
+            this.chaptersDropDownRef.toggle();
         }
     }
 
