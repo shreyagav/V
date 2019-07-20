@@ -63,5 +63,6 @@ namespace Models.Dto
         public DateTime Date { get; set; }
         public string Color { get; set; }
         public decimal ProjectedCost { get; set; }
+        public bool CurentUserAttends { get; set; }
     }
 }

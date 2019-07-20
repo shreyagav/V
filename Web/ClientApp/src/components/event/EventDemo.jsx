@@ -40,13 +40,17 @@ class EventDemo extends Component {
         this.onAttendanceChanged = this.onAttendanceChanged.bind(this);
     }
 
+    setEventMain(data) {
+        data.date = new Date(data.date);
+        this.setState({ eventMain: data, loading: false });
+    }
+
     componentDidMount() {
         var component = this;
         if (this.state.eventId != 0) {
             Service.getEvent(this.state.eventId)
                 .then(data => {
-                    data.date = new Date(data.date);
-                    component.setState({ eventMain: data, loading: false });
+                    this.setEventMain(data);                    
                 })
                 .catch(exception => component.setState({ error: exception, loading: false }));
         }
@@ -123,14 +127,12 @@ class EventDemo extends Component {
 
     onAttendanceChanged(index){
         // YES
-        if(index === 0) {
-            this.setState({attending: true});
+        if (!this.props.store.userInfo) {
+            this.props.history.push({ pathname: '/SignIn', state: { redirectUrl: this.props.location.pathname } });
+            return;
         }
-        // NO
-        if(index === 1){
-            //debugger
-            this.setState({showAlert: true});
-        }
+        var func = index === 0 ? Service.selfSignUp : Service.selfSignOff;
+        func(this.state.eventMain.id).then(data => this.setEventMain(data));
     }
 
     render() {
@@ -189,8 +191,8 @@ class EventDemo extends Component {
                     <TabComponent
                         style={{'fontSize':'0.85rem','height':'24px'}}
                         tabList={["yes", "no"]}
-                        wasSelected={(index) => this.onAttendanceChanged(index)}
-                        activeTabIndex={this.state.attending ? 0 : 1}
+                        wasSelected={(index) => { if (index == 0) this.onAttendanceChanged(0); else this.setState({ showAlert: true }); }}
+                        activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}
                     />
                     {/*<button class="round-button medium-round-button grey-outline-button">Cannot Make It</button>*/}
                 </div>
@@ -266,7 +268,7 @@ class EventDemo extends Component {
                         mode = 'warning'
                         showOkCancelButtons = {true}
                         onCancelButtonClick = {()=>this.setState({showAlert: false})}
-                        onOkButtonClick = {()=>this.setState({attending: false, showAlert: false})}
+                        onOkButtonClick={() => { this.setState({ showAlert: false }); this.onAttendanceChanged(1); }}
                         cancelButtonText = "I will Go"
                         okButtonText = "I will not Go"
                     >

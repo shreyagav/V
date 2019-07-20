@@ -42,6 +42,7 @@ class EventsSideBar extends Component {
         let initialDateFrom = null;
         let initialDateTo = null;
         let initialZip = '';
+        filters.splice(0, filters.length);
         filters.push({name: "name", value: initialName});
         filters.push({name: "role", value: initialRole});
         filters.push({name: "dateFrom", value: initialDateFrom});

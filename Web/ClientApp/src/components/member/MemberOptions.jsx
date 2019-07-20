@@ -5,6 +5,7 @@ import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { withStore } from '../store';
 import CloseUpSVG from '../../svg/CloseUpSVG';
 import EditUpSVG from '../../svg/EditUpSVG';
+import { Service } from '../ApiService';
 
 class MemberOptions extends Component {
 
@@ -19,33 +20,7 @@ class MemberOptions extends Component {
                 description: ''
             },
             options: [],
-            optionsList: [
-                {"categoryId":"1", "categoryName":"Boat Preference", "options":[
-                    {"id":"1","name":"single IK"}
-                ]},
-                {"categoryId":"2", "categoryName":"Certifications", "options":[
-                    {"id":"1", "name":"Am Heart Assoc/CPR", "description":"american heart association cardiopulmonary resuscitation"},
-                    {"id":"2", "name":"Red Cross", "description":"First Aid I"},
-                    {"id":"3", "name":"ACA Level 1", "description":"Flatwater Instructor"},
-                    {"id":"4", "name":"ACA Adaptive Paddling Endorsement", "description":"Successful completion of ACA Adaptive Paddling Endorsement"},
-                ]},
-                {"categoryId":"3", "categoryName":"Paddling Skills", "options":[
-                    {"id":"1", "name":"Level 4 - Whiteweter Kayaking - Class III"},
-                    {"id":"2", "name":"Creek"},
-                    {"id":"3", "name":"Intro to Kayaking - VA Pool Program"}
-                ]},
-                {"categoryId":"4", "categoryName":"Post 9/11 Servicemember", "options":[
-                    {"id":"1", "name":"Injured in Iraq"},
-                    {"id":"2", "name":"Injured in Afghanistan"},
-                    {"id":"3", "name":"OIF/OEF"}
-                ]},
-                {"categoryId":"5", "categoryName":"Vehicles", "options":[
-                    {"id":"1", "name":"Multi Passanger", "description":"SUV"},
-                    {"id":"2", "name":"Pickup Track"},
-                    {"id":"3", "name":"Open Trailer"},
-                    {"id":"4", "name":"Hitch", "description":"Vehical has capabilities to pull a trailer"},
-                ]}
-            ],
+            optionsList: []
         }
         this.alertDafaultContent = {categoryId: null, optionId: null, description: ''};
         this.renderOption = this.renderOption.bind(this);
@@ -64,6 +39,14 @@ class MemberOptions extends Component {
             optionDescription: '',
             description: ''
         }
+    }
+
+    componentDidMount() {
+        Service.getOptionList().then(allOptions => {
+            Service.getUserOptions(this.props.member.id).then(userOptions => {
+                this.setState({ optionsList: allOptions, options: userOptions });
+            })
+        });
     }
 
     okButtonCallBack = () => {};
@@ -89,13 +72,16 @@ class MemberOptions extends Component {
         this.setState({removeOptionShowAlert: true})
     }
 
-    removeOption(){
-        let index = this.state.options.findIndex(element => element.categoryId === this.elementToEdit.categoryId && element.optionId === this.elementToEdit.optionId && element.description === this.elementToEdit.description);
-        let array1 = this.state.options.slice(0, index);
-        let array2 = this.state.options.slice(index+1);
-        let options = array1.concat(array2);
-        this.elementToEdit = null;
-        this.setState({options: options, removeOptionShowAlert: false});
+    removeOption() {
+        //TODO: handle loading
+        Service.deleteUserOption(this.props.member.id, this.elementToEdit)
+            .then(userOptions => this.setState({ options: userOptions, removeOptionShowAlert: false }));
+        //let index = this.state.options.findIndex(element => element.categoryId === this.elementToEdit.categoryId && element.optionId === this.elementToEdit.optionId && element.description === this.elementToEdit.description);
+        //let array1 = this.state.options.slice(0, index);
+        //let array2 = this.state.options.slice(index+1);
+        //let options = array1.concat(array2);
+        //this.elementToEdit = null;
+        //this.setState({options: options, removeOptionShowAlert: false});
     }
 
     renderOption(value, row, index, col){
@@ -168,9 +154,11 @@ class MemberOptions extends Component {
     }
 
     onAddOption(){
-        let options = this.state.options;
-        options.push(this.state.alertContent);
-        this.setState({showAddEditOption: false, alertContent: this.alertDafaultContent, options: options});
+        //let options = this.state.options;
+        //options.push(this.state.alertContent);
+        //this.setState({showAddEditOption: false, alertContent: this.alertDafaultContent, options: options});
+        //TODO: handle loading
+        Service.addUserOption(this.props.member.id, this.state.alertContent).then(userOptions => this.setState({ showAddEditOption: false, alertContent: this.alertDafaultContent, options: userOptions }));
     }
 
     render() {

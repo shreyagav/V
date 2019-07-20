@@ -24,6 +24,19 @@ namespace Services
             _userManager = userManager;
         }
         [Authorize]
+        public async Task AddEventAttendees(int id, ClaimsPrincipal user)
+        {
+            var appUser = await _userManager.GetUserAsync(user);
+            var temp = new UserEvent();
+            temp.Created = DateTime.Now;
+            temp.CreatedBy = appUser;
+            temp.EventId = id;
+            temp.UserId = appUser.Id;
+            _context.UserEvents.Add(temp);
+            await _context.SaveChangesAsync();
+        }
+
+        [Authorize]
         public async Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids, ClaimsPrincipal user)
         {
             var appUser = await _userManager.GetUserAsync(user);
@@ -95,10 +108,21 @@ namespace Services
 
         }
 
-        public EventMainDto GetEvent(int id)
+        public async Task<EventMainDto> GetEvent(int id, ClaimsPrincipal user)
         {
             var evt = _context.CalendarEvents.First(e => e.Id == id);
-            return new EventMainDto(evt);
+            var appUser = await _userManager.GetUserAsync(user);
+            var res = new EventMainDto(evt);
+            if (appUser != null)
+            {
+                var userGoing = _context.UserEvents.Where(a => a.EventId == evt.Id && a.UserId == appUser.Id).FirstOrDefault();
+                res.CurentUserAttends = userGoing != null;
+            }
+            else
+            {
+                res.CurentUserAttends = false;
+            }
+            return res;
         }
 
         private int tempMemberType() {
@@ -122,6 +146,15 @@ namespace Services
                 .ToArray();
             return res;
         }
+
+        public async Task RemoveEventAttendees(int eventId, ClaimsPrincipal user)
+        {
+            var appUser = await _userManager.GetUserAsync(user);
+            var toRemove = _context.UserEvents.First(ue => ue.UserId == appUser.Id && ue.EventId == eventId);
+            _context.UserEvents.Remove(toRemove);
+            await _context.SaveChangesAsync();
+        }
+
         public EventAttendeeDto[] RemoveEventAttendees(int eventId, EventAttendeeDto attendee)
         {
             var toRemove = _context.UserEvents.First(ue => ue.UserId == attendee.Id && ue.EventId == eventId);
