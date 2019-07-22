@@ -69,8 +69,8 @@ class EventsSideBar extends Component {
     }
 
     handleClick(e) {
-        if(this.roleDropDownRef.state.isOpen && !this.roleDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-            this.roleDropDownRef.state.toggle();
+        if(this.roleDropDownRef.state.isOpen && !this.roleDropDownRef.dropDownRef.contains(e.target)) {
+            this.roleDropDownRef.toggle();
         }
         if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
             this.dateStartDropDownRef.toggle();

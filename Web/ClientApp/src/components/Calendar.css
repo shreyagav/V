@@ -231,6 +231,14 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
     position: relative;
 }
 
+.sbl-bodyWrapper{
+    position: absolute;
+    top: 2.5rem;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+
 /* wrappers */
 
 .lm-wrapper {

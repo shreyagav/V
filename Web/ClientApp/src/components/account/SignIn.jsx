@@ -66,13 +66,39 @@ class SignIn extends Component {
     render() {
         return (
             <div className='centered login-form'>
-                <div className='flex-nowrap align-center justify-center'>
-                    <img src="images/logo.svg" />
+                <div className='flex-nowrap align-center justify-space-between mb-2'>
+                    <h1 class="uppercase-text mb-05">Sign<strong> In</strong></h1>
+                    <img src="images/logo.svg" style={{"height":"1.5em"}} />
                 </div>
-                <h2 className='mb-2 mt-2 flex-nowrap justify-center'><strong>Sign In</strong></h2>
                 {this.state.loading && <Loader />}
-                    <form>
-                        <div>
+                    <form className='flex-nowrap flex-flow-column align-center'>
+                        <ul className='input-fields input-fields-narrow no-uppercase'>
+                            <li>
+                                <p>Email or Username:</p>
+                                <input type='text' placeholder='Email' value={this.state.signInData.UserName} onChange={this.changeUserName}></input>
+                            </li>
+                            <li>
+                                <p>Password:</p>
+                                <div>
+                                    <input type='password' placeholder='Password' value={this.state.signInData.Password} onChange={this.changePassword}></input>
+                                    <div className='flex-wrap justify-space-between align-center'>
+                                            <span className='flex-nowrap justify-left align-center'>
+                                                <label>
+                                                    <input type="checkbox" checked={this.state.signInData.IsPersistant} onChange={this.changeIsPersistant} />
+                                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 12 12" >
+                                                        <polygon className='svg' points="5.3,11 4.2,11 0,5.3 1.1,4.4 4.7,9.4 10.9,1 12,1.8 " />
+                                                    </svg>
+                                                </label>
+                                                <p className='pl-05' style={{"marginTop":"0px"}}>Remeber me</p>
+                                            </span>
+                                            <button type="button" className='medium-static-button static-button default-button' onClick={this.submitSignInInfo}>Sign In</button>
+                                            <a href="/ForgotPassword">Forgot Password?</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        {/*<div>
                             <p className='mb-1'><strong>Sign In using your existing account:</strong></p>
                             <input className='mb-1' type='text' placeholder='Email' value={this.state.signInData.UserName} onChange={this.changeUserName}></input>
                             <input className='mb-1' type='password' placeholder='Password' value={this.state.signInData.Password} onChange={this.changePassword}></input>
@@ -88,11 +114,17 @@ class SignIn extends Component {
                                 <p className='pl-05'><strong>Remeber me</strong></p>
                             </span>
                             <a className='mb-05' href="/ForgotPassword"><strong>Forgot Password?</strong></a>
+                        </div>*/}
+                        <div className = 'flex-nowrap align-center mt-2 mb-2' style={{"width":"100%"}}>
+                            <span className='line'></span>
+                                <p className='pr-05 pl-05' style={{"white-space":"nowrap", "lineHeight":"1", "fontWeight":"600"}}>New to TRR?</p>
+                            <span className='line'></span>
                         </div>
-                        <div className='flex-wrap justify-center mt-2'>
-                            <button type="button" className='medium-static-button static-button' onClick={this.goToRegister}>Register</button>
+                        <button type="button" className='medium-static-button static-button' onClick={this.goToRegister}>Register</button>
+                        {/*<div className='flex-wrap justify-center mt-2'>
+                            <button type="button" className='medium-static-button static-button' onClick={this.goToRegister}>Create Account</button>
                             <button type="button" className='medium-static-button static-button default-button' onClick={this.submitSignInInfo}>Sign In</button>
-                        </div>
+                        </div>*/}
                     </form>
                 {this.state.error !=null &&
                     <Alert

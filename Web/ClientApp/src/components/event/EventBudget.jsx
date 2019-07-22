@@ -136,8 +136,6 @@ class EventBudget extends Component {
     }
 
     render() {
-        console.log("this.props.projectedCost");
-        console.log(this.props);
         const budget = this.state.budget;
         const columns=[
             {title:"Name", accesor:"name", className:"borders-when-display-block", render: this.renderNameColumn},
@@ -277,26 +275,65 @@ class EventBudget extends Component {
                     }
 
                     <ul className='input-fields first-child-text-240 mb-1 pl-1 pr-1'>
-                        {(!(this.props.editsPermitted === false && this.props.projectedCost === 0) || this.props.projectedCost > 0 ) &&
-                            <li className='number-field'>
+                        {(!(this.props.editsPermitted === false && parseFloat(this.props.projectedCost) === 0) || parseFloat(this.props.projectedCost) > 0 ) &&
+                            <li>
                                 <p className='input-label'>Entered Projected Cost:</p>
                                 <div className='input-button-wrapper currency-input-wrapper'>
                                     <input 
                                         readOnly= {this.props.editsPermitted === false ? true : false} 
                                         type='number' 
                                         value={this.props.projectedCost} 
+                                        onClick={(event) => event.target.select()}
+                                        onFocus={(event) => event.target.select()}
+                                        onKeyDown={e => {
+                                            if(e.keyCode === 8 /*backspace*/ && (e.target.value === '0' || e.target.value === '')){
+                                                e.target.select();
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }
+                                        }}
                                         onChange={(e) => {
-                                            let cost = Math.floor(e.target.value*100)/100;
-                                            this.props.onProjectedCostChange(cost);
+                                            let rawValue = e.target.value.split('.');
+                                            let integerValue = rawValue[0];
+                                            let decimalValue = rawValue[1];
+                                            let decimalPoint = (e.target.value).indexOf('.');                                            
+                                            if (integerValue.length > 1) {
+                                                let firstDigit = integerValue.slice(0,1);
+                                                if(firstDigit === '0'){
+                                                    integerValue = integerValue.slice(1);
+                                                }
+                                            }
+                                            let value = '';
+                                            if (decimalPoint === 0 || integerValue === '') {
+                                                integerValue = '0'
+                                            }
+                                            if (decimalValue && decimalValue.length > 2){
+                                                decimalValue = decimalValue.slice(0,2);
+                                            }
+                                            if (decimalPoint > -1) {
+                                                if (decimalValue) {
+                                                    value = integerValue + '.' + decimalValue;
+                                                } else {
+                                                    value = integerValue + '.';
+                                                }
+                                            } else {value = integerValue;}
+                                            //let cost = (Math.floor(parseFloat(value)*100)/100).toString();
+                                            this.props.onProjectedCostChange(value);
                                         }}
                                     />
                                 </div>
                             </li>
                         }
                         {budget.length > 0 &&
-                            <li className='number-field'>
+                            <li>
                                 <p className='input-label'>Calculated Projected Cost:</p>
-                                <input readOnly={true} placeholder='$' type='text' value={'$' + this.state.calculatedCost} />
+                                <input 
+                                    readOnly={true} 
+                                    placeholder='$' 
+                                    type='text' 
+                                    value={'$' + this.state.calculatedCost} 
+                                    style={{"color":"rgb(0, 153, 204)", /*"borderColor":"#fcfcfc",*/ "backgroundColor":"#f4f3f2"}}
+                                />
                             </li>
                         }
                     </ul>

@@ -53,8 +53,8 @@ class NewEvents extends Component {
             this.filtersStr = temp;
             this.updateList(props);
         }
-
     }
+
     componentDidMount() {
         var component = this;
         this.filtersStr = JSON.stringify(this.props.filters);
@@ -62,8 +62,8 @@ class NewEvents extends Component {
     }
 
     handleClick(e) {
-        if (this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-            this.chaptersDropDownRef.state.toggle();
+        if (this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)) {
+            this.chaptersDropDownRef.toggle();
         }
     }
 
@@ -123,7 +123,12 @@ class NewEvents extends Component {
                         onDropDownValueChange={value => this.updateFilter("chapters", value)}
                     />
                 </div>
-                <Table columns={columns} data={eventsList} className={"break-at-700"} addHeadersForNarrowScreen={true} />
+                {eventsList.length > 0 &&
+                    <Table columns={columns} data={eventsList} className={"break-at-700"} addHeadersForNarrowScreen={true} />
+                }
+                {eventsList.length === 0 && 
+                    <p className='message-block mt-2'>There are no events for selected chapters.</p>
+                }
             </div>
         );
     }

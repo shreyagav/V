@@ -36,6 +36,13 @@ const createMultiDropDownStore = WrappedComponent => {
                     delete state[key]
                     this.setState(state)
                 },
+                setObject:obj=>{
+                    const state = this.state;
+                    for(var key in obj){
+                        state[key] = obj[key];
+                    }
+                    this.setState(state);
+                },
                 onCheckBoxChange: (index, innerIndex) => {
                     this.checkBoxChange(index, innerIndex);
                 },
@@ -69,19 +76,24 @@ const createMultiDropDownStore = WrappedComponent => {
     }
 
     toggler(index) {
+        //debugger
         if(this.state.expandBy){
             let openStateIndex = this.state.openStateIndex;
             if (openStateIndex['_'+index.toString()] === true){
                 delete openStateIndex['_'+index.toString()];
-                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: -1}));
+                this.setState(()=>({openStateIndex: openStateIndex, setFocusToIndex: index, setFocusToInnerIndex: -1}));
             }
             else { 
                 openStateIndex['_'+index.toString()]=true;
-                this.setState(()=>({openStateIndex: openStateIndex, setFocusToInnerIndex: 0}));
+                this.setState(()=>({openStateIndex: openStateIndex, setFocusToIndex: index, setFocusToInnerIndex: 0}));
                 this.lastOpenState = index;
             }
         }
-        this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});
+        //console.log("setFocusToIndex");
+        //console.log(this.state.setFocusToIndex);
+        //console.log("setFocusToInnerIndex");
+        //console.log(this.state.setFocusToInnerIndex);
+        //this.setState({setFocusToIndex: index, setFocusToInnerIndex: -1});
     }
 
     ifCheckParent(element, expandBy){

@@ -113,14 +113,14 @@ class Member extends Component {
             if(this.dateOfBirthDropDownRef.state.isOpen && !this.dateOfBirthDropDownRef.datePickerRef.contains(e.target)){
                 this.dateOfBirthDropDownRef.toggle();
             }
-            if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.chaptersDropDownRef.state.toggle();
+            if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
+                this.chaptersDropDownRef.toggle();
             }
-            if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.stateDropDownRef.state.toggle();
+            if(this.stateDropDownRef.state.isOpen && !this.stateDropDownRef.dropDownRef.contains(e.target)){
+                this.stateDropDownRef.toggle();
             }
-            if (this.medicalDropDownRef.state.isOpen && !this.medicalDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)) {
-                this.medicalDropDownRef.state.toggle();
+            if (this.medicalDropDownRef.state.isOpen && !this.medicalDropDownRef.dropDownRef.contains(e.target)) {
+                this.medicalDropDownRef.toggle();
             }
             if (this.injuryDateDropDownRef.state.isOpen && !this.injuryDateDropDownRef.datePickerRef.contains(e.target)) {
                 this.injuryDateDropDownRef.toggle();
@@ -130,17 +130,17 @@ class Member extends Component {
             if(this.joinDateDropDownRef.state.isOpen && !this.joinDateDropDownRef.datePickerRef.contains(e.target)){
                 this.joinDateDropDownRef.toggle();
             }
-            if(this.sponsoredByDropDownRef.state.isOpen && !this.sponsoredByDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.sponsoredByDropDownRef.state.toggle();
+            if(this.sponsoredByDropDownRef.state.isOpen && !this.sponsoredByDropDownRef.dropDownRef.contains(e.target)){
+                this.sponsoredByDropDownRef.toggle();
             }
-            if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.statusDropDownRef.state.toggle();
+            if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.dropDownRef.contains(e.target)){
+                this.statusDropDownRef.toggle();
             }
-            if(this.authLevelDropDownRef.state.isOpen && !this.authLevelDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.authLevelDropDownRef.state.toggle();
+            if(this.authLevelDropDownRef.state.isOpen && !this.authLevelDropDownRef.dropDownRef.contains(e.target)){
+                this.authLevelDropDownRef.toggle();
             }
-            if(this.userTypeDropDownRef.state.isOpen && !this.userTypeDropDownRef.chaptersPickerRef.dropDownRef.contains(e.target)){
-                this.userTypeDropDownRef.state.toggle();
+            if(this.userTypeDropDownRef.state.isOpen && !this.userTypeDropDownRef.dropDownRef.contains(e.target)){
+                this.userTypeDropDownRef.toggle();
             }
         }
     }
