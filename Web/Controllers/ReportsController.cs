@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +32,12 @@ namespace Web.Controllers
         public string[] Options { get; set; }
     }
 
+    public class PivotResult
+    {
+        public List<KeyValuePair<string, string>> Columns { get; set; }
+        public DataTable Data { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class ReportsController : ControllerBase
@@ -41,7 +49,7 @@ namespace Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<MemeberReportLine[]> Members()
+        public MemeberReportLine[] Members()
         {
             var res = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include("Options.Option").Include("Options.Option.Category")
                 .Select(a=>new MemeberReportLine() {
@@ -63,6 +71,71 @@ namespace Web.Controllers
                 .ToArray();
             //var temp = res.Where(a => a.Options.Count > 2).ToArray();
             return res;
+        }
+        [HttpGet("[action]")]
+        public PivotResult EventsByType()
+        {
+            var columns = _ctx.CalendarEventTypes.Select(a=> new KeyValuePair<string, string>(a.Id.ToString(), a.Title)).ToList();
+            columns.Insert(0, new KeyValuePair<string, string>("name", "Site Name"));
+            var data = ToPivotTable(_ctx.CalendarEvents.Include(a => a.Site).ToArray(), item => item.EventTypeId, item => item.Site.Name, items => items.Any() ? items.Count() : 0);
+            var result = new PivotResult() { Columns = columns, Data = data };
+            return result;
+        }
+
+        [HttpGet("[action]")]
+        public dynamic[] VeteransBySite()
+        {
+            var ids = new int[] { 32, 37 };
+
+            var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => a.Options.Any(b => ids.Contains(b.OptionId))).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
+            var veteranAttendance = _ctx.Users
+                .Include(a => a.Site)
+                .Include(a => a.Options)
+                .Include(a => a.Events)
+                .Where(a => a.Options.Any(b => ids.Contains(b.OptionId)) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value))
+                .Select(a => new { a.SiteId, a.Events.Count }).ToArray();
+
+            veteranAttendance = veteranAttendance.GroupBy(a=>a.SiteId).Select(a=>new { SiteId = a.Key, Count = a.Sum(b=>b.Count)}).ToArray();
+            var sites = _ctx.EventSites.ToList();
+            return sites.GroupJoin(siteVeterans, a => a.Id, b => b.SiteId, (a, b) => new { a.Id, a.Name, Count = b.Sum(c=>c.Count) }).GroupJoin(veteranAttendance, a=>a.Id,a=>a.SiteId, (a,b)=>new { a.Name, a.Count, Attendance = b.Sum(c=>c.Count)}).ToArray();
+        }
+
+
+        public static DataTable ToPivotTable<T, TColumn, TRow, TData>(
+    IEnumerable<T> source,
+    Func<T, TColumn> columnSelector,
+    Expression<Func<T, TRow>> rowSelector,
+    Func<IEnumerable<T>, TData> dataSelector)
+        {
+            DataTable table = new DataTable();
+            var rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+            table.Columns.Add(new DataColumn(rowName));
+            var columns = source.Select(columnSelector).Distinct();
+
+            foreach (var column in columns)
+                table.Columns.Add(new DataColumn(column.ToString(),0.GetType()));
+
+            var rows = source.GroupBy(rowSelector.Compile())
+                             .Select(rowGroup => new
+                             {
+                                 Key = rowGroup.Key,
+                                 Values = columns.GroupJoin(
+                                     rowGroup,
+                                     c => c,
+                                     r => columnSelector(r),
+                                     (c, columnGroup) => dataSelector(columnGroup))
+                             });
+
+            foreach (var row in rows)
+            {
+                var dataRow = table.NewRow();
+                var items = row.Values.Cast<object>().ToList();
+                items.Insert(0, row.Key);
+                dataRow.ItemArray = items.ToArray();
+                table.Rows.Add(dataRow);
+            }
+
+            return table;
         }
     }
 }

@@ -24,6 +24,9 @@ import Member from './components/member/Member';
 import MembersSideBar from './components/MembersSideBar'
 import TestPage from './components/TestPage';
 import MembersReport from './components/reports/MembersReport';
+import EventsByType from './components/reports/EventsByType';
+import VeteransBySite from './components/reports/VeteransBySite';
+import ReportsList from './components/reports/ReportsList';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -58,11 +61,15 @@ class App extends Component {
                   <Route path='/profile' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
                   <Route path='/member/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
                   <Route path='/SignIn' render={(match) => <div><SimpleLayout><SignIn {...match} /></SimpleLayout></div>} />
-                  <Route path='/reports' render={(match) => <div><NavMenu {...match} /><SimpleLayout><ComingSoon {...match} /></SimpleLayout></div>} />
+                  <Route path='/reports' render={(match) => <div><NavMenu {...match} /><SimpleLayout><ReportsList {...match} /></SimpleLayout></div>} />
                   <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>}/>
                   <Route path='/event-view/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventDemo {...match} /></SimpleLayout></div>} />
                   <Route path='/new-chapter' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
-                  <Route path='/members-report' render={(match) => <div><NavMenu {...match} /><SimpleLayout><MembersReport {...match} /></SimpleLayout></div>} />
+
+
+                  <Route path='/Report/Members' render={(match) => <div><NavMenu {...match} /><SimpleLayout><MembersReport {...match} /></SimpleLayout></div>} />
+                  <Route path='/Report/EventsByType' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventsByType {...match} /></SimpleLayout></div>} />
+                  <Route path='/Report/VeteransBySite' render={(match) => <div><NavMenu {...match} /><SimpleLayout><VeteransBySite {...match} /></SimpleLayout></div>} />
 
                   <Route path='/test' component={TestPage} />
                   </Switch>
