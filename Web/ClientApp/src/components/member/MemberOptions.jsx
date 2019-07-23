@@ -52,13 +52,17 @@ class MemberOptions extends Component {
     okButtonCallBack = () => {};
 
     onEditOption(){
-        let options = this.state.options;
-        let element = options.find(element => element.categoryId === this.elementToEdit.categoryId && element.optionId === this.elementToEdit.optionId && element.description === this.elementToEdit.description);
-        element.categoryId = this.state.alertContent.categoryId;
-        element.optionId = this.state.alertContent.optionId;
-        element.description === this.state.alertContent.description;
+        //let options = this.state.options;
+        //let element = options.find(element => element.categoryId === this.elementToEdit.categoryId && element.optionId === this.elementToEdit.optionId && element.description === this.elementToEdit.description);
+        //element.categoryId = this.state.alertContent.categoryId;
+        //element.optionId = this.state.alertContent.optionId;
+        //element.description === this.state.alertContent.description;
+        
+        //this.setState({ options: options, showAddEditOption: false });
+
+        Service.editUserOption(this.props.member.id, this.state.alertContent)
+            .then(userOptions => this.setState({ options: userOptions, showAddEditOption: false }));
         this.elementToEdit = null;
-        this.setState({options: options, showAddEditOption: false});
     }
 
     onDeleteOption(row){
@@ -184,7 +188,8 @@ class MemberOptions extends Component {
                                     <MultiDropDown
                                         list={optionsList}
                                         multiSelect={false}
-                                        toggleable={true}
+                                    toggleable={true}
+                                    disabled={this.headerText=='Edit Option'}
                                         keyProperty='categoryId'
                                         textProperty='categoryName'
                                         defaultValue={this.state.alertContent.categoryId}
@@ -197,7 +202,8 @@ class MemberOptions extends Component {
                                     <p>Option:</p>
                                     <MultiDropDown
                                         list={options}
-                                        multiSelect={false}
+                                    multiSelect={false}
+                                    disabled={this.headerText == 'Edit Option'}
                                         toggleable={true}
                                         keyProperty='id'
                                         textProperty='name'

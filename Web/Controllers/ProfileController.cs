@@ -53,6 +53,15 @@ namespace Web.Controllers
             return GetUserOptions(id);
         }
 
+        [HttpPost("[action]/{id}")]
+        public UserOptionDto[] EditUserOption(string id, UserOptionDto opt)
+        {
+            var temp = _ctx.UserOptions.FirstOrDefault(a => a.UserId == id && a.OptionId == opt.OptionId);
+            temp.Description = opt.Description;
+            _ctx.SaveChanges();
+            return GetUserOptions(id);
+        }
+
         [HttpGet("[action]")]
         public OptionCategoryDto[] GetAllOptions()
         {
@@ -82,6 +91,7 @@ namespace Web.Controllers
             result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a=>a.Event.Site).Where(a => a.UserId == id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
+
 
         [HttpPost("[action]")]
         public UserProfileDto[] GetFiltered(ProfileFilterDto filter)

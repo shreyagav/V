@@ -22,6 +22,7 @@ class MembersReport extends Component {
             console.log(members[0]);
             this.setState({ data: members, loading: false })
         });
+        Service.getEventsByTypeReport().then(data => { console.log(data)});
     }
 
     render() {

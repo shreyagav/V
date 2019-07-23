@@ -66,6 +66,14 @@ export class Service {
         return Service.__get(host + '/api/Reports/Members');
     }
 
+    static getEventsByTypeReport() {
+        return Service.__get(host + '/api/Reports/EventsByType');
+    }
+    static getVeteransBySiteReport() {
+        return Service.__get(host + '/api/Reports/VeteransBySite');
+    }
+
+
     static selfSignUp(id) {
         return Service.__get(host + '/api/Event/Attend/'+id);
     }
@@ -84,6 +92,9 @@ export class Service {
     }
     static deleteUserOption(id, opt) {
         return Service.__post(host + '/api/Profile/deleteUserOption/' + id, opt);
+    }
+    static editUserOption(id, opt) {
+        return Service.__post(host + '/api/Profile/editUserOption/' + id, opt);
     }
     static __get(url) {
         //var promice = fetch(url).then(resp => {
