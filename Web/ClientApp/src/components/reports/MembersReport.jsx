@@ -1,4 +1,4 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, useState, useRef } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 import { withStore } from '../store';
@@ -14,6 +14,7 @@ class MembersReport extends Component {
             data: [],
             loading: false
         }
+        this.reactTable = null;
     }
 
     componentDidMount() {
@@ -41,7 +42,7 @@ class MembersReport extends Component {
         return (<div>
             {this.state.loading && <Loader/>}
             <h1>Members report</h1>
-            <ReactTable data={this.state.data} columns={columns} />
+            <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} onFilteredChange={(one, two, three) => console.log(this.reactTable.getResolvedState().sortedData)} />
         </div>);
     }
 
