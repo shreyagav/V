@@ -8,6 +8,7 @@ class CheckBox extends Component {
             <div 
                 tabIndex={0} 
                 style = {this.props.style}
+                /*className = {this.props.className ? this.props.className + ' checkBox-wrapper' : 'checkBox-wrapper'} */
                 className = {this.props.className ? this.props.className + ' checkBox-wrapper' : 'checkBox-wrapper'}
                 onClick = {this.props.onClick}
                 onKeyDown = {(e) => { /* SPACE BAR */ if(e.keyCode === 32 ) {this.props.onClick(); e.preventDefault();}}}
@@ -16,7 +17,9 @@ class CheckBox extends Component {
                     <input type="checkbox" disabled checked={this.props.checked}/>
                     <CheckBoxSVG />
                 </label>
-                <span className = {this.props.labelClassName}>{this.props.labelText}</span> 
+                <span className = {this.props.labelClassName} style = {this.props.labelStyle}>
+                    {this.props.labelText}
+                </span> 
             </div>
         );
     }

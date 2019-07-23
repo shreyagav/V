@@ -3,7 +3,8 @@ import './MultiDropDown.css'
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import { combineReducers } from 'redux';
-import { List } from "react-virtualized";
+//import { List } from "react-virtualized";
+import VirtualList from 'react-tiny-virtual-list';
 
 import CheckBoxSquareSVG from '../../svg/CheckBoxSquareSVG';
 import CloseSVG from '../../svg/CloseSVG';
@@ -60,32 +61,42 @@ class MultiDropDown extends React.Component {
         /* LIST */
         let toggleable = true;
         if (this.props.hideHeader || this.props.hideList) { toggleable = false }
-            else {if (this.props.toggleable) {toggleable = this.props.toggleable}}
-        if(!toggleable){document.addEventListener("mousedown", this.handleClick, false)} 
-            else {this.setState({onFocus: true})}
-        document.addEventListener('wheel', this.handleWheel, {passive : false});
+        else {if (this.props.toggleable) {
+            toggleable = this.props.toggleable
+        }}
+        if(toggleable){
+            this.setState({onFocus: true});
+            document.addEventListener('wheel', this.handleWheel, {passive : false});
+        } 
+        else document.addEventListener("mousedown", this.handleClick, false);
         window.addEventListener("resize", this.setHeight);
-
-        /* HEADER */ //this.set("value", this.props.defaultValue);
     }
 
     componentWillReceiveProps(props) {
         this.fillStore(props); /* STORE */
     }
 
-    componentWillUpdate(){ 
-        this.setHeight(); /* LIST */
-    }
+    /*componentWillUpdate(){ 
+        debugger
+        if(!this.state.toggleable || (this.state.toggleable && this.state.isOpen)) {
+            this.setHeight();
+         }
+    }*/
 
     componentWillUnmount(){
         /* LIST */
-        if(!this.state.toggleable){document.removeEventListener("mousedown", this.handleClick, false);}
-        document.removeEventListener('wheel', this.handleWheel, {passive : false});
+        if(this.state.toggleable){
+            document.removeEventListener('wheel', this.handleWheel, {passive : false});
+        }
+        else document.removeEventListener("mousedown", this.handleClick, false);
         window.removeEventListener("resize", this.setHeight);
     }
 
     componentDidMount(){
-        this.setHeight(); /* LIST */
+        //debugger
+        if(!this.state.toggleable || (this.state.toggleable && this.state.isOpen)) {
+            this.setHeight(); 
+        }
     }
 
     componentDidUpdate(){
@@ -102,7 +113,10 @@ class MultiDropDown extends React.Component {
                 elem.scrollIntoView(false);
             }
         }
-        this.setHeight();
+        //debugger
+        if(!this.state.toggleable || (this.state.toggleable && this.state.isOpen)) {
+            this.setHeight();
+        }
     }
 
     /* HEADER */
@@ -553,11 +567,11 @@ class MultiDropDown extends React.Component {
                     simpleBarHeight = Math.floor(toBottom);
                     if(this.props.substractHeight){
                         if(simpleBarHeight < regularHeight + this.props.substractHeight) {
-                            simpleBarHeight = Math.floor((simpleBarHeight - this.props.substractHeight)/45)*45-2;
+                            simpleBarHeight = Math.floor((simpleBarHeight - this.props.substractHeight)/45)*45-1;
                             //this.style = {"height":'calc('+ this.simpleBarHeight + ' - ' + this.props.substractHeight + ')'};
                         }
                         else {
-                            simpleBarHeight = Math.floor(regularHeight/45)*45-2;
+                            simpleBarHeight = Math.floor(regularHeight/45)*45-1;
                         }
                     } 
                     this.simpleBarHeight = (simpleBarHeight).toString() + 'px';
@@ -601,32 +615,16 @@ class MultiDropDown extends React.Component {
         this.hoverAllowed = true;
         var elem = this.simpleBarRef;
         var wheelDelta = e.deltaY;
-        var height = elem.clientHeight;
         var scrollHeight = elem.scrollHeight;
         var scrolleableElement = this.simpleBarRef.parentElement;
+        // Height is different with and without scrollbar
+        //var height = elem.clientHeight; // WITH SIMPLE SCROLLBAR
+        var height = scrolleableElement.clientHeight; // WITHOUT SIMPLE SCROLLBAR
         var parentTop = scrolleableElement.getBoundingClientRect().top;
         var top = this.simpleBarRef.getBoundingClientRect().top;
         var scrollTop = parentTop - top;
         var isDeltaPositive = wheelDelta > 0;
         if (isDeltaPositive && wheelDelta > scrollHeight - height - scrollTop) {
-            /*var handle = null;
-            let delta = Math.ceil((scrollHeight - scrolleableElement.scrollTop)/10);
-            var func = ()=>{
-                if(scrolleableElement.scrollTop < scrollHeight){
-                    scrolleableElement.scrollTop += delta;     
-                }else{
-                    clearInterval(handle);
-                }
-            };
-            handle = setInterval(func, 10);*/
-
-
-            /*let delta = Math.ceil((scrollHeight - scrolleableElement.scrollTop)/10);
-            while (scrolleableElement.scrollTop < scrollHeight) {
-                let x = scrolleableElement.scrollTop + delta;
-                scrolleableElement.scrollTop = Math.ceil(x);
-                console.log(scrolleableElement.scrollTop);
-            }*/
             this.simpleBarRef.parentElement.scrollTop = scrollHeight;
             return cancelScrollEvent(e);
         }
@@ -746,6 +744,105 @@ class MultiDropDown extends React.Component {
         }
     }
 
+    renderListItem(element, index, style){
+        let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
+        return(
+            <li key={index} className={isOpen ? 'openChapter' : ''} style={style}>
+                <div
+                    ref={el => {if(index === this.state.setFocusToIndex){this.setFocusToRef = el}}}
+                    tabIndex='0'
+                    onKeyDown = {(e) => this.keyDownHandler(e, index, -1, element)}
+                >
+                    {this.props.multiSelect && this.props.expandBy &&
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
+                                onChange={() => {
+                                    this.checkBoxSelected(index, -1); 
+                                    this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
+                                }} 
+                            />
+                            {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
+                        </label>
+                    }
+                    <button onClick={() => {
+                        if (this.props.expandBy) {this.toggler(index, true)}
+                        else {
+                            if(!this.state.multiSelect){
+                                this.setState(() => ({value: element[this.state.keyProperty]}));
+                                this.props.onDropDownValueChange(element[this.state.keyProperty]);
+                                this.toggle();
+                            }
+                            else {
+                                this.checkBoxSelected(index, -1); 
+                                this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1})); 
+                            }
+                        }
+                    }}>
+                        {this.props.multiSelect && !this.props.expandBy &&
+                            <label>
+                                <input 
+                                    type="checkbox" 
+                                    checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
+                                    onChange={() => {
+                                        this.checkBoxSelected(index, -1); 
+                                        this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
+                                    }} 
+                                />
+                                {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
+                            </label>
+                        }
+                        {element.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>}
+                        {element.img && <span className='drop-down-icon'>{element.img}</span>}
+                        {this.props.textPropertyRender!== undefined 
+                            ? this.props.textPropertyRender(element, this.props.textProperty)
+                            : <span>{element[this.props.textProperty]}</span>
+                        }
+                        {this.props.expandBy && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
+                    </button>
+                </div>
+                {isOpen && 
+                    <ul className='drop-down-list' ref={(el) => this.setUpRef(el,index)}>
+                        {element[this.props.expandBy].map((el, innerIndex) =>
+                            <li key={innerIndex} className='openChapter'>
+                                <div tabIndex='0'
+                                    ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
+                                    onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, el);}}
+                                >
+                                    {this.props.expandedMultiSelect && 
+                                        <label>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={el.checked}
+                                                onChange={() => { 
+                                                    this.checkBoxSelected(index, innerIndex);
+                                                    this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
+                                                }}
+                                            />
+                                            <CheckBoxSVG />
+                                        </label>
+                                    }
+                                    <button onClick={() => {
+                                        if(!this.state.multiSelect){
+                                            this.setState(() => ({value: el[this.state.expandedKeyProperty]}));
+                                            this.props.onDropDownValueChange(el[this.state.expandedKeyProperty]);
+                                            this.toggle();
+                                        }
+                                    }}>
+                                        {el.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":el.color, "marginRight":"0.5rem"}}></span>}
+                                        {el.img && <span className='drop-down-icon'>{el.img}</span>}
+                                        <span>{el[this.props.expandedTextProperty]}</span>
+                                    </button>
+                                </div>
+                            </li>
+                        )}
+                    </ul>
+                }
+            </li>
+        );
+    }
+
     render() {
         /* header */
         const setStyle = () => {
@@ -764,8 +861,6 @@ class MultiDropDown extends React.Component {
         }
         let style = setStyle();
         const list = this.createList();
-        console.log("setFocusToInnerIndex");
-        console.log(this.state.setFocusToInnerIndex);
         return (
             <div className='drop-down' ref={el => this.dropDownRef = el}>
                 {!this.props.hideHeader && 
@@ -829,128 +924,45 @@ class MultiDropDown extends React.Component {
                 {!this.props.hideList &&
                     <div ref={el => this.simpleBarWrapperRef = el} style={{"position":"relative"}}>
                     <div
-                        className={this.className}
+                        className={this.className + ' ovfx-auto ovfx-hidden'}
                         style={this.state.isOpen || !this.state.toggleable ? this.style : {"display":"none"}}
                         onFocus = {() => {if(this.state.onFocus !== true){ this.setState({onFocus: true}) }}}
                     >
-                        <SimpleBar>
+                        {/*<SimpleBar>*/}
                         <ul className='drop-down-list' 
-                            ref={el => this.simpleBarRef=el} 
-                            style={{'height':this.simpleBarHeight}}
-                        >
-                            {this.state.modifiedList.map((element, index) =>
-                            {   
-                                let isOpen = (this.state.openStateIndex["_"+index.toString()] === true);
-                                return(
-                                <li key={index} className={isOpen ? 'openChapter' : ''}>
-                                    <div
-                                        ref={el => {if(index === this.state.setFocusToIndex){this.setFocusToRef = el}}}
-                                        tabIndex='0'
-                                        onKeyDown = {(e) => this.keyDownHandler(e, index, -1, element)}
-                                    >
-                                        {this.props.multiSelect && this.props.expandBy &&
-                                            <label>
-                                                <input 
-                                                    type="checkbox" 
-                                                    checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
-                                                    onChange={() => {
-                                                        this.checkBoxSelected(index, -1); 
-                                                        this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
-                                                    }} 
-                                                />
-                                                {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
-                                            </label>
-                                        }
-                                        <button 
-                                            onClick={() => {
-                                                if (this.props.expandBy) {
-                                                    this.toggler(index, true)
-                                                }
-                                                else {
-                                                    if(!this.state.multiSelect){
-                                                        this.setState(() => ({value: element[this.state.keyProperty]}));
-                                                        this.props.onDropDownValueChange(element[this.state.keyProperty]);
-                                                        this.toggle();
-                                                    }
-                                                    else {
-                                                        this.checkBoxSelected(index, -1); 
-                                                        this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1})); 
-                                                    }
-                                                }
-                                            }}
-                                        >   
-                                            {this.props.multiSelect && !this.props.expandBy &&
-                                                <label>
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={(element.checked === true || element.checked === 1 || element.checked === 0) ? true : false}
-                                                        onChange={() => {
-                                                            this.checkBoxSelected(index, -1); 
-                                                            this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
-                                                        }} 
-                                                    />
-                                                    {(element.checked === true || element.checked === 1 || element.checked === -1) ? <CheckBoxSVG /> : <CheckBoxSquareSVG />}
-                                                </label>
-                                            }
-                                            {element.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":element.color, "marginRight":"0.5rem"}}></span>}
-                                            {element.img && <span className='drop-down-icon'>{element.img}</span>}
-                                            {
-                                                this.props.textPropertyRender!== undefined 
-                                                ? 
-                                                this.props.textPropertyRender(element, this.props.textProperty)
-                                                :
-                                                <span>{element[this.props.textProperty]}</span>
-                                            }
-                                            {this.props.expandBy && <ArrowUpSVG svgClassName={isOpen ? 'flip90' : 'flip270'}/>}
-                                        </button>
-                                    </div>
-                                    {isOpen && 
-                                        <ul className='drop-down-list' ref={(el) => this.setUpRef(el,index)}>
-                                            {element[this.props.expandBy].map((el, innerIndex) =>
-                                                <li 
-                                                    key={innerIndex} 
-                                                    className='openChapter'
-                                                >
-                                                    <div
-                                                        ref={el => {if(index === this.state.setFocusToIndex && innerIndex === this.state.setFocusToInnerIndex){this.setFocusToRef = el}}}
-                                                        tabIndex='0'
-                                                        onKeyDown = {(e) => {this.keyDownHandler(e, index, innerIndex, el);}}
-                                                    >
-                                                        {this.props.expandedMultiSelect && 
-                                                            <label>
-                                                                <input 
-                                                                    type="checkbox" 
-                                                                        checked={el.checked}
-                                                                        onChange={() => { 
-                                                                            this.checkBoxSelected(index, innerIndex);
-                                                                            this.setState(() => ({setFocusToIndex: index, setFocusToInnerIndex: -1}));
-                                                                        }}
-                                                                />
-                                                                <CheckBoxSVG />
-                                                            </label>
-                                                        }
-                                                        <button 
-                                                            onClick={() => {
-                                                                if(!this.state.multiSelect){
-                                                                    this.setState(() => ({value: el[this.state.expandedKeyProperty]}));
-                                                                    this.props.onDropDownValueChange(el[this.state.expandedKeyProperty]);
-                                                                    this.toggle();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {el.color !== undefined && <span className='colorIndicator' style={{"backgroundColor":el.color, "marginRight":"0.5rem"}}></span>}
-                                                            {el.img && <span className='drop-down-icon'>{el.img}</span>}
-                                                            <span>{el[this.props.expandedTextProperty]}</span>
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                            )}
-                                        </ul>
-                                    }
-                                </li>)}
-                            )}
+                            ref={ el => this.simpleBarRef = el} 
+                            /*style={{'height':this.simpleBarHeight}} */
+                        >   
+                            { this.props.expandBy || this.state.modifiedList.length < 100 
+                                ? this.state.modifiedList.map((element, index) => this.renderListItem(element, index)) 
+                                : <VirtualList
+                                    width='100%'
+                                    height={(this.simpleBarHeight.slice(0, this.simpleBarHeight.length - 2))*1}
+                                    itemCount={this.state.modifiedList.length}
+                                    itemSize={45} // Also supports variable heights (array or function getter)
+                                    renderItem={({index, style}) =>
+                                    {
+                                        var element = this.state.modifiedList[index];
+                                        return this.renderListItem(element, index, style);
+                                    }}
+                                />
+                            }
+                            {/*(this.state.modifiedList.length < 100 || this.props.expandBy) && this.state.modifiedList.map((element, index) => this.renderListItem(element, index))*/}
+                            {/*(!this.props.expandBy || this.state.modifiedList.length >= 100) && 
+                                <VirtualList
+                                    width='100%'
+                                    height={(this.simpleBarHeight.slice(0, this.simpleBarHeight.length - 2))*1}
+                                    itemCount={this.state.modifiedList.length}
+                                    itemSize={45} // Also supports variable heights (array or function getter)
+                                    renderItem={({index, style}) =>
+                                    {
+                                        var element = this.state.modifiedList[index];
+                                        return this.renderListItem(element, index, style);
+                                    }}
+                                />
+                            */}
                         </ul>
-                        </SimpleBar>
+                        {/*</SimpleBar>*/}
                     </div>
                     </div>
                 }
