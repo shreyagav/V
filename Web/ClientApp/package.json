@@ -12,6 +12,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "react-table": "^6.10.0",
+    "react-tiny-virtual-list": "^2.2.0",
     "reactstrap": "6.3.0",
     "rimraf": "2.6.2",
     "simplebar": "^3.1.3",

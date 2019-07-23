@@ -17,6 +17,8 @@ class Alert extends Component {
         this.setFocusTo = null;
     }
 
+    componentWillMount() {document.body.classList.add("ovf-hidden")}
+
     componentDidMount() {
         if (this.singleOkButtonRef !== null){
             this.setFocusTo = this.singleOkButtonRef;
@@ -35,6 +37,8 @@ class Alert extends Component {
             this.setFocusTo.focus();
         }
     }
+
+    componentWillUnmount() {document.body.classList.remove("ovf-hidden")}
 
     render() {
         return (

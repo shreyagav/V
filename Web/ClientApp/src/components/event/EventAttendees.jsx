@@ -9,10 +9,11 @@ import VolunteerUpSVG from '../../svg/VolunteerUpSVG';
 import VeteranUpSVG from '../../svg/VeteranUpSVG';
 import Loader from '../Loader';
 import { Service } from '../ApiService';
-import Alert from '../Alert';
+import FixedWrapper from '../FixedWrapper';
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import SearchUpSVG from '../../svg/SearchUpSVG';
+import CheckBox from '../CheckBox';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -28,6 +29,8 @@ class EventAttendees extends Component {
             siteMembers: [],
             filteredMembers: [],
             selectAllCheckboxChecked: false,
+            activeMembersOnlyChecked: true,
+            selectedMembersOnlyChecked: false,
             attendeeFilter: '',
         };
         this.substractHeightElRef = null;
@@ -151,6 +154,33 @@ class EventAttendees extends Component {
         this.setState({selectAllCheckboxChecked: !this.state.selectAllCheckboxChecked, tempMembers: tempMembers});
     }
 
+    filterShowSelectedMembersOnly(list, filterList) {
+        // show only members which were selected
+        let filteredList = [];
+        filterList.forEach(element => {
+            list.forEach(subElement => {
+                if( element === subElement.id ){
+                    filteredList.push(subElement);
+                }
+            })
+        });
+        return filteredList;
+    }
+
+    onFilterChange(filterName, filterValue) {
+        let newState = this.state;
+        let filteredList = this.state.siteMembers;
+        newState[filterName] = filterValue;
+        if (newState.attendeeFilter !== ''){
+            filteredList = this.filterMemberList(filteredList, newState.attendeeFilter);
+        }
+        if (newState.selectedMembersOnlyChecked){
+            filteredList = this.filterShowSelectedMembersOnly(filteredList, newState.tempMembers);
+        }
+        newState.filteredMembers = filteredList;
+        this.setState({newState});
+    }
+
     passFocusForward(e) {
         if(!e.shiftKey) {this.okButtonRef.focus()}
         else {this.selectAllCheckboxRef.focus()}
@@ -163,14 +193,14 @@ class EventAttendees extends Component {
         </div>
     }
 
-    onAttendeeFilterChange(value){
-        this.setState({attendeeFilter: value,filteredMembers: this.filterMemberList(this.state.siteMembers, value)});
+    //onAttendeeFilterChange(value){
+        //this.setState({attendeeFilter: value,filteredMembers: this.filterMemberList(this.state.siteMembers, value)});
         //if(this.filterTimeout){
         //    clearTimeout(this.filterTimeout);
             
         //}
         //this.filterTimeout = setTimeout(()=>this.setState({filteredMembers: this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)}),300);
-    }
+    //}
 
     onAddExistingMembersWindowClose() {
         this.setState({ addingExistingMembers: false, attendeeFilter: ''})
@@ -187,46 +217,50 @@ class EventAttendees extends Component {
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
                 {this.state.loading && <Loader />}
                 {this.state.addingExistingMembers &&
-                    <div className = 'wh-bcg' style={{"opacity":"1"}}>
-                        <div className = 'flex-nowrap flex-flow-column' style={{"width":"100%", 'maxWidth':"600px", "backgroundColor":"#ffffff"}}>
-                            <h2 className='m-1'>Add Members</h2>
-                            <div className='flex-nowrap justify-center align-center mb-1 mr-1 ml-1'>
-                                <div
-                                    tabIndex={0} 
-                                    className='checkBox-wrapper flex-nowrap align-center mr-1'
-                                    style={{"flex":"0 0 auto"}}
-                                    onClick={() => {this.selectAllCheckboxOnChange()}}
-                                    onKeyDown={(e) => {
-                                        if(e.keyCode === 32){
-                                            //SPACE BAR
-                                            this.selectAllCheckboxOnChange()
-                                        }
-                                    }}
-                                    ref = {el => this.selectAllCheckboxRef = el}
-                                >
-                                    <label>
-                                        <input 
-                                            type="checkbox" 
-                                            checked={this.state.selectAllCheckboxChecked}
-                                            disabled
-                                        />
-                                        <CheckBoxSVG />
-                                    </label>
-                                    <span className="checkbox-text" style={{"fontSize":"0.9rem"}}>Select All<strong>{" "+ this.state.filteredMembers.length.toString()}</strong></span>
-                                </div>
-                                <div className='input-button-wrapper' style={{"flex":"1 1 auto"}}>
-                                    <input 
-                                        style={{"paddingLeft":"2.5rem"}}
-                                        placeholder='Search members'
-                                        value={this.state.attendeeFilter}
-                                        onChange={(e) => this.onAttendeeFilterChange(e.target.value)}
-                                    />
-                                    <SearchUpSVG svgClassName='icon'/>
-                                    <button onClick={() => this.setState({filteredMembers: this.state.siteMembers, attendeeFilter: ''})}>
-                                        <CloseUpSVG />
-                                    </button>
-                                </div>
+                    <FixedWrapper maxWidth={"600px"}>
+                        <h2 className='m-1 mr-05 ml-05'>Add Members</h2>
+                        <div className='input-button-wrapper mb-1 mr-05 ml-05'>
+                            <input 
+                                style={{"paddingLeft":"2.5rem"}}
+                                placeholder='Search members'
+                                value={this.state.attendeeFilter}
+                                onChange={(e) => this.onFilterChange("attendeeFilter", e.target.value)}
+                            />
+                            <SearchUpSVG svgClassName='icon'/>
+                            <button onClick={() => this.setState({filteredMembers: this.state.siteMembers, attendeeFilter: ''})}>
+                                <CloseUpSVG />
+                            </button>
+                        </div>
+                        <div className='flex-wrap justify-space-between align-center mr-05 ml-05'>
+                            <CheckBox 
+                                className='mr-1 mb-1 ml-025' 
+                                onClick={() => this.selectAllCheckboxOnChange()}
+                                checked={this.state.selectAllCheckboxChecked}
+                                labelStyle={{"fontSize":"0.9rem"}}
+                                labelText={<span>Select All<strong>{" "+ this.state.filteredMembers.length.toString()}</strong></span>}
+                            />
+                            <div className='flex-wrap justify-left'>
+                                <CheckBox 
+                                    className='mr-1 mb-1 ml-025' 
+                                    onClick={() => this.onFilterChange("activeMembersOnlyChecked", !this.state.activeMembersOnlyChecked)}
+                                    checked={this.state.activeMembersOnlyChecked}
+                                    labelStyle={{"fontSize":"0.9rem"}}
+                                    labelText='Active Members Only'
+                                />
+                                <CheckBox
+                                    className='mb-1 ml-025'
+                                    onClick={() => this.onFilterChange("selectedMembersOnlyChecked", !this.state.selectedMembersOnlyChecked)}
+                                    checked={this.state.selectedMembersOnlyChecked}
+                                    labelStyle={{"fontSize":"0.9rem"}}
+                                    labelText='Selected Members Only'
+                                />
                             </div>
+                        </div>
+                        {/*<div className='flex-nowrap ml-05 mr-05'>
+                            <span className='line'></span>
+                        </div>*/}
+                        {this.state.filteredMembers.length === 0 && <p className='message-block mb-2'>There are no members that meet this criteria.</p>}
+                        {this.state.filteredMembers.length > 0 &&
                             <MultiDropDown
                                 list={this.state.filteredMembers}
                                 multiSelect={true}
@@ -241,16 +275,14 @@ class EventAttendees extends Component {
                                 passFocusForward = {(e) => this.passFocusForward(e)}
                                 textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
                             />
-                            <div className='flex-nowrap justify-center mt-05 mb-05 mr-1 ml-1'>
-                                <button ref = {el => this.okButtonRef = el} className='medium-static-button static-button' onClick={this.submitMembersToEvent}>OK</button>
-                                <button ref = {el => this.cancelButtonRef = el} className='medium-static-button static-button default-button' onClick={() => this.setState({ addingExistingMembers: false, tempMembers:[], attendeeFilter: '' })}> Cancel </button>
-                            </div>
+                        }
+                        <div className='flex-nowrap justify-center mt-05 mb-05 mr-1 ml-1'>
+                            <button ref = {el => this.okButtonRef = el} className='medium-static-button static-button' onClick={this.submitMembersToEvent}>OK</button>
+                            <button ref = {el => this.cancelButtonRef = el} className='medium-static-button static-button default-button' onClick={() => this.setState({ addingExistingMembers: false, tempMembers:[], attendeeFilter: '' })}> Cancel </button>
                         </div>
-                    </div>
+                    </FixedWrapper>
                 }
-                {members.length === 0 && 
-                    <p className='message-block mb-2'>There are no attendees registered for the event.</p>
-                }
+                {members.length === 0 && <p className='message-block mb-2'>There are no attendees registered for the event.</p>}
                 {this.props.editsPermitted !== false &&
                     <div className="flex-wrap align-center justify-center mb-2">
                         <p className='input-label'>ADD ATTENDEES:</p>

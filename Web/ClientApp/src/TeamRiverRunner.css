@@ -1112,7 +1112,7 @@ button.grey-SVG-button:focus {
 .line {
     height: 1px;
     justify-self: stretch;
-    background-color: #666666;
+    background-color: #999999;
     width: 100%;
 }
 
@@ -1269,7 +1269,8 @@ li.mark-invalid label > svg {
 
 /* check Box */
 .checkBox-wrapper {display: flex; flex-wrap: nowrap; justify-content: left; align-items: center;}
-.checkBox-wrapper label {position: relative; margin-right: 0.5rem; background-color: #ffffff;}
+.checkBox-wrapper label {position: relative; margin-right: 0.5rem; background-color: #ffffff}
+.checkBox-wrapper label + span {white-space: nowrap !important;}
 .checkBox-wrapper:hover {cursor: pointer}
 .checkBox-wrapper:hover label svg, .checkBox-wrapper:focus label svg {border-color: #0099cc !important}
 .checkBox-wrapper:hover label::after,
@@ -1348,5 +1349,23 @@ p.message-block {
     bottom: 0px;
     right: 0px;
     z-index: 9999;
+    opacity: 1;
+}
+
+.wh-bcg > div {
+    width: 100%;
+    background-color: #ffffff;
+}
+
+.ovfy-auto {
+    overflow-y: auto;
+}
+
+.ovfx-hidden {
+    overflow-x: hidden;
+}
+
+.ovf-hidden {
+    overflow: hidden;
 }
 
