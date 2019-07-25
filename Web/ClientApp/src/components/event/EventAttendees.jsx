@@ -27,7 +27,6 @@ class EventAttendees extends Component {
             addingExistingMembers: false,
             tempMembers:[],
             siteMembers: [],
-            filteredMembers: [],
             selectAllCheckboxChecked: false,
             activeMembersOnlyChecked: true,
             selectedMembersOnlyChecked: false,
@@ -43,12 +42,12 @@ class EventAttendees extends Component {
         this.addExistingMember = this.addExistingMember.bind(this);
         this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
     }
-
+    /*
     componentDidUpdate(){
         if(this.state.filteredMembers.length !== this.state.tempMembers.length && this.state.selectAllCheckboxChecked){
             this.setState({selectAllCheckboxChecked: false});
         }
-    }
+    } */
 
     submitMembersToEvent() {
         this.setState({ loading: true });
@@ -63,7 +62,7 @@ class EventAttendees extends Component {
     addExistingMember() {
         this.setState({ loading: true });
         Service.getSiteMembers(this.state.eventId)
-            .then(data => { this.setState({ siteMembers: data, filteredMembers: data, loading: false, addingExistingMembers: true }) });
+            .then(data => { this.setState({ siteMembers: data, loading: false, addingExistingMembers: true }) });
     }
 
     removeMember(member) {
@@ -147,9 +146,24 @@ class EventAttendees extends Component {
 
     selectAllCheckboxOnChange() {
         let tempMembers = [];
+        let list = this.createFilteredList(this.state.siteMembers);
         if(!this.state.selectAllCheckboxChecked) {
             //select all checkboxes
-            this.state.filteredMembers.forEach(element => tempMembers.push(element.id));
+            list.forEach(element => tempMembers.push(element.id));
+        }
+        else {
+            if (list.length === this.state.siteMembers.length){
+                tempMembers = [];
+            }
+            else{
+                let search = (element, list, keyProperty) => {
+                    let wasFound = list.find(listElement => listElement[keyProperty] === element);
+                    if (wasFound > -1) {return true}
+                    return false;
+                }
+                //unselect all checkboxes
+                tempMembers.filter(element => search(element, list, this.props.keyProperty));
+            }
         }
         this.setState({selectAllCheckboxChecked: !this.state.selectAllCheckboxChecked, tempMembers: tempMembers});
     }
@@ -167,20 +181,6 @@ class EventAttendees extends Component {
         return filteredList;
     }
 
-    onFilterChange(filterName, filterValue) {
-        let newState = this.state;
-        let filteredList = this.state.siteMembers;
-        newState[filterName] = filterValue;
-        if (newState.attendeeFilter !== ''){
-            filteredList = this.filterMemberList(filteredList, newState.attendeeFilter);
-        }
-        if (newState.selectedMembersOnlyChecked){
-            filteredList = this.filterShowSelectedMembersOnly(filteredList, newState.tempMembers);
-        }
-        newState.filteredMembers = filteredList;
-        this.setState({newState});
-    }
-
     passFocusForward(e) {
         if(!e.shiftKey) {this.okButtonRef.focus()}
         else {this.selectAllCheckboxRef.focus()}
@@ -193,17 +193,16 @@ class EventAttendees extends Component {
         </div>
     }
 
-    //onAttendeeFilterChange(value){
-        //this.setState({attendeeFilter: value,filteredMembers: this.filterMemberList(this.state.siteMembers, value)});
-        //if(this.filterTimeout){
-        //    clearTimeout(this.filterTimeout);
-            
-        //}
-        //this.filterTimeout = setTimeout(()=>this.setState({filteredMembers: this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)}),300);
-    //}
-
     onAddExistingMembersWindowClose() {
         this.setState({ addingExistingMembers: false, attendeeFilter: ''})
+    }
+
+    createFilteredList(list) {
+        let filteredList = list;
+        if (this.state.attendeeFilter !== ''){ filteredList = this.filterMemberList( filteredList, this.state.attendeeFilter ) }
+        if (this.state.activeMembersOnlyChecked) { /* filter for active members */ }
+        if (this.state.selectedMembersOnlyChecked){ filteredList = this.filterShowSelectedMembersOnly( filteredList, this.state.tempMembers ) }
+        return filteredList;
     }
 
     render() {
@@ -213,6 +212,11 @@ class EventAttendees extends Component {
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", className:'word-break'}
         ];
+        if (this.state.addingExistingMembers) {
+            this.filteredList = this.createFilteredList(this.state.siteMembers);
+        }
+        console.log("TEMP MEMBERS");
+        console.log(this.state.tempMembers);
         return (
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
                 {this.state.loading && <Loader />}
@@ -224,10 +228,15 @@ class EventAttendees extends Component {
                                 style={{"paddingLeft":"2.5rem"}}
                                 placeholder='Search members'
                                 value={this.state.attendeeFilter}
-                                onChange={(e) => this.onFilterChange("attendeeFilter", e.target.value)}
+                                onChange={(e) => {
+                                    if (this.state.selectAllCheckboxChecked) {
+                                        this.selectAllCheckboxOnChange()
+                                    }; 
+                                    this.setState({attendeeFilter: e.target.value})}
+                                }
                             />
                             <SearchUpSVG svgClassName='icon'/>
-                            <button onClick={() => this.setState({filteredMembers: this.state.siteMembers, attendeeFilter: ''})}>
+                            <button onClick={() => this.setState({attendeeFilter: ''})}>
                                 <CloseUpSVG />
                             </button>
                         </div>
@@ -237,32 +246,41 @@ class EventAttendees extends Component {
                                 onClick={() => this.selectAllCheckboxOnChange()}
                                 checked={this.state.selectAllCheckboxChecked}
                                 labelStyle={{"fontSize":"0.9rem"}}
-                                labelText={<span>Select All<strong>{" "+ this.state.filteredMembers.length.toString()}</strong></span>}
+                                labelText={<span>Select All<strong>{" "+ this.filteredList.length.toString()}</strong></span>}
                             />
                             <div className='flex-wrap justify-left'>
                                 <CheckBox 
                                     className='mr-1 mb-1 ml-025' 
-                                    onClick={() => this.onFilterChange("activeMembersOnlyChecked", !this.state.activeMembersOnlyChecked)}
+                                    onClick={() => {
+                                        if (this.state.selectAllCheckboxChecked) {
+                                            this.selectAllCheckboxOnChange()
+                                        };
+                                        //let tempMembers = this.state.tempMembers;
+                                        //filter temp members to leave only temp members which belongs
+                                        // set temp members to new temp members
+                                        this.setState({
+                                            tempMembers: [],
+                                            selectedMembersOnlyChecked: false,
+                                            activeMembersOnlyChecked: !this.state.activeMembersOnlyChecked}
+                                        )}
+                                    }
                                     checked={this.state.activeMembersOnlyChecked}
                                     labelStyle={{"fontSize":"0.9rem"}}
                                     labelText='Active Members Only'
                                 />
                                 <CheckBox
                                     className='mb-1 ml-025'
-                                    onClick={() => this.onFilterChange("selectedMembersOnlyChecked", !this.state.selectedMembersOnlyChecked)}
+                                    onClick={() => this.setState({selectedMembersOnlyChecked: !this.state.selectedMembersOnlyChecked})}
                                     checked={this.state.selectedMembersOnlyChecked}
                                     labelStyle={{"fontSize":"0.9rem"}}
-                                    labelText='Selected Members Only'
+                                    labelText={<span>Selected Only<strong>{" "+ this.state.tempMembers.length.toString()}</strong></span>}
                                 />
                             </div>
                         </div>
-                        {/*<div className='flex-nowrap ml-05 mr-05'>
-                            <span className='line'></span>
-                        </div>*/}
-                        {this.state.filteredMembers.length === 0 && <p className='message-block mb-2'>There are no members that meet this criteria.</p>}
-                        {this.state.filteredMembers.length > 0 &&
+                        {this.filteredList.length === 0 && <p className='message-block mb-2 mt-2'>There are no members that meet this criteria.</p>}
+                        {this.filteredList.length > 0 &&
                             <MultiDropDown
-                                list={this.state.filteredMembers}
+                                list={this.filteredList}
                                 multiSelect={true}
                                 toggleable={false}
                                 keyProperty='id'

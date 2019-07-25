@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import MultiDropDown from './MultiDropDown/MultiDropDown';
 import './Calendar.css'
-import { withMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
 
 class CalendarSidebar extends Component {
     static displayName = CalendarSidebar.name;
@@ -61,4 +60,4 @@ class CalendarSidebar extends Component {
     }
 }
 
-export default withMultiDropDownStore(CalendarSidebar);
+export default CalendarSidebar;

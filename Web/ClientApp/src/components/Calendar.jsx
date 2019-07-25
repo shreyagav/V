@@ -4,10 +4,7 @@ import ArrowUpSVG from '../svg/ArrowUpSVG';
 //import NatureLocationSVG from '../svg/NatureLocationSVG';
 import PlusSVG from '../svg/PlusSVG';
 import { withStore } from './store';
-import { withMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
 import './Calendar.css'
-import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
-import MultiDropDownHeader from './MultiDropDown/MultiDropDownHeader';
 import { Service } from './ApiService';
 import MultiDropDown from './MultiDropDown/MultiDropDown';
 import TabComponent from './TabComponent';
@@ -454,4 +451,4 @@ class Calendar extends Component {
     }
 }
 
-export default withStore(withMultiDropDownStore(Calendar));
+export default withStore(Calendar);

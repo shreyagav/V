@@ -4,8 +4,6 @@ import ArrowUpSVG from '../svg/ArrowUpSVG';
 import PlusSVG from '../svg/PlusSVG';
 import { withStore } from './store';
 import './Calendar.css'
-import { createMultiDropDownStore } from './MultiDropDown/MultiDropDownStore';
-import MultiDropDownHeader from './MultiDropDown/MultiDropDownHeader';
 
 class SideBarLayout extends Component {
     static displayName = SideBarLayout.name;
@@ -161,4 +159,4 @@ class SideBarLayout extends Component {
     }
 }
 
-export default withStore(createMultiDropDownStore(SideBarLayout));
+export default withStore(SideBarLayout);
