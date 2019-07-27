@@ -188,8 +188,8 @@ class MemberOptions extends Component {
                                     <MultiDropDown
                                         list={optionsList}
                                         multiSelect={false}
-                                    toggleable={true}
-                                    disabled={this.headerText=='Edit Option'}
+                                        toggleable={true}
+                                        disabled={this.headerText=='Edit Option'}
                                         keyProperty='categoryId'
                                         textProperty='categoryName'
                                         defaultValue={this.state.alertContent.categoryId}
@@ -202,8 +202,8 @@ class MemberOptions extends Component {
                                     <p>Option:</p>
                                     <MultiDropDown
                                         list={options}
-                                    multiSelect={false}
-                                    disabled={this.headerText == 'Edit Option'}
+                                        multiSelect={false}
+                                        disabled={this.headerText == 'Edit Option'}
                                         toggleable={true}
                                         keyProperty='id'
                                         textProperty='name'
