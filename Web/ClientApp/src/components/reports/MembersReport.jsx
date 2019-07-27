@@ -42,7 +42,7 @@ class MembersReport extends Component {
         return (<div>
             {this.state.loading && <Loader/>}
             <h1>Members report</h1>
-            <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} onFilteredChange={(one, two, three) => console.log(this.reactTable.getResolvedState().sortedData)} />
+            <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} onFilteredChange={() => console.log(this.reactTable.getResolvedState().sortedData)} />
         </div>);
     }
 

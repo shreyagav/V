@@ -176,7 +176,8 @@ namespace Services
                     LastName = u.LastName,
                     Email = u.Email,
                     MemberTypeId = tempMemberType(),
-                    Phone = u.PhoneNumber
+                    Phone = u.PhoneNumber,
+                    Active = u.Active
                 })
                 .ToArray();
             return res;
