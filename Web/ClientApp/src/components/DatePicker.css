@@ -10,7 +10,7 @@
 
 .date-picker > div {font-size: inherit;}
 
-.date-picker > div:first-child {border: 1px solid #666666;}
+.date-picker > div:first-child {border: 1px solid #999999;}
 .date-picker > div:first-child:hover {cursor: pointer;}
 .date-picker > div:first-child:focus {border: 1px solid #0099cc;}
 .date-picker > div:first-child:focus button .svg, 

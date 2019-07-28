@@ -8,6 +8,7 @@ import Loader from '../Loader';
 import Alert from '../Alert';
 import TimePicker from '../TimePicker';
 import { Service } from '../ApiService';
+import FixedWrapper from '../FixedWrapper';
 
 class EventBudget extends Component {
     static displayName = EventBudget.name;
@@ -147,17 +148,8 @@ class EventBudget extends Component {
                 <div style={{ "width": "100%", "maxWidth": "600px" }}>
                     {this.state.loading && <Loader />}
                     {this.state.addingLine && 
-                        <Alert
-                            headerText={this.state.headerText}
-                            showOkButton = {true}
-                            buttonText = "Save"
-                            onOkButtonClick = {() => {
-                                if(this.addLineValidationPassed()){
-                                    this.addLine()
-                                } else {this.forceUpdate();}
-                            }}
-                            onClose={() => this.setState({ addingLine: false })}
-                        >
+                        <FixedWrapper maxWidth={"600px"}>
+                            <h2 className='m-1 mr-05 ml-05'>{this.state.headerText}</h2>
                             <ul className='input-fields first-child-text-110 mt-1'>
                                 <li className={this.emptyName === true ? 'mark-invalid' : ''} error-text='Please enter Item Name'>
                                     <p>Name:</p>
@@ -234,7 +226,19 @@ class EventBudget extends Component {
                                     </ul>
                                 </li>
                             </ul>
-                        </Alert>
+                            <div className='flex-nowrap justify-center mt-2 mb-1 mr-1 ml-1'>
+                                <button 
+                                    //ref = {el => this.okButtonRef = el}
+                                    className='medium-static-button static-button'
+                                    onClick={() => {if(this.addLineValidationPassed()){ this.addLine() } else {this.forceUpdate()}}}
+                                > Save </button>
+                                <button 
+                                    /*ref = {el => this.cancelButtonRef = el} */
+                                    className='medium-static-button static-button default-button'
+                                    onClick={() => this.setState({ addingLine: false })}
+                                > Cancel </button>
+                            </div>
+                        </FixedWrapper>
                     }
 
                     {this.state.removingLine && 

@@ -19,19 +19,12 @@ class Chapters extends Component {
             stateFilter: [],
         };
         this.chaptersDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
     }
 
-    componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);
+    componentWillMount(){
         console.log('mount');
         var me = this;
-        setTimeout(()=>{console.log('set state');me.setState({stateFilter1:[401, 354]});},2000);}
-    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
-
-    handleClick(e) {
-        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
-            this.chaptersDropDownRef.toggle();
-        }
+        setTimeout(() => {console.log('set state'); me.setState({stateFilter1:[401, 354]});},2000)
     }
 
     renderStateColumn (value, row, index, col) {

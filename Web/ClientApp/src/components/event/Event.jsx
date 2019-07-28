@@ -72,7 +72,6 @@ class Event extends Component {
         this.dateEndDropDownRef = null;
         this.chaptersDropDownRef = null;
         this.typeOfEventDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
         this.nextStep = this.nextStep.bind(this);
         this.updateEvent = this.updateEvent.bind(this);
         this.fixMainEventData = this.fixMainEventData.bind(this);
@@ -88,8 +87,7 @@ class Event extends Component {
         this.emptyColor = false;
         this.headerText = '';
     }
-    componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
-    componentWillUnmount() { document.removeEventListener("mousedown", this.handleClick, false); }
+
     componentWillReceiveProps(props) {
         this.setDefaultChapter(props);
     }
@@ -213,38 +211,6 @@ class Event extends Component {
         this.setState({eventMain:tmp});
     }
 
-    handleClick(e) {
-        if(this.state.activeTabIndex === 0){
-            if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.dropDownRef.contains(e.target)) {
-                this.colorDropDownRef.toggle();
-            }
-            if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.dropDownRef.contains(e.target)) {
-                this.typeOfEventDropDownRef.toggle();
-            }
-            /*if(this.dayDropDownRef.state.isOpen && !this.dayDropDownRef.dropDownRef.contains(e.target)){
-                this.dayDropDownRef.toggle();
-            }
-            if(this.numberDropDownRef.state.isOpen && !this.numberDropDownRef.timeNumberPickerRef.contains(e.target)){
-                this.numberDropDownRef.toggle();
-            }*/
-            if(this.timeFromDropDownRef.state.isOpen && !this.timeFromDropDownRef.timeNumberPickerRef.contains(e.target)){
-                this.timeFromDropDownRef.toggle();
-            }
-            if(this.timeToDropDownRef.state.isOpen && !this.timeToDropDownRef.timeNumberPickerRef.contains(e.target)){
-                this.timeToDropDownRef.toggle();
-            }
-            if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
-                this.dateStartDropDownRef.toggle();
-            }
-            /*if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
-                this.dateEndDropDownRef.toggle();
-            }*/
-            if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
-                this.chaptersDropDownRef.toggle();
-            }
-        }
-    }
-
     toggleRepeatedEvents(){
         this.setState({repeatedEventsIsOpen: !this.state.repeatedEventsIsOpen});
     }
@@ -305,7 +271,7 @@ class Event extends Component {
             this.setState({showDialog: false});
             return;
         } else {
-            this.headerText = 'Publish event';
+            this.headerText = 'Publish';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to publish event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
@@ -327,7 +293,7 @@ class Event extends Component {
             this.setState({showDialog: false});
             return;
         } else {
-            this.headerText = 'Cancel event';
+            this.headerText = 'Cancel';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to cancel event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
@@ -649,6 +615,7 @@ class Event extends Component {
                         onOkButtonClick = {() => this.onOkButtonClick()}
                         cancelButtonText = "Cancel"
                         okButtonText = "Ok"
+                        mode = 'warning'
                     >
                        {this.dialogContent}
                     </Alert>

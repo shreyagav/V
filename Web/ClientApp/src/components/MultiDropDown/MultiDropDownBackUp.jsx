@@ -40,7 +40,6 @@ class MultiDropDown extends React.Component {
         this.className = '';
         this.style = {dropDownHeaderHeight: 0};
         this.checkBoxSelected = this.checkBoxSelected.bind(this);
-        this.handleClick = this.handleClick.bind(this);
 
         this.toggleable = true;
     }
@@ -75,7 +74,6 @@ class MultiDropDown extends React.Component {
             document.removeEventListener('wheel', this.handleWheel, {passive : false});
             /*document.removeEventListener('keydown', (e) => this.tabHandler(e), false);*/
         }
-        else document.removeEventListener("mousedown", this.handleClick, false);
         window.removeEventListener("resize", this.setHeight);
     }
 
@@ -441,13 +439,6 @@ class MultiDropDown extends React.Component {
         return arr.filter(element => {
             return element !== value;
         });
-    }
-
-    handleClick(e) {
-        /*
-        if (this.simpleBarWrapperRef !== null && !this.simpleBarWrapperRef.contains(e.target)){
-            this.setState({onFocus: false});
-        }*/
     }
 
     setFocus(){

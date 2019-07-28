@@ -16,16 +16,13 @@ class NewEvents extends Component {
             }
         };
         this.chaptersDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
     }
 
     componentWillMount() {
-        document.addEventListener("mousedown", this.handleClick, false);
         let filters = this.props.filters;
         filters.push({ name: "chapters", value: [] });
         this.props.updateFilters(filters);
     }
-    componentWillUnmount() { document.removeEventListener("mousedown", this.handleClick, false); }
 
     updateList(props) {
         let actualFilters = {};
@@ -59,12 +56,6 @@ class NewEvents extends Component {
         var component = this;
         this.filtersStr = JSON.stringify(this.props.filters);
         this.updateList(this.props);
-    }
-
-    handleClick(e) {
-        if (this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)) {
-            this.chaptersDropDownRef.toggle();
-        }
     }
 
     renderColumnName(value, row, index, col) {

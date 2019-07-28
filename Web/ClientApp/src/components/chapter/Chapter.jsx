@@ -30,11 +30,7 @@ class Chapter extends Component {
         };
         this.regionsDropDownRef = null;
         this.poolRentalDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
     }
-
-    componentWillMount(){document.addEventListener("mousedown", this.handleClick, false);}
-    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     componentDidMount(){
         var component = this;
@@ -48,14 +44,6 @@ class Chapter extends Component {
         .then(function(jjson){
           component.setState({members: jjson})
         });
-    }
-
-    handleClick(e) {
-        if(this.state.activeTabIndex === 0){
-            if(this.regionsDropDownRef.state.isOpen && !this.regionsDropDownRef.dropDownRef.contains(e.target)){
-                this.regionsDropDownRef.toggle(); /* actual */
-            }
-        }
     }
 
     toggleContact(key){

@@ -8,7 +8,7 @@
 }
 
 .time-picker > div:first-child, .number-picker > div:first-child {
-    border: 1px solid #666666;
+    border: 1px solid #999999;
 }
 
 .time-picker input, .number-picker input {

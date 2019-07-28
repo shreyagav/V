@@ -25,15 +25,11 @@ class EventsSideBar extends Component {
         this.dateStartDropDownRef = null;
         this.dateEndDropDownRef = null;
         this.roleDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
     }
 
     componentWillMount(){
-        document.addEventListener("mousedown", this.handleClick, false);
         this.setFilters();
     }
-
-    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     setFilters() {
         let filters = this.props.filters;
@@ -66,18 +62,6 @@ class EventsSideBar extends Component {
         let element = filters.find(element => element.name === filterName); 
         element.value = value;
         this.props.updateFilters(filters);
-    }
-
-    handleClick(e) {
-        if(this.roleDropDownRef.state.isOpen && !this.roleDropDownRef.dropDownRef.contains(e.target)) {
-            this.roleDropDownRef.toggle();
-        }
-        if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
-            this.dateStartDropDownRef.toggle();
-        }
-        if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
-            this.dateEndDropDownRef.toggle();
-        }
     }
 
     render() {

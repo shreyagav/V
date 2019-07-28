@@ -251,7 +251,7 @@ small {
 /* input & checkbox */
 textarea {
     width: 100%;
-    border: 1px solid #666666;
+    border: 1px solid #999999;
     background: white;
     padding: 0.5em 0.7em;
     padding-right: 2.5em;
@@ -896,7 +896,7 @@ button.grey-SVG-button:focus {
     padding: 0.65em;
 }
 
-.arrow-button .svg {fill: #666666 !important;}
+.arrow-button .svg {fill: #999999 !important;}
 .arrow-button:hover .svg, .arrow-button:focus .svg {fill: #0099cc !important;}
 .arrow-button:hover, .arrow-button:focus {outline: none !important; border: 0px solid;}
 
@@ -951,7 +951,7 @@ button.grey-SVG-button:focus {
 .input-button-wrapper > button, 
 .input-button-wrapper > .icon {position: absolute; width: 2.5em; height: 2.5em; top: 1px; right: 1px; border: 0px solid;}
 .input-button-wrapper > .icon {left: 1px;}
-.input-button-wrapper > button .svg, .input-button-wrapper > .icon .svg {fill: #666666;}
+.input-button-wrapper > button .svg, .input-button-wrapper > .icon .svg {fill: #999999;}
 .input-button-wrapper > button > svg,
 .input-button-wrapper > svg.icon {
     display: -ms-flexbox;
@@ -972,7 +972,7 @@ button.grey-SVG-button:focus {
 .input-button-wrapper > input:focus + svg.icon > .svg,
 .input-button-wrapper > input:hover + svg.icon > .svg {fill: #0099cc !important;}
 .input-button-wrapper:hover > button {cursor: pointer !important;}
-.input-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #666666;}
+.input-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #999999;}
 
 /* FILTERS */
 
