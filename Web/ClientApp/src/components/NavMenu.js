@@ -52,10 +52,10 @@ class NavMenu extends Component {
               </ul>
             }
             
-            {showLogo && 
-              <Link to="/" style={{ "width": "260px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
+            {showLogo &&
+                <a href="http://www.teamriverrunner.org" target="_self" style={{ "width": "260px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
                 <LogoSVG />
-              </Link>
+              </a>
             }
         
             <ul className="flex-nowrap main-nav">

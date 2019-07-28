@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withStore } from './../store';
 import Loader from '../Loader';
 import Alert from '../Alert';
+import LogoSVG from '../../svg/LogoSVG';
 class SignIn extends Component {
     static displayName = SignIn.name;
 
@@ -67,8 +68,10 @@ class SignIn extends Component {
         return (
             <div className='centered login-form'>
                 <div className='flex-nowrap align-center justify-space-between mb-2'>
-                    <h1 class="uppercase-text mb-05">Sign<strong> In</strong></h1>
-                    <img src="images/logo.svg" style={{"height":"1.5em"}} />
+                    <h1 className="uppercase-text mb-05">Sign<strong> In</strong></h1>
+                    <a href="http://www.teamriverrunner.org" target="_self" style={{ "height": "1.5em" }}>
+                        <LogoSVG />
+                    </a>
                 </div>
                 {this.state.loading && <Loader />}
                     <form className='flex-nowrap flex-flow-column align-center'>
@@ -89,7 +92,7 @@ class SignIn extends Component {
                                                         <polygon className='svg' points="5.3,11 4.2,11 0,5.3 1.1,4.4 4.7,9.4 10.9,1 12,1.8 " />
                                                     </svg>
                                                 </label>
-                                                <p className='pl-05' style={{"marginTop":"0px"}}>Remeber me</p>
+                                                <p className='pl-05' style={{"marginTop":"0px"}}>Remember me</p>
                                             </span>
                                             <button type="button" className='medium-static-button static-button default-button' onClick={this.submitSignInInfo}>Sign In</button>
                                             <a href="/ForgotPassword">Forgot Password?</a>
@@ -117,7 +120,7 @@ class SignIn extends Component {
                         </div>*/}
                         <div className = 'flex-nowrap align-center mt-2 mb-2' style={{"width":"100%"}}>
                             <span className='line'></span>
-                                <p className='pr-05 pl-05' style={{"white-space":"nowrap", "lineHeight":"1", "fontWeight":"600"}}>New to TRR?</p>
+                                <p className='pr-05 pl-05' style={{whiteSpace:"nowrap", "lineHeight":"1", "fontWeight":"600"}}>New to TRR?</p>
                             <span className='line'></span>
                         </div>
                         <button type="button" className='medium-static-button static-button' onClick={this.goToRegister}>Register</button>

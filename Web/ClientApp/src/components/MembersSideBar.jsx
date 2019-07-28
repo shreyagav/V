@@ -110,7 +110,7 @@ class EventsSideBar extends Component {
                 <p>Type:</p>
                 <MultiDropDown
                     ref={el => this.roleDropDownRef = el}
-                    list={[{name: 'Paddler', img: <VeteranUpSVG />, id:54},{name: 'Stuff', img: <VolunteerUpSVG />, id:53}]} 
+                    list={[{name: 'Paddler', img: <VeteranUpSVG />, id:54},{name: 'Staff', img: <VolunteerUpSVG />, id:53}]} 
                     keyProperty='id'
                     textProperty='name'
                     defaultValue={this.state.role}

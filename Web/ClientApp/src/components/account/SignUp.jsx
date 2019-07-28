@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { withStore } from './../store';
-
+import LogoSVG from '../../svg/LogoSVG';
 
 class SignUp extends Component {
     static displayName = SignUp.name;
@@ -53,7 +53,9 @@ class SignUp extends Component {
         return (
             <div className='centered login-form'>
                 <div className='flex-nowrap align-center justify-center'>
-                    <img src="images/logo.svg" />
+                    <a href="http://www.teamriverrunner.org" target="_self">
+                        <LogoSVG />
+                    </a>
                 </div>
                 {this.state.error && <p style={{ color: 'red' }}>{this.state.error}</p>}
                 <h2 className='mb-2 mt-2 flex-nowrap justify-center'><strong>Sign Up</strong></h2>
