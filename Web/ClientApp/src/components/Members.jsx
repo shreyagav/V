@@ -19,7 +19,6 @@ class Members extends Component {
             loadData: true,
         };
         this.chaptersDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
     }
     updateList(props) {
         let actualFilters = {};
@@ -52,23 +51,14 @@ class Members extends Component {
     }
 
     componentWillMount(){
-        document.addEventListener("mousedown", this.handleClick, false);
         let filters = this.props.filters;
         filters.push({name: "chapters", value: []});
         this.props.updateFilters(filters);
     }
-    componentWillUnmount(){document.removeEventListener("mousedown", this.handleClick, false);}
 
     componentDidMount(){
         this.filtersStr = JSON.stringify(this.props.filters);
         this.updateList(this.props);
-    }
-
-    handleClick(e) {
-        //debugger
-        if(this.chaptersDropDownRef.state.isOpen && !this.chaptersDropDownRef.dropDownRef.contains(e.target)){
-            this.chaptersDropDownRef.toggle();
-        }
     }
 
     renderFullNameColumn(value, row, index, col) {

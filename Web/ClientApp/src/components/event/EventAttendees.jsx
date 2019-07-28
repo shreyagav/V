@@ -27,6 +27,7 @@ class EventAttendees extends Component {
             addingExistingMembers: false,
             tempMembers:[],
             siteMembers: [],
+            filteredList:[],
             selectAllCheckboxChecked: false,
             activeMembersOnlyChecked: true,
             selectedMembersOnlyChecked: false,
@@ -41,13 +42,12 @@ class EventAttendees extends Component {
         this.addNewMember = this.addNewMember.bind(this);
         this.addExistingMember = this.addExistingMember.bind(this);
         this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
+        this.filterMemberList = this.filterMemberList.bind(this);
     }
-    /*
-    componentDidUpdate(){
-        if(this.state.filteredMembers.length !== this.state.tempMembers.length && this.state.selectAllCheckboxChecked){
-            this.setState({selectAllCheckboxChecked: false});
-        }
-    } */
+
+    componentWillMount(){
+        this.createFilteredListWithTimeOut();
+    }
 
     submitMembersToEvent() {
         this.setState({ loading: true });
@@ -55,9 +55,7 @@ class EventAttendees extends Component {
             .then(data => this.setState({ members: data, tempMembers: [], loading: false, addingExistingMembers: false, attendeeFilter: '' }));
     }
 
-    addNewMember() {
-
-    }
+    addNewMember() {}
 
     addExistingMember() {
         this.setState({ loading: true });
@@ -80,39 +78,38 @@ class EventAttendees extends Component {
         alert("edit this member");
     }
 
+    createFilteredListWithTimeOut(){
+        this.timeoutVar = setTimeout(() => {this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)}, 150);
+    }
+
     filterMemberList = (list, filter) => {
-        let filteredList = [];
+        /* check if element meets criteria */
+        let checkIfElementMeetsCriteria = (el, filterList) => {
+            let meetsCriteria = true;
+            filterList.forEach(elFilter => {
+                if (!(el.firstName.toLowerCase().includes(elFilter) || el.lastName.toLowerCase().includes(elFilter) || el.email.toLowerCase().includes(elFilter) || el.phone.toLowerCase().includes(elFilter))){
+                    meetsCriteria = false;
+                }
+            })
+            return meetsCriteria;
+        }
         /* remove all " " at the beginning and double ' ' inside the filter expression if they are there */
         filter = filter.replace(/\,+/g, ' ');
         filter = filter.toLowerCase().replace(/\s+/g, ' ');
-        if (filter !== '') {
-            let filterList = [];
-            for(let i=0; i < list.length; i++){
-                /* create an array of filters*/
-                if (filter.indexOf(" ") > -1) {
-                    filterList = filter.split(" ");
-                } else {
-                    filterList.push(filter);
-                }
-            }
-            /* check if filter criteria were met */
-            for (let j=0; j < list.length; j++){
-                //if(j===1115){debugger}
-                let filterCriteriaWereMet = true;
-                for (let i=0; i < filterList.length; i++){
-                    if(!(list[j].firstName.toLowerCase().includes(filterList[i]) || list[j].lastName.toLowerCase().includes(filterList[i]) || list[j].email.toLowerCase().includes(filterList[i]) || list[j].phone.toLowerCase().includes(filterList[i]))){
-                        filterCriteriaWereMet = false;
-                    }
-                }
-                /* end of check if filter criteria were met */
-                if (filterCriteriaWereMet) {
-                    filteredList.push(list[j]);
-                }
-            }
-        } else {
-            filteredList = list;
-        }
-        return filteredList;
+        /* create an array of filters*/
+        let filterList = [];
+        if (filter !== '') { filterList = filter.split(" ")} 
+        else filterList = filter;
+        /* filter */
+        let filteredList = [];
+        list.forEach(element => {
+            if(((filterList.length > 0 && checkIfElementMeetsCriteria(element, filterList)) || filterList === '') &&
+                (this.state.activeMembersOnlyChecked === false || (this.state.activeMembersOnlyChecked === true && element.active === true)) &&
+                (this.state.selectedMembersOnlyChecked === false || (
+                    this.state.selectedMembersOnlyChecked === true && this.state.tempMembers.indexOf(element.id) > -1))
+            ){filteredList.push(element)}
+        })
+        this.setState({filteredList: filteredList})
     } 
 
     renderFullNameColumn(value, row, index, col) {
@@ -144,44 +141,7 @@ class EventAttendees extends Component {
         );
     }
 
-    selectAllCheckboxOnChange() {
-        let tempMembers = [];
-        let list = this.createFilteredList(this.state.siteMembers);
-        if(!this.state.selectAllCheckboxChecked) {
-            //select all checkboxes
-            list.forEach(element => tempMembers.push(element.id));
-        }
-        else {
-            if (list.length === this.state.siteMembers.length){
-                tempMembers = [];
-            }
-            else{
-                let search = (element, list, keyProperty) => {
-                    let wasFound = list.find(listElement => listElement[keyProperty] === element);
-                    if (wasFound > -1) {return true}
-                    return false;
-                }
-                //unselect all checkboxes
-                tempMembers.filter(element => search(element, list, this.props.keyProperty));
-            }
-        }
-        this.setState({selectAllCheckboxChecked: !this.state.selectAllCheckboxChecked, tempMembers: tempMembers});
-    }
-
-    filterShowSelectedMembersOnly(list, filterList) {
-        // show only members which were selected
-        let filteredList = [];
-        filterList.forEach(element => {
-            list.forEach(subElement => {
-                if( element === subElement.id ){
-                    filteredList.push(subElement);
-                }
-            })
-        });
-        return filteredList;
-    }
-
-    passFocusForward(e) {
+    passFocusForward(e) {   // ?????????????
         if(!e.shiftKey) {this.okButtonRef.focus()}
         else {this.selectAllCheckboxRef.focus()}
     }
@@ -197,14 +157,6 @@ class EventAttendees extends Component {
         this.setState({ addingExistingMembers: false, attendeeFilter: ''})
     }
 
-    createFilteredList(list) {
-        let filteredList = list;
-        if (this.state.attendeeFilter !== ''){ filteredList = this.filterMemberList( filteredList, this.state.attendeeFilter ) }
-        if (this.state.activeMembersOnlyChecked) { /* filter for active members */ }
-        if (this.state.selectedMembersOnlyChecked){ filteredList = this.filterShowSelectedMembersOnly( filteredList, this.state.tempMembers ) }
-        return filteredList;
-    }
-
     render() {
         const members = this.state.members;
         const columns=[
@@ -212,11 +164,11 @@ class EventAttendees extends Component {
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", className:'word-break'}
         ];
-        if (this.state.addingExistingMembers) {
-            this.filteredList = this.createFilteredList(this.state.siteMembers);
-        }
+        this.filteredList = this.state.filteredList;
         console.log("TEMP MEMBERS");
         console.log(this.state.tempMembers);
+        console.log("SITE MEMBERS");
+        console.log(this.state.siteMembers);
         return (
             <div style={{ "width": "100%", "maxWidth": "600px" }}>
                 {this.state.loading && <Loader />}
@@ -229,11 +181,13 @@ class EventAttendees extends Component {
                                 placeholder='Search members'
                                 value={this.state.attendeeFilter}
                                 onChange={(e) => {
-                                    if (this.state.selectAllCheckboxChecked) {
-                                        this.selectAllCheckboxOnChange()
-                                    }; 
-                                    this.setState({attendeeFilter: e.target.value})}
-                                }
+                                    clearTimeout(this.timeoutVar);
+                                    this.setState({
+                                        attendeeFilter: e.target.value,
+                                        //selectAllCheckboxChecked: false,
+                                        //tempMembers: [],
+                                    }, this.createFilteredListWithTimeOut());
+                                }}
                             />
                             <SearchUpSVG svgClassName='icon'/>
                             <button onClick={() => this.setState({attendeeFilter: ''})}>
@@ -243,7 +197,17 @@ class EventAttendees extends Component {
                         <div className='flex-wrap justify-space-between align-center mr-05 ml-05'>
                             <CheckBox 
                                 className='mr-1 mb-1 ml-025' 
-                                onClick={() => this.selectAllCheckboxOnChange()}
+                                onClick={() => {
+                                    clearTimeout(this.timeoutVar); // ????
+                                    let members = [];
+                                    if(!this.state.selectAllCheckboxChecked) {
+                                        this.state.filteredList.forEach(element => {members.push(element.id)})
+                                    }
+                                    this.setState({
+                                        tempMembers: members, 
+                                        selectAllCheckboxChecked: !this.state.selectAllCheckboxChecked
+                                    }, this.createFilteredListWithTimeOut());
+                                }}
                                 checked={this.state.selectAllCheckboxChecked}
                                 labelStyle={{"fontSize":"0.9rem"}}
                                 labelText={<span>Select All<strong>{" "+ this.filteredList.length.toString()}</strong></span>}
@@ -252,25 +216,25 @@ class EventAttendees extends Component {
                                 <CheckBox 
                                     className='mr-1 mb-1 ml-025' 
                                     onClick={() => {
-                                        if (this.state.selectAllCheckboxChecked) {
-                                            this.selectAllCheckboxOnChange()
-                                        };
-                                        //let tempMembers = this.state.tempMembers;
-                                        //filter temp members to leave only temp members which belongs
-                                        // set temp members to new temp members
+                                        clearTimeout(this.timeoutVar);
                                         this.setState({
-                                            tempMembers: [],
-                                            selectedMembersOnlyChecked: false,
-                                            activeMembersOnlyChecked: !this.state.activeMembersOnlyChecked}
-                                        )}
-                                    }
+                                            activeMembersOnlyChecked: !this.state.activeMembersOnlyChecked,
+                                            selectAllCheckboxChecked: false,
+                                            //tempMembers: [],
+                                        }, this.createFilteredListWithTimeOut())
+                                    }}
                                     checked={this.state.activeMembersOnlyChecked}
                                     labelStyle={{"fontSize":"0.9rem"}}
                                     labelText='Active Members Only'
                                 />
                                 <CheckBox
                                     className='mb-1 ml-025'
-                                    onClick={() => this.setState({selectedMembersOnlyChecked: !this.state.selectedMembersOnlyChecked})}
+                                    onClick={() => {
+                                        clearTimeout(this.timeoutVar);
+                                        this.setState({
+                                            selectedMembersOnlyChecked: !this.state.selectedMembersOnlyChecked
+                                        }, this.createFilteredListWithTimeOut())
+                                    }}
                                     checked={this.state.selectedMembersOnlyChecked}
                                     labelStyle={{"fontSize":"0.9rem"}}
                                     labelText={<span>Selected Only<strong>{" "+ this.state.tempMembers.length.toString()}</strong></span>}
@@ -310,7 +274,7 @@ class EventAttendees extends Component {
                         </span>
                     </div>
                 }
-                {members.length > 0 && <Table columns={columns} data={members} />}
+                {members.length > 0 && <Table columns={columns} data={members} className={"break-at-500"} addHeadersForNarrowScreen={true}/>}
             </div>
         );
     }

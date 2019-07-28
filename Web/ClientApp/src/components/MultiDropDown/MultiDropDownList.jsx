@@ -58,7 +58,7 @@ class MultiDropDownList extends React.Component {
             //this.setState({style: style});
         //}
         //else { /* Propper height is set already, no need to set it again */
-            if(!this.props.toggleable || (this.props.toggleable && this.props.isOpen)) {
+            if(this.props.toggleable && this.props.isOpen) {
                 this.setFocus();
             };
             /*scroll last openned object into view */

@@ -31,16 +31,13 @@ class EventsSideBar extends Component {
         this.typeOfEventDropDownRef = null;
         this.statusDropDownRef = null;
         this.colorDropDownRef = null;
-        this.handleClick = this.handleClick.bind(this);
     }
 
     componentWillMount(){
-        document.addEventListener("mousedown", this.handleClick, false);
         document.addEventListener('wheel', this.handleWheel, {passive : false});
         this.setFilters();
     }
     componentWillUnmount(){
-        document.removeEventListener("mousedown", this.handleClick, false);
         document.removeEventListener('wheel', this.handleWheel, {passive : false});
     }
 
@@ -111,30 +108,6 @@ class EventsSideBar extends Component {
         };
         this.setState(initialState);
         this.props.updateFilters(filters);
-    }
-
-    handleClick(e) {
-        if(this.colorDropDownRef.state.isOpen && !this.colorDropDownRef.dropDownRef.contains(e.target)) {
-            this.colorDropDownRef.toggle();
-        }
-        if(this.statusDropDownRef.state.isOpen && !this.statusDropDownRef.dropDownRef.contains(e.target)) {
-            this.statusDropDownRef.toggle();
-        }
-        if(this.typeOfEventDropDownRef.state.isOpen && !this.typeOfEventDropDownRef.dropDownRef.contains(e.target)) {
-            this.typeOfEventDropDownRef.toggle();
-        }
-        if(this.timeFromDropDownRef.state.isOpen && !this.timeFromDropDownRef.timeNumberPickerRef.contains(e.target)){
-            this.timeFromDropDownRef.toggle();
-        }
-        if(this.timeToDropDownRef.state.isOpen && !this.timeToDropDownRef.timeNumberPickerRef.contains(e.target)){
-            this.timeToDropDownRef.toggle();
-        }
-        if(this.dateStartDropDownRef.state.isOpen && !this.dateStartDropDownRef.datePickerRef.contains(e.target)){
-            this.dateStartDropDownRef.toggle();
-        }
-        if(this.dateEndDropDownRef.state.isOpen && !this.dateEndDropDownRef.datePickerRef.contains(e.target)){
-            this.dateEndDropDownRef.toggle();
-        }
     }
 
     updateFilter(filterName, value){
