@@ -331,19 +331,11 @@ class Calendar extends Component {
                         }
                     </div>
                     <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
-                        <button className='h1 square-button-height' 
-                            onClick={() => this.onArrowClick(false)}
-                            onKeyDown={(e) => {
-                                if(e.keyCode === 9 && e.shiftKey) {
-                                    this.props.backToSideBarRef.focus();
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
+                        <button className='h1 square-button-height' onClick={() => this.onArrowClick(false)}>
                             <ArrowUpSVG svgClassName='flip0'/>
                         </button>
                         <button 
-                            ref = {this.props.setForwardToContentRef}
+                            //ref = {this.props.setForwardToContentRef}
                             className="h1 uppercase-text flex11auto align-self-stretch no-outline-button" 
                             onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
                         >

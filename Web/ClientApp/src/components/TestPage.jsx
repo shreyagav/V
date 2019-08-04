@@ -23,6 +23,8 @@ class TestPage extends Component {
             stateFilter5: '#666666',
         };
         this.chaptersDropDownRef = null;
+
+        this.searchFunction = this.searchFunction.bind(this);
     }
 
     componentWillMount(){
@@ -62,6 +64,10 @@ class TestPage extends Component {
         return list;
     }
 
+    searchFunction(){
+        return this.props.store.chapterList;
+    }
+
     render() {
         /*const chapterList = this.filterList();*/
         const stateList = Array.from(this.props.store.chapterList, element => {return {"name":element.state.name}});
@@ -81,8 +87,9 @@ class TestPage extends Component {
                         <p>CHAPTER:</p>
                        
                         <MultiDropDown 
-                            ref={el => this.chaptersDropDownRef = el}
+                            getListAsync={(searchValue) => fetch("/api/Reports/MembersWithSearch/" + searchValue).then(resp => {return resp.json()})}
                             list={this.props.store.chapterList}
+                            toggleable = {true}
                             multiSelect={true}
                             keyProperty='id'
                             textProperty='state'
@@ -93,10 +100,15 @@ class TestPage extends Component {
                             defaultValue={this.state.stateFilter1}
                             placeholder='National'
                             onDropDownValueChange = {value => this.setState({stateFilter1: value})}
+                            searchNoWrap={false}
+                            noSearchIcon={true}
+                            search={this.searchFunction}
+                            //searchParams={['abbreviation', 'name']}
                         />
 
                         <MultiDropDown 
                             list={this.props.store.chapterList}
+                            toggleable = {true}
                             multiSelect={false}
                             keyProperty='id'
                             textProperty='state'
@@ -108,6 +120,7 @@ class TestPage extends Component {
                             placeholder='National'
                             onDropDownValueChange = {value => this.setState({stateFilter10: value})}
                         />
+                        {/*
 
                         <MultiDropDown 
                             list={this.props.store.chapterList}
@@ -147,7 +160,7 @@ class TestPage extends Component {
                             defaultValue={this.state.stateFilter5}
                             placeholder='Color'
                             onDropDownValueChange = {value => this.setState({stateFilter5: value})}
-                        />
+                        /> */}
 
                     </div>
                     {this.state.showAlert && 

@@ -8,22 +8,6 @@ class CalendarSidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.passFocusForward = this.passFocusForward.bind(this);
-    }
-
-    passFocusForward(e){
-        if(e.shiftKey){
-            if(this.nationalEventButton){
-                this.nationalEventButton.focus();
-                return true;
-            }
-        } else {
-            if(!this.props.store.narrowScreen) {
-                this.props.forwardToContentRef.focus();
-                return true;
-            }
-        }
-        return false;
     }
 
     render() {
@@ -33,7 +17,7 @@ class CalendarSidebar extends Component {
                 <h3>Chapters</h3>
                 {this.props.chapterFilter.length > 0 && 
                     <button 
-                        ref={el => {this.nationalEventButton = el; this.props.setBackToSideBarRef(el);}}
+                        ref={el => this.nationalEventButton = el}
                         className='round-button medium-round-button grey-outline-button pr-05 pl-05'
                         onClick = {this.props.clearChapterFilter}
                     >Select All</button>
@@ -41,6 +25,7 @@ class CalendarSidebar extends Component {
             </div>
             <MultiDropDown 
                 list={this.props.store.chapterList}
+                toggleable = {false}
                 multiSelect={true}
                 keyProperty='id'
                 textProperty='state'
@@ -53,7 +38,6 @@ class CalendarSidebar extends Component {
                 onDropDownValueChange = {this.props.onSideBarDropDownValueChange}
                 hideHeader = {true}
                 hideList = {false}
-                passFocusForward = {this.passFocusForward}
             />
         </div>
         );

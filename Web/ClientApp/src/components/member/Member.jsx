@@ -33,10 +33,12 @@ class Member extends Component {
                 email: '',
                 dateOfBirth: null,
                 gender: '',
-                    streetAddress: '',
-                    city: '',
-                    state: '',
-                    zip: '',
+
+                streetAddress: '',
+                city: '',
+                state: '',
+                zip: '',
+
                 releaseSigned: false,
                 liabilitySigned: false,
                 activeMember: false,
@@ -114,7 +116,7 @@ class Member extends Component {
     updateMemberProperty(property, value){
         let member = this.state.member;
         member[property] = value;
-        this.setState({member, member}, console.log(this.state));
+        this.setState({member, member});
     }
 
     stateNameAndAbbrRender(element, textProperty){
@@ -144,6 +146,9 @@ class Member extends Component {
                 if(this.state.member.gender.male  === false && this.state.member.gender.female  === false) {
                     this.emptyGender = true;
                 }
+                if (this.state.member.state == null) {
+                    this.emptyState = true;
+                }
                 if (this.state.member.zip == null ||this.state.member.zip.length < 1) {
                     this.emptyZip = true;
                 }
@@ -170,6 +175,42 @@ class Member extends Component {
             return ['personal info', 'events', 'TRR info', 'options'];
         }
     }
+
+    checkIfElementMeetsCriteria = (el, filterList, params) => {
+        let meetsCriteria = false;
+        filterList.forEach(elFilter => {
+            params.forEach(param => {
+                if(el[param].toLowerCase().includes(elFilter)) {
+                    meetsCriteria = true;
+            }});
+        })
+        return meetsCriteria;
+    }
+
+    searchValueIntoArray(filter){
+        /* remove all " " at the beginning and double ' ' inside the filter expression if they are there */
+        filter = filter.replace(/\,+/g, ' ');
+        filter = filter.toLowerCase().replace(/\s+/g, ' ');
+        /* return an array of filters or empty string*/
+        if (filter !== '') { return filter.split(" ")} 
+        else return '';
+    }
+
+    filterList = (list, filter, params) => {
+        let filterList = this.searchValueIntoArray(filter);
+        if (filterList === ''){ 
+            return list;
+        }
+        else {
+            let newList = [];
+            list.forEach(element => {
+                if (this.checkIfElementMeetsCriteria(element, filterList, params)){
+                    newList.push(element);
+                }
+            })
+            return newList;
+        }
+    } 
 
     render() {
         const pictures = this.state.formattedPicturesList;
@@ -234,7 +275,6 @@ class Member extends Component {
                                 onDropDownValueChange={value => {
                                     if(this.emptyChapter) {this.emptyChapter = false;}
                                     this.updateMemberProperty("siteId", value);
-                                    console.log(this.state.member, value);
                                 }}
                             />
                         </li>
@@ -346,7 +386,7 @@ class Member extends Component {
                                         }}
                                     />
                                 </li>
-                                <li className={this.emptyState ? 'mark-invalid' : ''} error-text='Select State' style={{"flex":"1 1 auto"}}>
+                                <li className={this.emptyState ? 'mark-invalid' : ''} error-text='Select State' style={{"flex":"1 0 150px"}}>
                                         <MultiDropDown
                                             ref={el => this.stateDropDownRef = el}
                                             list={stateList}
@@ -360,6 +400,9 @@ class Member extends Component {
                                                 if(this.emptyState){this.emptyState = false;}
                                                 this.updateMemberProperty("state", value);
                                             }}
+                                            noSearchIcon={true}
+                                            search={this.filterList}
+                                            searchParams={['abbreviation', 'name']}
                                         />
                                 </li>
                                 <li 

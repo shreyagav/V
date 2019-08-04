@@ -1,4 +1,5 @@
 /* clearing default settings */
+
 * { 
     box-sizing: border-box;
     padding: 0px;
@@ -42,6 +43,7 @@ header {
 body {
     font-size: 16px;
     padding-top: 50px;
+    /*overflow-x: hidden*/
 }
 
 p {
@@ -270,12 +272,12 @@ input:disabled {
     border-color: #999999 !important;
 }
 
-input,
+input, .fake-input,
 .buttonlike-checkbox label > span {
     width: 100%;
     font-size: inherit;
     height: 2.5em;
-    border: 1px solid #666666;
+    border: 1px solid #999999;
     background: white;
     padding: 0.5em 0.7em;
     font-weight: 500;
@@ -642,6 +644,12 @@ ul.main-nav a:hover .svg, ul.main-nav a:focus .svg,
 .uppercase-text {text-transform: uppercase !important;}
 .bold-text{font-weight: 500 !important;}
 
+/* input-wrapper */
+
+.input-wrapper > input {
+    height: calc(2.5em + 2px);
+}
+
 /* label-input-wrapper */
 
 .label-input-wrapper {
@@ -947,7 +955,8 @@ button.grey-SVG-button:focus {
 
 /* INPUT-BUTTON-WRAPPER */
 
-.input-button-wrapper {display: block; position: relative;}
+.input-button-wrapper {display: flex; position: relative;}
+.input-button-wrapper input:hover {cursor: text !important;}
 .input-button-wrapper > button, 
 .input-button-wrapper > .icon {position: absolute; width: 2.5em; height: 2.5em; top: 1px; right: 1px; border: 0px solid;}
 .input-button-wrapper > .icon {left: 1px;}
@@ -963,7 +972,7 @@ button.grey-SVG-button:focus {
 }
 .input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
 .input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
-.input-button-wrapper > input {cursor: pointer; text-overflow:ellipsis; width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #999999; padding-right: 2.5em;}
+.input-button-wrapper > input {cursor: pointer; width: 100%; /*height: calc(2.5em - 2px) !important; */ border: 1px solid #999999; padding-right: 2.5em;}
 .input-button-wrapper > input:focus, .input-button-wrapper:focus > input {border-color: #0099cc;}
 .input-button-wrapper:hover, .input-button-wrapper:focus {border-color: #0099cc !important;}
 
@@ -972,7 +981,6 @@ button.grey-SVG-button:focus {
 .input-button-wrapper > input:focus + svg.icon > .svg,
 .input-button-wrapper > input:hover + svg.icon > .svg {fill: #0099cc !important;}
 .input-button-wrapper:hover > button {cursor: pointer !important;}
-.input-wrapper > input {width: 100%; height: calc(2.5em + 2px) !important; border: 1px solid #999999;}
 
 /* FILTERS */
 
@@ -1323,19 +1331,23 @@ li.mark-invalid > div.radio-inline-wrapper {
     top: 10px;
 }
 
-.message-block {
-    width: 100%;
-}
-
 p.message-block {
     width:100%;
     text-align: center;
     font-style: italic;
     text-transform: none !important;
+    font-weight: 400 !important;
 }
 
-.height-100 {height: 100%;}
+.notes {
+    font-style: italic;
+    text-transform: none !important;
+    font-weight: 400 !important;
+    text-overflow: ellipsis;
+}
 
+.opacity05 { opacity: 0.5;}
+.height-100 {height: 100%;}
 .height-auto {height: auto !important;}
 
 .wh-bcg {
@@ -1367,5 +1379,9 @@ p.message-block {
 
 .ovf-hidden {
     overflow: hidden;
+}
+
+.ws-nowrap {
+    white-space: nowrap;
 }
 
