@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react'
 import CloseUpSVG from '../svg/CloseUpSVG';
 import CheckBoxSVG from '../svg/CheckBoxSVG';
-import './Modal.css'
+import './Alert.css'
 import ExclamationSVG from '../svg/ExclamationSVG';
 
 class Alert extends Component {
@@ -79,7 +79,7 @@ class Alert extends Component {
                             ref = {el => this.singleOkButtonRef = el}
                             className = 'medium-static-button static-button default-button' 
                             onClick = {this.props.onOkButtonClick} 
-                            style={{"marginBottom":"0em"}}
+                            /* style={{"marginBottom":"0em"}} */
                         >
                             {this.props.buttonText ? this.props.buttonText : "OK"}
                         </button>

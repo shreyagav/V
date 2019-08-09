@@ -33,7 +33,9 @@
 .ddhOnFocus > div > button.onFocusWithDDH .svg,
 .drop-down-header:hover> div > button.onFocusWithDDH .svg {fill: #0099cc !important;}
 
-.drop-down-header > div {text-transform: uppercase;}
+/*.drop-down-header > div {*/
+    /*text-transform: uppercase;*/
+/*}*/
 
 .drop-down-header ul {
     display: flex;
@@ -93,9 +95,9 @@ ul.multi-level-list {margin: calc(0.35em - 1px) !important; margin-right: 0em !i
 .simple-list {
     margin-left: 0.7em !important;
     color: #666666;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: 600;
-    line-height: 1;
+    /*line-height: 1;*/
     text-align: left;
 }
 
@@ -110,7 +112,7 @@ ul.multi-level-list {margin: calc(0.35em - 1px) !important; margin-right: 0em !i
 }
 
 .drop-down-header ul > li > span {
-    line-height: 1;
+    /*line-height: 1;*/
     white-space: pre-wrap;
     /*padding: 0 0 2px 0; do not return it! it messes with search input! */
     font-weight: 500;
@@ -173,9 +175,9 @@ ul.drop-down-list li span {
     font-size: inherit;
     display: block;
     color: #666666;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: 600;
-    /*line-height: 1;*/
+    line-height: 1;
     padding-bottom: 0.125em;
     text-align: left;
     overflow: hidden;

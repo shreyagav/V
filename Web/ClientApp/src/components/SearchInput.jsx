@@ -38,12 +38,11 @@ class SearchInput extends Component {
             }
         }
         if (this.props.dynamicWidth){
-            let width = this.fakeInputRef.offsetWidth;
+            let width = this.fakeInputRef.offsetWidth + 1;
             let inputLeft = this.inputRef.getBoundingClientRect().left;
             let wrapperRight = this.props.headerRef.getBoundingClientRect().right;
             let maxInputWidth;
             if(this.props.multiSelect === true){ 
-                //debugger
                 maxInputWidth = this.props.headerRef.offsetWidth - 10;
             } 
             else { maxInputWidth = wrapperRight - inputLeft }
@@ -56,13 +55,7 @@ class SearchInput extends Component {
 
     getPropperStyle(){
         let style = {};
-        if (this.props.noSearchIcon !== true){
-            style["paddingLeft"] = '2.5rem';
-        }
-        if(this.props.dynamicWidth){
-            style["width"] = Math.round(this.state.width) + 'px';
-            this.dynamicStyle = style;
-        }
+        if(this.props.dynamicWidth){ style["width"] = Math.round(this.state.width) + 'px' }
         return style
     }
 
@@ -101,13 +94,13 @@ class SearchInput extends Component {
         return (
             <div ref={el => this.wrapperRef = el}
                 className={this.props.wrapperClassName ? 'search-wrapper input-button-wrapper ' + this.props.wrapperClassName : 'search-wrapper input-button-wrapper'}
-                style = {{position: "relative"}}
+                style = { this.props.dynamicWidth ? {"width": "100%", "position": "relative"} : {"position": "relative"}}
                 onClick={e => {
                     this.inputRef.focus();
-                    if(typeof(this.props.onWrapperClick) == "function" ){
+                    /*if(typeof(this.props.onWrapperClick) == "function" ){
                         if(this.fakeValueRef && this.fakeValueRef !== null) {this.fakeValueRef.classList.add('opacity05')}
                         this.props.onWrapperClick(e)
-                    }
+                    }*/
                 }}
             >
                 {this.props.dynamicWidth &&
@@ -132,24 +125,22 @@ class SearchInput extends Component {
                     />
                 }
                 <input 
-                    ref={el => {
-                        this.inputRef = el;
-                        if (this.props.setInputRef) {this.props.setInputRef(el)};
-                    }}
-                    className = 'search-input'
+                    ref={el => { this.inputRef = el; if (this.props.setInputRef) {this.props.setInputRef(el)}}}
+                    className = {this.props.dynamicWidth ? 'search-input' : 'search-input pl25'}
                     style={style}
                     value={this.props.value}
                     placeholder={!this.props.dynamicWidth ? this.inputPlaceholder : ''}
                     onChange={(e) => this.props.onValueChange(e.target.value)}
                     autoComplete={this.props.autocompleteOff === true && 'nope' }
                     onKeyDown={(e) => this.onInputKeyDown(e)}
+                    onClick={this.props.onInputClick && this.props.onInputClick}
                     onFocus={() => {
                         if(this.fakeValueRef && this.fakeValueRef !== null) { this.fakeValueRef.classList.add('opacity05') }
-                        this.props.toggle();
+                        if(this.props.toggle) { this.props.toggle() }
                     }}
                     onBlur={() => {if(this.fakeValueRef && this.fakeValueRef !== null) { this.fakeValueRef.classList.remove('opacity05') }}}
                 />
-                {!this.props.noSearchIcon && <SearchUpSVG svgClassName='icon'/>}
+                {!this.props.dynamicWidth && <SearchUpSVG svgClassName='icon'/>}
                 {!this.props.dynamicWidth &&
                 <button onClick={(e) => this.props.onClearValueButtonClick(e)}>
                     <CloseUpSVG />

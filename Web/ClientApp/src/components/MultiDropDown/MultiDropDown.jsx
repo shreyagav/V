@@ -40,6 +40,7 @@ class MultiDropDown extends React.Component {
         this.onClearValueButtonClick = this.onClearValueButtonClick.bind(this);
         this.returnFocusToParent = this.returnFocusToParent.bind(this);
         this.getPropperList = this.getPropperList.bind(this);
+        this.onInputClick = this.onInputClick.bind(this);
     }
 
     componentWillMount() {
@@ -212,6 +213,9 @@ class MultiDropDown extends React.Component {
     }
 
     onDropDownValueChange(value){
+        if(this.fakeValueRef){ 
+            this.fakeValueRef.classList.remove('opacity05') 
+        };
         this.props.onDropDownValueChange(value);
         if (this.thereIsSearchInput){
             if(!(this.props.multiSelect || this.props.expandedMultiSelect)){
@@ -300,7 +304,7 @@ class MultiDropDown extends React.Component {
                         if(innerIndex > -1){
                             // 2 layer element has been pressed
                             if(!this.props.expandedMultiSelect){
-                                this.props.onDropDownValueChange(list[index][this.props.expandBy][innerIndex][this.props.expandedKeyProperty]);
+                                this.onDropDownValueChange(list[index][this.props.expandBy][innerIndex][this.props.expandedKeyProperty]);
                                 this.toggle();
                             }
                         }
@@ -311,13 +315,13 @@ class MultiDropDown extends React.Component {
                     }
                     else{
                         if(!(this.props.multiSelect || this.props.expandedMultiSelect)){
-                            this.props.onDropDownValueChange(list[index][this.props.keyProperty]);
+                            this.onDropDownValueChange(list[index][this.props.keyProperty]);
                             if(this.thereIsSearchInput){this.setState({search: ""})}
                             this.toggle();
                         }
                     }
                 } else {
-                    //this.toggle();
+                    this.toggle();
                 }
                 e.preventDefault();
                 break;
@@ -416,31 +420,46 @@ class MultiDropDown extends React.Component {
     }
 
     onClearValueButtonClick = (e) => {
-        //clearTimeout(this.timeoutVar);
+        if(this.timeoutVar) { clearTimeout(this.timeoutVar) }
         this.setState({search: "", setFocusToIndex: 0, setFocusToInnerIndex: -1});
         e.stopPropagation();
     }
 
+    searchWithTimeOut(list, filter, params){
+        this.timeoutVar = setTimeout(() => {
+            let newList = this.props.search(list, filter, params);
+            this.setState({secondaryList: newList});
+        }, 150);
+    }
+
     onSearchInputValueChange(value){
-        //clearTimeout(this.timeoutVar);
-        if (value === ''){
+        clearTimeout(this.timeoutVar);
+        if(this.props.searchMinCharacterCount > 1 && value.length < this.props.searchMinCharacterCount){
             this.setState({search: value, secondaryList: this.props.list});
-        }
-        else {
-            let list = this.props.search(this.props.list, value, this.props.searchParams);
-            this.setState({search: value, secondaryList: list, isOpen: true});
+        } else {
+            if (value === ''){ this.setState({search: value, secondaryList: this.props.list}) }
+            else { 
+                this.setState({search: value, isOpen: true});
+                this.searchWithTimeOut(this.props.list, value, this.props.searchParams);
+            }
         }
     }
 
-    onSearchInputWrapperClick(e){
-        if(!this.state.isOpen){ this.toggle() };
-        e.stopPropagation()
+    onInputClick(){
+        if(this.fakeValueRef && this.fakeValueRef !== null) {
+            this.fakeValueRef.classList.add('opacity05')
+        };
+        if(this.state.isOpen === false) {this.toggle()} 
     }
+
+    /*onSearchInputWrapperClick(e){
+        //if(!this.state.isOpen){ this.toggle() };
+        e.stopPropagation()
+    }*/
 
     onDropDownBlur = () => {
-        //debugger
         if(!this.state.isOpen && this.thereIsSearchInput && !(this.props.multiSelect || this.props.expandedMultiSelect)){ 
-            this.setState({search: ""})
+            this.setState({search: ""});
         }
     }
 
@@ -523,14 +542,14 @@ class MultiDropDown extends React.Component {
                                         setInputRef = {el => this.searchInputRef = el}
                                         setFakeValueRef = {el => this.fakeValueRef = el}
                                         dynamicWidth={true}
-                                        noSearchIcon={this.props.noSearchIcon}
                                         placeholder={this.props.placeholder}
                                         autocompleteOff={true}
                                         value={this.state.search}
                                         inputKeyDownHandler={(e) => this.walkDownTheList(e)}
-                                        onWrapperClick={(e) => this.onSearchInputWrapperClick(e)}
+                                        //onWrapperClick={(e) => this.onSearchInputWrapperClick(e)}
+                                        onInputClick={this.onInputClick}
                                         onValueChange={(value) => this.onSearchInputValueChange(value)}
-                                        onClearValueButtonClick={(e) => this.onSearchInputValueChange('')}
+                                        //onClearValueButtonClick={(e) => this.onSearchInputValueChange('')}
                                         headerRef={this.headerRef}
                                         multiSelect={this.props.multiSelect === true || this.props.expandedMultiSelect === true}
                                         dropDownValue={this.props.defaultValue}

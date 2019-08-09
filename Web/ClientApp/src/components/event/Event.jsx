@@ -11,6 +11,9 @@ import { Service } from '../ApiService';
 import CloseUpSVG from '../../svg/CloseUpSVG';
 import Status from '../Status';
 import Alert from '../Alert';
+import StatusDraftSVG from '../../svg/StatusDraftSVG';
+import StatusPublishedSVG from '../../svg/StatusPublishedSVG';
+import StatusCanceledSVG from '../../svg/StatusCanceledSVG';
 import Loader from '../Loader';
 
 class Event extends Component {
@@ -325,13 +328,47 @@ class Event extends Component {
     render() {
         let eventStatus = this.state.eventMain.eventStatus;
         if (eventStatus === undefined) {eventStatus = "draft"}
-        const pictures = this.state.formattedPicturesList;
+        //const pictures = this.state.formattedPicturesList;
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
+            <div className='inner-pages-wrapper ipw-800 pb-2 pt-3 pt-non-sc'>
+                <div className='second-nav-wrapper'>
+                    <div className='ipw-600'>
+                        <Status eventStatus={eventStatus} className='ml-025 mt-025' />
+                        <div className = 'flex-wrap align-center'>
+                            {eventStatus !== 'published' && 
+                                <button 
+                                    className='round-button medium-round-button outline-on-hover' 
+                                    onClick = {() => this.onPublishButtonClick()}
+                                >
+                                    <StatusPublishedSVG />
+                                    <span>Publish</span>
+                                </button>
+                            }
+                            {eventStatus !== 'canceled' && 
+                                <button 
+                                    className='round-button medium-round-button outline-on-hover' 
+                                    onClick = {() => this.onCancelEventButtonClick()}
+                                >
+                                    <StatusCanceledSVG />
+                                    <span>Cancel</span>
+                                </button>
+                            }
+                            {eventStatus !== 'canceled' && eventStatus !== 'draft' && 
+                                <button 
+                                    className='round-button medium-round-button outline-on-hover'
+                                    onClick = {() => this.onMoveToDraftsButtonClick()}
+                                >
+                                    <StatusDraftSVG />
+                                    <span>Move to drafts</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
                 {this.state.loading && <Loader/>}
-                <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
+                <h1 className='uppercase-text mb-2 mt-2'>New<strong> Event</strong></h1>
                 <div className = 'flex-wrap flex-flow-column mb-3'>
-                        <div className = 'status-wrapper mb-2'>
+                        {/*<div className = 'status-wrapper mb-2'>
                             <Status eventStatus={eventStatus} className='ml-025 mt-025' />
                             <div className = 'flex-wrap align-center'>
                                 {eventStatus !== 'published' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>
@@ -344,7 +381,7 @@ class Event extends Component {
                                     Move to drafts
                                 </button>}
                             </div>
-                        </div>
+                        </div>*/}
 
                     <TabComponent 
                         fixedHeight={true}

@@ -176,9 +176,9 @@ class EventAttendees extends Component {
                             placeholder='Search members'
                             wrapperClassName = 'mb-1 mr-05 ml-05'
                             value={this.state.attendeeFilter}
-                            onValueChange={(e) => {
+                            onValueChange={(value) => {
                                 clearTimeout(this.timeoutVar);
-                                this.setState({attendeeFilter: e.target.value}, this.createFilteredListWithTimeOut());
+                                this.setState({attendeeFilter: value}, this.createFilteredListWithTimeOut());
                             }}
                             onClearValueButtonClick={() => {
                                 clearTimeout(this.timeoutVar);
