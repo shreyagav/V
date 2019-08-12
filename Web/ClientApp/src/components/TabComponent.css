@@ -78,5 +78,5 @@ ul.tab-component > li > p {
 
 @media screen and (max-width: 500px) {
     ul.tab-component {height: 9.6vw;} 
-    ul.tab-component:not(.not-shrinkable-font) > li {font-size: 3vw;}
+    ul.tab-component:not(.not-shrinkable-font) > li {font-size: 3.2vw;}
 }

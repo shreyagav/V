@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react'
-import './Modal.css'
+import './Alert.css'
 
 class Loader extends Component {
 

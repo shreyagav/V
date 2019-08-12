@@ -176,17 +176,42 @@ class EventDemo extends Component {
         let eventStatus = this.state.eventMain.eventStatus;
         if (eventStatus === undefined) {eventStatus = "draft"}
         return (
-            <div className='flex-nowrap flex-flow-column justify-center align-center pt-2 pb-2 pr-1 pl-1' >
+            <div className='inner-pages-wrapper ipw-800 pb-2 pt-3 pt-non-sc' >
                 {this.state.loading && <Loader/>}
-                <h1 className='flex-nowrap align-center mt-1 mb-3'>
+                <div className='second-nav-wrapper'>
+                    <div className='ipw-800'>
+                        <div className='flex-nowrap justify-center align-center'>
+                            <span style={{'textTransform':"uppercase", 'marginRight':"0.5em", "fontWeight": "500"}}>Attend the Event</span>
+                            <TabComponent
+                                style={{'fontSize':'0.85rem','height':'24px'}}
+                                tabList={["yes", "no"]}
+                                wasSelected={(index) => { if (index == 0) this.onAttendanceChanged(0); else this.setState({ showAlert: true }); }}
+                                activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}
+                            />
+                            {/*<button class="round-button medium-round-button grey-outline-button">Cannot Make It</button>*/}
+                        </div>
+                        <div>
+                            {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                                <button 
+                                    className='round-button medium-round-button outline-on-hover' 
+                                    onClick={() => this.navigateToEventEdit(this.state.eventId)}
+                                >
+                                    <EditUpSVG />
+                                    <span>Edit</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <h1 className='flex-nowrap align-center mt-2 mb-3'>
                     {this.state.eventMain.name}
-                    {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                    {/*user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
                         <button className='round-button scaleable-button grey-outline-button ml-1 mt-1' onClick={() => this.navigateToEventEdit(this.state.eventId)}>
                             <EditUpSVG />
                         </button>
-                    }
+                    */}
                 </h1>
-                <div className='flex-nowrap justify-center align-center mb-3'>
+                {/*<div className='flex-nowrap justify-center align-center mb-3'>
                     <span style={{'textTransform':"uppercase", 'marginRight':"0.5em", "fontWeight": "500"}}>Attend the Event</span>
                     <TabComponent
                         style={{'fontSize':'0.85rem','height':'24px'}}
@@ -194,8 +219,7 @@ class EventDemo extends Component {
                         wasSelected={(index) => { if (index == 0) this.onAttendanceChanged(0); else this.setState({ showAlert: true }); }}
                         activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}
                     />
-                    {/*<button class="round-button medium-round-button grey-outline-button">Cannot Make It</button>*/}
-                </div>
+                </div>*/}
                 {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
                 <div className='flex-wrap flex-flow-column mb-3'>
                     {/*<div className='status-wrapper mb-2'>

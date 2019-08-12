@@ -17,9 +17,10 @@
     display: flex;
     align-items: stretch;
     border-radius: 0px;
+    overflow: hidden;
 }
 
-.drop-down-header input {
+.drop-down-header input, .drop-down-header .fake-input {
     border: 0px solid;
     padding-right: 0em;
     margin-left: 0px;
@@ -27,18 +28,21 @@
 }
 
 .drop-down-header:hover {cursor: pointer;}
-.drop-down-header:focus, .drop-down-header:hover {border: 1px solid #0099cc;}
-.drop-down-header:focus button .svg, .drop-down-header:hover > button .svg {fill: #0099cc !important;}
+.drop-down-header:focus, .ddhOnFocus, .drop-down-header:hover {border: 1px solid #0099cc;}
+.drop-down-header:focus > div > button.onFocusWithDDH .svg,
+.ddhOnFocus > div > button.onFocusWithDDH .svg,
+.drop-down-header:hover> div > button.onFocusWithDDH .svg {fill: #0099cc !important;}
 
-.drop-down-header > div {text-transform: uppercase;}
+/*.drop-down-header > div {*/
+    /*text-transform: uppercase;*/
+/*}*/
 
-.drop-down-header > :first-child {
+.drop-down-header ul {
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
     max-width: 100%;
     align-self: center;
-    /*margin-left: 0.6em;*/
     align-items: center;
 }
 
@@ -46,18 +50,30 @@
     flex: 0 0 2.5em;
 }
 
-.drop-down-header > span:first-child {
+.drop-down-header > span:first-child {  
+    /*  ??????????????????????  */
     padding: 0px 0px 3px 0.75em;
     text-transform: uppercase;
 }
 
-.drop-down-header > ul > li {
+.drop-down-header ul > li {
     display: flex;
     align-items: center;
 }
 
-ul.multi-level-list {margin: 0.15em !important;}
-.drop-down-header > ul.multi-level-list > li {
+.liSearchWrapperMultiSelect {
+    padding: 0.15em 0em 0.15em 0.35em;
+    margin: 0.15em 0em 0.15em 0.15em;
+}
+
+.liSearchWrapperMultiSelect input, .liSearchWrapperMultiSelect .fake-input {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: auto !important;
+}
+
+ul.multi-level-list {margin: calc(0.35em - 1px) !important; margin-right: 0em !important;}
+.drop-down-header ul.multi-level-list > li:not(.liSearchWrapper) {
     border: 1px solid #dddddd;
     background-color: #dddddd;
     border-radius: 10px;
@@ -66,28 +82,39 @@ ul.multi-level-list {margin: 0.15em !important;}
     cursor: default;
 }
 
-.drop-down-header > ul.multi-level-list > li button .svg {fill: #999999;}
-.drop-down-header > ul.multi-level-list > li button:hover .svg,
-.drop-down-header > ul.multi-level-list > li button:focus .svg {fill: #0099cc;}
+.drop-down-header ul.multi-level-list > li button .svg {fill: #999999;}
+
+.drop-down-header ul.multi-level-list > li button:hover,
+.drop-down-header ul.multi-level-list > li button:focus {
+    background-color: #0099cc !important; 
+    border-radius: 10px !important; 
+}
+.drop-down-header ul.multi-level-list > li button:hover .svg,
+.drop-down-header ul.multi-level-list > li button:focus .svg { fill: #cccccc; }
 
 .simple-list {
     margin-left: 0.7em !important;
     color: #666666;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: 600;
-    line-height: 1;
-    text-align: left;}
+    /*line-height: 1;*/
+    text-align: left;
+}
 
-.drop-down-header > ul > li.inverted {
+.simple-list > li:not(:last-child) {
+    padding-right: 0.5em;
+}
+
+.drop-down-header ul > li.inverted {
     background-color: #666666;
     border-color: #666666;
     color: #ffffff;
 }
 
-.drop-down-header > ul > li > span {
-    line-height: 1;
+.drop-down-header ul > li > span {
+    /*line-height: 1;*/
     white-space: pre-wrap;
-    padding: 0 0 2px 0;
+    /*padding: 0 0 2px 0; do not return it! it messes with search input! */
     font-weight: 500;
     color: inherit;
 }
@@ -97,7 +124,7 @@ ul.multi-level-list > li > span {
     font-size: 0.85em;
 }
 
-.drop-down-header > ul > li > span:not(:only-child) {
+.drop-down-header ul > li > span:not(:only-child) {
     margin-right: 0.25em;
 }
 
@@ -148,9 +175,10 @@ ul.drop-down-list li span {
     font-size: inherit;
     display: block;
     color: #666666;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: 600;
     line-height: 1;
+    padding-bottom: 0.125em;
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -167,9 +195,12 @@ ul.drop-down-list li label:focus-within svg {
     border-color: #0099cc !important;
 }
 
-ul.drop-down-list li > div:focus span {color: #0099cc !important;}
-ul.drop-down-list li > div:focus label > svg, ul.drop-down-list li > div:hover label > svg {border-color: #0099cc !important;}
-ul.drop-down-list li > div:focus > button > svg > .svg {fill: #0099cc !important;}
+ul.drop-down-list li > div:focus span, ul.drop-down-list li > div.onFocus span {color: #0099cc !important;}
+ul.drop-down-list li > div:focus label > svg, 
+ul.drop-down-list li > div.onFocus label > svg,
+ul.drop-down-list li > div:hover label > svg {border-color: #0099cc !important;}
+ul.drop-down-list li > div:focus > button > svg > .svg, 
+ul.drop-down-list li > div.onFocus > button > svg > .svg {fill: #0099cc !important;}
 
 ul.drop-down-list li label:focus-within::after{
     content: '';
@@ -196,7 +227,8 @@ ul.drop-down-list li label:hover::after{
 }
 
 ul.drop-down-list li > div:hover label::after,
-ul.drop-down-list li > div:focus label::after{
+ul.drop-down-list li > div:focus label::after,
+ul.drop-down-list li > div.onFocus label::after{
     content: '';
     position: absolute;
     top: -3px;
@@ -249,7 +281,9 @@ ul.drop-down-list button:hover > span, ul.drop-down-list button:focus > span {co
 .drop-down-icon {flex: 0 0 auto !important; margin: 0 0.5em 0 0 !important;}
 .drop-down-icon svg {height: 1.2em !important;}
 .drop-down-icon .svg {fill: #666666 !important;}
-div:hover > button .drop-down-icon .svg, div:focus > button .drop-down-icon .svg {fill: #0099cc !important;}
+div:hover > button .drop-down-icon .svg, 
+div:focus > button .drop-down-icon .svg,
+div.onFocus > button .drop-down-icon .svg {fill: #0099cc !important;}
 
 .colorIndicator {
     flex: 0 0 1em !important;

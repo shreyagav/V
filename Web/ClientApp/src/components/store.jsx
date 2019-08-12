@@ -36,7 +36,80 @@ const createStore = WrappedComponent => {
         const state = this.state
         delete state[key]
         this.setState(state)
+      },
+
+      /* validators */
+
+      updateValidators: (fieldName, value, validators) => {
+        validators[fieldName].errors = [];
+        validators[fieldName].valid = true;
+        validators[fieldName].activated = true;
+        validators[fieldName].rules.forEach((rule) => {
+          if (rule.test instanceof RegExp) {
+            if (!rule.test.test(value)) {
+              validators[fieldName].errors.push(rule.message);
+              validators[fieldName].valid = false;
+            }
+          } else if (typeof rule.test === 'function') {
+            if (!rule.test(value)) {
+              validators[fieldName].errors.push(rule.message);
+              validators[fieldName].valid = false;
+            }
+          }
+        });
+      },
+      //TODO : delete when proven not used
+      /*
+      resetValidators: (validators) => {
+        Object.keys(validators).forEach((fieldName) => {
+          validators[fieldName].errors = [];
+          validators[fieldName].valid = false;
+          validators[fieldName].activated = false;
+        });
+      },
+      */
+
+      displayValidationErrors: (fieldName, validators) => {
+        const validator = validators[fieldName];
+        const result = '';
+        if (validator && !validator.valid) {
+          const errors = validator.errors.map((info, index) => {
+            return <span className="error-message" key={index}>{info}</span>;
+          });
+    
+          return (
+            <div className="w-100 flex-nowrap flex-flow-column">
+              {errors}
+            </div>
+          );
+        }
+        return result;
+      },
+
+      checkIfShowError: (fieldName, validators) => {
+        if(!validators[fieldName].activated || validators[fieldName].valid) {return false}
+        else return true
+      },
+
+      // check if the validity of all validators are true
+      isFormValid: (validators, xxx) => {
+        let status = true;
+        Object.keys(validators).forEach((field) => {
+          if (validators[field].activated) {
+            if(!validators[field].valid) {
+              status = false;
+            }
+          } else {
+            this.state.updateValidators(field, xxx[field], validators);
+            if(!validators[field].valid) {
+              status = false;
+            }
+          }
+        });
+        return status;
       }
+      /* validators ends */
+
     }
 
     componentWillMount() {

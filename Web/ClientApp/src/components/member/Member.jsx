@@ -1,17 +1,22 @@
-import React, { Component } from 'react';
-import TabComponent from '../TabComponent';
-import MultiDropDown from '../MultiDropDown/MultiDropDown';
-import DatePicker from '../DatePicker';
-import TimePicker from '../TimePicker';
-import { withStore } from '../store';
-import MemberTRRInfo from './MemberTRRInfo';
-import MemberEvents from './MemberEvents';
-import MemberOptions from './MemberOptions';
-import RadioBoxSVG from '../../svg/RadioBoxSVG';
-import Alert from '../Alert';
-import RadioButton from '../RadioButton';
-import { Service } from '../ApiService';
-import Loader from '../Loader';
+import React, { Component } from 'react'
+import TabComponent from '../TabComponent'
+import MultiDropDown from '../MultiDropDown/MultiDropDown'
+import DatePicker from '../DatePicker'
+import TimePicker from '../TimePicker'
+import { withStore } from '../store'
+import MemberTRRInfo from './MemberTRRInfo'
+import MemberEvents from './MemberEvents'
+import MemberOptions from './MemberOptions'
+import RadioBoxSVG from '../../svg/RadioBoxSVG'
+import Alert from '../Alert'
+import RadioButton from '../RadioButton'
+import EditUpSVG from '../../svg/EditUpSVG'
+import { Service } from '../ApiService'
+import Loader from '../Loader'
+
+import memberValidators from './memberValidators'
+import DeleteUpSVG from '../../svg/DeleteUpSVG';
+import SaveUpSVG from '../../svg/SaveUpSVG';
 
 
 class Member extends Component {
@@ -33,10 +38,12 @@ class Member extends Component {
                 email: '',
                 dateOfBirth: null,
                 gender: '',
-                    streetAddress: '',
-                    city: '',
-                    state: '',
-                    zip: '',
+
+                streetAddress: '',
+                city: '',
+                state: '',
+                zip: '',
+
                 releaseSigned: false,
                 liabilitySigned: false,
                 activeMember: false,
@@ -55,6 +62,7 @@ class Member extends Component {
             activeTabIndex: 0,
             showError: false,
             showDeleteMemberDialog: false,
+            showSuccessfullySavedDialog: false,
             userId: userId
         };
         this.stateDropDownRef = null;
@@ -83,6 +91,10 @@ class Member extends Component {
         this.saveMemberInfo = this.saveMemberInfo.bind(this);
     }
 
+    componentWillMount(){
+        this.validators = memberValidators();
+    }
+
     componentDidMount() {
         var onSuccess = (data) => {
             if (data.dateOfBirth != null) {
@@ -107,14 +119,14 @@ class Member extends Component {
     saveMemberInfo() {
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
-            this.setState({ loading: false });
+            this.setState({ loading: false, showSuccessfullySavedDialog: true });
         });
     }
 
     updateMemberProperty(property, value){
         let member = this.state.member;
         member[property] = value;
-        this.setState({member, member}, console.log(this.state));
+        this.setState({member, member});
     }
 
     stateNameAndAbbrRender(element, textProperty){
@@ -144,10 +156,27 @@ class Member extends Component {
                 if(this.state.member.gender.male  === false && this.state.member.gender.female  === false) {
                     this.emptyGender = true;
                 }
+                if (this.state.member.city == null) {
+                    this.emptyCity = true;
+                }
+                if (this.state.member.state == null) {
+                    this.emptyState = true;
+                }
                 if (this.state.member.zip == null ||this.state.member.zip.length < 1) {
                     this.emptyZip = true;
                 }
-                if (this.emptyChapter || this.emptyFirstName || this.emptyLastName || this.emptyPhone || this.emptyEmail || this.emptyDateOfBirth || this.emptyGender || this.emptyStreetAddress || this.emptyCity || this.emptyZip || this.emptyState){
+                if (this.emptyChapter || 
+                    this.emptyFirstName || 
+                    this.emptyLastName || 
+                    this.emptyPhone || 
+                    this.emptyEmail || 
+                    this.emptyDateOfBirth || 
+                    this.emptyGender || 
+                    this.emptyStreetAddress || 
+                    this.emptyCity || 
+                    this.emptyZip || 
+                    this.emptyState
+                ){
                     this.setState({showError: true});
                     validationPassed = false;
                 }
@@ -156,11 +185,11 @@ class Member extends Component {
     }
     renderHeader() {
         if (this.props.match.path == '/profile') {
-            return (<h1 className='uppercase-text mb-2'>My<strong> Profile</strong></h1>)
+            return (<h1 className='uppercase-text mb-2 mt-2'>My<strong> Profile</strong></h1>)
         } else if (this.props.match.path == '/new-member') {
-            return (<h1 className='uppercase-text mb-2'>New<strong> Member</strong></h1>)
+            return (<h1 className='uppercase-text mb-2 mt-2'>New<strong> Member</strong></h1>)
         } else {
-            return (<h1 className='uppercase-text mb-2'>Edit<strong> Member</strong></h1>)
+            return (<h1 className='uppercase-text mb-2 mt-2'>Edit<strong> Member</strong></h1>)
         }
     }
     getTabs() {
@@ -171,12 +200,71 @@ class Member extends Component {
         }
     }
 
+    checkIfElementMeetsCriteria = (el, filterList, params) => {
+        let checkParam = (param, elFilter) => {
+            return el[param].toLowerCase().includes(elFilter)
+        }
+        let allParamsWereFound = true;
+        filterList.forEach(elFilter => {
+            if (!params.find(param => checkParam(param, elFilter))){ 
+                allParamsWereFound = false
+            }
+        })
+        return allParamsWereFound;
+    }
+
+    searchValueIntoArray(filter){
+        /* remove all " " at the beginning and double ' ' inside the filter expression if they are there */
+        filter = filter.replace(/\,+/g, ' ');
+        filter = filter.toLowerCase().replace(/\s+/g, ' ');
+        /* return an array of filters or empty string*/
+        if (filter !== '') { return filter.split(" ")} 
+        else return '';
+    }
+
+    filterList = (list, filter, params) => {
+        let filterList = this.searchValueIntoArray(filter);
+        if (filterList === ''){ 
+            return list;
+        }
+        else {
+            let newList = [];
+            list.forEach(element => {
+                if (this.checkIfElementMeetsCriteria(element, filterList, params)){
+                    newList.push(element);
+                }
+            })
+            return newList;
+        }
+    } 
+
     render() {
-        const pictures = this.state.formattedPicturesList;
+        //const pictures = this.state.formattedPicturesList;
         const stateList = [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }];
 
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
+            <div className='inner-pages-wrapper ipw-600 pb-2 pt-3 pt-non-sc'>
+                <div className='second-nav-wrapper'>
+                    <div className='ipw-600'>
+                        <div></div>
+                        <div className='flex-nowrap'>
+                            <button 
+                                className='round-button medium-round-button outline-on-hover' 
+                                onClick={() => this.setState({showDeleteMemberDialog: true})}
+                            >   
+                                <DeleteUpSVG />
+                                <span>Delete</span>
+                            </button>
+                            <button
+                                className='round-button medium-round-button outline-on-hover' 
+                                onClick={this.saveMemberInfo}
+                            >
+                                <SaveUpSVG />
+                                <span>Save</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 {this.state.loading && <Loader />}
                 {this.renderHeader()}
                 <TabComponent 
@@ -187,93 +275,86 @@ class Member extends Component {
                 />
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
-                        <li className = {this.emptyFirstName ? 'input-wrapper mark-invalid' : 'input-wrapper'}
-                            error-text='Please enter the First Name'
-                        >
+                        <li className = 'input-wrapper'>
                             <p>First Name:</p>
-                            <input 
-                                type='text' 
-                                placeholder='First Name'
-                                value = {this.state.member.firstName}
-                                onChange={e => {
-                                    if(this.emptyFirstName) {this.emptyFirstName = false;}
-                                    this.updateMemberProperty("firstName", e.target.value);
-                                }}
-                            />
+                            <div className={this.props.store.checkIfShowError('firstName', this.validators) ? 'input-wrapper error-input-wrapper' : 'input-wrapper' }>
+                                <input 
+                                    type='text' 
+                                    placeholder='First Name'
+                                    value = {this.state.member.firstName}
+                                    onChange={e => {
+                                        this.updateMemberProperty("firstName", e.target.value);
+                                        this.props.store.updateValidators("firstName", e.target.value, this.validators);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('firstName', this.validators) }
+                            </div>
                         </li>
-                        <li className={this.emptyLastName ? 'input-wrapper mark-invalid' : 'input-wrapper'}
-                            error-text='Please enter the Last Name'
-                        >
+                        <li className='input-wrapper'>
                             <p>Last Name:</p>
-                            <input 
-                                type='text' 
-                                placeholder='Last Name'
-                                value = {this.state.member.lastName}
-                                onChange={e => {
-                                    if(this.emptyLastName) {this.emptyLastName = false;}
-                                    this.updateMemberProperty("lastName", e.target.value);
-                                }}
-                            />
+                            <div className={this.props.store.checkIfShowError('lastName', this.validators) ? 'input-wrapper error-input-wrapper' : 'input-wrapper'}>
+                                <input 
+                                    type='text' 
+                                    placeholder='Last Name'
+                                    value = {this.state.member.lastName}
+                                    onChange={e => {
+                                        this.props.store.updateValidators("lastName", e.target.value, this.validators);
+                                        this.updateMemberProperty("lastName", e.target.value);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('lastName', this.validators) }
+                            </div>
                         </li>
-                        <li className = {this.emptyChapter ? 'mark-invalid' : ""}
-                            error-text='Please select the Chapter'
-                        >
+                        <li>
                             <p>Chapter:</p>
-                            <MultiDropDown
-                                ref={el => this.chaptersDropDownRef = el}
-                                list={this.props.store.chapterList}
-                                multiSelect={false}
-                                keyProperty='id'
-                                textProperty='state'
-                                expandBy='chapters'
-                                expandedTextProperty='name'
-                                expandedKeyProperty='id'
-                                expandedMultiSelect={false}
-                                defaultValue={this.state.member.siteId}
-                                placeholder="Select chapter"
-                                onDropDownValueChange={value => {
-                                    if(this.emptyChapter) {this.emptyChapter = false;}
-                                    this.updateMemberProperty("siteId", value);
-                                    console.log(this.state.member, value);
-                                }}
-                            />
+                            <div className={this.props.store.checkIfShowError('siteId', this.validators) ? 'error-input-wrapper' : ""}>
+                                <MultiDropDown
+                                    ref={el => this.chaptersDropDownRef = el}
+                                    list={this.props.store.chapterList}
+                                    multiSelect={false}
+                                    keyProperty='id'
+                                    textProperty='state'
+                                    expandBy='chapters'
+                                    expandedTextProperty='name'
+                                    expandedKeyProperty='id'
+                                    expandedMultiSelect={false}
+                                    defaultValue={this.state.member.siteId}
+                                    placeholder="Select chapter"
+                                    onDropDownValueChange={value => {
+                                        this.props.store.updateValidators("siteId", value, this.validators);
+                                        this.updateMemberProperty("siteId", value);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('siteId', this.validators) }
+                            </div>
                         </li>
-                        <li className={this.emptyPhone ? 'input-wrapper mark-invalid' : 'input-wrapper'}
-                            error-text='Please enter the Phone Number'
-                        >
+                        <li className='input-wrapper'>
                             <p>Phone #:</p>
                             <input 
                                 type='text' 
                                 placeholder='Phone Number'
                                 value = {this.state.member.phone}
                                 onChange={e => {
-                                    if(this.emptyPhone){this.emptyPhone = false;}
                                     this.updateMemberProperty("phone", e.target.value)
                                 }}
                             />
                         </li>
-                        <li className={this.emptyEmail ? 'input-wrapper mark-invalid' : 'input-wrapper'}
-                            error-text='Please enter the Email'
-                        >
+                        <li className='input-wrapper' >
                             <p>Email:</p>
                             <input type='text' 
                                 placeholder='Email'
                                 value = {this.state.member.email}
                                 onChange={e => {
-                                    if(this.emptyEmail){this.emptyEmail = false;}
                                     this.updateMemberProperty("email", e.target.value);
                                 }}
                             />
                         </li>
-                        <li className={this.emptyDateOfBirth ? 'mark-invalid' : ''}
-                            error-text='Please enter the Date of Birth'
-                        >
+                        <li>
                             <p>Date of Birth:</p>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
                                 value={this.state.member.dateOfBirth}
                                 onSelect={value => {
-                                    if(this.emptyDateOfBirth){this.emptyDateOfBirth = false;}
                                     this.updateMemberProperty("dateOfBirth", value);
                                 }}
                             />
@@ -286,9 +367,7 @@ class Member extends Component {
                             onSelect={value => { this.updateMemberProperty("injuryDate", value) }}
                         />
                     </li>
-                        <li className={this.emptyGender ? 'mark-invalid' : ''}
-                            error-text='Please select Gender'
-                        >
+                        <li>
                             <p>Gender:</p>
                             <div className='flex-wrap justify-left radio-inline-wrapper'>
                                 <RadioButton
@@ -314,26 +393,22 @@ class Member extends Component {
                                 />
                             </div>
                         </li>
-                        <li className={this.emptyStreetAddress ? 'input-wrapper mark-invalid' : 'input-wrapper'}
-                            error-text='Please enter the Street Address'
-                        >
+                        <li className='input-wrapper'>
                             <p>Address:</p>
                             <input 
                                 type='text' 
                                 placeholder='Street Address'
                                 value={this.state.member.streetAddress}
                                 onChange={e => {
-                                    if(this.emptyStreetAddress){this.emptyStreetAddress = false;}
                                     this.updateMemberProperty("streetAddress", e.target.value);
                                 }}
                             />
                         </li>
                         <li>
-                            <span></span>
+                            <span className='empty'></span>
                             <ul className='input-fields flex-nowrap break-at-500 line-of-inputs-wrapper'>
                                 <li 
-                                    className={this.emptyCity ? 'input-wrapper mark-invalid' : 'input-wrapper'} 
-                                    error-text='Enter City'
+                                    className='input-wrapper'
                                     style={{"flex":"1 1 auto"}}
                                 >
                                     <input 
@@ -341,12 +416,11 @@ class Member extends Component {
                                         placeholder='City' 
                                         value={this.state.member.city}
                                         onChange={e => {
-                                            if(this.emptyCity){this.emptyCity = false;}
                                             this.updateMemberProperty("city", e.target.value);
                                         }}
                                     />
                                 </li>
-                                <li className={this.emptyState ? 'mark-invalid' : ''} error-text='Select State' style={{"flex":"1 1 auto"}}>
+                                <li className='input-wrapper' style={{"flex":"1 0 150px"}}>
                                         <MultiDropDown
                                             ref={el => this.stateDropDownRef = el}
                                             list={stateList}
@@ -357,23 +431,20 @@ class Member extends Component {
                                             placeholder="State"
                                             textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
                                             onDropDownValueChange={value => {
-                                                if(this.emptyState){this.emptyState = false;}
                                                 this.updateMemberProperty("state", value);
                                             }}
+                                            search={this.filterList}
+                                            searchParams={['abbreviation', 'name']}
+                                            //searchMinCharacterCount = {5}
                                         />
                                 </li>
-                                <li 
-                                    className={this.emptyZip ? 'input-wrapper mark-invalid' : 'input-wrapper'}
-                                    error-text='Enter Zip'
-                                    style={{"flex":"0 0 100px"}}
-                                >
+                                <li className='input-wrapper' style={{"flex":"0 0 100px"}}>
                                     <input 
                                         type='text' 
                                         placeholder='Zip' 
                                         maxLength={5} 
                                         value = {this.state.member.zip}
                                         onChange={e => {
-                                            if(this.emptyZip){this.emptyZip = false;}
                                             this.updateMemberProperty("zip", e.target.value);
                                         }}
                                     />
@@ -404,6 +475,9 @@ class Member extends Component {
                     </li>
                     </ul>
                 }
+                {this.state.activeTabIndex === 1 &&
+                    <MemberEvents events={this.state.member.events} />
+                }
                 {this.state.activeTabIndex === 2 && 
                     <MemberTRRInfo 
                         setJoinDateDropDownRef = {el => this.joinDateDropDownRef = el}
@@ -411,18 +485,14 @@ class Member extends Component {
                         setStatusDropDownRef = {el => this.statusDropDownRef = el}
                         setAuthLevelDropDownRef = {el => this.authLevelDropDownRef = el}
                         setUserTypeDropDownRef = {el => this.userTypeDropDownRef = el} 
-
                         member = {this.state.member}
                         updateMemberProperty = {(property, value) => this.updateMemberProperty(property, value)}
                     />
                 }
-                {this.state.activeTabIndex === 1 &&
-                    <MemberEvents events={this.state.member.events} />
-                }
                 {this.state.activeTabIndex === 3 &&
                     <MemberOptions member={this.state.member} />
                 }
-                <div className='flex-wrap mt-2'>
+                <div className='flex-nowrap justify-center children-width-30 w-100 mt-2'>
                     <button className='medium-static-button static-button' onClick={() => this.setState({showDeleteMemberDialog: true})}>Delete</button>
                     {this.state.activeTabIndex > 0 &&
                         <button 
@@ -436,13 +506,13 @@ class Member extends Component {
                             Back
                         </button>
                     }
-                    {this.state.activeTabIndex < 2 &&
+                    {this.state.activeTabIndex < 3 &&
                         <button 
                             className='medium-static-button static-button default-button' 
                             onClick={() => {
-                                if (this.validation()) {
+                                if (this.props.store.isFormValid(this.validators, this.state.member)) {
                                     this.setState({activeTabIndex: this.state.activeTabIndex+1})
-                                }
+                                } else this.setState({showError: true});
                             }}
                         >
                             Next
@@ -455,13 +525,14 @@ class Member extends Component {
                 {this.state.showError && 
                     <Alert 
                         headerText = 'Error'
+                        text = 'Some required information is missing or incomplete.'
                         onClose = {()=>this.setState({showError: false})}
                         showOkButton={true}
                         onOkButtonClick={() => this.setState({ showError: false })}
                         buttonText = "Got IT!"
                         mode = 'error'
                     >
-                        <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
+                        <span class='alert-message'>Please fill out the fields in red.</span>
                     </Alert>
                 }
                 {this.state.showDeleteMemberDialog && 
@@ -479,6 +550,20 @@ class Member extends Component {
                         <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
                         <p style={{"textAlign":"center"}}>
                             This action cannot be undone. Delete anyway?
+                        </p>
+                    </Alert>
+                }
+                {this.state.showSuccessfullySavedDialog && 
+                    <Alert 
+                        headerText = 'Success'
+                        onClose = {() => this.setState({showSuccessfullySavedDialog: false})}
+                        showOkButton = {true}
+                        onOkButtonClick = {() => this.setState({showSuccessfullySavedDialog: false})}
+                        okButtonText = "Ok"
+                        mode = 'success'
+                    >
+                        <p style={{"textAlign":"center"}}>
+                            The information was successfully saved
                         </p>
                     </Alert>
                 }

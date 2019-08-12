@@ -1,5 +1,5 @@
 ﻿//import { Route, Router, history } from 'react-router';
-import { Route, Router, BrowserRouter, Switch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import React, { Component } from 'react'
 import { withStore } from './../store'
 import CloseUpSVG from '../../svg/CloseUpSVG';
@@ -11,9 +11,9 @@ import Loader from '../Loader';
 import { Service } from '../ApiService';
 import FixedWrapper from '../FixedWrapper';
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
-import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import SearchUpSVG from '../../svg/SearchUpSVG';
 import CheckBox from '../CheckBox';
+import SearchInput from '../SearchInput';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -45,14 +45,16 @@ class EventAttendees extends Component {
         this.filterMemberList = this.filterMemberList.bind(this);
     }
 
-    componentWillMount(){
-        this.createFilteredListWithTimeOut();
-    }
-
     submitMembersToEvent() {
         this.setState({ loading: true });
         Service.addEventAttendees(this.state.eventId, this.state.tempMembers)
-            .then(data => this.setState({ members: data, tempMembers: [], loading: false, addingExistingMembers: false, attendeeFilter: '' }));
+            .then(data => this.setState({ 
+                members: data, 
+                tempMembers: [], 
+                loading: false, 
+                addingExistingMembers: false, 
+                attendeeFilter: '' 
+            }));
     }
 
     addNewMember() {}
@@ -60,7 +62,11 @@ class EventAttendees extends Component {
     addExistingMember() {
         this.setState({ loading: true });
         Service.getSiteMembers(this.state.eventId)
-            .then(data => { this.setState({ siteMembers: data, loading: false, addingExistingMembers: true }) });
+            .then(data => { this.setState({ 
+                siteMembers: data, 
+                loading: false, 
+                addingExistingMembers: true
+            }, () => this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)) });
     }
 
     removeMember(member) {
@@ -72,10 +78,6 @@ class EventAttendees extends Component {
                     me.setState({ members: data, loading: false });
                 }, 1000);
             });
-    }
-
-    editMember() {
-        alert("edit this member");
     }
 
     createFilteredListWithTimeOut(){
@@ -129,21 +131,16 @@ class EventAttendees extends Component {
                     </button>
                 }
                 {this.props.editsPermitted !== false &&
-                    <button 
+                    <Link 
                         className='round-button small-round-button light-grey-outline-button' 
                         style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                        onClick={() => this.editMember()}
+                        to={"/member/" + row.id}
                     >
                         <EditUpSVG />
-                    </button>
+                    </Link>
                 }
             </li>
         );
-    }
-
-    passFocusForward(e) {   // ?????????????
-        if(!e.shiftKey) {this.okButtonRef.focus()}
-        else {this.selectAllCheckboxRef.focus()}
     }
 
     textPropertyRender(element, textProperty){
@@ -164,7 +161,7 @@ class EventAttendees extends Component {
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", className:'word-break'}
         ];
-        this.filteredList = this.state.filteredList;
+        //this.filteredList = this.state.filteredList;
         console.log("TEMP MEMBERS");
         console.log(this.state.tempMembers);
         console.log("SITE MEMBERS");
@@ -175,25 +172,19 @@ class EventAttendees extends Component {
                 {this.state.addingExistingMembers &&
                     <FixedWrapper maxWidth={"600px"}>
                         <h2 className='m-1 mr-05 ml-05'>Add Members</h2>
-                        <div className='input-button-wrapper mb-1 mr-05 ml-05'>
-                            <input 
-                                style={{"paddingLeft":"2.5rem"}}
-                                placeholder='Search members'
-                                value={this.state.attendeeFilter}
-                                onChange={(e) => {
-                                    clearTimeout(this.timeoutVar);
-                                    this.setState({
-                                        attendeeFilter: e.target.value,
-                                        //selectAllCheckboxChecked: false,
-                                        //tempMembers: [],
-                                    }, this.createFilteredListWithTimeOut());
-                                }}
-                            />
-                            <SearchUpSVG svgClassName='icon'/>
-                            <button onClick={() => this.setState({attendeeFilter: ''})}>
-                                <CloseUpSVG />
-                            </button>
-                        </div>
+                        <SearchInput 
+                            placeholder='Search members'
+                            wrapperClassName = 'mb-1 mr-05 ml-05'
+                            value={this.state.attendeeFilter}
+                            onValueChange={(value) => {
+                                clearTimeout(this.timeoutVar);
+                                this.setState({attendeeFilter: value}, this.createFilteredListWithTimeOut());
+                            }}
+                            onClearValueButtonClick={() => {
+                                clearTimeout(this.timeoutVar);
+                                this.setState({attendeeFilter: ""}, this.createFilteredListWithTimeOut());
+                            }}
+                        />
                         <div className='flex-wrap justify-space-between align-center mr-05 ml-05'>
                             <CheckBox 
                                 className='mr-1 mb-1 ml-025' 
@@ -210,7 +201,7 @@ class EventAttendees extends Component {
                                 }}
                                 checked={this.state.selectAllCheckboxChecked}
                                 labelStyle={{"fontSize":"0.9rem"}}
-                                labelText={<span>Select All<strong>{" "+ this.filteredList.length.toString()}</strong></span>}
+                                labelText={<span>Select All<strong>{" "+ this.state.filteredList.length.toString()}</strong></span>}
                             />
                             <div className='flex-wrap justify-left'>
                                 <CheckBox 
@@ -241,10 +232,10 @@ class EventAttendees extends Component {
                                 />
                             </div>
                         </div>
-                        {this.filteredList.length === 0 && <p className='message-block mb-2 mt-2'>There are no members that meet this criteria.</p>}
-                        {this.filteredList.length > 0 &&
+                        {this.state.filteredList.length === 0 && <p className='message-block mb-2 mt-2'>There are no members that meet this criteria.</p>}
+                        {this.state.filteredList.length > 0 &&
                             <MultiDropDown
-                                list={this.filteredList}
+                                list={this.state.filteredList}
                                 multiSelect={true}
                                 toggleable={false}
                                 keyProperty='id'
@@ -254,7 +245,6 @@ class EventAttendees extends Component {
                                 onDropDownValueChange={value => this.setState({ tempMembers: value })}
                                 hideHeader = {true}
                                 substractHeight = {80}
-                                passFocusForward = {(e) => this.passFocusForward(e)}
                                 textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
                             />
                         }

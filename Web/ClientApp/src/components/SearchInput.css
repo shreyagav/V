@@ -1,0 +1,22 @@
+.search-input, .fake-input, .fake-input:disabled {
+    padding-left: 0rem !important;
+    line-height: 1;
+    background-color: transparent !important;
+}
+
+.pl25{
+    padding-left: 2.5rem !important;
+}
+
+.fake-input {
+    position: absolute;
+    width: auto;
+    display: block;
+    top: 0px;
+    left: 0px;
+    white-space: pre;
+}
+
+.hidden {
+    visibility: hidden;
+}

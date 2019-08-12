@@ -24,8 +24,7 @@ class SideBarLayout extends Component {
         this.startTouch = this.startTouch.bind(this);
         this.moveTouch = this.moveTouch.bind(this);
 
-        this.forwardToContentRef = null;
-        this.backToSideBarRef = null;
+        //this.forwardToContentRef = null;
         props.store.refreshUserInfo();
         props.store.set("withSideBar", true);
     }
@@ -130,8 +129,7 @@ class SideBarLayout extends Component {
               <SideBarContent {...this.props} 
                 updateFilters={filters => this.updateFilters(filters)} 
                 filters={this.state.filters} 
-                setBackToSideBarRef = {el => this.backToSideBarRef = el}
-                forwardToContentRef = {this.forwardToContentRef}
+                //forwardToContentRef = {this.forwardToContentRef}
               />
             </div>
             <div 
@@ -150,8 +148,7 @@ class SideBarLayout extends Component {
               <BodyContent {...this.props} 
                 updateFilters={filters => this.updateFilters(filters)} 
                 filters={this.state.filters}
-                setForwardToContentRef = {el => this.forwardToContentRef = el}
-                backToSideBarRef = {this.backToSideBarRef}
+                //setForwardToContentRef = {el => this.forwardToContentRef = el}
               />
             </div>
           </div>

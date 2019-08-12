@@ -68,12 +68,19 @@
 .error h3, .error .alertText {color: #E53E71 !important;}
 .alertText {text-align: center; line-height: 1;}
 
+.alert-message {
+    text-align: center;
+    width: 100%;
+    display: block;
+    font-weight: 600;
+}
+
 .modal-img-wrapper {
     width: 2em;
     height: 2em;
-    padding: 0.25em;
+    padding: 0.3em;
     border-radius: 100px;
-    border-width: 0.15em;
+    border-width: 0.125em;
     border-style: solid;
     border-color: #0099cc;
 }

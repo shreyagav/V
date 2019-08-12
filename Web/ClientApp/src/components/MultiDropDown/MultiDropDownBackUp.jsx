@@ -667,8 +667,6 @@ class MultiDropDown extends React.Component {
                 }
                 break;
             case 9: // TAB
-                if(!this.toggleable && this.props.passFocusForward !== false) {this.props.passFocusForward(e)}
-                e.preventDefault();
                 break;
             default: break;
         }

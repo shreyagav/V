@@ -47,7 +47,29 @@ namespace Web.Controllers
         {
             _ctx = ctx;
         }
-
+        [HttpGet("[action]/{search}")]
+        public MemeberReportLine[] MembersWithSearch(string search) {
+            return _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include("Options.Option").Include("Options.Option.Category")
+                .Where(a=>a.FirstName.Contains(search) || a.LastName.Contains(search) || a.Email.Contains(search))
+                .Select(a => new MemeberReportLine()
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    Email = a.Email,
+                    DateOfBirth = a.DateOfBirth,
+                    Joined = a.JoinDate,
+                    Options = a.Options.Select(b => $"{b.Option.Category.Name}-{b.Option.Title}").ToArray(),
+                    Chapter = a.Site.Name,
+                    Phone = a.PhoneNumber,
+                    Comments = a.Comments,
+                    Address = a.Address,
+                    UserName = a.UserName,
+                    Gender = a.Gender == 'F' ? "Female" : "Male",
+                    Type = a.OldType.ToString()
+                })
+                .ToArray();
+        }
         [HttpGet("[action]")]
         public MemeberReportLine[] Members()
         {

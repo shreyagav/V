@@ -24,7 +24,12 @@ class MemberEvents extends Component {
         ];
         return (
             <div className='flex-nowrap flex-flow-column align-center mt-3 mediaMin500-pl-pr-025 pl-1 pr-1' style={{"width":"100%","maxWidth":"500px"}}>
-                <Table columns={columns} data={eventsList}/>
+                {eventsList && eventsList.length > 0 &&
+                    <Table columns={columns} data={eventsList}/>
+                }
+                {eventsList && eventsList.length === 0 &&
+                    <p className="message-block mb-05">This user does not take part in any event.</p>
+                }
             </div>
         );
     }
