@@ -40,7 +40,7 @@ class Chapters extends Component {
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
                 <ul>
                     {row['chapters'].map(element => 
-                        <li style={{"fontSize":"1.1em"}} key={index + element['name']}><a href='/new-chapter'>{element['name']}</a></li>
+                        <li style={{ "fontSize": "1.1em" }} key={index + element['name']}><a href={'/edit-chapter/' + element['id']}>{element['name']}</a></li>
                     )}
                 </ul>
             </li>

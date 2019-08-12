@@ -6,6 +6,24 @@ export class Service {
     static getChaptersForSelector() {
         return Service.__get(host + '/api/Chapter/GetGrouppedChapters')
     }
+
+    static getChapterById(id) {
+        return Service.__get(host + '/api/Chapter/GetById/'+id)
+    }
+
+    static saveChapter(data) {
+        return Service.__post(host + '/api/Chapter/Save', data)
+    }
+
+    static getAllRegeions() {
+        //TODO: remap
+        return Service.__get('/Regions.json');
+    }
+    static getChapterMembers(id) {
+        //TODO: remap
+        return Service.__get('/Members.json');
+    }
+
     static getEventTypes() {
         return Service.__get(host + '/api/Lists/getEventTypes')
     }

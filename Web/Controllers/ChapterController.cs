@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.Dto;
 using Services.Interfaces;
 
@@ -19,8 +20,20 @@ namespace Web.Controllers
             _service = service;
         }
 
+        [HttpGet("[action]/{id}")]
+        public EventSite GetById(int id)
+        {
+            return _service.Get(id);
+        }
+
+        [HttpPost("[action]")]
+        public EventSite Save(EventSite site)
+        {
+            return _service.Set(site);
+        }
+
         [HttpGet("[action]")]
-        public SiteListItemView[] GetGrouppedChapters(int month, int year)
+        public SiteListItemView[] GetGrouppedChapters()
         {
             return _service.SiteListItemView();
         }

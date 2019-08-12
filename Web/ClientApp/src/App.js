@@ -65,6 +65,7 @@ class App extends Component {
                   <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>}/>
                   <Route path='/event-view/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventDemo {...match} /></SimpleLayout></div>} />
                   <Route path='/new-chapter' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
+                  <Route path='/edit-chapter/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
 
 
                   <Route path='/Report/Members' render={(match) => <div><NavMenu {...match} /><SimpleLayout><MembersReport {...match} /></SimpleLayout></div>} />
