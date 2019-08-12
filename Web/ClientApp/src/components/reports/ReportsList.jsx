@@ -16,6 +16,7 @@ export default class ReportsList extends Component {
                     <li><Link to="/Report/Members">Members report</Link></li>
                     <li><Link to="/Report/EventsByType">Events by Type</Link></li>
                     <li><Link to="/Report/VeteransBySite">Veterans by Chapter</Link></li>
+                    <li><Link to="/Report/VeteransAttendence">Veteran's Attendence</Link></li>
                 </ul>
             </div>
         );
