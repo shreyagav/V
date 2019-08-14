@@ -24,7 +24,6 @@ class SideBarLayout extends Component {
         this.startTouch = this.startTouch.bind(this);
         this.moveTouch = this.moveTouch.bind(this);
 
-        //this.forwardToContentRef = null;
         props.store.refreshUserInfo();
         props.store.set("withSideBar", true);
     }
@@ -51,7 +50,6 @@ class SideBarLayout extends Component {
 
   updateFilters(filters){
     this.setState({filters: filters}, console.log(this.state.filters));
-    //alert("time to refresh the Table");
   }
 
   startTouch(e) {
@@ -110,7 +108,7 @@ class SideBarLayout extends Component {
       if (this.props.store.narrowScreen){
         if(this.props.store.sideBarIsHidden){return {"paddingLeft": "0rem", "paddingRight": "0rem"};}
         else return {"paddingLeft": "0rem", "paddingRight": "0rem", "position":"fixed"};}
-      else {return {"paddingLeft":"325px","paddingRight": "1rem"};}
+      else {return {"paddingLeft":"325px","paddingRight": "0rem"};}
     }
 
     render() {
@@ -143,7 +141,7 @@ class SideBarLayout extends Component {
             <div 
               ref={el => this.bodyRef = el} 
               style={mainLevelStyle} 
-              className='sbl-bodyWrapper flex-nowrap flex-flow-column align-center cw-100 overflow-auto'
+              className='sbl-bodyWrapper flex-nowrap flex-flow-column align-center cw-100 overflow-auto pt-2'
             >
               <BodyContent {...this.props} 
                 updateFilters={filters => this.updateFilters(filters)} 

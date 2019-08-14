@@ -60,7 +60,7 @@ class SearchInput extends Component {
     }
 
     setValue(){
-        if(!this.props.myltiSelect){ // SINGLE value 
+        if(this.props.multiSelect === false){ // SINGLE value 
             if(this.props.dropDownValue !== null && this.props.dropDownValue !== ''){ // There is DropDown Value
                 if(this.state.inputOnFocus === true){ // Input ON FOCUS
                     this.inputValue = this.props.value;
@@ -131,7 +131,7 @@ class SearchInput extends Component {
                     value={this.props.value}
                     placeholder={!this.props.dynamicWidth ? this.inputPlaceholder : ''}
                     onChange={(e) => this.props.onValueChange(e.target.value)}
-                    autoComplete={this.props.autocompleteOff === true && 'nope' }
+                    autoComplete={this.props.autocompleteOff === true ? 'nope' : 'on' }
                     onKeyDown={(e) => this.onInputKeyDown(e)}
                     onClick={this.props.onInputClick && this.props.onInputClick}
                     onFocus={() => {
@@ -141,7 +141,7 @@ class SearchInput extends Component {
                     onBlur={() => {if(this.fakeValueRef && this.fakeValueRef !== null) { this.fakeValueRef.classList.remove('opacity05') }}}
                 />
                 {!this.props.dynamicWidth && <SearchUpSVG svgClassName='icon'/>}
-                {!this.props.dynamicWidth &&
+                {!this.props.dynamicWidth && this.props.value.length > 0 &&
                 <button onClick={(e) => this.props.onClearValueButtonClick(e)}>
                     <CloseUpSVG />
                 </button>

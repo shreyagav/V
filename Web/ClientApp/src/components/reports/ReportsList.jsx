@@ -1,6 +1,10 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import MembersUpSVG from '../../svg/MembersUpSVG'
+import EventUpSVG from '../../svg/EventUpSVG'
+import PaddlerUpSVG from '../../svg/PaddlerUpSVG'
+
 export default class ReportsList extends Component {
 
     constructor(props) {
@@ -10,12 +14,27 @@ export default class ReportsList extends Component {
 
     render() {
         return (
-            <div className='flex-nowrap flex-flow-column justify-center align-center pr-1 pl-1' >
-                <h1 className='uppercase-text mb-2'>Reports</h1>
-                <ul>
-                    <li><Link to="/Report/Members">Members report</Link></li>
-                    <li><Link to="/Report/EventsByType">Events by Type</Link></li>
-                    <li><Link to="/Report/VeteransBySite">Veterans by Chapter</Link></li>
+            <div className='inner-pages-wrapper ipw-1000' >
+                <h1 className='uppercase-text'><strong>Reports</strong></h1>
+                <ul className='reports-nav mt-2'>
+                    <li className='pumpkin'>
+                        <Link to="/Report/Members">
+                            <span><MembersUpSVG /></span>
+                            <span>Members report</span>
+                        </Link>
+                    </li>
+                    <li className='supernova'>
+                        <Link to="/Report/EventsByType">
+                            <span><EventUpSVG /></span>
+                            <span>Events by Type</span>
+                        </Link>
+                    </li>
+                    <li className='java'>
+                        <Link to="/Report/VeteransBySite">
+                            <span><PaddlerUpSVG /></span>
+                            <span>Veterans by Chapter</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
         );

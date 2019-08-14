@@ -7,6 +7,7 @@ import MultiDropDown from './MultiDropDown/MultiDropDown';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import SearchUpSVG from '../svg/SearchUpSVG';
+import SearchInput from './SearchInput'
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
@@ -34,14 +35,14 @@ class EventsSideBar extends Component {
     }
 
     componentWillMount(){
-        document.addEventListener('wheel', this.handleWheel, {passive : false});
+        /*document.addEventListener('wheel', this.handleWheel, {passive : false});*/
         this.setFilters();
     }
     componentWillUnmount(){
-        document.removeEventListener('wheel', this.handleWheel, {passive : false});
+        /*document.removeEventListener('wheel', this.handleWheel, {passive : false});*/
     }
 
-    handleWheel = (e) => {
+    /*handleWheel = (e) => {
         if (this.simpleBarRef === null || !(this.simpleBarRef.contains(e.target))) {return;}
         var cancelScrollEvent = function(e){
             e.stopImmediatePropagation();
@@ -68,7 +69,7 @@ class EventsSideBar extends Component {
                 return cancelScrollEvent(e);
             }
         }
-    }
+    }*/
 
     setFilters() {
         let filters = this.props.filters;
@@ -117,31 +118,54 @@ class EventsSideBar extends Component {
         this.props.updateFilters(filters);
     }
 
+    onTextFilterChange(filter, value){
+        clearTimeout(this.timeoutVar);
+        let newState = this.state;
+        newState[filter] = value;
+        this.setState({ newState }, () => { 
+            this.timeoutVar = setTimeout(() => {this.updateFilter(filter, value)}, 500) 
+        });
+    }
+
     render() {
+        const chapterFilter = this.props.filters.find(element => {
+            if (element.name === 'chapters') { return element }
+        })
         return (
             <div style={{"height": "100%"}} data-simplebar >
-                <div ref={el => this.simpleBarRef = el} className = 'mt-1 pl-1 pr-1 filters'>
+                <div className = 'mt-1 pl-1 pr-1 filters'>
                     <div className='flex-nowrap justify-space-between align-end mb-1'>
                         <h3>Filters</h3>
                         <button 
                             className='round-button medium-round-button grey-outline-button pr-05 pl-05'
                             onClick={() => this.setFilters()} 
-                        >Clear all</button>
+                        >Clear Filters</button>
                     </div>
-                    <p>Event Title:</p>
-                    <div className='input-button-wrapper'>
-                        <input 
-                            placeholder='Event Title'
-                            value={this.state.title}
-                            onChange={(e) => this.setState({title: e.target.value})}
-                            onKeyDown={(e) => {
-                                if(e.keyCode === 13) {this.updateFilter("title", this.state.title)}
-                            }}
-                        />
-                        <button onClick={() => this.updateFilter("title", this.state.title)}>
-                            <SearchUpSVG />
-                        </button>
-                    </div>
+
+                    <p>Title:</p>
+                    <SearchInput 
+                        placeholder='Title'
+                        /*wrapperClassName = 'm-1'*/
+                        value={this.state.title}
+                        onValueChange={(value) => this.onTextFilterChange("title", value)}
+                        onClearValueButtonClick={() => this.onTextFilterChange("title", "")}
+                    />
+
+                    <p>CHAPTER:</p>
+                    <MultiDropDown
+                        ref={el => this.chaptersDropDownRef = el}
+                        list={this.props.store.chapterList}
+                        multiSelect={true}
+                        keyProperty='id'
+                        textProperty='state'
+                        expandBy='chapters'
+                        expandedTextProperty='name'
+                        expandedKeyProperty='id'
+                        expandedMultiSelect={true}
+                        defaultValue={chapterFilter ? chapterFilter.value : []}
+                        placeholder='National'
+                        onDropDownValueChange={value => this.updateFilter("chapters", value)}
+                    />
 
                     <p>From:</p>
                     <DatePicker 

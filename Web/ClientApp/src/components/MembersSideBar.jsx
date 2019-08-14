@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import './Calendar.css'
-import { withStore } from './store';
-import MultiDropDown from './MultiDropDown/MultiDropDown';
-import DatePicker from './DatePicker';
-import SimpleBar from 'simplebar-react';
-import 'simplebar/dist/simplebar.min.css';
-import SearchUpSVG from '../svg/SearchUpSVG';
-import VolunteerUpSVG from '../svg/VolunteerUpSVG';
-import VeteranUpSVG from '../svg/VeteranUpSVG';
+import { withStore } from './store'
+import MultiDropDown from './MultiDropDown/MultiDropDown'
+import DatePicker from './DatePicker'
+import SimpleBar from 'simplebar-react'
+import 'simplebar/dist/simplebar.min.css'
+import VolunteerUpSVG from '../svg/VolunteerUpSVG'
+import PaddlerUpSVG from '../svg/PaddlerUpSVG'
+import SearchInput from './SearchInput'
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
@@ -25,6 +25,10 @@ class EventsSideBar extends Component {
         this.dateStartDropDownRef = null;
         this.dateEndDropDownRef = null;
         this.roleDropDownRef = null;
+        this.timeoutVar = null;
+
+        this.onTextFilterChange = this.onTextFilterChange.bind(this);
+        this.updateFilter = this.updateFilter.bind(this);
     }
 
     componentWillMount(){
@@ -64,7 +68,19 @@ class EventsSideBar extends Component {
         this.props.updateFilters(filters);
     }
 
+    onTextFilterChange(filter, value){
+        clearTimeout(this.timeoutVar);
+        let newState = this.state;
+        newState[filter] = value;
+        this.setState({ newState }, () => { 
+            this.timeoutVar = setTimeout(() => {this.updateFilter(filter, value)}, 500) 
+        });
+    }
+
     render() {
+        const chapterFilter = this.props.filters.find(element => {
+            if (element.name === 'chapters'){return element}
+        })
         return (
             <div style={{"height": "100%"}} data-simplebar >
             <div className = 'mt-1 pl-1 pr-1 filters'>
@@ -73,28 +89,38 @@ class EventsSideBar extends Component {
                     <button 
                         className='round-button medium-round-button grey-outline-button pr-05 pl-05'
                         onClick={() => this.setFilters()} 
-                    >Clear all</button>
+                    >Clear Filters</button>
                 </div>
 
-                <p>Name:</p>
-                <div className='input-button-wrapper'>
-                    <input 
-                        placeholder='Name'
-                        value={this.state.name}
-                        onChange={(e) => this.setState({name: e.target.value})}
-                        onKeyDown={(e) => {
-                            if(e.keyCode === 13) {this.updateFilter("name", this.state.name)}
-                        }}
-                    />
-                    <button onClick={() => this.updateFilter("name", this.state.name)}>
-                        <SearchUpSVG />
-                    </button>
-                </div>
+                <p>Search:</p>
+                <SearchInput 
+                    placeholder='Search'
+                    /*wrapperClassName = 'm-1'*/
+                    value={this.state.name}
+                    onValueChange={(value) => this.onTextFilterChange("name", value)}
+                    onClearValueButtonClick={() => this.onTextFilterChange("name", "")}
+                />
+
+                <p>Chapters:</p>
+                <MultiDropDown 
+                    ref={el => this.chaptersDropDownRef = el}
+                    list={this.props.store.chapterList}
+                    multiSelect={true}
+                    keyProperty='id'
+                    textProperty='state'
+                    expandBy='chapters'
+                    expandedTextProperty='name'
+                    expandedKeyProperty='id'
+                    expandedMultiSelect={true}
+                    defaultValue={chapterFilter ? chapterFilter.value : [] }
+                    placeholder='National'
+                    onDropDownValueChange = {value => this.updateFilter("chapters", value)}
+                />
                 
                 <p>Type:</p>
                 <MultiDropDown
                     ref={el => this.roleDropDownRef = el}
-                    list={[{name: 'Paddler', img: <VeteranUpSVG />, id:54},{name: 'Staff', img: <VolunteerUpSVG />, id:53}]} 
+                    list={[{name: 'Paddler', img: <PaddlerUpSVG />, id:54},{name: 'Staff', img: <VolunteerUpSVG />, id:53}]} 
                     keyProperty='id'
                     textProperty='name'
                     defaultValue={this.state.role}
@@ -128,19 +154,13 @@ class EventsSideBar extends Component {
                 />
 
                 <p>Zip:</p>
-                <div className='input-button-wrapper'>
-                    <input 
-                        placeholder='Zip'
-                        value={this.state.zip}
-                        onChange={(e) => this.setState({zip: e.target.value})}
-                        onKeyDown={(e) => {
-                            if(e.keyCode === 13) {this.updateFilter("zip", this.state.zip)}
-                        }}
-                    />
-                    <button onClick={() => this.updateFilter("zip", this.state.zip)}>
-                        <SearchUpSVG />
-                    </button>
-                </div>
+                <SearchInput 
+                    placeholder='Zip'
+                    value={this.state.zip}
+                    onValueChange={(value) => {if (/^\d{1,5}(?:[-\s]\d{0,4})?$/.test(value)) {this.onTextFilterChange("zip", value)}}}
+                    onClearValueButtonClick={() => this.onTextFilterChange("zip", '')}
+                />
+
             </div>
             </div>
         );

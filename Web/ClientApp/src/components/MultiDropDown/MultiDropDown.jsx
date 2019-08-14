@@ -97,11 +97,12 @@ class MultiDropDown extends React.Component {
     }
 
     createList(list) {
+        //debugger
         let headerList = [];
         if (!this.props.expandBy) { 
             if(this.props.multiSelect){ // one level multiselect
                 this.props.defaultValue.forEach(value => {
-                    headerList.push({"parentElement": list.find(el => value === el[this.props.textProperty])});
+                    headerList.push({"parentElement": list.find(el => value === el[this.props.keyProperty])});
                 })
             }
             else { // one level 1 value
@@ -178,7 +179,7 @@ class MultiDropDown extends React.Component {
         let value = this.props.defaultValue;
         let list = this.getPropperList();
         let element = list[index];
-        if (this.props.multiSelect /*&& innerIndex < 0 */) {
+        /*if (this.props.multiSelect || this.props.expandedMultiSelect ) { */
             if (this.props.expandedMultiSelect){
                 if (innerIndex < 0) { // 1st level check box was checked
                     let allAreSelected = true;
@@ -208,7 +209,7 @@ class MultiDropDown extends React.Component {
                 }
                 else value.push(element[this.props.keyProperty])
             }
-        }
+        /*} */
         this.onDropDownValueChange(value);
     }
 
@@ -473,9 +474,9 @@ class MultiDropDown extends React.Component {
             }
             else{
                 style["border"] = "0px solid #0099cc";
-                style["margin"] = "-0.25rem";
+                /*style["margin"] = "-0.25rem";
                 style["paddingTop"] = "1rem";
-                style["paddingBottom"] = "1rem";
+                style["paddingBottom"] = "1rem";*/
                 style["cursor"] = "auto";
             }
             if (/*(this.props.multiSelect || this.props.expandedMultiSelect) &&*/ this.thereIsSearchInput) {

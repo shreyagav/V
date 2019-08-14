@@ -114,16 +114,8 @@ ul.calendar-content > li:not(.disabled):focus > div {
     position: relative;
 }
 
-
 ul.calendar-content > li.today > div {background: #e5f6f9;}
 ul.calendar-content > li.act-today > div {background: #ffffcc !important;}
-/*
-ul.calendar-content > li:focus > div,
-ul.calendar-content > li:hover > div {
-    border: 1px solid #0099cc !important;
-    z-index: 100;
-}
-*/
 
 ul.calendar-content > li.disabled > div {
     background-color: #e2e1c7 !important;
@@ -233,10 +225,10 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
 
 .sbl-bodyWrapper{
     position: absolute;
-    top: 2.5rem;
+    top: 55px;
     bottom: 0px;
     right: 0px;
-    left: 0px;
+    left: 0px; 
 }
 
 /* wrappers */
@@ -252,7 +244,7 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
     width: 325px;
     position: fixed;
     overflow: hidden;
-    top: 70px;
+    top: 75px;
     bottom: 0px;
     left: 0rem;
     z-index: 2000;
@@ -293,8 +285,8 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
 .lm-wrapper > :last-child {
     flex: 1 1 auto;
     padding-left: 325px;
-    padding-right: 1em;
-    padding-top: 2em;
+    /* padding-right: 1em;*/
+    /*padding-top: 2em;*/
 }
 
 @media screen and (max-width: 999px){ 

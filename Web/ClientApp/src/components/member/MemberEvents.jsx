@@ -23,12 +23,12 @@ class MemberEvents extends Component {
             {title:"Date", accesor:"date"}
         ];
         return (
-            <div className='flex-nowrap flex-flow-column align-center mt-3 mediaMin500-pl-pr-025 pl-1 pr-1' style={{"width":"100%","maxWidth":"500px"}}>
+            <div className='flex-nowrap flex-flow-column align-center mediaMin500-pl-pr-025 prpl-0 w-100'>
                 {eventsList && eventsList.length > 0 &&
-                    <Table columns={columns} data={eventsList}/>
+                    <Table columns={columns} data={eventsList} className={"break-at-500"} addHeadersForNarrowScreen={true}/>
                 }
                 {eventsList && eventsList.length === 0 &&
-                    <p className="message-block mb-05">This user does not take part in any event.</p>
+                    <p className="message-block mb-05 pr-1 pl-1">This user does not take part in any event.</p>
                 }
             </div>
         );

@@ -58,6 +58,7 @@ const createStore = WrappedComponent => {
           }
         });
       },
+      
       //TODO : delete when proven not used
       /*
       resetValidators: (validators) => {

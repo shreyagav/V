@@ -283,13 +283,11 @@ class Calendar extends Component {
             );
         } else {
             return (
-                <div div className='pl-025 pr-025'>
-                    <div className='flex-flow-column'>
+                <div>
+                    <div className='flex-flow-column mr-1 ml-1'>
                         <div className='flex-wrap justify-space-between align-center'>
                             <div className='flex-wrap justify-left align-center'>
-                                <h1 className='h2 uppercase-text mr-1'>
-                                    {"event"+" "}<strong>Calendar</strong>
-                                </h1>
+                                <h3 className='mr-1'>Event Calendar</h3>
                                 {this.props.store.narrowScreen && 
                                     <TabComponent
                                         style={{'fontSize':'0.85rem','height':'24px'}}
@@ -312,6 +310,7 @@ class Calendar extends Component {
                             </span>
                         </div>
                         {this.props.chapterFilter.length > 0 &&
+                        <div style={{"marginLeft":"-0.5em", "marginRight":"-0.5em"}}>
                             <MultiDropDown 
                                 toggleable={false}
                                 list={this.props.store.chapterList}
@@ -328,18 +327,18 @@ class Calendar extends Component {
                                 hideHeader = {false}
                                 hideList = {true}
                             />
+                        </div>
                         }
                     </div>
-                    <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
+                    <div className='flex-nowrap justify-stretch m-1 align-center'>
                         <button className='h1 square-button-height' onClick={() => this.onArrowClick(false)}>
                             <ArrowUpSVG svgClassName='flip0'/>
                         </button>
                         <button 
-                            //ref = {this.props.setForwardToContentRef}
-                            className="h1 uppercase-text flex11auto align-self-stretch no-outline-button" 
+                            className="flex11auto align-self-stretch no-outline-button" 
                             onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
                         >
-                            {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
+                            <h1 className="uppercase-text" style={{'paddingBottom':'0.2em'}}>{this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong></h1>
                         </button>
                         <button className='h1 square-button-height'
                             onClick={() => this.onArrowClick(true)}

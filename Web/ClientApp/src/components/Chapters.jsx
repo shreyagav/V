@@ -27,20 +27,23 @@ class Chapters extends Component {
         setTimeout(() => {console.log('set state'); me.setState({stateFilter1:[401, 354]});},2000)
     }
 
-    renderStateColumn (value, row, index, col) {
+    renderStateName(value, row, index, col) {
         return (
-            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
-                {row['state'].name}
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
+                <span className='chapter'>{value}</span>
             </li>
         );
     }
 
     renderChaptersList(value, row, index, col) {
         return (
-            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
+                <span className='table-mini-header'>{col.title + ": "}</span>
                 <ul>
                     {row['chapters'].map(element => 
-                        <li style={{"fontSize":"1.1em"}} key={index + element['name']}><a href='/new-chapter'>{element['name']}</a></li>
+                        <li style={{"fontSize":"1.1em"}} key={index + element['name']}>
+                            <a href='/new-chapter' style={{"fontSize": "0.9em", "fontWeight": "400"}}>{element['name']}</a>
+                        </li>
                     )}
                 </ul>
             </li>
@@ -49,31 +52,32 @@ class Chapters extends Component {
 
     filterList() {
         let list = this.props.store.chapterList;
-        if (this.state.stateFilter !== "" && this.state.stateFilter !== "National") {
-            const newList = this.props.store.chapterList.filter(element => 
-                (element.state === this.state.stateFilter.name)
-            );
-            list = newList;
-        }
-        return list;
+        let filterList = this.state.stateFilter;
+        if (filterList.length > 0) {
+            const newList = [];
+            filterList.forEach(element => {
+                let newElement = list.find(listElement => {if (listElement.id === element) return true});
+                newList.push(newElement);
+            })
+            return newList;
+        } else return list;
     }
 
     render() {
-        /*const chapterList = this.filterList();*/
+        const chapterList = this.filterList();
         const stateList = Array.from(this.props.store.chapterList, element => {return {"name":element.state.name}});
         const columns=[
-            {title:"State", accesor:"state", className:"borders-when-display-block chapter"},
+            {title:"State", accesor:"state", className:"borders-when-display-block", render: this.renderStateName},
             {title:"Chapters", accesor:"chapters", render: this.renderChaptersList}
         ];
 
         return (
-            <div className='flex-nowrap justify-center'>
-                <div className='flex-nowrap flex-flow-column align-center mt-3 pb-2 mediaMin500-pl-pr-025' style={{"width":"600px"}}>
-                    <div className="flex-wrap align-center justify-space-between w-100 mb-2 mediaMax500-pl-pr-025">
+                <div className='inner-pages-wrapper ipw-600'>
+                    <div className="flex-wrap align-center justify-space-between w-100 mb-2 ">
                         <h1 className='uppercase-text'><strong>Chapters</strong></h1>
-                        <a className='big-static-button static-button' href="/new-chapter"><p>ADD NEW CHAPTER</p></a>
+                        <a className='big-static-button static-button' href="/new-chapter"><p>NEW CHAPTER</p></a>
                     </div>
-                    <div className="label-input-wrapper mediaMax500-pl-pr-025">
+                    <div className="label-input-wrapper mb-1">
                         <p>CHAPTER:</p>
                         <MultiDropDown 
                             ref={el => this.chaptersDropDownRef = el}
@@ -83,12 +87,13 @@ class Chapters extends Component {
                             textProperty='state'
                             defaultValue={this.state.stateFilter}
                             placeholder='National'
-                            onDropDownValueChange = {value => this.setState({stateFilter: value})}
+                            onDropDownValueChange = {value => { 
+                                this.setState({stateFilter: value}) 
+                            }}
                         />
-                        <Table columns={columns} data={this.props.store.chapterList}/>
                     </div>
+                    <Table columns={columns} data={chapterList} className={"break-at-500"} addHeadersForNarrowScreen={true}/>
                 </div>
-            </div>
         );
     }
 }

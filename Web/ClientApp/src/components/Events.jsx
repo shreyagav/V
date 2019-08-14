@@ -72,6 +72,22 @@ class NewEvents extends Component {
         );
     }
 
+    renderColumnTime(value, row, index, col) {
+        let newValue = value.split(' ');
+        return (
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
+                <span className='table-mini-header'>{col.title + ": "}</span>
+                <div className='flex-wrap aligh-bottom'>
+                    <span>{newValue[0]}
+                    <small style = {{"fontSize":"0.85em"}}>{newValue[1]}</small></span>
+                    <span style = {{"paddingRight":"0.25em", "paddingLeft":"0.25em"}}>{'-'}</span>
+                    <span>{newValue[3]}
+                    <small style = {{"fontSize":"0.85em"}}>{newValue[4]}</small></span>
+                </div>
+            </li>
+        );
+    }
+
     updateFilter(filterName, value) {
         let filters = this.props.filters;
         let element = filters.find(element => element.name === filterName);
@@ -79,25 +95,26 @@ class NewEvents extends Component {
         this.props.updateFilters(filters);
     }
 
+
     render() {
-        const chapterFilter = this.props.filters.find(element => {
+        /*const chapterFilter = this.props.filters.find(element => {
             if (element.name === 'chapters') { return element }
-        })
+        })*/
         const eventsList = this.state.events;
         const columns = [
             { title: "Title", accesor: "name", className: "borders-when-display-block", render: this.renderColumnName },
             { title: "Date", accesor: "date" },
-            { title: "Time", accesor: "time", columnMinWidth: '6em' },
-            { title: "Type of event", accesor: "type", columnMinWidth: '5em', className: 'word-break' },
+            { title: "Time", accesor: "time", columnMinWidth: '6em', render: this.renderColumnTime },
+            { title: "Type", accesor: "type", columnMinWidth: '5em', className: 'word-break' },
             { title: "Status", accesor: "status", className: "small-bold" }
         ];
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 mediaMin500-pl-pr-025' style={{ "maxWidth": "900px" }}>
-                <div className="flex-wrap align-center justify-space-between w-100 mb-2 mediaMax500-pl-pr-025">
+            <div className="inner-pages-wrapper ipw-1000">
+                <div className="flex-wrap align-center justify-space-between w-100 mb-2">
                     <h1 className='uppercase-text'><strong>Events </strong></h1>
                     <a className='big-static-button static-button' href="/new-event"><p>ADD NEW EVENT</p></a>
                 </div>
-                <div className="label-input-wrapper mediaMax500-pl-pr-025">
+                {/*<div className="label-input-wrapper mb-1">
                     <p>CHAPTER:</p>
                     <MultiDropDown
                         ref={el => this.chaptersDropDownRef = el}
@@ -113,12 +130,12 @@ class NewEvents extends Component {
                         placeholder='National'
                         onDropDownValueChange={value => this.updateFilter("chapters", value)}
                     />
-                </div>
-                {eventsList.length > 0 &&
-                    <Table columns={columns} data={eventsList} className={"break-at-700"} addHeadersForNarrowScreen={true} />
-                }
+                </div>*/}
                 {eventsList.length === 0 && 
                     <p className='message-block mt-2'>There are no events for selected chapters.</p>
+                }
+                {eventsList.length > 0 &&
+                    <Table columns={columns} data={eventsList} className={"break-at-500"} addHeadersForNarrowScreen={true} />
                 }
             </div>
         );

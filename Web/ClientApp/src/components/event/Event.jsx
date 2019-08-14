@@ -330,11 +330,11 @@ class Event extends Component {
         if (eventStatus === undefined) {eventStatus = "draft"}
         //const pictures = this.state.formattedPicturesList;
         return (
-            <div className='inner-pages-wrapper ipw-800 pb-2 pt-3 pt-non-sc'>
+            <div className='pages-wsm-wrapper ipw-800 pt-non-sc'>
                 <div className='second-nav-wrapper'>
                     <div className='ipw-600'>
-                        <Status eventStatus={eventStatus} className='ml-025 mt-025' />
-                        <div className = 'flex-wrap align-center'>
+                        <Status eventStatus={eventStatus} className='mr-025' />
+                        <div className = 'flex-nowrap align-center'>
                             {eventStatus !== 'published' && 
                                 <button 
                                     className='round-button medium-round-button outline-on-hover' 
@@ -366,7 +366,7 @@ class Event extends Component {
                     </div>
                 </div>
                 {this.state.loading && <Loader/>}
-                <h1 className='uppercase-text mb-2 mt-2'>New<strong> Event</strong></h1>
+                <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
                 <div className = 'flex-wrap flex-flow-column mb-3'>
                         {/*<div className = 'status-wrapper mb-2'>
                             <Status eventStatus={eventStatus} className='ml-025 mt-025' />
@@ -525,9 +525,10 @@ class Event extends Component {
                                 
                             </div>
                         </li>*/}
+
                         <li>
                             <p>From:</p>
-                            <ul className='input-fields-child-ul time-fields'>
+                            <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
                                 <li 
                                     className={this.emptyTimeFrom ? 'mark-invalid' : ''}
                                     error-text='Please enter the time'
@@ -626,7 +627,7 @@ class Event extends Component {
                     {this.state.activeTabIndex < 3 &&
                         <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>Next</button>
                     }
-                    <button className='medium-static-button static-button' onClick={this.onSaveClick} >Save & Exit</button>
+                    {/*<button className='medium-static-button static-button' onClick={this.onSaveClick} >Save & Exit</button>*/}
                 </div>
                 
                 {this.state.showError && 
