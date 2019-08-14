@@ -41,9 +41,7 @@ class Chapters extends Component {
                 <span className='table-mini-header'>{col.title + ": "}</span>
                 <ul>
                     {row['chapters'].map(element => 
-                        <li style={{"fontSize":"1.1em"}} key={index + element['name']}>
-                            <a href='/new-chapter' style={{"fontSize": "0.9em", "fontWeight": "400"}}>{element['name']}</a>
-                        </li>
+                        <li style={{ "fontSize": "1.1em" }} key={index + element['name']}><a href={'/edit-chapter/' + element['id']}>{element['name']}</a></li>
                     )}
                 </ul>
             </li>

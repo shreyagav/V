@@ -12,10 +12,15 @@ namespace Models
         public String GroupName { get; set; }
         public String Description { get; set; }
         public Contact Main { get; set; }
+        public int? MainId { get; set; }
         public Contact GOVT { get; set; }
+        public int? GOVTId { get; set; }
+        public int? CoordinatorId { get; set; }
         public Contact Coordinator { get; set; }
         public Contact National { get; set; }
+        public int? NationalId { get; set; }
         public Contact Outreach { get; set; }
+        public int? OutreachId { get; set; }
         [Column(TypeName = "Date")]
         public DateTime? Originated { get; set; }
         public string SecurityClearance { get; set; }

@@ -1,4 +1,6 @@
-﻿using Models.Dto;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
+using Models.Dto;
 using Services.Data;
 using Services.Interfaces;
 using System;
@@ -14,6 +16,64 @@ namespace Services
         public ChapterService(ApplicationDbContext ctx)
         {
             _ctx = ctx;
+        }
+
+        public EventSite Get(int id)
+        {
+            var temp = _ctx.EventSites.Include(a => a.GOVT).Include(a => a.Main).Include(a => a.National).Include(a => a.Outreach).Include(a => a.Coordinator).FirstOrDefault(a => a.Id == id);
+            if (temp.GOVT == null)
+                temp.GOVT = new Contact();
+            if (temp.Coordinator == null)
+                temp.Coordinator = new Contact();
+            if (temp.Main == null)
+                temp.Main = new Contact();
+            if (temp.National == null)
+                temp.National = new Contact();
+            if (temp.Outreach == null)
+                temp.Outreach = new Contact();
+            return temp;
+        }
+
+        public EventSite Set(EventSite eventSite)
+        {
+            var site = _ctx.EventSites.FirstOrDefault(a => a.Id == eventSite.Id);
+            site.Name = eventSite.Name;
+            site.GroupId = eventSite.GroupId;
+            site.GroupName = eventSite.GroupName;
+            site.Description = eventSite.Description;
+            site.SecurityClearance = eventSite.SecurityClearance;
+            site.PoolRental = eventSite.PoolRental;
+
+            site.GOVTId = UpdateContact(eventSite.GOVT);
+            site.NationalId = UpdateContact(eventSite.National);
+            site.CoordinatorId = UpdateContact(eventSite.Coordinator);
+            site.MainId = UpdateContact(eventSite.Main);
+            site.OutreachId = UpdateContact(eventSite.Outreach);
+            _ctx.SaveChanges();
+            return eventSite;
+        }
+
+        private int? UpdateContact(Contact source)
+        {
+            if(String.IsNullOrEmpty(source.Email)&& String.IsNullOrEmpty(source.Name) && String.IsNullOrEmpty(source.Phone))
+            {
+                return null;
+            }
+            var dest = _ctx.Contacts.FirstOrDefault(a => a.Id == source.Id);
+            bool create = false;
+            if(dest == null)
+            {
+                dest = new Contact();
+                create = true;
+            }
+            dest.Email = source.Email;
+            dest.Name = source.Name;
+            dest.Phone = source.Phone;
+            if(create)
+            {
+                _ctx.Contacts.Add(dest);
+            }
+            return dest.Id;
         }
 
         public SiteListItemView[] SiteListItemView()

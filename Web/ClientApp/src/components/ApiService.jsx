@@ -6,6 +6,24 @@ export class Service {
     static getChaptersForSelector() {
         return Service.__get(host + '/api/Chapter/GetGrouppedChapters')
     }
+
+    static getChapterById(id) {
+        return Service.__get(host + '/api/Chapter/GetById/'+id)
+    }
+
+    static saveChapter(data) {
+        return Service.__post(host + '/api/Chapter/Save', data)
+    }
+
+    static getAllRegeions() {
+        //TODO: remap
+        return Service.__get('/Regions.json');
+    }
+    static getChapterMembers(id) {
+        //TODO: remap
+        return Service.__get('/Members.json');
+    }
+
     static getEventTypes() {
         return Service.__get(host + '/api/Lists/getEventTypes')
     }
@@ -73,6 +91,10 @@ export class Service {
         return Service.__get(host + '/api/Reports/VeteransBySite');
     }
 
+    static getVeteransAttendence(range) {
+        return Service.__post(host + '/api/Reports/VeteransAttandance', range);
+    }
+
 
     static selfSignUp(id) {
         return Service.__get(host + '/api/Event/Attend/'+id);
@@ -96,6 +118,22 @@ export class Service {
     static editUserOption(id, opt) {
         return Service.__post(host + '/api/Profile/editUserOption/' + id, opt);
     }
+    static getDiagnosisList() {
+        return Service.__get(host + '/api/Profile/GetAllDiagnosis');
+    }
+    static getUserDiagnosis(id) {
+        return Service.__get(host + '/api/Profile/getUserDiagnosis/' + id);
+    }
+    static addUserDiagnose(id, d) {
+        return Service.__post(host + '/api/Profile/addUserDiagnose/' + id, d);
+    }
+    static deleteUserDiagnosis(id, d) {
+        return Service.__post(host + '/api/Profile/deleteUserDiagnosis/' + id, d);
+    }
+    static editUserDiagnosis(id, d) {
+        return Service.__post(host + '/api/Profile/editUserDiagnosis/' + id, d);
+    }
+
     static __get(url) {
         //var promice = fetch(url).then(resp => {
         //    if (!resp.ok) {

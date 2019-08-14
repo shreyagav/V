@@ -35,6 +35,13 @@ export default class ReportsList extends Component {
                             <span>Veterans by Chapter</span>
                         </Link>
                     </li>
+            <div className='flex-nowrap flex-flow-column justify-center align-center pr-1 pl-1' >
+                <h1 className='uppercase-text mb-2'>Reports</h1>
+                <ul>
+                    <li><Link to="/Report/Members">Members report</Link></li>
+                    <li><Link to="/Report/EventsByType">Events by Type</Link></li>
+                    <li><Link to="/Report/VeteransBySite">Veterans by Chapter</Link></li>
+                    <li><Link to="/Report/VeteransAttendence">Veteran's Attendence</Link></li>
                 </ul>
             </div>
         );

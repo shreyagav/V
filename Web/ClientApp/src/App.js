@@ -26,6 +26,7 @@ import TestPage from './components/TestPage';
 import MembersReport from './components/reports/MembersReport';
 import EventsByType from './components/reports/EventsByType';
 import VeteransBySite from './components/reports/VeteransBySite';
+import VeteransAttendence from './components/reports/VeteransAttendence';
 import ReportsList from './components/reports/ReportsList';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
@@ -65,11 +66,13 @@ class App extends Component {
                   <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>}/>
                   <Route path='/event-view/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventDemo {...match} /></SimpleLayout></div>} />
                   <Route path='/new-chapter' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
+                  <Route path='/edit-chapter/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
 
 
                   <Route path='/Report/Members' render={(match) => <div><NavMenu {...match} /><SimpleLayout><MembersReport {...match} /></SimpleLayout></div>} />
                   <Route path='/Report/EventsByType' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventsByType {...match} /></SimpleLayout></div>} />
                   <Route path='/Report/VeteransBySite' render={(match) => <div><NavMenu {...match} /><SimpleLayout><VeteransBySite {...match} /></SimpleLayout></div>} />
+                  <Route path='/Report/VeteransAttendence' render={(match) => <div><NavMenu {...match} /><SimpleLayout><VeteransAttendence {...match} /></SimpleLayout></div>} />
 
                   <Route path='/test' component={TestPage} />
                   </Switch>

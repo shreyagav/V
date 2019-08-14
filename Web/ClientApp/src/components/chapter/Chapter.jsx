@@ -7,43 +7,51 @@ import EditUpSVG from '../../svg/EditUpSVG';
 import { withStore } from '../store';
 import EditContact from '../EditContact';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
+import { Service } from '../ApiService';
 
 class Chapter extends Component {
 
     constructor(props) {
         super(props);
+        props.store.refreshUserInfo();
+        let chapterId = 0;
+        if (props.match.params.id) {
+            chapterId = props.match.params.id
+        }
         this.state = {
             chapter: {
-                chapterName:'',
-                state: '',
+                id: chapterId,
+                name:'',
+                groupId: 0,
+                groupName: 0,
                 securityClearance: '',
+                description: '',
                 poolRental: false,
-                contactMain: {name: '', phone: '', email: ''},
-                contactGovernment: {name: '', phone: '', email: ''},
-                contactCoordinator: {name: '', phone: '', email: ''},
-                contactNational: {name: '', phone: '', email: ''},
-                contactOutreach: {name: '', phone: '', email: ''}
+                main: {name: '', phone: '', email: ''},
+                govt: {name: '', phone: '', email: ''},
+                coordinator: {name: '', phone: '', email: ''},
+                national: {name: '', phone: '', email: ''},
+                outreach: {name: '', phone: '', email: ''}
             },
             activeTabIndex: 0,
             regions: [],
             members: [],
         };
+        this.setActiveTab = this.setActiveTab.bind(this);
         this.regionsDropDownRef = null;
         this.poolRentalDropDownRef = null;
     }
 
     componentDidMount(){
         var component = this;
-        fetch('/Regions.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({regions: jjson})
-        });
-        fetch('/Members.json')
-        .then(function(data){return data.json();})
-        .then(function(jjson){
-          component.setState({members: jjson})
-        });
+        if (this.state.chapter.id != 0) {
+            Service.getChapterById(this.state.chapter.id)
+                .then(data => this.setState({ chapter: data }));
+            Service.getAllRegeions()
+                .then(data => this.setState({ regions: data }));
+            Service.getChapterMembers(this.state.chapter.id)
+                .then(data => this.setState({ members: data }));
+        }
     }
 
     toggleContact(key){
@@ -61,7 +69,16 @@ class Chapter extends Component {
     changeProperty(property, value){
         let chapter = this.state.chapter;
         chapter[property] = value;
-        this.setState({chapter, chapter}, console.log(this.state.chapter));
+        this.setState({chapter, chapter});
+    }
+
+    setActiveTab(index) {
+        console.log(index);
+        if (index > 0) {
+            Service.saveChapter(this.state.chapter).then(data => { this.setState({ activeTabIndex: index }) });
+        } else {
+            this.setState({ activeTabIndex: index })
+        }
     }
 
     render() {
@@ -71,8 +88,8 @@ class Chapter extends Component {
                 <h1 className='uppercase-text mb-2'>New<strong>Chapter</strong></h1>
                 <TabComponent 
                     fixedHeight={true}
-                    tabList = {['General Info', 'Members']}
-                    wasSelected = {(index) => this.setState({activeTabIndex: index})}
+                    tabList={['General Info', 'Members']}
+                    wasSelected={this.setActiveTab}
                     activeTabIndex = {this.state.activeTabIndex}
                 />
                 {this.state.activeTabIndex === 0 &&
@@ -82,7 +99,7 @@ class Chapter extends Component {
                             <p>Chapter Name:</p>
                             <input type='text' 
                                 placeholder='Chapter Name'
-                                value = {this.state.chapter.chapterName} 
+                                value = {this.state.chapter.name} 
                                 onChange={(e) => this.changeProperty("chapterName", e.target.value)}
                             />
                         </li>
@@ -94,10 +111,10 @@ class Chapter extends Component {
                                 multiSelect={false}
                                 keyProperty='id'
                                 textProperty='state'
-                                defaultValue={this.state.chapter.state}
+                                defaultValue={this.state.chapter.groupId}
                                 placeholder="Select state"
                                 onDropDownValueChange={value => {
-                                    this.changeProperty("state", value);
+                                    this.changeProperty("groupId", value);
                                 }}
                             />
                         </li>
@@ -134,28 +151,28 @@ class Chapter extends Component {
                     <ul className='input-fields first-child-text-165 mt-3 mb-2 pl-1 pr-1'>
                         <EditContact 
                             header={"Main:"}
-                            value={this.state.chapter.contactMain}
-                            onValueChange = {value => this.changeProperty("contactMain", value)}
+                            value={this.state.chapter.main}
+                            onValueChange = {value => this.changeProperty("main", value)}
                         />
                         <EditContact 
                             header={"Government:"}
-                            value={this.state.chapter.contactGovernment}
-                            onValueChange = {value => this.changeProperty("contactGovernment", value)}
+                            value={this.state.chapter.govt}
+                            onValueChange={value => this.changeProperty("govt", value)}
                         />
                         <EditContact 
                             header={"Coordinator:"}
-                            value={this.state.chapter.contactOutreach}
-                            onValueChange = {value => this.changeProperty("contactOutreach", value)}
+                            value={this.state.chapter.coordinator}
+                            onValueChange={value => this.changeProperty("coordinator", value)}
                         />
                         <EditContact 
                             header={"National:"}
-                            value={this.state.chapter.contactNational}
-                            onValueChange = {value => this.changeProperty("contactNational", value)}
+                            value={this.state.chapter.national}
+                            onValueChange = {value => this.changeProperty("national", value)}
                         />
                         <EditContact 
                             header={"Outreach:"} 
-                            value={this.state.chapter.contactOutreach}
-                            onValueChange = {value => this.changeProperty("contactOutreach", value)}
+                            value={this.state.chapter.outreach}
+                            onValueChange = {value => this.changeProperty("outreach", value)}
                         />
                     </ul>
                 </div>
@@ -203,10 +220,10 @@ class Chapter extends Component {
                 }
                 <div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&
-                        <button className='medium-static-button static-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex-1})}>Back</button>
+                        <button className='medium-static-button static-button' onClick={() => this.setActiveTab(this.state.activeTabIndex - 1)}>Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' onClick={() => this.setState({activeTabIndex: this.state.activeTabIndex+1})}>Next</button>
+                        <button className='medium-static-button static-button default-button' onClick={() => this.setActiveTab(this.state.activeTabIndex + 1)}>Next</button>
                     }
                     {this.state.activeTabIndex === 3 &&
                         <button className='medium-static-button static-button default-button' disabled >Save</button>

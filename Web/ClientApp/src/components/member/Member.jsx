@@ -7,6 +7,7 @@ import { withStore } from '../store'
 import MemberTRRInfo from './MemberTRRInfo'
 import MemberEvents from './MemberEvents'
 import MemberOptions from './MemberOptions'
+import MemberDiagnosis from './MemberDiagnosis'
 import RadioBoxSVG from '../../svg/RadioBoxSVG'
 import Alert from '../Alert'
 import RadioButton from '../RadioButton'
@@ -196,7 +197,7 @@ class Member extends Component {
         if (this.props.match.path == '/profile') {
             return ['my info', 'my events'];
         } else {
-            return ['personal info', 'events', 'TRR info', 'options'];
+            return ['personal info', 'events', 'TRR info', 'options', 'diagnosis'];
         }
     }
 
@@ -493,6 +494,9 @@ class Member extends Component {
                 }
                 {this.state.activeTabIndex === 3 &&
                     <MemberOptions member={this.state.member} />
+                }
+                {this.state.activeTabIndex === 4 &&
+                    <MemberDiagnosis member={this.state.member} />
                 }
                 <div className='flex-nowrap justify-center children-width-30 w-100 mt-2'>
                     {this.state.activeTabIndex > 0 &&

@@ -13,6 +13,13 @@ using Services.Helpers;
 
 namespace Web.Controllers
 {
+    public class UserDiagnoseDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
@@ -74,6 +81,54 @@ namespace Web.Controllers
                 .ToArray();
             return cat.Where(c=>c.Options.Length>0).ToArray();
         }
+
+
+        [HttpGet("[action]/{id}")]
+        public UserDiagnoseDto[] GetUserDiagnosis(string id)
+        {
+            return _ctx.UserDiagnoses.Where(o => o.UserId == id).Select(o => new UserDiagnoseDto { Name = o.Diagnosis.Description, Description = o.Note, Id=o.DiagnosisId }).ToArray();
+        }
+
+        [HttpPost("[action]/{id}")]
+        public UserDiagnoseDto[] DeleteUserDiagnosis(string id, UserDiagnoseDto opt)
+        {
+            var temp = _ctx.UserDiagnoses.FirstOrDefault(a => a.UserId == id && a.DiagnosisId == opt.Id);
+            _ctx.UserDiagnoses.Remove(temp);
+            _ctx.SaveChanges();
+            return GetUserDiagnosis(id);
+        }
+
+        [HttpPost("[action]/{id}")]
+        public UserDiagnoseDto[] AddUserDiagnose(string id, UserDiagnoseDto opt)
+        {
+            var temp = new UserDiagnosis()
+            {
+                Note = opt.Description,
+                DiagnosisId = opt.Id,
+                UserId = id
+            };
+            _ctx.UserDiagnoses.Add(temp);
+            _ctx.SaveChanges();
+            return GetUserDiagnosis(id);
+        }
+
+        [HttpPost("[action]/{id}")]
+        public UserOptionDto[] EditUserDiagnosis(string id, UserDiagnoseDto d)
+        {
+            var temp = _ctx.UserDiagnoses.FirstOrDefault(a => a.UserId == id && a.DiagnosisId == d.Id);
+            temp.Note = d.Description;
+            _ctx.SaveChanges();
+            return GetUserOptions(id);
+        }
+
+        [HttpGet("[action]")]
+        public Diagnosis[] GetAllDiagnosis()
+        {
+            return _ctx.Diagnoses
+                .ToArray();
+        }
+
+
 
         [HttpGet("[action]")]
         public async Task<UserProfileDto> Get()

@@ -12,6 +12,11 @@ using Services.Data;
 
 namespace Web.Controllers
 {
+    public class DateRange
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+    }
     public class MemeberReportLine
     {
         public string Id { get; set; }
@@ -120,6 +125,21 @@ namespace Web.Controllers
             veteranAttendance = veteranAttendance.GroupBy(a=>a.SiteId).Select(a=>new { SiteId = a.Key, Count = a.Sum(b=>b.Count)}).ToArray();
             var sites = _ctx.EventSites.ToList();
             return sites.GroupJoin(siteVeterans, a => a.Id, b => b.SiteId, (a, b) => new { a.Id, a.Name, Count = b.Sum(c=>c.Count) }).GroupJoin(veteranAttendance, a=>a.Id,a=>a.SiteId, (a,b)=>new { a.Name, a.Count, Attendance = b.Sum(c=>c.Count)}).ToArray();
+        }
+
+        [HttpPost("[action]")]
+        public dynamic[] VeteransAttandance(DateRange range)
+        {
+            var ids = new int[] { 32, 37 };
+
+            var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => a.Options.Any(b => ids.Contains(b.OptionId))).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
+            var veteranAttendance = _ctx.Users
+                .Include(a => a.Site)
+                .Include(a => a.Options)
+                .Include(a => a.Events)
+                .Where(a => a.Options.Any(b => ids.Contains(b.OptionId)) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value))
+                .Select(a => new { a.Id, a.FirstName, a.LastName, Chapter = a.Site.Name, a.Address, a.Zip, Count = a.Events.Where(b=> b.Event.Date >= range.Start && b.Event.Date <= range.End).Count() }).ToArray();
+            return veteranAttendance;
         }
 
 
