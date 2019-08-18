@@ -112,17 +112,17 @@ class Member extends Component {
             }
             this.setState({ loading: false, member: data });
         };
-
-        
-        if (this.props.match.path == '/profile' ) {
-            this.setState({ loading: true });
-            Service.getProfile().then(onSuccess);
-        } else if (this.props.match.path == '/new-member') {
-
-        } else if (this.state.userId != null && this.state.userId !="") {
-            this.setState({ loading: true });
-            Service.getProfileById(this.state.userId).then(onSuccess);
-        }
+        this.setState({ loading: true });
+        Service.getSponsors().then(data => {
+            this.setState({ sponsors: data });
+            if (this.props.match.path == '/profile') {
+                Service.getProfile().then(onSuccess);
+            } else if (this.props.match.path == '/new-member') {
+                this.setState({ loading: false });
+            } else if (this.state.userId != null && this.state.userId != "") {
+                Service.getProfileById(this.state.userId).then(onSuccess);
+            }
+        });
     }
 
     saveMemberInfo() {
@@ -137,6 +137,7 @@ class Member extends Component {
 
     updateMemberProperty(property, value){
         let member = this.state.member;
+        console.log(member);
         member[property] = value;
         this.setState({member, member});
     }
