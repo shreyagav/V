@@ -93,7 +93,6 @@ namespace Services
                 temp.Created = temp.Modified = DateTime.Now;
                 temp.Status = EventStatus.Draft;
                 var added = _context.CalendarEvents.Add(temp);
-                newEvent.Id = added.Entity.Id;
             }
             else
             {
