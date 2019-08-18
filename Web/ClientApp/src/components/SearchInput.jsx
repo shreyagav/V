@@ -89,7 +89,7 @@ class SearchInput extends Component {
     }
 
     getValue(){
-        if (this.props.multiSelect) {
+        if (this.props.multiSelect || !this.props.dynamicWidth) {
             if(this.props.value.length > 0) return this.props.value;
             else return this.props.placeholder;
         }
