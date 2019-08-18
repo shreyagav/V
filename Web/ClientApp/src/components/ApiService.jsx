@@ -134,8 +134,8 @@ export class Service {
         return Service.__post(host + '/api/Profile/editUserDiagnosis/' + id, d);
     }
 
-    static getSponsors() {
-        return Service.__get(host + '/api/Profile/sponsors');
+    static getTRRInfoLists() {
+        return Service.__get(host + '/api/Profile/TRRInfoLists');
     }
 
     static __get(url) {

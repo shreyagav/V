@@ -93,7 +93,7 @@ class MemberTRRInfo extends Component {
                             <p>Status:</p>
                             <MultiDropDown
                                 ref={this.props.setStatusDropDownRef}
-                                list={[{name:'Staff', id:53}, {name:'Paddler', id: 54}]}
+                            list={[{ name: 'Discharged', id: 88 }, { name: 'Unknown', id: 89 }, { name: 'None', id: 92 }, { name: 'Active', id: 51 }, { name: 'Retired', id: 52 }]}
                                 multiSelect={false}
                                 keyProperty='id'
                                 textProperty='name'
@@ -105,12 +105,12 @@ class MemberTRRInfo extends Component {
                         <li>
                             <p>Role:</p>
                             <MultiDropDown
-                                ref={this.props.setAuthLevelDropDownRef}
-                                list={[{name:'AuthLevel 1'}, {name:'AuthLevel 2'}, {name:'AuthLevel 3'}]}
-                                multiSelect={false}
-                                keyProperty='name'
+                            ref={this.props.setAuthLevelDropDownRef}
+                            list={this.props.roles}
+                                multiSelect={true}
+                                keyProperty='id'
                                 textProperty='name'
-                                defaultValue={this.props.member.authLevel}
+                                defaultValue={this.props.member.roles}
                                 placeholder="Select Authentification Level"
                                 onDropDownValueChange={value => this.props.updateMemberProperty("authLevel", value)}
                             />

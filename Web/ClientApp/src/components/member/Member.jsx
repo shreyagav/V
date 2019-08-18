@@ -53,15 +53,16 @@ class Member extends Component {
                 activeMember: false,
                 deactiveCause: '',
                 joinDate: null,
-                sponsoredBy: [],
+                sponsoredBy: null,
                 travelTime: '',
                 medical: 0,
                 injuryDate: null,
-                authLevel: 0,
+                roles: [],
                 userType: 0,
                 comments: '',
                 events:[],
                 options: [],
+                status:0
             },
             activeTabIndex: 0,
             showError: false,
@@ -69,7 +70,8 @@ class Member extends Component {
             showSuccessfullySavedDialog: false,
             showErrorSaveDialog: false,
             userId: userId,
-            sponsors:[]
+            sponsors: [],
+            authLevels:[]
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
@@ -110,11 +112,14 @@ class Member extends Component {
             if (data.injuryDate != null) {
                 data.injuryDate = new Date(data.injuryDate);
             }
+            if (data.joinDate != null) {
+                data.joinDate = new Date(data.joinDate);
+            }
             this.setState({ loading: false, member: data });
         };
         this.setState({ loading: true });
-        Service.getSponsors().then(data => {
-            this.setState({ sponsors: data });
+        Service.getTRRInfoLists().then(data => {
+            this.setState({ sponsors: data.sponsors, authLevels:data.roles });
             if (this.props.match.path == '/profile') {
                 Service.getProfile().then(onSuccess);
             } else if (this.props.match.path == '/new-member') {
@@ -518,6 +523,7 @@ class Member extends Component {
                     member={this.state.member}
                     updateMemberProperty={(property, value) => this.updateMemberProperty(property, value)}
                     sponsors={this.state.sponsors}
+                    roles={this.state.authLevels}
                     />
                 }
                 {this.state.activeTabIndex === 3 &&

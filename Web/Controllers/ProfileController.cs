@@ -19,6 +19,13 @@ namespace Web.Controllers
         public string Name { get; set; }
         public string Chapter { get; set; }
     }
+
+    public class TRRInfoListsDto
+    {
+        public SponsorDto[] Sponsors { get; set; }
+        public IdentityRole[] Roles { get; set; }
+    }
+
     public class UserDiagnoseDto
     {
         public int Id { get; set; }
@@ -31,15 +38,23 @@ namespace Web.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly UserManager<TRRUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _ctx;
-        public ProfileController(UserManager<TRRUser> userManager, ApplicationDbContext ctx)
+        private IdentityRole[] roles;
+        public ProfileController(UserManager<TRRUser> userManager, ApplicationDbContext ctx, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _ctx = ctx;
+            _roleManager = roleManager;
+            roles = _roleManager.Roles.ToArray();
         }
+
         [HttpGet("[action]")]
-        public SponsorDto[] Sponsors() {
-            return _ctx.Users.Include(a => a.Site).Select(a => new SponsorDto() { Id = a.Id, Chapter = a.Site.Name, Name = $"{a.FirstName} {a.LastName}" }).ToArray();
+        public TRRInfoListsDto TRRInfoLists() {
+            var result = new TRRInfoListsDto();
+            result.Roles = _ctx.Roles.ToArray();
+            result.Sponsors = _ctx.Users.Include(a => a.Site).Select(a => new SponsorDto() { Id = a.Id, Chapter = a.Site.Name, Name = $"{a.FirstName} {a.LastName}" }).ToArray();
+            return result;
         }
         [HttpGet("[action]/{id}")]
         public UserOptionDto[] GetUserOptions(string id)
@@ -144,7 +159,7 @@ namespace Web.Controllers
         public async Task<UserProfileDto> Get()
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = new UserProfileDto(user);
+            var result = await get(user);
             result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a => a.Event.Site).Where(a => a.UserId == user.Id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
@@ -152,11 +167,18 @@ namespace Web.Controllers
         public async Task<UserProfileDto> GetById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            var result = new UserProfileDto(user);
+            var result = await get(user);
             result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a=>a.Event.Site).Where(a => a.UserId == id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
 
+        private async Task<UserProfileDto> get(TRRUser user)
+        {
+            var result = new UserProfileDto(user);
+            result.SponsoredBy = _ctx.Users.FirstOrDefault(a => a.OldId == user.SponsoredBy)?.Id;
+            result.Roles = (await _userManager.GetRolesAsync(user)).Select(a => roles.First(b => b.Name == a).Id).ToArray();
+            return result;
+        }
 
         [HttpPost("[action]")]
         public UserProfileDto[] GetFiltered(ProfileFilterDto filter)
