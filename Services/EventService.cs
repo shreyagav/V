@@ -87,7 +87,7 @@ namespace Services
         public EventMainDto ChangeEvent(EventMainDto newEvent)
         {
             CalendarEvent temp;
-            if (newEvent.Id == 0)
+            if (newEvent.Id <= 0)
             {
                 temp = new CalendarEvent(newEvent);
                 temp.Created = temp.Modified = DateTime.Now;
