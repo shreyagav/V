@@ -146,6 +146,7 @@ class Members extends Component {
                             onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
                 </div>*/}
+                {members.length === 1000 && <span style={{color:"red"}}>Refine your search to get less then 1000 members.</span>}
                 {members.length > 0 &&
                     <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
                 }

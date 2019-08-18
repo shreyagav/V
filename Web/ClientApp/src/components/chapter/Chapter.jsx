@@ -8,6 +8,14 @@ import { withStore } from '../store';
 import EditContact from '../EditContact';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import { Service } from '../ApiService';
+import chapterValidators from './chapterValidators'
+import InputWithClearButton from '../InputWithClearButton'
+import { createValidators } from '../storeValidatorsRules'
+import { alertNotValid } from '../alerts'
+import CheckBox from '../CheckBox';
+import DeleteUpSVG from '../../svg/DeleteUpSVG';
+import SaveUpSVG from '../../svg/SaveUpSVG'
+import Alert from '../Alert'
 
 class Chapter extends Component {
 
@@ -36,10 +44,38 @@ class Chapter extends Component {
             activeTabIndex: 0,
             regions: [],
             members: [],
+            showError: false,
+            showDeleteDialog: false,
+            showSuccessfullySavedDialog: false,
         };
         this.setActiveTab = this.setActiveTab.bind(this);
         this.regionsDropDownRef = null;
         this.poolRentalDropDownRef = null;
+    }
+
+    componentWillMount(){
+        this.validators = chapterValidators();
+        this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
+        let contactValidators = [
+            {'name':'name', 'typeFunction':'nameOTG', 'text':'Name'},
+            {'name':'phone', 'typeFunction':'phone', 'text':'Phone'},
+            {'name':'email', 'typeFunction':'email', 'text':'Email'},
+        ];
+        this.contactMainValidators = createValidators(contactValidators);
+        this.contactGovtValidators = createValidators(contactValidators);
+        this.contactCoordinatorValidators = createValidators(contactValidators);
+        this.contactNationalValidators = createValidators(contactValidators);
+        this.contactOutreachValidators = createValidators(contactValidators);
+        let contactValidatorsOTG = [
+            {'name':'name', 'typeFunction':'nameOTG', 'text':'Name'},
+            {'name':'phone', 'typeFunction':'phoneOTG', 'text':'Phone'},
+            {'name':'email', 'typeFunction':'emailOTG', 'text':'Email'},
+        ];
+        this.contactMainValidatorsOTG = createValidators(contactValidatorsOTG);
+        this.contactGovtValidatorsOTG = createValidators(contactValidatorsOTG);
+        this.contactCoordinatorValidatorsOTG = createValidators(contactValidatorsOTG);
+        this.contactNationalValidatorsOTG = createValidators(contactValidatorsOTG);
+        this.contactOutreachValidatorsOTG = createValidators(contactValidatorsOTG);
     }
 
     componentDidMount(){
@@ -66,14 +102,13 @@ class Chapter extends Component {
         this.setState(state);
     }
 
-    changeProperty(property, value){
-        let chapter = this.state.chapter;
-        chapter[property] = value;
-        this.setState({chapter, chapter});
+    updateChapterProperty(property, value){
+        let temp = this.state.chapter;
+        temp[property] = value;
+        this.setState({ chapter: temp });
     }
 
     setActiveTab(index) {
-        console.log(index);
         if (index > 0) {
             Service.saveChapter(this.state.chapter).then(data => { this.setState({ activeTabIndex: index }) });
         } else {
@@ -81,98 +116,209 @@ class Chapter extends Component {
         }
     }
 
+    renderHeader() {
+        if (this.props.match.path == '/new-chapter') {
+            return (<h1 className='uppercase-text mb-2'>New<strong> Chapter</strong></h1>)
+        } else {
+            return (<h1 className='uppercase-text mb-2'>Edit<strong> Chapter</strong></h1>)
+        }
+    }
+
+    performIfValid(callback){
+        this.props.store.isFormValid(this.validators, this.state.chapter)&& 
+        this.props.store.isFormValid(this.contactMainValidators, this.state.chapter.main)&& 
+        this.props.store.isFormValid(this.contactGovtValidators, this.state.chapter.govt)&& 
+        this.props.store.isFormValid(this.contactCoordinatorValidators, this.state.chapter.coordinator)&& 
+        this.props.store.isFormValid(this.contactNationalValidators, this.state.chapter.national)&& 
+        this.props.store.isFormValid(this.contactOutreachValidators, this.state.chapter.outreach)
+        if (
+            this.props.store.isFormValid(this.validators, this.state.chapter)&& 
+            this.props.store.isFormValid(this.contactMainValidators, this.state.chapter.main)&& 
+            this.props.store.isFormValid(this.contactGovtValidators, this.state.chapter.govt)&& 
+            this.props.store.isFormValid(this.contactCoordinatorValidators, this.state.chapter.coordinator)&& 
+            this.props.store.isFormValid(this.contactNationalValidators, this.state.chapter.national)&& 
+            this.props.store.isFormValid(this.contactOutreachValidators, this.state.chapter.outreach)
+        ) { callback() }
+        else { this.setState({showError: true}) };
+    }
+
+    saveChapter(){  alert('save chapter')  }
+
+    onContactInputValueChange(contact, param, newValue, validators, validatorsOTG){
+        let value = this.state.chapter[contact];
+        value[param] = newValue;
+        if( this.props.store.validateOTG (param, newValue, validatorsOTG) ){
+            if (this.props.store.checkIfValidatorsNeedUpdate(param, newValue, validators)) {
+                this.props.store.updateValidators(param, newValue, validators);
+            }
+            this.updateChapterProperty(contact, value);
+        }
+    }
+
+    updateContactValidators(contact, param, validators){
+        this.props.store.updateValidators(param, this.state.chapter[contact][param], validators);
+        this.setState({"update":true})
+    }
+
     render() {
         const members = this.state.members;
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 pt-2'>
-                <h1 className='uppercase-text mb-2'>New<strong>Chapter</strong></h1>
-                <TabComponent 
-                    fixedHeight={true}
-                    tabList={['General Info', 'Members']}
-                    wasSelected={this.setActiveTab}
-                    activeTabIndex = {this.state.activeTabIndex}
-                />
+            <div className='pages-wsm-wrapper ipw-600'>
+                <div className='second-nav-wrapper'>
+                    <div className='ipw-600'>
+                        <div></div>
+                        <div className='flex-nowrap'>
+                            <button 
+                                className='round-button medium-round-button outline-on-hover' 
+                                onClick={() => this.setState({showDeleteDialog: true})}
+                            >   
+                                <DeleteUpSVG />
+                                <span>Delete</span>
+                            </button>
+                            <button
+                                className='round-button medium-round-button outline-on-hover' 
+                                onClick={() => this.performIfValid(() => this.saveChapter())}
+                            >
+                                <SaveUpSVG />
+                                <span>Save</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/*this.state.loading && <Loader />*/}
+
+                {this.renderHeader()}
+
+                <div className='flex-wrap flex-flow-column mb-3'>
+                    <TabComponent 
+                        fixedHeight={true}
+                        tabList={['information', 'Members']}
+                        wasSelected={(index) => this.performIfValid(() => this.setActiveTab(index))}
+                        activeTabIndex = {this.state.activeTabIndex}
+                    />
+                </div>
                 {this.state.activeTabIndex === 0 &&
                 <div style={{"width":"100%", "maxWidth":"600px"}}>
-                    <ul className='input-fields first-child-text-165 mt-3 mb-2 pl-1 pr-1'>
+                    <ul className='input-fields first-child-text-165 pl-1 pr-1'>
                         <li>
                             <p>Chapter Name:</p>
-                            <input type='text' 
-                                placeholder='Chapter Name'
-                                value = {this.state.chapter.name} 
-                                onChange={(e) => this.changeProperty("chapterName", e.target.value)}
-                            />
+                            <div className={this.props.store.checkIfShowError('name', this.validators) ? 'error-input-wrapper' : '' }>
+                                <InputWithClearButton 
+                                    type='text' 
+                                    placeholder='Chapter Name'
+                                    value = {this.state.chapter.name}
+                                    onChange={e => {
+                                        this.updateChapterProperty("name", e.target.value)
+                                        this.props.store.updateValidators("name", e.target.value, this.validators);
+                                    }}
+                                    onClearValue = {() => {
+                                        this.updateChapterProperty("name", ""); 
+                                        this.props.store.updateValidators("name", "", this.validators);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('name', this.validators) }
+                            </div>
                         </li>
                         <li>
                             <p>Region:</p>
-                            <MultiDropDown
-                                ref={el => this.regionsDropDownRef = el}
-                                list={this.props.store.chapterList}
-                                multiSelect={false}
-                                keyProperty='id'
-                                textProperty='state'
-                                defaultValue={this.state.chapter.groupId}
-                                placeholder="Select state"
-                                onDropDownValueChange={value => {
-                                    this.changeProperty("groupId", value);
-                                }}
-                            />
+                            <div className={this.props.store.checkIfShowError('groupId', this.validators) ? 'error-input-wrapper' : ""}>
+                                <MultiDropDown
+                                    ref={el => this.regionsDropDownRef = el}
+                                    list={this.props.store.chapterList}
+                                    multiSelect={false}
+                                    keyProperty='id'
+                                    textProperty='state'
+                                    defaultValue={this.state.chapter.groupId}
+                                    placeholder="Select state"
+                                    onDropDownValueChange={value => {
+                                        this.updateChapterProperty('groupId', value);
+                                        this.props.store.updateValidators('groupId', value, this.validators);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('groupId', this.validators) }
+                            </div>
                         </li>
                         <li>
                             <p>Security Clearace:</p>
-                            <input type='text' 
+                            <InputWithClearButton 
+                                type='text' 
                                 placeholder='Security Clearance'
-                                value = {this.state.chapter.securityClearance} 
-                                onChange={(e) => this.changeProperty("securityClearance", e.target.value)}
+                                value = {this.state.chapter.securityClearance}
+                                onChange={e => {
+                                    this.updateChapterProperty("securityClearance", e.target.value)
+                                    /* this.props.store.updateValidators("securityClearance", e.target.value, this.validators);*/
+                                }}
+                                onClearValue = {() => {
+                                    this.updateChapterProperty("securityClearance", ""); 
+                                    /*this.props.store.updateValidators("securityClearance", "", this.validators);*/
+                                }}
                             />
                         </li>
-                        <li>
+
+                        <li className='alignCenter'>
                             <p>Pool Rental:</p>
-                            <div 
-                                tabIndex={0} 
-                                className='checkBox-wrapper'
-                                onClick={() => {this.changeProperty("poolRental", !this.state.chapter.poolRental)}}
-                                onKeyDown={(e) => {if(e.keyCode === 32){/* SPACE BAR */ this.changeProperty("poolRental", !this.state.chapter.poolRental)}}}
-                                style = {{"marginTop":"0.6rem"}}
-                            >
-                                <label>
-                                    <input type="checkbox" disabled checked={this.state.chapter.poolRental}/>
-                                    <CheckBoxSVG />
-                                </label>
-                                {this.state.chapter.poolRental ? <span className="checkbox-text italic">Yes</span> : <span className="checkbox-text italic">No</span>}
-                            </div>
+                            <CheckBox 
+                                className = 'mb-025'
+                                onClick = {() => this.updateChapterProperty("poolRental", !this.state.chapter.poolRental)}
+                                checked = {this.state.chapter.poolRental}
+                                labelClassName = 'uppercase-text bold-text'
+                                labelText = {this.state.chapter.poolRental ? "Yes" : "No"}
+                            />
                         </li>
                     </ul>
+
                     <div className = 'flex-nowrap align-center mt-3 mb-3 ml-1 mr-1'>
                         <span className='line'></span>
                         <p className='pr-05 pl-05'><strong>CONTACTS</strong></p>
                         <span className='line'></span>
                     </div>
+
                     <ul className='input-fields first-child-text-165 mt-3 mb-2 pl-1 pr-1'>
                         <EditContact 
                             header={"Main:"}
                             value={this.state.chapter.main}
-                            onValueChange = {value => this.changeProperty("main", value)}
+                            onInputValueChange={(param, newValue) => this.onContactInputValueChange("main", param, newValue, this.contactMainValidators, this.contactMainValidatorsOTG)}
+                            isFormValid = {this.props.store.isFormValid}
+                            showError = {() => this.setState({showError: true})}
+                            validators = {this.contactMainValidators}
+                            updateValidators = {param => this.updateContactValidators("main", param, this.contactMainValidators)}
                         />
                         <EditContact 
                             header={"Government:"}
                             value={this.state.chapter.govt}
-                            onValueChange={value => this.changeProperty("govt", value)}
+                            onInputValueChange={(param, newValue) => this.onContactInputValueChange("govt", param, newValue, this.contactGovtValidators, this.contactGovtValidatorsOTG)}
+                            isFormValid = {this.props.store.isFormValid}
+                            showError = {() => this.setState({showError: true})}
+                            validators = {this.contactGovtValidators}
+                            updateValidators = {param => this.updateContactValidators("govt", param, this.contactGovtValidators)}
                         />
                         <EditContact 
                             header={"Coordinator:"}
                             value={this.state.chapter.coordinator}
-                            onValueChange={value => this.changeProperty("coordinator", value)}
+                            onInputValueChange={(param, newValue) => this.onContactInputValueChange("coordinator", param, newValue, this.contactCoordinatorValidators, this.contactCoordinatorValidatorsOTG)}
+                            isFormValid = {this.props.store.isFormValid}
+                            showError = {() => this.setState({showError: true})}
+                            validators = {this.contactCoordinatorValidators}
+                            updateValidators = {param => this.updateContactValidators("coordinator", param, this.contactCoordinatorValidators)}
                         />
                         <EditContact 
                             header={"National:"}
                             value={this.state.chapter.national}
-                            onValueChange = {value => this.changeProperty("national", value)}
+                            onInputValueChange={(param, newValue) => this.onContactInputValueChange("national", param, newValue, this.contactNationalValidators, this.contactNationalValidatorsOTG)}
+                            isFormValid = {this.props.store.isFormValid}
+                            showError = {() => this.setState({showError: true})}
+                            validators = {this.contactNationalValidators}
+                            updateValidators = {param => this.updateContactValidators("national", param, this.contactNationalValidators)}
                         />
                         <EditContact 
                             header={"Outreach:"} 
                             value={this.state.chapter.outreach}
-                            onValueChange = {value => this.changeProperty("outreach", value)}
+                            onInputValueChange={(param, newValue) => this.onContactInputValueChange("outreach", param, newValue, this.contactOutreachValidators, this.contactOutreachValidatorsOTG)}
+                            isFormValid = {this.props.store.isFormValid}
+                            showError = {() => this.setState({showError: true})}
+                            validators = {this.contactOutreachValidators}
+                            updateValidators = {param => this.updateContactValidators("outreach", param, this.contactOutreachValidators)}
                         />
                     </ul>
                 </div>
@@ -220,15 +366,52 @@ class Chapter extends Component {
                 }
                 <div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&
-                        <button className='medium-static-button static-button' onClick={() => this.setActiveTab(this.state.activeTabIndex - 1)}>Back</button>
+                        <button 
+                            className='medium-static-button static-button' 
+                            onClick={() => this.performIfValid(() => this.setActiveTab(this.state.activeTabIndex - 1))}
+                        >Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' onClick={() => this.setActiveTab(this.state.activeTabIndex + 1)}>Next</button>
-                    }
-                    {this.state.activeTabIndex === 3 &&
-                        <button className='medium-static-button static-button default-button' disabled >Save</button>
+                        <button 
+                            className='medium-static-button static-button default-button' 
+                            onClick={() => this.performIfValid(() => this.setActiveTab(this.state.activeTabIndex + 1))}
+                        >Next</button>
                     }
                 </div>
+
+                { this.state.showError && this.alertNotValid }
+
+                {this.state.showDeleteDialog && 
+                    <Alert 
+                        headerText = 'Delete'
+                        text = 'Are you sure you want to delete this Chapter?'
+                        onClose = {() => this.setState({showDeleteDialog: false})}
+                        showOkCancelButtons = {true}
+                        onCancelButtonClick = {() => this.setState({showDeleteDialog: false})}
+                        onOkButtonClick = {() => {this.deleteChapter()}}
+                        cancelButtonText = "Cancel"
+                        okButtonText = "Delete"
+                        mode = 'warning'
+                    >
+                        <h4 className='mb-05'>{this.state.chapter.name}</h4>
+                        <p style={{"textAlign":"center"}}>This action cannot be undone. Delete anyway?</p>
+                    </Alert>
+                }
+
+                {this.state.showSuccessfullySavedDialog && 
+                    <Alert 
+                        headerText = 'Success'
+                        onClose = {() => this.setState({showSuccessfullySavedDialog: false})}
+                        showOkButton = {true}
+                        onOkButtonClick = {() => this.setState({showSuccessfullySavedDialog: false})}
+                        okButtonText = "Ok"
+                        mode = 'success'
+                    >
+                        <h4 className='mb-05'>{this.state.chapter.name}</h4>
+                        <p style={{"textAlign":"center"}}> Was successfully saved </p>
+                    </Alert>
+                }
+
             </div>
         );
     }

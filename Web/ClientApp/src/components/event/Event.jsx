@@ -8,13 +8,15 @@ import EventBudget from './EventBudget';
 import EventPictures from './EventPictures';
 import MultiDropDown from '../MultiDropDown/MultiDropDown';
 import { Service } from '../ApiService';
-import CloseUpSVG from '../../svg/CloseUpSVG';
 import Status from '../Status';
 import Alert from '../Alert';
+import { alertNotValid } from '../alerts'
 import StatusDraftSVG from '../../svg/StatusDraftSVG';
 import StatusPublishedSVG from '../../svg/StatusPublishedSVG';
 import StatusCanceledSVG from '../../svg/StatusCanceledSVG';
 import Loader from '../Loader';
+import eventValidators from './eventValidators'
+import InputWithClearButton from '../InputWithClearButton';
 
 class Event extends Component {
 
@@ -91,6 +93,11 @@ class Event extends Component {
         this.headerText = '';
     }
 
+    componentWillMount(){
+        this.validators = eventValidators();
+        this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
+    }
+
     componentWillReceiveProps(props) {
         this.setDefaultChapter(props);
     }
@@ -126,7 +133,8 @@ class Event extends Component {
         data.timeTo["activated"] = true;
         return data;
     }
-    validation() {
+
+    /*validation() {
         let validationPassed = true;
             if (this.state.activeTabIndex === 0){
                 if(this.state.eventMain.name.length < 1) {
@@ -157,7 +165,7 @@ class Event extends Component {
                 }
             }
         return validationPassed;
-    }
+    } */
 
     updateEvent() {
         var event = Object.assign({}, this.state.eventMain);
@@ -166,8 +174,8 @@ class Event extends Component {
         return Service.changeEvent(event);
     }
     onSaveClick() {
-        if (this.validation())
-            this.updateEvent().then(() => { this.props.history.push('/');})
+        let save = () => { this.updateEvent().then(() => { this.props.history.push('/');})}
+        this.performIfValid(() => save());
     }
     setActiveStep(num) {
         var me = this;
@@ -187,7 +195,6 @@ class Event extends Component {
 
         switch (this.state.activeTabIndex) {
             case 0:
-                if (!this.validation()) return;
                 this.updateEvent().then((data) => {
                     afterStep(me.fixMainEventData(data));
                 });
@@ -255,7 +262,6 @@ class Event extends Component {
     }
 
     updateEventProperty(property, value) {
-        //debugger
         var temp = this.state.eventMain;
         temp[property] = value;
         this.setState({ eventMain: temp });
@@ -263,28 +269,24 @@ class Event extends Component {
 
     onPublishButtonClick() {
         let onOkButtonClick = () => {
-            // Publish Event
             let event = this.state.eventMain;
             event.eventStatus = 'published';
             this.updateEvent().then(data => {
                 this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading: false });
             });
         };
-        if (!this.validation()) {
-            this.setState({showDialog: false});
-            return;
-        } else {
+        let publish = () => {
             this.headerText = 'Publish';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to publish event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
+        this.performIfValid(() => publish());
     }
 
     onCancelEventButtonClick() {
         let onOkButtonClick = () => {
-            // Cancel Event
             let event = this.state.eventMain;
             event.eventStatus = 'canceled';
             this.updateEvent().then(data => {
@@ -292,37 +294,45 @@ class Event extends Component {
             });
             
         };
-        if (!this.validation()) {
-            this.setState({showDialog: false});
-            return;
-        } else {
+        let cancel = () => {
             this.headerText = 'Cancel';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to cancel event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
+        this.performIfValid(() => cancel());
     }
 
     onMoveToDraftsButtonClick() {
         let onOkButtonClick = () => {
-            // Move to Drafts Event
             let event = this.state.eventMain;
             event.eventStatus = 'draft';
             this.updateEvent().then(data => {
                 this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading: false });
             });
         };
-        if (!this.validation()) {
-            this.setState({showDialog: false});
-            return;
-        } else {
+        let draft = () => {
             this.headerText = 'Move to drafts';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to move event to drafts?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
+        this.performIfValid(() => draft());
+    }
+
+    renderHeader() {
+        if (this.props.match.path == '/new-event') {
+            return (<h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>)
+        } else {
+            return (<h1 className='uppercase-text mb-2'>Edit<strong> Event</strong></h1>)
+        }
+    }
+
+    performIfValid(callback){
+        if (this.props.store.isFormValid(this.validators, this.state.eventMain)) { callback(); } 
+        else { this.setState({showError: true}) };
     }
 
     render() {
@@ -330,7 +340,7 @@ class Event extends Component {
         if (eventStatus === undefined) {eventStatus = "draft"}
         //const pictures = this.state.formattedPicturesList;
         return (
-            <div className='pages-wsm-wrapper ipw-800 pt-non-sc'>
+            <div className='pages-wsm-wrapper ipw-800'>
                 <div className='second-nav-wrapper'>
                     <div className='ipw-600'>
                         <Status eventStatus={eventStatus} className='mr-025' />
@@ -366,80 +376,59 @@ class Event extends Component {
                     </div>
                 </div>
                 {this.state.loading && <Loader/>}
-                <h1 className='uppercase-text mb-2'>New<strong> Event</strong></h1>
+                {this.renderHeader()}
                 <div className = 'flex-wrap flex-flow-column mb-3'>
-                        {/*<div className = 'status-wrapper mb-2'>
-                            <Status eventStatus={eventStatus} className='ml-025 mt-025' />
-                            <div className = 'flex-wrap align-center'>
-                                {eventStatus !== 'published' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onPublishButtonClick()}>
-                                    Publish
-                                </button>}
-                                {eventStatus !== 'canceled' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onCancelEventButtonClick()}>
-                                    Cancel
-                                </button>}
-                                {eventStatus !== 'canceled' && eventStatus !== 'draft' && <button className='round-button medium-round-button grey-outline-button ml-025 mt-025' onClick = {() => this.onMoveToDraftsButtonClick()}>
-                                    Move to drafts
-                                </button>}
-                            </div>
-                        </div>*/}
-
                     <TabComponent 
                         fixedHeight={true}
                         tabList={['information', 'attendees', 'budget', 'pictures']}
-                        wasSelected={(index) => this.setActiveStep(index)}
+                        wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index))}
                         activeTabIndex={this.state.activeTabIndex}
                     />
                 </div>
                 {this.state.activeTabIndex === 0 &&
                     <ul className='input-fields first-child-text-125 mt-1 pl-1 pr-1'>
-                        <li 
-                            className={this.emptyTitle ? 'mark-invalid' : ''}
-                            error-text='Please enter the Event Title'
-                        >
+                        <li>
                             <p>Event Title:</p>
-                            <div className='input-button-wrapper'>
-                                <input 
-                                    type='text'
-                                    ref={el => this.titleDropDownRef = el}
+                            <div className={this.props.store.checkIfShowError('name', this.validators) ? 'error-input-wrapper' : '' }>
+                                <InputWithClearButton 
+                                    type='text' 
                                     placeholder='Event Title'
-                                    value={this.state.eventMain.name}
-                                    onChange={(evt) => {
-                                        if(evt.target.value.length > 0) {
-                                            this.emptyTitle = false;
-                                        }
-                                        this.updateEventProperty("name", evt.target.value);
+                                    value = {this.state.eventMain.name}
+                                    onChange={e => {
+                                        this.updateEventProperty("name", e.target.value)
+                                        this.props.store.updateValidators("name", e.target.value, this.validators);
+                                    }}
+                                    onClearValue = {() => {
+                                        this.updateEventProperty("name", ""); 
+                                        this.props.store.updateValidators("name", "", this.validators);
                                     }}
                                 />
-                                {this.state.eventMain.name !== "" &&
-                                    <button onClick={() => {this.updateEventProperty("name", ""); this.titleDropDownRef.focus();}}>
-                                        <CloseUpSVG />
-                                    </button>
-                                }
+                                { this.props.store.displayValidationErrors('name', this.validators) }
                             </div>
                         </li>
-                        <li 
-                            className={this.emptyChapter ? 'mark-invalid' : ''}
-                            error-text='Please select the Chapter'
-                        >
+                        <li>
                             <p>Chapter:</p>
-                            <MultiDropDown
-                                ref={el => this.chaptersDropDownRef = el}
-                                list={this.props.store.chapterList}
-                                multiSelect={false}
-                                keyProperty='id'
-                                textProperty='state'
-                                expandBy='chapters'
-                                expandedTextProperty='name'
-                                expandedKeyProperty='id'
-                                expandedMultiSelect={false}
-                                defaultValue={this.state.eventMain.site}
-                            placeholder="Select chapter"
-                            disabled={!(this.props.store.userInfo && this.props.store.userInfo.authType=="Admin")}
-                                onDropDownValueChange={value => {
-                                    this.emptyChapter = false;
-                                    this.updateEventProperty("site", value);
-                                }}
-                            />
+                            <div className={this.props.store.checkIfShowError('site', this.validators) ? 'error-input-wrapper' : ""}>
+                                <MultiDropDown
+                                    ref={el => this.chaptersDropDownRef = el}
+                                    list={this.props.store.chapterList}
+                                    multiSelect={false}
+                                    keyProperty='id'
+                                    textProperty='state'
+                                    expandBy='chapters'
+                                    expandedTextProperty='name'
+                                    expandedKeyProperty='id'
+                                    expandedMultiSelect={false}
+                                    defaultValue={this.state.eventMain.site}
+                                    placeholder="Select chapter"
+                                    disabled={!(this.props.store.userInfo && this.props.store.userInfo.authType=="Admin")}
+                                    onDropDownValueChange={value => {
+                                        this.props.store.updateValidators("site", value, this.validators);
+                                        this.updateEventProperty("site", value);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('site', this.validators) }
+                            </div>
                         </li>
                         <li
                             className={this.emptyStartDate ? 'mark-invalid' : ''}
@@ -620,28 +609,20 @@ class Event extends Component {
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
-                        <button className='medium-static-button static-button' 
-                            onClick={() => {this.setActiveStep(this.state.activeTabIndex-1)}}
+                        <button 
+                            className='medium-static-button static-button' 
+                            onClick={() => this.performIfValid(() => this.setActiveStep(this.state.activeTabIndex-1))}
                         >Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
-                        <button className='medium-static-button static-button default-button' onClick={() => { this.nextStep();}}>Next</button>
+                        <button 
+                            className='medium-static-button static-button default-button' 
+                            onClick={() => this.performIfValid(() => (() => this.nextStep()))}
+                        >Next</button>
                     }
-                    {/*<button className='medium-static-button static-button' onClick={this.onSaveClick} >Save & Exit</button>*/}
                 </div>
                 
-                {this.state.showError && 
-                    <Alert 
-                        headerText = 'Error'
-                        onClose = {()=>this.setState({showError: false})}
-                        showOkButton = {true}
-                        onOkButtonClick = {()=>this.setState({showError: false})}
-                        buttonText = "Got IT!"
-                        mode = 'error'
-                    >
-                       <span>Some required information is missing or incomplete. Please fill out the fields in red.</span>
-                    </Alert>
-                }
+                {this.state.showError && this.alertNotValid }
 
                 {this.state.showDialog && 
                     <Alert 

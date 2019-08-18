@@ -26,7 +26,7 @@ li {list-style-type:none; }
 a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
-button {background: #ffffff;}
+button {/* background: #ffffff; */}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
 
 .italic {
@@ -428,7 +428,7 @@ svg > .static-svg {
 /* Button */
 
 button {
-    background-color: inherit !important;
+    background-color: transparent !important;
     border: 1px solid transparent;
     border-radius: 3px;
 }
@@ -773,6 +773,7 @@ ul.input-fields .add-margin {
 
 @media screen and (min-width: 561px){
     ul.input-fields > li {flex-flow: row;}
+    ul.input-fields > li.alignCenter {display: flex; align-items: center;}
     ul.first-child-text-60 > li > :first-child{
         flex: 0 0 60px;
         text-align: right;
@@ -872,10 +873,11 @@ ul.input-fields > li > p:first-child {
 }
 
 .regular-p { 
+    line-height: normal !important;
     text-transform: none !important;
     white-space: pre-wrap !important;
     font-weight: 400;
-    margin: 0rem !important;
+    margin: 0rem 0.5rem 0rem 0rem !important;
 }
 
 /* ????????????????? grey-SVG-button */
@@ -1319,6 +1321,10 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
 /* error */
 
 .error-input-wrapper input {
+    border-color: #E53E71;
+}
+
+.error-input-wrapper .drop-down-header {
     border-color: #E53E71;
 }
 

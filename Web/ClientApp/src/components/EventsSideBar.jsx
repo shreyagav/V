@@ -94,7 +94,6 @@ class EventsSideBar extends Component {
         filters.push({name: "timeTo", value: initialTimeTo});
         filters.push({name: "typeOfEvent", value: initialTypeOfEvent});
         filters.push({name: "status", value: initialStatus});
-        filters.push({ name: "color", value: initialColor });
         filters.push({ name: "chapters", value: [] });
 
         let initialState = {
@@ -213,9 +212,9 @@ class EventsSideBar extends Component {
                     <p>Type of event:</p>
                     <MultiDropDown
                         ref={el => this.typeOfEventDropDownRef = el}
-                        list={[{name: 'Pool Session', typeID: 0}, {name: 'Flat or White Water Session', typeID: 1}, {name: 'National Event', typeID: 2}, {name: 'Regional Event', typeID: 3}, {name: 'Chapter Planning Party', typeID: 4}]}
-                        keyProperty='typeID'
-                        textProperty='name'
+                        list={this.props.store.eventTypes}
+                        keyProperty='id'
+                        textProperty='title'
                         defaultValue={this.state.typeOfEvent}
                         placeholder='Type of Event'
                         onDropDownValueChange = {value => {
@@ -238,19 +237,7 @@ class EventsSideBar extends Component {
                         }}
                     />
 
-                    <p>Color:</p>
-                    <MultiDropDown
-                        ref={el => this.colorDropDownRef = el}
-                        list={this.props.store.colorList} 
-                        keyProperty='color'
-                        textProperty='name'
-                        defaultValue={this.state.color}
-                        placeholder='Color'
-                        onDropDownValueChange = {value => {
-                            this.setState({color: value});
-                            this.updateFilter("color", value);
-                        }}
-                    />
+                    
                 </div>
             </div>
         );

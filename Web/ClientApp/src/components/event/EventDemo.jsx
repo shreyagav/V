@@ -240,9 +240,7 @@ class EventDemo extends Component {
                                 <Status eventStatus={eventStatus} />
                             */}
                         </div>
-                        <span className='mb-1'>
-                            Here goes some quite long event description. And some more words to show how long the description can actually be. Here goes some quite long event description. And some more words to show how long the description can actually be.
-                        </span>
+                        <span className='mb-1'>{this.state.eventMain.description}</span>
                     </div>
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} editsPermitted={false}/> }

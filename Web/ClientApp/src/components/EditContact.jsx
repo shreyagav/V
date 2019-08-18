@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withStore } from './store';
 import ArrowUpSVG from '../svg/ArrowUpSVG';
 import EditUpSVG from '../svg/EditUpSVG';
 
@@ -12,25 +13,53 @@ class EditContact extends Component {
     }
 
     toggle(){
-        this.setState({contactIsOpen: !this.state.contactIsOpen});
+        if(this.state.contactIsOpen) {
+            if(this.props.isFormValid(this.props.validators, this.props.value)){
+                this.setState({contactIsOpen: !this.state.contactIsOpen})
+            } else {this.props.showError()}
+        } else this.setState({contactIsOpen: !this.state.contactIsOpen});
     }
 
     keyDownHandler(e) {
         switch (e.keyCode) {
-            case 13: {
-                /* ENTER */
+            case 13: { /* ENTER */
                 this.toggle();
                 break;
             }
-            case 27: {
-                /* ESC */
-                if (this.state.contactIsOpen) {this.toggle();}
+            case 27: { /* ESC */
+                if (this.state.contactIsOpen) {this.toggle()}
                 break;
             }
+            default: break;
         }
     }
 
+    renderName(){
+        if(this.props.value.name) {
+            let str1 = this.props.value.name;
+            let str2 = '';
+            if(this.props.value.phone || this.props.value.email) {str2 = ','}
+            return <p className='regular-p'><strong>{str1 + str2}</strong></p>
+        }
+    }
+
+    renderPhone(){
+        if(this.props.value.phone) {
+            let str1 = this.props.value.phone;
+            let str2 = '';
+            if(this.props.value.email) {str2 = ','}
+            return <p className='regular-p' style={{"fontSize":"0.9rem"}}>{str1 + str2}</p>
+        }
+    }
+
+    renderEmail(){
+        if(this.props.value.email) return <p className='regular-p' style={{"fontSize":"0.9rem"}}>{this.props.value.email}</p> 
+    }
+
     render() {
+        const name = this.renderName();
+        const phone = this.renderPhone();
+        const email = this.renderEmail();
         return (
             <li>
                 <p>{this.props.header}</p>
@@ -42,13 +71,13 @@ class EditContact extends Component {
                         onClick={() => this.toggle()}
                         onKeyDown={(e) => this.keyDownHandler(e)}
                     >
-                        <span className='flex11auto pl-5 pt-05 pb-05 '>
-                            {this.props.value.name !== "" ? <strong className='regular-p'>{this.props.value.name}</strong>:''}
-                            {this.props.value.name !== "" && (this.props.value.phone !== '' || this.props.value.email !== '') && <strong className='regular-p'>{', '}</strong>}
-                            <p className='regular-p' style={{"fontSize":"0.9rem"}}>{this.props.value.phone !== '' && this.props.value.phone}</p>
-                            {this.props.value.phone !== '' && this.props.value.email !== '' && <p className='regular-p' style={{"fontSize":"0.9rem"}}>{', '}</p>}
-                            <p className='regular-p' style={{"fontSize":"0.9rem"}}>{this.props.value.email !== '' && this.props.value.email}</p>
-                        </span>
+                        <div className='flex11auto pl-05 pt-05 pb-05 '>
+                            {name && name}
+                            <span className='flex-wrap'>
+                                {phone && phone}
+                                {email && email}
+                            </span>
+                        </div>
                         <button disabled className='arrow-button' >
                             {this.state.contactIsOpen ? <ArrowUpSVG svgClassName='flip90'/> : <EditUpSVG />}
                         </button>
@@ -57,53 +86,53 @@ class EditContact extends Component {
                         <ul className='input-fields first-child-text-60 p-1' style={{"border": "1px solid #0099cc", "borderTop":"0px solid #0099cc"}}>
                             <li>
                                 <p>Name:</p>
-                                <input 
-                                    value={this.props.value.name} 
-                                    type='text' 
-                                    placeholder='Name' 
-                                    onChange={(e) => {
-                                        let value = this.props.value;
-                                        value.name = e.target.value;
-                                        this.props.onValueChange(value);
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.shiftKey && e.keyCode === 9) {this.toggle();}
-                                    }}
-                                />
+                                <div className={this.props.store.checkIfShowError('name', this.props.validators) ? 'error-input-wrapper' : '' }>
+                                    <input 
+                                        autoComplete = 'nope'
+                                        value={this.props.value.name} 
+                                        type='text' 
+                                        placeholder='Name' 
+                                        onChange={(e) => this.props.onInputValueChange('name', e.target.value)}
+                                        onKeyDown={(e) => { if (e.shiftKey && e.keyCode === 9) {this.toggle()}}}
+                                        onBlur={() => this.props.updateValidators("name")}
+                                    />
+                                    { this.props.store.displayValidationErrors('name', this.props.validators) }
+                                </div>
                             </li>
                             <li>
                                 <p>Phone:</p>
-                                <input 
-                                    value={this.props.value.phone}
-                                    type='text' placeholder='Phone'
-                                    onChange={(e) => {
-                                        let value = this.props.value;
-                                        value.phone = e.target.value;
-                                        this.props.onValueChange(value);
-                                    }}
-                                />
+                                <div className={this.props.store.checkIfShowError('phone', this.props.validators) ? 'error-input-wrapper' : '' }>
+                                    <input 
+                                        autoComplete = 'nope'
+                                        value={this.props.value.phone}
+                                        type='text' placeholder='Phone'
+                                        onChange={(e) => this.props.onInputValueChange('phone', e.target.value)}
+                                        onBlur={() => this.props.updateValidators('phone')}
+                                    />
+                                    { this.props.store.displayValidationErrors('phone', this.props.validators) }
+                                </div>
                             </li>
                             <li>
                                 <p>Email:</p>
-                                <input 
-                                    value={this.props.value.email}
-                                    type='text' placeholder='Email'
-                                    onChange={(e) => {
-                                        let value = this.props.value;
-                                        value.email = e.target.value;
-                                        this.props.onValueChange(value);
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (!e.shiftKey && e.keyCode === 9) {this.toggle()}
-                                    }}
-                                ></input>
+                                <div className={this.props.store.checkIfShowError('email', this.props.validators) ? 'error-input-wrapper' : '' }>
+                                    <input 
+                                        autoComplete = 'nope'
+                                        value={this.props.value.email}
+                                        type='text' placeholder='Email'
+                                        onChange={(e) => this.props.onInputValueChange('email', e.target.value)}
+                                        onKeyDown={(e) => { if (!e.shiftKey && e.keyCode === 9) {this.toggle()} }}
+                                        onBlur={() => this.props.updateValidators('email')}
+                                    />
+                                    { this.props.store.displayValidationErrors('email', this.props.validators) }
+                                </div>
                             </li>
                         </ul>
                     }
                 </div>
+                {this.state.showError && this.alertNotValid }
             </li>
         );
     }
 }
 
-export default EditContact;
+export default withStore(EditContact);

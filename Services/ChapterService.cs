@@ -36,13 +36,27 @@ namespace Services
 
         public EventSite Set(EventSite eventSite)
         {
-            var site = _ctx.EventSites.FirstOrDefault(a => a.Id == eventSite.Id);
+            EventSite site = null;
+            if (eventSite.Id > 0)
+            {
+                site = _ctx.EventSites.FirstOrDefault(a => a.Id == eventSite.Id);
+            }
+            else
+            {
+                site = new EventSite();
+            }
+            
             site.Name = eventSite.Name;
             site.GroupId = eventSite.GroupId;
             site.GroupName = eventSite.GroupName;
             site.Description = eventSite.Description;
             site.SecurityClearance = eventSite.SecurityClearance;
             site.PoolRental = eventSite.PoolRental;
+            if(site.Id == 0)
+            {
+                _ctx.EventSites.Add(site);
+                _ctx.SaveChanges();
+            }
 
             site.GOVTId = UpdateContact(eventSite.GOVT);
             site.NationalId = UpdateContact(eventSite.National);

@@ -4,6 +4,7 @@ import { withStore } from './store';
 import { Service } from './ApiService';
 import Table from './Table';
 import { Link } from 'react-router-dom';
+import Loader from './Loader';
 
 class NewEvents extends Component {
 
@@ -13,7 +14,8 @@ class NewEvents extends Component {
             events: [],
             filters: {
                 dateFrom: '',
-            }
+            },
+            loading: false
         };
         this.chaptersDropDownRef = null;
     }
@@ -25,6 +27,7 @@ class NewEvents extends Component {
     }
 
     updateList(props) {
+        this.setState({loading:true});
         let actualFilters = {};
         props.filters.forEach(a => {
             if (Array.isArray(a.value) && a.value.length > 0) {
@@ -37,10 +40,12 @@ class NewEvents extends Component {
                 if (a.value.activated) {
                     actualFilters[a.name] = a.value;
                 }
+            } else if (typeof (a.value) == "number" && a.value != 0) {
+                actualFilters[a.name] = a.value;
             }
         });
-        console.log(actualFilters);
-        Service.getEventsList(actualFilters).then(json => { this.setState({ events: json }); });
+        console.log(props.filters, actualFilters);
+        Service.getEventsList(actualFilters).then(json => { this.setState({ events: json, loading:false }); });
     }
 
     componentWillReceiveProps(props) {
@@ -88,12 +93,13 @@ class NewEvents extends Component {
         );
     }
 
+    /*
     updateFilter(filterName, value) {
         let filters = this.props.filters;
         let element = filters.find(element => element.name === filterName);
         element.value = value;
         this.props.updateFilters(filters);
-    }
+    }*/
 
 
     render() {
@@ -110,6 +116,7 @@ class NewEvents extends Component {
         ];
         return (
             <div className="inner-pages-wrapper ipw-1000">
+                {this.state.loading && <Loader/>}
                 <div className="flex-wrap align-center justify-space-between w-100 mb-2">
                     <h1 className='uppercase-text'><strong>Events </strong></h1>
                     <a className='big-static-button static-button' href="/new-event"><p>ADD NEW EVENT</p></a>
@@ -131,6 +138,7 @@ class NewEvents extends Component {
                         onDropDownValueChange={value => this.updateFilter("chapters", value)}
                     />
                 </div>*/}
+                {eventsList.length === 1000 && <span style={{color:"red"}}>Refine your search to get less then 1000 events.</span>}
                 {eventsList.length === 0 && 
                     <p className='message-block mt-2'>There are no events for selected chapters.</p>
                 }

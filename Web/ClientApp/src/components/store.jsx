@@ -40,6 +40,22 @@ const createStore = WrappedComponent => {
 
       /* validators */
 
+      validateOTG: (fieldName, value, validators) => {
+        let valid = true;
+        validators[fieldName].rules.forEach((rule) => {
+          if (rule.test instanceof RegExp) {
+            if (!rule.test.test(value)) {
+              valid = false;
+            }
+          } else if (typeof rule.test === 'function') {
+            if (!rule.test(value)) {
+              valid = false;
+            }
+          }
+        });
+        return valid;
+      },
+
       updateValidators: (fieldName, value, validators) => {
         validators[fieldName].errors = [];
         validators[fieldName].valid = true;
@@ -57,6 +73,28 @@ const createStore = WrappedComponent => {
             }
           }
         });
+      },
+
+      checkIfValidatorsNeedUpdate: (fieldName, value, validators) => {
+        let newErrors = [];
+        validators[fieldName].rules.forEach((rule) => {
+          if (rule.test instanceof RegExp) {
+            if (!rule.test.test(value)) { newErrors.push(rule.message) }
+          } else if (typeof rule.test === 'function') {
+            if (!rule.test(value)) { newErrors.push(rule.message) }
+          }
+        });
+        if(!validators[fieldName].activated) {return false}
+        if(validators[fieldName].errors.length !== newErrors.length) {return true}
+        else {
+          let outcome = false;
+          validators[fieldName].errors.forEach((error, index) => {
+            if(error !== newErrors[index]) { 
+              outcome = true;
+            }
+          })
+          return outcome;
+        }
       },
       
       //TODO : delete when proven not used
