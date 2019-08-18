@@ -14,10 +14,13 @@ import RadioButton from '../RadioButton'
 import EditUpSVG from '../../svg/EditUpSVG'
 import { Service } from '../ApiService'
 import Loader from '../Loader'
+import { alertNotValid } from '../alerts'
 
 import memberValidators from './memberValidators'
 import DeleteUpSVG from '../../svg/DeleteUpSVG';
 import SaveUpSVG from '../../svg/SaveUpSVG';
+
+import InputWithClearButton from '../InputWithClearButton'
 
 
 class Member extends Component {
@@ -64,6 +67,7 @@ class Member extends Component {
             showError: false,
             showDeleteMemberDialog: false,
             showSuccessfullySavedDialog: false,
+            showErrorSaveDialog: false,
             userId: userId,
             sponsors:[]
         };
@@ -95,6 +99,7 @@ class Member extends Component {
 
     componentWillMount(){
         this.validators = memberValidators();
+        this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
     }
 
     componentDidMount() {
@@ -108,23 +113,25 @@ class Member extends Component {
             this.setState({ loading: false, member: data });
         };
 
-        this.setState({ loading: true });
-        Service.getSponsors().then(data => {
-            this.setState({ sponsors: data });
-            if (this.props.match.path == '/profile') {
-                Service.getProfile().then(onSuccess);
-            } else if (this.props.match.path == '/new-member') {
-                
-            } else if (this.state.userId != null && this.state.userId != "") {
-                Service.getProfileById(this.state.userId).then(onSuccess);
-            }
-        });
+        
+        if (this.props.match.path == '/profile' ) {
+            this.setState({ loading: true });
+            Service.getProfile().then(onSuccess);
+        } else if (this.props.match.path == '/new-member') {
+
+        } else if (this.state.userId != null && this.state.userId !="") {
+            this.setState({ loading: true });
+            Service.getProfileById(this.state.userId).then(onSuccess);
+        }
     }
 
     saveMemberInfo() {
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
-            this.setState({ loading: false, showSuccessfullySavedDialog: true });
+            if(data === undefined) {this.setState({ loading: false, showErrorSaveDialog: true })}
+            else {this.setState({ loading: false, showSuccessfullySavedDialog: true })}
+        }).catch(er => {
+            this.setState({ loading: false, showErrorSaveDialog: true });
         });
     }
 
@@ -140,7 +147,11 @@ class Member extends Component {
         </span>
     }
 
-    validation() {
+    deleteMember(){
+        alert("delete member")
+    }
+
+    /*validation() {
         let validationPassed = true;
             if (this.state.activeTabIndex === 0){
                 if(this.state.member.siteId == 0) {
@@ -187,16 +198,19 @@ class Member extends Component {
                 }
             }
         return validationPassed;
-    }
+    } */
+
+
     renderHeader() {
         if (this.props.match.path == '/profile') {
-            return (<h1 className='uppercase-text mb-2 mt-2'>My<strong> Profile</strong></h1>)
+            return (<h1 className='uppercase-text mb-2'>My<strong> Profile</strong></h1>)
         } else if (this.props.match.path == '/new-member') {
-            return (<h1 className='uppercase-text mb-2 mt-2'>New<strong> Member</strong></h1>)
+            return (<h1 className='uppercase-text mb-2'>New<strong> Member</strong></h1>)
         } else {
-            return (<h1 className='uppercase-text mb-2 mt-2'>Edit<strong> Member</strong></h1>)
+            return (<h1 className='uppercase-text mb-2'>Edit<strong> Member</strong></h1>)
         }
     }
+
     getTabs() {
         if (this.props.match.path == '/profile') {
             return ['my info', 'my events'];
@@ -243,12 +257,16 @@ class Member extends Component {
         }
     } 
 
+    performIfValid(callback){
+        if (this.props.store.isFormValid(this.validators, this.state.member)) { callback(); } 
+        else { this.setState({showError: true}) };
+    }
+
     render() {
         //const pictures = this.state.formattedPicturesList;
         const stateList = [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }];
-
         return (
-            <div className='inner-pages-wrapper ipw-600 pb-2 pt-3 pt-non-sc'>
+            <div className='pages-wsm-wrapper ipw-600'>
                 <div className='second-nav-wrapper'>
                     <div className='ipw-600'>
                         <div></div>
@@ -272,24 +290,30 @@ class Member extends Component {
                 </div>
                 {this.state.loading && <Loader />}
                 {this.renderHeader()}
-                <TabComponent 
-                    fixedHeight={true}
-                    tabList={this.getTabs()}
-                    wasSelected={(index) => this.setState({activeTabIndex: index})}
-                    activeTabIndex={this.state.activeTabIndex}
-                />
+                <div className='flex-wrap flex-flow-column mb-3'>
+                    <TabComponent 
+                        fixedHeight={true}
+                        tabList={this.getTabs()}
+                        wasSelected={index => this.performIfValid(() => this.setState({activeTabIndex: index}))}
+                        activeTabIndex={this.state.activeTabIndex}
+                    />
+                </div>
                 {this.state.activeTabIndex === 0 &&
-                    <ul className='input-fields first-child-text-125 mt-3 pl-1 pr-1'>
-                        <li className = 'input-wrapper'>
+                    <ul className='input-fields first-child-text-125 pl-1 pr-1'>
+                        <li>
                             <p>First Name:</p>
-                            <div className={this.props.store.checkIfShowError('firstName', this.validators) ? 'input-wrapper error-input-wrapper' : 'input-wrapper' }>
-                                <input 
+                            <div className={this.props.store.checkIfShowError('firstName', this.validators) ? 'error-input-wrapper' : '' }>
+                                <InputWithClearButton 
                                     type='text' 
                                     placeholder='First Name'
                                     value = {this.state.member.firstName}
                                     onChange={e => {
                                         this.updateMemberProperty("firstName", e.target.value);
                                         this.props.store.updateValidators("firstName", e.target.value, this.validators);
+                                    }}
+                                    onClearValue = {() => {
+                                        this.updateMemberProperty("firstName", ""); 
+                                        this.props.store.updateValidators("firstName", "", this.validators);
                                     }}
                                 />
                                 { this.props.store.displayValidationErrors('firstName', this.validators) }
@@ -411,7 +435,7 @@ class Member extends Component {
                         </li>
                         <li>
                             <span className='empty'></span>
-                            <ul className='input-fields flex-nowrap break-at-500 line-of-inputs-wrapper'>
+                            <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
                                 <li 
                                     className='input-wrapper'
                                     style={{"flex":"1 1 auto"}}
@@ -502,80 +526,68 @@ class Member extends Component {
                     <MemberDiagnosis member={this.state.member} />
                 }
                 <div className='flex-nowrap justify-center children-width-30 w-100 mt-2'>
-                    <button className='medium-static-button static-button' onClick={() => this.setState({showDeleteMemberDialog: true})}>Delete</button>
                     {this.state.activeTabIndex > 0 &&
                         <button 
                             className='medium-static-button static-button' 
-                            onClick={() => {
-                                if (this.validation()) {
-                                    this.setState({activeTabIndex: this.state.activeTabIndex-1});
-                                }
-                            }}
-                        >
-                            Back
-                        </button>
+                            onClick={() => this.performIfValid(() => this.setState({activeTabIndex: this.state.activeTabIndex - 1}))}
+                        > Back </button>
                     }
                     {this.state.activeTabIndex < 3 &&
                         <button 
                             className='medium-static-button static-button default-button' 
-                            onClick={() => {
-                                if (this.props.store.isFormValid(this.validators, this.state.member)) {
-                                    this.setState({activeTabIndex: this.state.activeTabIndex+1})
-                                } else this.setState({showError: true});
-                            }}
-                        >
-                            Next
-                        </button>
-                    }
-                    {this.state.activeTabIndex !== 1 &&
-                        <button className='medium-static-button static-button' onClick={this.saveMemberInfo}>Save</button>
+                            onClick={() => this.performIfValid(() => this.setState({activeTabIndex: this.state.activeTabIndex + 1}))}
+                        > Next </button>
                     }
                 </div>
-                {this.state.showError && 
-                    <Alert 
-                        headerText = 'Error'
-                        text = 'Some required information is missing or incomplete.'
-                        onClose = {()=>this.setState({showError: false})}
-                        showOkButton={true}
-                        onOkButtonClick={() => this.setState({ showError: false })}
-                        buttonText = "Got IT!"
-                        mode = 'error'
-                    >
-                        <span class='alert-message'>Please fill out the fields in red.</span>
-                    </Alert>
-                }
+
+                {this.state.showError && this.alertNotValid }
+
                 {this.state.showDeleteMemberDialog && 
                     <Alert 
                         headerText = 'Delete'
                         text = 'Are you sure you want to delete this Member?'
-                        onClose = {()=>this.setState({showDeleteMemberDialog: false})}
+                        onClose = {() => this.setState({showDeleteMemberDialog: false})}
                         showOkCancelButtons = {true}
-                        onCancelButtonClick = {()=>this.setState({showDeleteMemberDialog: false})}
-                        onOkButtonClick = {() => this.deleteMember()}
+                        onCancelButtonClick = {() => this.setState({showDeleteMemberDialog: false})}
+                        onOkButtonClick = {() => {this.deleteMember()}}
                         cancelButtonText = "Cancel"
                         okButtonText = "Delete"
                         mode = 'warning'
                     >
                         <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
-                        <p style={{"textAlign":"center"}}>
-                            This action cannot be undone. Delete anyway?
-                        </p>
+                        <p style={{"textAlign":"center"}}>This action cannot be undone. Delete anyway?</p>
                     </Alert>
                 }
+
                 {this.state.showSuccessfullySavedDialog && 
                     <Alert 
-                        headerText = 'Success'
-                        onClose = {() => this.setState({showSuccessfullySavedDialog: false})}
-                        showOkButton = {true}
-                        onOkButtonClick = {() => this.setState({showSuccessfullySavedDialog: false})}
-                        okButtonText = "Ok"
-                        mode = 'success'
+                        headerText='Success'
+                        onClose={() => this.setState({showSuccessfullySavedDialog: false})}
+                        showOkButton={true}
+                        onOkButtonClick={() => this.setState({showSuccessfullySavedDialog: false})}
+                        okButtonText="Ok"
+                        mode='success'
                     >
-                        <p style={{"textAlign":"center"}}>
-                            The information was successfully saved
-                        </p>
+                        <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
+                        <p style={{"textAlign":"center"}}> Was successfully saved </p>
                     </Alert>
                 }
+
+                {this.state.showErrorSaveDialog && 
+                    <Alert 
+                        headerText='Error'
+                        onClose={() => this.setState({showErrorSaveDialog: false})}
+                        showOkButton={true}
+                        onOkButtonClick={() => this.setState({showErrorSaveDialog: false})}
+                        okButtonText="Ok"
+                        mode='error'
+                    >
+                        <p className='mb-05' style={{"textAlign":"center"}}> Something went wrong. </p>
+                        <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
+                        <p style={{"textAlign":"center"}}> was not saved </p>
+                    </Alert>
+                }
+
             </div>
         );
     }

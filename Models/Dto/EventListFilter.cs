@@ -11,9 +11,8 @@ namespace Models.Dto
         public DateTime? DateTo { get; set; }
         public TimeDto TimeFrom { get; set; }
         public TimeDto TimeTo { get; set; }
-        public CalendarEventType TypeOfEvent { get; set; }
+        public int? TypeOfEvent { get; set; }
         public EventStatus? Status { get; set; }
-        public string Color { get; set; }
         public int[] Chapters { get; set; }
     }
 }

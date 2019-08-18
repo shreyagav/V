@@ -26,7 +26,7 @@ li {list-style-type:none; }
 a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
-button {background: #ffffff;}
+button {/* background: #ffffff; */}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
 
 .italic {
@@ -63,6 +63,39 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 h1, .h1 {font-size: 3.5rem; line-height: 1;}
 
+h2, .h2 {font-size: 2.8rem; line-height: 1; }
+
+h3, .h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+h4, .h4 {
+    font-size: 1.25em;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+@media screen and (max-width: 700px){
+    h1, .h1 {font-size: 8vw;}
+    h2, .h2 {font-size: 6.4vw;}
+}
+
+@media screen and (max-width: 500px){
+    h3, .h3 {font-size: 5.4vw;}
+    h4, .h4 {font-size: 4vw;}
+}
+
+@media screen and (max-width: 400px){
+    h1, .h1 {font-size: 2rem;}
+    h2, .h2 {font-size: 1.6rem;}
+    h3, .h3 {font-size: 1.35rem;}
+    h4, .h4 {font-size: 1rem;}
+}
+
 .draft .svg, .published .svg, .canceled .svg {fill: #ffffff !important;}
 
 .draft > svg, .published > svg, .canceled > svg  {
@@ -96,20 +129,6 @@ h1, .h1 {font-size: 3.5rem; line-height: 1;}
 .draft {color: #ffffff; background-color: #AB4189;}
 .published {color: #ffffff; background-color: #0099cc;}
 .canceled {color: #ffffff; background-color: #fe7b22;}
-
-h2, .h2 {font-size: 2rem; padding-bottom: 0.25rem;}
-h3, .h3 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    line-height: 1;
-    text-transform: uppercase;
-}
-h4, .h4 {
-    font-size: 1.25em;
-    font-weight: 700;
-    line-height: 1;
-    text-transform: uppercase;
-}
 
 .input-label {
     text-transform: uppercase;
@@ -153,9 +172,13 @@ h4, .h4 {
 .pb-3 {padding-bottom: 3rem !important;}
 .pr-025 {padding-right: 0.25rem !important}
 .pr-05 {padding-right: 0.5rem !important}
+.pr-3 {padding-right: 3rem !important}
+.pr-2 {padding-right: 2rem !important}
 .pr-1 {padding-right: 1rem !important}
 .pl-025 {padding-left: 0.25rem !important}
 .pl-05 {padding-left: 0.5rem !important}
+.pl-3 {padding-left: 3rem !important}
+.pl-2 {padding-left: 2rem !important}
 .pl-1 {padding-left: 1rem !important}
 .mr-05 {margin-right: 0.5rem !important}
 .ml-05 {margin-left: 0.5rem !important}
@@ -182,21 +205,6 @@ h4, .h4 {
     .break-at-700 .table-mini-header {display: block;}
 }
 
-@media screen and (max-width: 700px){
-    h1, .h1 {font-size: 8vw;}
-    h2, .h2 {font-size: 6.4vw;}
-}
-
-@media screen and (max-width: 500px){
-    h3, .h3 {font-size: 5.4vw;}
-    h4, .h4 {font-size: 4vw;}
-}
-
-@media screen and (max-width: 400px){
-    h3, .h3 {font-size: 1.35rem;}
-    h4, .h4 {font-size: 1rem;}
-}
-
 @media screen and (max-width: 500px){
     .mediaMax500-pl-pr-025 {padding-right: 0.8vw !important; padding-left: 0.8vw !important}
     .mediaMin500-pl-pr-025 {padding-right: 0vw !important; padding-left: 0vw !important}
@@ -220,9 +228,13 @@ h4, .h4 {
     .pr-025:not(.pr-non-sc) {padding-right: 0.8vw !important}
     .pr-05:not(.pr-non-sc) {padding-right: 1.6vw !important}
     .pr-1:not(.pr-non-sc) {padding-right: 3.2vw !important}
+    .pr-2:not(.pr-non-sc) {padding-top: 6.4vw !important;}
+    .pr-3:not(.pr-non-sc) {padding-top: 8.4vw !important;}
     .pl-025:not(.pl-non-sc) {padding-left: 0.8vw !important}
     .pl-05:not(.pl-non-sc) {padding-left: 1.6vw !important}
     .pl-1:not(.pl-non-sc) {padding-left: 3.2vw !important}
+    .pl-2:not(.pl-non-sc) {padding-top: 6.4vw !important;}
+    .pl-3:not(.pl-non-sc) {padding-top: 8.4vw !important;}
     .mr-1:not(.mr-non-sc) {margin-right: 3.2vw !important}
     .ml-1:not(.ml-non-sc) {margin-left: 3.2vw !important}
 
@@ -416,7 +428,7 @@ svg > .static-svg {
 /* Button */
 
 button {
-    background-color: inherit !important;
+    background-color: transparent !important;
     border: 1px solid transparent;
     border-radius: 3px;
 }
@@ -459,6 +471,10 @@ button.big-blue-button {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+h1 ~ a.static-button {
+    margin: 0rem;
 }
 
 .static-button:hover, .static-button:focus {
@@ -617,10 +633,12 @@ ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
 /* second nav */
 .second-nav-wrapper {
     position: fixed;
+    height: 40px;
+    overflow: hidden;
     top: 55px;
     width: 100%;
     background-color: #f4f4f4;
-    z-index: 1070;
+    z-index: 1069;
 }
 
 .second-nav-wrapper > div {
@@ -632,7 +650,17 @@ ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
     font-size: 0.8rem;
 }
 
-.inner-pages-wrapper{
+.pages-wsm-wrapper{ padding-top: calc(40px + 2em); }
+.inner-pages-wrapper { padding-top: 2em; }
+
+@media screen and (max-width: 500px){
+    .pages-wsm-wrapper{ padding-top: calc(40px + 6.4vw); }
+    .inner-pages-wrapper { padding-top: 6.4vw; }
+}
+.sbl-bodyWrapper .inner-pages-wrapper { padding-top: 0em; }
+
+.inner-pages-wrapper, .pages-wsm-wrapper {
+    padding-bottom: 2em;
     width: 100%;
     position: relative;
     display: flex;
@@ -641,9 +669,31 @@ ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
     align-items: center;
 }
 
-.ipw-600, .ipw-800 { margin: 0 auto; }
+.inner-pages-wrapper > :nth-child(n), .pages-wsm-wrapper > :nth-child(n){
+    padding-right: 1em;
+    padding-left: 1em;
+}
+
+@media screen and (max-width: 500px){
+    .inner-pages-wrapper .break-at-500 { padding-right: 0px !important; padding-left: 0px !important; }
+    .inner-pages-wrapper > :nth-child(n):not(.break-at-700):not(.break-at-500){
+        padding-right: 3.2vw !important;
+        padding-left: 3.2vw !important;
+    }
+}
+
+@media screen and (max-width: 700px){
+    .inner-pages-wrapper .break-at-700 { padding-right: 0px !important; padding-left: 0px !important; }
+    .inner-pages-wrapper > :nth-child(n):not(.break-at-700):not(.break-at-500){
+        padding-right: 3.2vw !important;
+        padding-left: 3.2vw !important;
+    }
+}
+
+.ipw-600, .ipw-800, .ipw-1000 { margin: 0 auto; }
 .ipw-600 { max-width: 600px; }
 .ipw-800 { max-width: 800px; }
+.ipw-1000 { max-width: 1000px; }
 
 .light-grey-outline-icon, .light-grey-outline-button {border-color: #cccccc; color: #cccccc;}
 ul.main-nav .svg,
@@ -723,6 +773,7 @@ ul.input-fields .add-margin {
 
 @media screen and (min-width: 561px){
     ul.input-fields > li {flex-flow: row;}
+    ul.input-fields > li.alignCenter {display: flex; align-items: center;}
     ul.first-child-text-60 > li > :first-child{
         flex: 0 0 60px;
         text-align: right;
@@ -753,10 +804,6 @@ ul.input-fields .add-margin {
     }
     ul.input-fields:not(.input-fields-narrow) > li > :last-child:not(label):not(:only-child),
     ul.input-fields .add-margin {margin-left: 1rem !important;}
-    /*ul.input-fields > li:not(:last-child) > :last-child:not(label),
-    ul.input-fields .add-margin {
-        margin-bottom: 1rem !important;
-    }*/
 }
 
 @media screen and (max-width: 560px){
@@ -826,10 +873,11 @@ ul.input-fields > li > p:first-child {
 }
 
 .regular-p { 
+    line-height: normal !important;
     text-transform: none !important;
     white-space: pre-wrap !important;
     font-weight: 400;
-    margin: 0rem !important;
+    margin: 0rem 0.5rem 0rem 0rem !important;
 }
 
 /* ????????????????? grey-SVG-button */
@@ -876,7 +924,7 @@ button.grey-SVG-button:focus {
     top: 41px;
     left: 0px;
     right: 0px;
-    z-index: 999;
+    z-index: 1072;
     background: #ffffff;
 }
 
@@ -1039,9 +1087,9 @@ button.grey-SVG-button:focus {
 .table {
     display: grid; 
     grid-template-rows: max-content; 
-    border-right: 1px solid #cccccc; 
-    border-left: 1px solid #cccccc;
-    border-bottom: 1px solid #cccccc; 
+    /*border-right: 1px solid #cccccc; 
+    border-left: 1px solid #cccccc; 
+    border-bottom: 1px solid #cccccc; */
     width: 100%;
 }
 .table > li {padding: 0.65em;}
@@ -1049,10 +1097,11 @@ button.grey-SVG-button:focus {
     text-transform: uppercase;
     font-weight: 700;
     font-size: 0.8rem;
-    color: #ffffff;
-    background-color: #cccccc;
+    color: #999999;
+    font-weight: 500;
+    /*background-color: #cccccc; 
     border-top: 1px solid #cccccc;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;*/
 }
 /*.events-table {width: 100%; grid-template-columns: repeat(2, minmax(auto, auto)) minmax(6em, auto) minmax(5em, 10em) minmax(auto, auto);}*/
 
@@ -1100,25 +1149,29 @@ button.grey-SVG-button:focus {
     text-overflow: ellipsis;
     text-align: center;
 }
+
 .line-of-inputs-wrapper > :nth-child(n):not(:last-child) {margin-right: 0.8rem;}
-.break-at-500-p {margin-top:0px !important; margin-right:0.5rem;}
-@media screen and (max-width: 500px) {
-    .table {display: block; }
-    .table > li.table-header {display: none;}
-    .table > li.borders-when-display-block {
-        /*border-top: 1px solid #666666 !important;
-        border-bottom: 1px solid #666666 !important;*/
-        background-color: #f4f3f2;
-    }
-    .break-at-500 {display: block;} /* Do I still need this??? */
-    .break-at-500-p {margin-bottom: 0.8rem;}
+
+@media screen and (max-width: 560px) {
     .line-of-inputs-wrapper > :nth-child(n):not(:last-child) {margin-right: 0rem !important;}
     .line-of-inputs-wrapper > .mark-invalid:nth-child(n) > :nth-child(n) {margin-bottom: 0rem !important;}
     .line-of-inputs-wrapper > .mark-invalid:nth-child(n) {margin-bottom: 1.5rem !important;}
+
+    .break-at-560 {display: block; padding-right: 0px !important; padding-left: 0px !important;} 
+}
+
+.break-at-500-p {margin-top:0px !important; margin-right:0.5rem;}
+
+@media screen and (max-width: 500px) {
+    .table {display: block; }
+    .table > li.table-header {display: none;}
+    .table > li.borders-when-display-block { background-color: #f4f3f2 }
+    .break-at-500 {display: block; padding-right: 0px !important; padding-left: 0px !important;} 
+    .break-at-500-p {margin-bottom: 0.8rem;}
 }
 
 @media screen and (max-width: 700px) {
-    .break-at-700 {display: block; }
+    .break-at-700 {display: block; padding-right: 0px !important; padding-left: 0px !important;}
     .break-at-700 > li.table-header {display: none;}
     .break-at-700 > li.borders-when-display-block {background-color: #f4f3f2;}
 }
@@ -1271,6 +1324,10 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     border-color: #E53E71;
 }
 
+.error-input-wrapper .drop-down-header {
+    border-color: #E53E71;
+}
+
 .error-message {
     color: #E53E71;
     font-size: 0.75em;
@@ -1335,7 +1392,98 @@ li.mark-invalid label > svg {
     text-align: center !important;
 }
 
+/* REPORTS */
+
+.reports-nav {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.reports-nav > li {
+    position: relative;
+    margin: 0.25em;
+    flex: 0 0 150px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.reports-nav > li:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+.reports-nav > li > a {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    border: 1px solid #999999;
+    padding: 0.25em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+}
+
+.reports-nav > li .svg { fill: #ffffff;}
+
+.reports-nav > li > a > :nth-child(n) { 
+    width: 100%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center;
+    color: #999999;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+.reports-nav > li > a > :first-child { flex: 0 0 60%; }
+.reports-nav > li > a > :last-child { flex: 0 0 40%; }
+
+.reports-nav > li.cosmic > a {border: 1px solid rgb(121, 64, 104)}
+.reports-nav > li.violet > a {border: 1px solid rgb(171, 65, 137)}
+.reports-nav > li.pink > a {border: 1px solid rgb(245, 119, 163)}
+.reports-nav > li.tango > a {border: 1px solid rgb(209, 108, 53)}
+.reports-nav > li.pumpkin > a {border: 1px solid rgb(254, 123, 34)}
+.reports-nav > li.supernova > a {border: 1px solid rgb(239, 177, 53)}
+.reports-nav > li.lime > a {border: 1px solid rgb(139, 186, 25)}
+.reports-nav > li.java > a {border: 1px solid rgb(58, 166, 160)}
+.reports-nav > li.teal > a {border: 1px solid rgb(4, 120, 132)}
+
+.reports-nav > li > a:hover, .reports-nav > li > a:focus {border: 1px solid #0099cc}
+
+.reports-nav > li.cosmic .svg {fill: rgb(121, 64, 104)}
+.reports-nav > li.violet .svg {fill: rgb(171, 65, 137)}
+.reports-nav > li.pink .svg {fill: rgb(245, 119, 163)}
+.reports-nav > li.tango .svg {fill: rgb(209, 108, 53)}
+.reports-nav > li.pumpkin .svg {fill: rgb(254, 123, 34)}
+.reports-nav > li.supernova .svg {fill: rgb(239, 177, 53)}
+.reports-nav > li.lime .svg {fill: rgb(139, 186, 25)}
+.reports-nav > li.java .svg {fill: rgb(58, 166, 160)}
+.reports-nav > li.teal .svg {fill: rgb(4, 120, 132)}
+
+.reports-nav > li > a:hover .svg, .reports-nav > li > a:focus .svg {fill: #0099cc}
+
+.reports-nav > li.cosmic span {color: rgb(121, 64, 104)}
+.reports-nav > li.violet span {color: rgb(171, 65, 137)}
+.reports-nav > li.pink span {color: rgb(245, 119, 163)}
+.reports-nav > li.tango span {color: rgb(209, 108, 53)}
+.reports-nav > li.pumpkin span {color: rgb(254, 123, 34)}
+.reports-nav > li.supernova span {color: rgb(239, 177, 53)}
+.reports-nav > li.lime span {color: rgb(139, 186, 25)}
+.reports-nav > li.java span {color: rgb(58, 166, 160)}
+.reports-nav > li.teal span {color: rgb(4, 120, 132)}
+
+.reports-nav > li > a:hover span, .reports-nav > li > a:focus span {color: #0099cc}
+
 /* check Box */
+
 .checkBox-wrapper {display: flex; flex-wrap: nowrap; justify-content: left; align-items: center;}
 .checkBox-wrapper label {position: relative; margin-right: 0.5rem; background-color: #ffffff}
 .checkBox-wrapper label + span {white-space: nowrap !important;}
@@ -1449,3 +1597,6 @@ p.message-block {
     flex: 0 1 8em;
 }
 
+.fill-white > .svg {
+    fill: #ffffff !important;
+}

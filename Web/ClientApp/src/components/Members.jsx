@@ -4,7 +4,7 @@ import { withStore } from './store';
 import { Service } from './ApiService';
 import Table from './Table';
 import VolunteerUpSVG from '../svg/VolunteerUpSVG';
-import VeteranUpSVG from '../svg/VeteranUpSVG';
+import PaddlerUpSVG from '../svg/PaddlerUpSVG';
 import CloseUpSVG from '../svg/CloseUpSVG';
 import EditUpSVG from '../svg/EditUpSVG';
 import Loader from './Loader';
@@ -68,33 +68,37 @@ class Members extends Component {
                 className={col.className ? "table-content " + col.className : "table-content"} 
                 style={{"display":"flex", "alignItems":"center"}}
             >
-                <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
-                    {row['oldType'] === 54 ? <VeteranUpSVG /> : <VolunteerUpSVG />}
-                </span>
+                <div className='flex-nowrap align-self-stretch align-center pr-05 pl-05' style={ row['oldType'] === 54 ? {"backgroundColor":"#fe7b22"} : {"backgroundColor":"#8bba19"}}>
+                    <span style={{"flex":"0 0 auto","height":"1.5rem"}}>
+                        {row['oldType'] === 54 ? <PaddlerUpSVG svgClassName='fill-white'/> : <VolunteerUpSVG svgClassName='fill-white' />}
+                    </span>
+                </div>
                 <Link to={"/member/" + row["id"]}>
                     <span style={{ "display": "flex", "flexFlow": "column", "flexWrap": "nowrap", "flex": "1 1 auto" }} className="blue-link link">
                         <span style={{"fontSize":"1.1em", "flex":"1 1 auto"}}>{row['firstName'] + ' ' + row['lastName']}</span>
                         <span style={{ "flex": "1 1 auto" }} className='chapter'>{row['siteName']}</span>
                     </span>
                 </Link>
-                {/*
-                <button 
-                    className='round-button small-round-button light-grey-outline-button' 
-                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                    onClick={() => this.removeMember()}
-                >
-                    <CloseUpSVG />
-                </button>
-                <Link to={"/member/" + row["id"]}>
-                    <button 
-                        className='round-button small-round-button light-grey-outline-button' 
-                        style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                        onClick={() => this.editMember()}
-                    >
-                        <EditUpSVG />
-                    </button>
-                </Link>
-                */}
+            </li>
+        );
+    }
+
+    renderDOBColumn(value, row, index, col) {
+        const getNewValue = (value) => {
+            if(value === null){ return null }
+            else {
+                let dob = new Date(value);
+                return ('0' + (dob.getMonth() + 1).toString()).slice(-2) + '/' + ('0' + dob.getDate().toString()).slice(-2) + '/' + dob.getFullYear()
+            }
+        }
+        return (
+            <li 
+                key={index} 
+                className={col.className ? "table-content " + col.className : "table-content"} 
+                style={{"display":"flex", "alignItems":"center"}}
+            >
+                <span className='table-mini-header'>{col.title + ": "}</span>
+                {value !== null && <span> { getNewValue(value) } </span> }
             </li>
         );
     }
@@ -107,25 +111,25 @@ class Members extends Component {
     }
 
     render() {
-        const chapterFilter = this.props.filters.find(element => {
+        /*const chapterFilter = this.props.filters.find(element => {
             if (element.name === 'chapters'){return element}
-        })
+        })*/
         const members = this.state.members;
         const columns=[
             {title:"Member", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", columnMinWidth:'6em', className:'word-break'},
             {title:"Zip", accesor:"zip"},
-            {title:"DOB", accesor:"dateOfBirth"}
+            {title:"DOB", accesor:"dateOfBirth", render: this.renderDOBColumn}
         ];
         return (
-            <div className='flex-nowrap flex-flow-column align-center pb-2 mediaMin500-pl-pr-025' style={{ "maxWidth": "900px" }}>
+            <div className="inner-pages-wrapper ipw-1000">
                 {this.state.loadData && <Loader />}
-                <div className="flex-wrap align-center justify-space-between w-100 mb-2 mediaMax500-pl-pr-025">
+                <div className="flex-wrap align-center justify-space-between w-100 mb-2">
                     <h1 className='uppercase-text'><strong>Members</strong></h1>
-                    {/*<a className='big-static-button static-button' href="/new-member"><p>ADD NEW MEMBER</p></a>*/}
+                    <a className='big-static-button static-button' href="/new-member"><p>NEW MEMBER</p></a>
                 </div>
-                <div className="label-input-wrapper mediaMax500-pl-pr-025">
+                {/*<div className="label-input-wrapper mb-1">
                     <p>CHAPTER:</p>
                     <MultiDropDown 
                             ref={el => this.chaptersDropDownRef = el}
@@ -141,7 +145,8 @@ class Members extends Component {
                             placeholder='National'
                             onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
-                </div>
+                </div>*/}
+                {members.length === 1000 && <span style={{color:"red"}}>Refine your search to get less then 1000 members.</span>}
                 {members.length > 0 &&
                     <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
                 }

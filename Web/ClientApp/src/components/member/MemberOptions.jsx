@@ -177,10 +177,10 @@ class MemberOptions extends Component {
             {title:"Description", accesor:"description", className: "italic"}
         ];
         return (
-            <div className = 'flex-nowrap flex-flow-column justify-center width-100 mt-3' style={{'maxWidth':"700px", "width":"100%"}}>
+            <div className = 'flex-nowrap flex-flow-column justify-center w-100'>
                 {this.state.showAddEditOption &&
                     <div className = 'wh-bcg' style={{"opacity":"1"}}>
-                        <div className = 'flex-nowrap flex-flow-column align-center justify-center mr-1 ml-1' style={{"width":"100%", "backgroundColor":"#ffffff"}}>
+                        <div className = 'flex-nowrap flex-flow-column align-center justify-center mr-1 ml-1 w-100' style={{"backgroundColor":"#ffffff"}}>
                             <h2 className='mb-2 mt-2'>{this.headerText}</h2>
                             <ul className='input-fields first-child-text-95'>
                                 <li>

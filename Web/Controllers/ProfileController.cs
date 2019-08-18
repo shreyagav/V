@@ -178,13 +178,14 @@ namespace Web.Controllers
                 && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && EF.Functions.Like(a.Zip, filter.Zip)))
                 && ((filter.Chapters == null || filter.Chapters.Length == 0) || filter.Chapters.Contains(a.SiteId.Value))
                 )
-                .Take(100).Select(a => new UserProfileDto(a)).ToArray();
+                .Take(1000).Select(a => new UserProfileDto(a)).ToArray();
             return res;
         }
 
         [HttpPost("[action]")]
         public async Task<UserProfileDto> Set(UserProfileDto data)
         {
+            /*throw new Exception("something went wrong");*/
             var user = await _userManager.FindByIdAsync(data.Id);
             data.Map(user);
             await _userManager.UpdateAsync(user);

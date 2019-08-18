@@ -9,7 +9,7 @@ class MemberTRRInfo extends Component {
 
     render() {
         return (
-            <div className = 'ml-1 mt-3 mr-1'>
+            <div>
                 <CheckBox 
                     className = 'mb-05'
                     onClick = {() => this.props.updateMemberProperty("releaseSigned", !this.props.member.releaseSigned)}

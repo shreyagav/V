@@ -13,14 +13,14 @@ class CalendarSidebar extends Component {
     render() {
         return (
         <div style={{"position": "relative", "height": "100%"}}>
-            <div className='flex-nowrap justify-space-between align-end mb-1 pl-1 pr-1 mt-1'>
-                <h3>Chapters</h3>
+            <div className='flex-nowrap justify-space-between align-center pl-05 pr-1 mb-1' style={{'marginTop':'0.75rem'}}>
+                <h3>Filter</h3>
                 {this.props.chapterFilter.length > 0 && 
                     <button 
                         ref={el => this.nationalEventButton = el}
                         className='round-button medium-round-button grey-outline-button pr-05 pl-05'
                         onClick = {this.props.clearChapterFilter}
-                    >Select All</button>
+                    >Clear filters</button>
                 }
             </div>
             <MultiDropDown 

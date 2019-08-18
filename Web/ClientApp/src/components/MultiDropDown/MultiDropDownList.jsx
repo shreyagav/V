@@ -354,6 +354,7 @@ class MultiDropDownList extends React.Component {
                 style={this.props.isOpen || !this.props.toggleable ? this.state.style : {"display":"none"}}
             >
                 {/*<SimpleBar>*/}
+                <div style={{"height": "100%"}} data-simplebar >
                 <ul className='drop-down-list' 
                     ref={ el => this.simpleBarRef = el} 
                     /*style={{'height':this.simpleBarHeight}} */
@@ -379,6 +380,7 @@ class MultiDropDownList extends React.Component {
                         )
                     }
                 </ul>
+                </div>
                 {/*</SimpleBar>*/}
             </div>
         )

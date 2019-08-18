@@ -161,20 +161,15 @@ class EventAttendees extends Component {
             {title:"Phone", accesor:"phone"},
             {title:"Email", accesor:"email", className:'word-break'}
         ];
-        //this.filteredList = this.state.filteredList;
-        console.log("TEMP MEMBERS");
-        console.log(this.state.tempMembers);
-        console.log("SITE MEMBERS");
-        console.log(this.state.siteMembers);
         return (
-            <div style={{ "width": "100%", "maxWidth": "600px" }}>
+            <div className='w-100 prpl-0'>
                 {this.state.loading && <Loader />}
                 {this.state.addingExistingMembers &&
                     <FixedWrapper maxWidth={"600px"}>
-                        <h2 className='m-1 mr-05 ml-05'>Add Members</h2>
+                        <h2 className='m-1'>Add Members</h2>
                         <SearchInput 
                             placeholder='Search members'
-                            wrapperClassName = 'mb-1 mr-05 ml-05'
+                            wrapperClassName = 'm-1'
                             value={this.state.attendeeFilter}
                             onValueChange={(value) => {
                                 clearTimeout(this.timeoutVar);
@@ -254,9 +249,9 @@ class EventAttendees extends Component {
                         </div>
                     </FixedWrapper>
                 }
-                {members.length === 0 && <p className='message-block mb-2'>There are no attendees registered for the event.</p>}
+                {members.length === 0 && <p className='message-block mb-2 pr-1 pl-1'>There are no attendees registered for the event.</p>}
                 {this.props.editsPermitted !== false &&
-                    <div className="flex-wrap align-center justify-center mb-2">
+                    <div className="flex-wrap align-center justify-center mb-2 pr-1 pl-1">
                         <p className='input-label'>ADD ATTENDEES:</p>
                         <span>
                             {/*<button disabled className='big-static-button static-button' onClick={this.addNewMember}>Create New</button>*/}
