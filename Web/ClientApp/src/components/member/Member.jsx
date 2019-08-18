@@ -64,7 +64,8 @@ class Member extends Component {
             showError: false,
             showDeleteMemberDialog: false,
             showSuccessfullySavedDialog: false,
-            userId: userId
+            userId: userId,
+            sponsors:[]
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
@@ -108,13 +109,16 @@ class Member extends Component {
         };
 
         this.setState({ loading: true });
-        if (this.props.match.path == '/profile' ) {
-            Service.getProfile().then(onSuccess);
-        } else if (this.props.match.path == '/new-member') {
-
-        } else if (this.state.userId != null && this.state.userId !="") {
-            Service.getProfileById(this.state.userId).then(onSuccess);
-        }
+        Service.getSponsors().then(data => {
+            this.setState({ sponsors: data });
+            if (this.props.match.path == '/profile') {
+                Service.getProfile().then(onSuccess);
+            } else if (this.props.match.path == '/new-member') {
+                
+            } else if (this.state.userId != null && this.state.userId != "") {
+                Service.getProfileById(this.state.userId).then(onSuccess);
+            }
+        });
     }
 
     saveMemberInfo() {
@@ -481,13 +485,14 @@ class Member extends Component {
                 }
                 {this.state.activeTabIndex === 2 && 
                     <MemberTRRInfo 
-                        setJoinDateDropDownRef = {el => this.joinDateDropDownRef = el}
-                        setSponsoredByDropDownRef = {el => this.sponsoredByDropDownRef = el}
-                        setStatusDropDownRef = {el => this.statusDropDownRef = el}
-                        setAuthLevelDropDownRef = {el => this.authLevelDropDownRef = el}
-                        setUserTypeDropDownRef = {el => this.userTypeDropDownRef = el} 
-                        member = {this.state.member}
-                        updateMemberProperty = {(property, value) => this.updateMemberProperty(property, value)}
+                    setJoinDateDropDownRef={el => this.joinDateDropDownRef = el}
+                    setSponsoredByDropDownRef={el => this.sponsoredByDropDownRef = el}
+                    setStatusDropDownRef={el => this.statusDropDownRef = el}
+                    setAuthLevelDropDownRef={el => this.authLevelDropDownRef = el}
+                    setUserTypeDropDownRef={el => this.userTypeDropDownRef = el}
+                    member={this.state.member}
+                    updateMemberProperty={(property, value) => this.updateMemberProperty(property, value)}
+                    sponsors={this.state.sponsors}
                     />
                 }
                 {this.state.activeTabIndex === 3 &&

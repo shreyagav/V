@@ -134,6 +134,10 @@ export class Service {
         return Service.__post(host + '/api/Profile/editUserDiagnosis/' + id, d);
     }
 
+    static getSponsors() {
+        return Service.__get(host + '/api/Profile/sponsors');
+    }
+
     static __get(url) {
         //var promice = fetch(url).then(resp => {
         //    if (!resp.ok) {
