@@ -12,6 +12,12 @@ class EditContact extends Component {
         };
     }
 
+    componentDidUpdate(){
+        if(!this.props.isFormValid(this.props.validators, this.props.value) && !this.state.contactIsOpen){
+            this.setState({contactIsOpen: true})
+        }
+    }
+
     toggle(){
         if(this.state.contactIsOpen) {
             if(this.props.isFormValid(this.props.validators, this.props.value)){
@@ -101,7 +107,7 @@ class EditContact extends Component {
                             </li>
                             <li>
                                 <p>Phone:</p>
-                                <div className={this.props.store.checkIfShowError('phone', this.props.validators) ? 'error-input-wrapper' : '' }>
+                                <div className={this.props.store.checkIfShowError('phone', this.props.validators) ? 'error-input-wrapper' : '' } >
                                     <input 
                                         autoComplete = 'nope'
                                         value={this.props.value.phone}
@@ -123,7 +129,7 @@ class EditContact extends Component {
                                         onKeyDown={(e) => { if (!e.shiftKey && e.keyCode === 9) {this.toggle()} }}
                                         onBlur={() => this.props.updateValidators('email')}
                                     />
-                                    { this.props.store.displayValidationErrors('email', this.props.validators) }
+                                    {  this.props.store.displayValidationErrors('email', this.props.validators)  }
                                 </div>
                             </li>
                         </ul>

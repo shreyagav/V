@@ -8,7 +8,6 @@ import { withStore } from '../store';
 import EditContact from '../EditContact';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import { Service } from '../ApiService';
-import chapterValidators from './chapterValidators'
 import InputWithClearButton from '../InputWithClearButton'
 import { createValidators } from '../storeValidatorsRules'
 import { alertNotValid } from '../alerts'
@@ -54,12 +53,16 @@ class Chapter extends Component {
     }
 
     componentWillMount(){
-        this.validators = chapterValidators();
+        let chapterValidators = [
+            {'name':'name', 'typeFunction':'notEmptyString', 'text':'Chapter Name'},
+            {'name':'groupId', 'typeFunction':'chapter', 'text':'Region'},
+     ];
+        this.validators = createValidators(chapterValidators);
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
         let contactValidators = [
             {'name':'name', 'typeFunction':'nameOTG', 'text':'Name'},
             {'name':'phone', 'typeFunction':'phone', 'text':'Phone'},
-            {'name':'email', 'typeFunction':'email', 'text':'Email'},
+            {'name':'email', 'typeFunction':'email', 'text':'Email'}, 
         ];
         this.contactMainValidators = createValidators(contactValidators);
         this.contactGovtValidators = createValidators(contactValidators);
@@ -239,7 +242,8 @@ class Chapter extends Component {
                                 { this.props.store.displayValidationErrors('groupId', this.validators) }
                             </div>
                         </li>
-                        <li>
+
+                        {/*li>
                             <p>Security Clearace:</p>
                             <InputWithClearButton 
                                 type='text' 
@@ -247,14 +251,12 @@ class Chapter extends Component {
                                 value = {this.state.chapter.securityClearance}
                                 onChange={e => {
                                     this.updateChapterProperty("securityClearance", e.target.value)
-                                    /* this.props.store.updateValidators("securityClearance", e.target.value, this.validators);*/
                                 }}
                                 onClearValue = {() => {
                                     this.updateChapterProperty("securityClearance", ""); 
-                                    /*this.props.store.updateValidators("securityClearance", "", this.validators);*/
                                 }}
                             />
-                        </li>
+                        </li>*/}
 
                         <li className='alignCenter'>
                             <p>Pool Rental:</p>
