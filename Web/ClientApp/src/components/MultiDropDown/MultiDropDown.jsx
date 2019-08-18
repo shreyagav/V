@@ -464,6 +464,11 @@ class MultiDropDown extends React.Component {
         }
     }
 
+    getDropDownValue(list){
+        if(list.length > 0) return list[0].parentElement[this.props.textProperty]
+        else return ""
+    }
+
     render() {
         const setStyle = () => {
             let style = {};
@@ -553,7 +558,7 @@ class MultiDropDown extends React.Component {
                                         //onClearValueButtonClick={(e) => this.onSearchInputValueChange('')}
                                         headerRef={this.headerRef}
                                         multiSelect={this.props.multiSelect === true || this.props.expandedMultiSelect === true}
-                                        dropDownValue={this.props.defaultValue}
+                                        dropDownValue={this.getDropDownValue(list)}
                                         toggle={() => this.toggle()}
                                     />
                                 </li>

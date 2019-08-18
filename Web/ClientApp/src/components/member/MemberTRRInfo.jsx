@@ -76,13 +76,16 @@ class MemberTRRInfo extends Component {
                             <MultiDropDown
                             ref={this.props.setSponsoredByDropDownRef}
                             list={this.props.sponsors}
-                            search={(list, filter, param) => { console.log(param); return list.filter(a => a.name.indexOf(filter) >= 0) }}
+                            search={(list, filter, param) => { 
+                                console.log(param); 
+                                return list.filter(a => a.name.indexOf(filter) >= 0) 
+                            }}
                             multiSelect={false}
                             keyProperty='id'
                             textProperty='name'
                             defaultValue={this.props.member.sponsoredBy}
                             placeholder="Sponsored By"
-                            onDropDownValueChange={value => { console.log(value); this.props.updateMemberProperty("sponsoredBy", value) }}
+                            onDropDownValueChange={value => { this.props.updateMemberProperty("sponsoredBy", value) }}
                             />
                         </li>
 

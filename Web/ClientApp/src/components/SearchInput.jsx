@@ -88,7 +88,23 @@ class SearchInput extends Component {
         }
     }
 
+    getValue(){
+        if (this.props.multiSelect) {
+            if(this.props.value.length > 0) return this.props.value;
+            else return this.props.placeholder;
+        }
+        else {
+            if(this.props.dropDownValue.length > 0 || this.props.value.length > 0){
+                if(this.props.dropDownValue.length > this.props.value.length){
+                    return this.props.dropDownValue;
+                } else return this.props.value;
+            }
+            else return this.props.placeholder;
+        }
+    }
+
     render() {
+        const value = this.getValue();
         const style = this.getPropperStyle();
         this.setValue();
         return (
@@ -108,7 +124,7 @@ class SearchInput extends Component {
                         style={this.state.style}
                         ref={el => this.fakeInputRef = el}
                     >
-                        {this.props.value.length > 0 ? this.props.value : this.props.placeholder}
+                        {value}
                     </span>
                 }
                 {this.props.dynamicWidth && !this.props.multiSelect &&
