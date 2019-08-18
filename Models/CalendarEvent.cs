@@ -15,7 +15,7 @@ namespace Models
         }
         public CalendarEvent(EventMainDto newEvent)
         {
-            Id = newEvent.Id;
+            Id = newEvent.Id<=0? 0 : newEvent.Id;
             Map(newEvent);
         }
 
