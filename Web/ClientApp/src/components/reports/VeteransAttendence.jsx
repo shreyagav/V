@@ -41,7 +41,7 @@ class VeteransAttendence extends Component {
             { Header: "Chapter", accessor: 'chapter', filterable: true },
             { Header: "Address", accessor: 'address', filterable: true },
             { Header: "Zip", accessor: 'zip', filterable: true },
-            { Header: "Count", accessor: 'count', filterable: true }
+            { Header: "Events Attended", accessor: 'count', filterable: true }
         ]
         return (<div>
             {this.state.loading && <Loader />}

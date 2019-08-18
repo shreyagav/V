@@ -68,7 +68,8 @@ class Member extends Component {
             showDeleteMemberDialog: false,
             showSuccessfullySavedDialog: false,
             showErrorSaveDialog: false,
-            userId: userId
+            userId: userId,
+            sponsors:[]
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
@@ -508,13 +509,14 @@ class Member extends Component {
                 }
                 {this.state.activeTabIndex === 2 && 
                     <MemberTRRInfo 
-                        setJoinDateDropDownRef = {el => this.joinDateDropDownRef = el}
-                        setSponsoredByDropDownRef = {el => this.sponsoredByDropDownRef = el}
-                        setStatusDropDownRef = {el => this.statusDropDownRef = el}
-                        setAuthLevelDropDownRef = {el => this.authLevelDropDownRef = el}
-                        setUserTypeDropDownRef = {el => this.userTypeDropDownRef = el} 
-                        member = {this.state.member}
-                        updateMemberProperty = {(property, value) => this.updateMemberProperty(property, value)}
+                    setJoinDateDropDownRef={el => this.joinDateDropDownRef = el}
+                    setSponsoredByDropDownRef={el => this.sponsoredByDropDownRef = el}
+                    setStatusDropDownRef={el => this.statusDropDownRef = el}
+                    setAuthLevelDropDownRef={el => this.authLevelDropDownRef = el}
+                    setUserTypeDropDownRef={el => this.userTypeDropDownRef = el}
+                    member={this.state.member}
+                    updateMemberProperty={(property, value) => this.updateMemberProperty(property, value)}
+                    sponsors={this.state.sponsors}
                     />
                 }
                 {this.state.activeTabIndex === 3 &&

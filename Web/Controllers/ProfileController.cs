@@ -13,6 +13,12 @@ using Services.Helpers;
 
 namespace Web.Controllers
 {
+    public class SponsorDto
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Chapter { get; set; }
+    }
     public class UserDiagnoseDto
     {
         public int Id { get; set; }
@@ -30,6 +36,10 @@ namespace Web.Controllers
         {
             _userManager = userManager;
             _ctx = ctx;
+        }
+        [HttpGet("[action]")]
+        public SponsorDto[] Sponsors() {
+            return _ctx.Users.Include(a => a.Site).Select(a => new SponsorDto() { Id = a.Id, Chapter = a.Site.Name, Name = $"{a.FirstName} {a.LastName}" }).ToArray();
         }
         [HttpGet("[action]/{id}")]
         public UserOptionDto[] GetUserOptions(string id)
