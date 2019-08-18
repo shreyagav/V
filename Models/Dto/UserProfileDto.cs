@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Models.Dto
 {
-    
+
 
     public class UserProfileDto
     {
@@ -27,7 +27,18 @@ namespace Models.Dto
             Zip = user.Zip;
             Medical = user.Medical;
             InjuryDate = user.DateInjured;
-            OldType = user.OldType;
+
+            ReleaseSigned = user.ReleaseSigned;
+            LiabilitySigned = user.LiabilitySigned;
+            ActiveMember = user.Active;
+            DeactiveCause = user.DeactiveCause;
+            JoinDate = user.JoinDate;
+            TravelTime = user.TravelTime;
+            Medical = user.Medical;
+            UserType = (int)user.OldType;
+            Comments = user.Comments;
+            Status = user.OldStatus;
+
             if (user.Site != null)
             {
                 SiteName = user.Site.Name;
@@ -67,10 +78,21 @@ namespace Models.Dto
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
-        public TRRUserType OldType { get; set; }
         public Medical Medical { get; set; }
         public DateTime? InjuryDate { get; set; }
         public IEnumerable<EventListRow> Events { get; set; }
+
+        public bool ReleaseSigned { get; set; }
+        public bool LiabilitySigned { get; set; }
+        public bool ActiveMember { get; set; }
+        public string DeactiveCause { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public string SponsoredBy { get; set; }
+        public string TravelTime { get; set; }
+        public string[] Roles { get; set; }
+        public int UserType { get; set; }
+        public string Comments { get; set; }
+        public int Status { get; set; }
 
     }
 }
