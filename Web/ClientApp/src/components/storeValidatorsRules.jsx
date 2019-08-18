@@ -34,13 +34,13 @@ const storeValidatorsRules = {
         ];
     },
     email: (text) => {
-        let message1 = text + 'is not valid';
+        let message1 = text + ' is not valid';
         return [
             {test: /^$|^.+@[^\.].*\.[a-z]{2,}$/, message: message1 },
         ];
     },
     emailOTG: (text) => {
-        let message1 = text + 'is not valid';
+        let message1 = text + ' is not valid';
         return [ 
             { test: /^$|^[^@]+(@([^@%',]*(\.([a-z]{1,})?)?)?)?$/, message: message1 },
         ];
@@ -52,7 +52,7 @@ const storeValidatorsRules = {
         ];
     },
     zipOTG: (text) => {
-        let message1 = text + 'is not valid';
+        let message1 = text + ' is not valid';
         return [ 
             { test: /^\d{1,5}(?:[-\s]\d{0,4})?$/, message: message1 },
         ];
