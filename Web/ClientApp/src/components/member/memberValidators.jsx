@@ -1,8 +1,8 @@
 import { createValidators } from '../storeValidatorsRules'
 
 const memberValidators = () => createValidators([
-      {'name':'firstName', 'typeFunction':'name', 'text':'First Name'},
-      {'name':'lastName', 'typeFunction':'name', 'text':'Last Name'},
+      {'name':'firstName', 'typeFunction':'notEmptyString', 'text':'First Name'},
+      {'name':'lastName', 'typeFunction':'notEmptyString', 'text':'Last Name'},
       {'name':'siteId', 'typeFunction':'chapter', 'text':'Chapter'}
 ]);
   
