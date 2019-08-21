@@ -107,29 +107,29 @@ class EditContact extends Component {
                             </li>
                             <li>
                                 <p>Phone:</p>
-                                <div /* className={this.props.store.checkIfShowError('phone', this.props.validators) ? 'error-input-wrapper' : '' } */ >
+                                <div  className={this.props.store.checkIfShowError('phone', this.props.validators) ? 'error-input-wrapper' : '' } >
                                     <input 
                                         autoComplete = 'nope'
                                         value={this.props.value.phone}
                                         type='text' placeholder='Phone'
                                         onChange={(e) => this.props.onInputValueChange('phone', e.target.value)}
-                                        onBlur={() => this.props.updateValidators('phone')}
+                                        onBlur={() => this.props.updateValidators('phone')} 
                                     />
-                                    {/* this.props.store.displayValidationErrors('phone', this.props.validators) */}
+                                    { this.props.store.displayValidationErrors('phone', this.props.validators) }
                                 </div>
                             </li>
                             <li>
                                 <p>Email:</p>
-                                <div /*className={this.props.store.checkIfShowError('email', this.props.validators) ? 'error-input-wrapper' : '' }*/>
+                                <div className={this.props.store.checkIfShowError('email', this.props.validators) ? 'error-input-wrapper' : '' }>
                                     <input 
                                         autoComplete = 'nope'
                                         value={this.props.value.email}
                                         type='text' placeholder='Email'
                                         onChange={(e) => this.props.onInputValueChange('email', e.target.value)}
                                         onKeyDown={(e) => { if (!e.shiftKey && e.keyCode === 9) {this.toggle()} }}
-                                        onBlur={() => this.props.updateValidators('email')}
+                                        onBlur={() => this.props.updateValidators('email')} 
                                     />
-                                    {/* this.props.store.displayValidationErrors('email', this.props.validators) */}
+                                    { this.props.store.displayValidationErrors('email', this.props.validators) }
                                 </div>
                             </li>
                         </ul>

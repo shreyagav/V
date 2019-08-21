@@ -108,7 +108,8 @@ ul.calendar-content > li > div > span > :first-child{
 }
 
 ul.calendar-content > li:not(.disabled):hover > div,
-ul.calendar-content > li:not(.disabled):focus > div {
+/*ul.calendar-content > li:not(.disabled):focus > div,*/
+ul.calendar-content > li:not(.disabled).onFocus > div {
     background: #cdeefc !important;
     cursor: pointer;
     position: relative;
@@ -244,18 +245,21 @@ li.listStyleView ul.calendar-events-list> li > :last-child {
     width: 325px;
     position: fixed;
     overflow: hidden;
-    top: 75px;
+    top: 0px;
     bottom: 0px;
     left: 0rem;
     z-index: 2000;
-    background-color: #ffffff;
+    /*background-color: #ffffff;*/
     
     transition: all 1s ease-out;
     -moz-transition: all 1s ease-out; 
       -o-transition: all 1s ease-out; 
  -webkit-transition: all 1s ease-out;
      -ms-transition: all 1s ease-out;
-    
+}
+
+.lm-wrapper > :first-child > :first-child {
+    padding-top: 20px;
 }
 
 .black-layer-visible, .black-layer-invisible {

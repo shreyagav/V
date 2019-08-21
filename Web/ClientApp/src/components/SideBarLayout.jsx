@@ -121,13 +121,18 @@ class SideBarLayout extends Component {
           <div className={'lm-wrapper overflow-hidden'} >
             <div 
               ref={el => this.sideBarRef = el} 
-              style={ (this.props.store.narrowScreen && this.props.store.sideBarIsHidden) ? {"left":"-325px"} : {"left":"0px"}}
+              style={ 
+                this.props.store.narrowScreen 
+                ?  
+                (this.props.store.sideBarIsHidden ? {"left":"-325px", "backgroundColor":"#ffffff"} : {"left":"0px", "backgroundColor":"#ffffff"}) 
+                : 
+                {"left":"0px", "backgroundColor":"transparent", "marginTop":"55px"}
+              }
               className='overflow-auto'
             >
               <SideBarContent {...this.props} 
                 updateFilters={filters => this.updateFilters(filters)} 
                 filters={this.state.filters} 
-                //forwardToContentRef = {this.forwardToContentRef}
               />
             </div>
             <div 
