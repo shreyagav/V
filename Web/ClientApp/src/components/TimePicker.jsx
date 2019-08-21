@@ -3,6 +3,7 @@ import ArrowUpSVG from '../svg/ArrowUpSVG';
 import './TimePicker.css'
 import './MultiDropDown/MultiDropDown.css'
 import CloseUpSVG from '../svg/CloseUpSVG';
+import TimePickerDropDown from './TimePickerDropDown';
 
 export class TimePicker extends Component {
 
@@ -28,6 +29,19 @@ export class TimePicker extends Component {
         this.hoursRef = null;
         this.minutesRef = null;
         this.amPmRef = null;
+        this.dropDownWrapperRef = null;
+
+        this.performMultipleTimes = this.performMultipleTimes.bind(this)
+        this.clearTimeoutAndInterval = this.clearTimeoutAndInterval.bind(this)
+        this.hoursIncrement = this.hoursIncrement.bind(this)
+        this.hoursDecrement = this.hoursDecrement.bind(this)
+        this.minutesIncrement = this.minutesIncrement.bind(this)
+        this.minutesDecrement = this.minutesDecrement.bind(this)
+        this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.amPmToggler = this.amPmToggler.bind(this)
+        this.numberIncrement = this.numberIncrement.bind(this)
+        this.numberDecrement = this.numberDecrement.bind(this)
+        this.toggle = this.toggle.bind(this)
     }
 
     componentDidUpdate(){
@@ -268,7 +282,33 @@ export class TimePicker extends Component {
                         </button>
                     }
                 </div>
-                {this.state.isOpen && this.props.timePickerMode &&
+                <div ref={el => this.dropDownWrapperRef = el}>
+                    {this.state.isOpen && 
+                        <TimePickerDropDown 
+                            data={this.props.state}
+                            properties={this.props}
+
+                            performMultipleTimes={this.performMultipleTimes}
+                            clearTimeoutAndInterval={this.clearTimeoutAndInterval}
+                            timeNumberPickerRef={this.timeNumberPickerRef}
+                            dropDownWrapperRef={this.dropDownWrapperRef}
+                            setHoursRef={el => this.hoursRef = el}
+                            setAmPmRef={el => this.amPmRef = el}
+                            setMinutesRef={el => this.minutesRef = el}
+                            handleKeyDown={this.handleKeyDown}
+                            hoursIncrement={this.hoursIncrement}
+                            hoursDecrement={this.hoursDecrement}
+                            minutesIncrement={this.minutesIncrement}
+                            minutesDecrement={this.minutesDecrement}
+                            amPmToggler={this.amPmToggler}
+                            numberIncrement={this.numberIncrement}
+                            numberDecrement={this.numberDecrement}
+                            setNumberRef={el => this.numberRef = el}
+                            toggle={this.toggle}
+                        />
+                    }
+                </div>
+                {/*this.state.isOpen && this.props.timePickerMode &&
                     <div 
                         className='time-number-picker-drop-down absolute-drop-down'
                         style={{"border":"1px solid #0099cc"}}
@@ -361,8 +401,8 @@ export class TimePicker extends Component {
                             </button>
                         </div>
                     </div>
-                }
-                {this.state.isOpen && !this.props.timePickerMode &&
+                */}
+                {/*this.state.isOpen && !this.props.timePickerMode &&
                     <div className='time-number-picker-drop-down absolute-drop-down'>
                         <div>
                             <button 
@@ -394,7 +434,7 @@ export class TimePicker extends Component {
                             </button>
                         </div>
                     </div>
-                }
+                */}
             </div>
         );
     }
