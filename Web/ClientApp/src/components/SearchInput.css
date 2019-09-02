@@ -8,6 +8,10 @@
     padding-left: 2.5rem !important;
 }
 
+.pr25{
+    padding-right: 2.5rem !important;
+}
+
 .fake-input {
     position: absolute;
     width: auto;

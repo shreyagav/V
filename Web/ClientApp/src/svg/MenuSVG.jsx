@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 class MenuSVG extends React.Component {
     render() {
         return (
-            <button className='round-button big-round-button grey-outline-button' onClick={this.props.onClick}>
                 <svg
                     style={{'height' : '100%'}} 
                     version="1.1" 
@@ -15,7 +14,6 @@ class MenuSVG extends React.Component {
 	C24.3,14.1,25,13.4,25,12.5z M25,18.4L25,18.4c0-0.9-0.7-1.6-1.6-1.6H1.6c-0.9,0-1.6,0.7-1.6,1.6l0,0C0,19.3,0.7,20,1.6,20h21.9
 	C24.3,20,25,19.3,25,18.4z"/>
                 </svg>
-            </button>
         );
     }
 }

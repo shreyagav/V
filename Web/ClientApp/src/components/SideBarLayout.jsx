@@ -151,7 +151,6 @@ class SideBarLayout extends Component {
               <BodyContent {...this.props} 
                 updateFilters={filters => this.updateFilters(filters)} 
                 filters={this.state.filters}
-                //setForwardToContentRef = {el => this.forwardToContentRef = el}
               />
             </div>
           </div>

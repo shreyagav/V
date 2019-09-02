@@ -5,10 +5,12 @@ import { Service } from './ApiService';
 import Table from './Table';
 import VolunteerUpSVG from '../svg/VolunteerUpSVG';
 import PaddlerUpSVG from '../svg/PaddlerUpSVG';
-import CloseUpSVG from '../svg/CloseUpSVG';
+import ExclamationSVG from '../svg/ExclamationSVG';
 import EditUpSVG from '../svg/EditUpSVG';
 import Loader from './Loader';
 import { Link } from 'react-router-dom';
+import UserSVG from '../svg/UserSVG';
+import Message from './Message'
 
 class Members extends Component {
 
@@ -125,7 +127,7 @@ class Members extends Component {
         return (
             <div className="inner-pages-wrapper ipw-1000">
                 {this.state.loadData && <Loader />}
-                <div className="flex-wrap align-center justify-space-between w-100 mb-2">
+                <div className="flex-wrap align-center justify-space-between w-100 mb-05">
                     <h1 className='uppercase-text'><strong>Members</strong></h1>
                     <a className='big-static-button static-button' href="/new-member"><p>NEW MEMBER</p></a>
                 </div>
@@ -146,7 +148,19 @@ class Members extends Component {
                             onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
                 </div>*/}
-                {members.length === 1000 && <span style={{color:"red"}}>Refine your search to get less then 1000 members.</span>}
+                {members.length === 1000 && 
+                    <Message mode='warning' propsClass='mt-1 mb-1'>
+                        <div className='flex-wrap align-center justify-left'>
+                            <span className='mr-05'>There are more then</span>
+                            <div className='flex-nowrap align-center justify-left mr-05'>
+                                <UserSVG />
+                               <strong>1,000</strong>
+                            </div>
+                            <span className='mr-05'>members.</span>
+                            <span>Use filters to refine your search.</span>
+                        </div>
+                    </Message>
+                }
                 {members.length > 0 &&
                     <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
                 }

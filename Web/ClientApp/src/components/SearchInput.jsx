@@ -142,7 +142,7 @@ class SearchInput extends Component {
                 }
                 <input 
                     ref={el => { this.inputRef = el; if (this.props.setInputRef) {this.props.setInputRef(el)}}}
-                    className = {this.props.dynamicWidth ? 'search-input' : 'search-input pl25'}
+                    className = {'search-input' + (this.props.dynamicWidth ? '' : ' pl25') + (this.props.value.length > 0 ? ' pr25' : '')}
                     style={style}
                     value={this.props.value}
                     placeholder={!this.props.dynamicWidth ? this.inputPlaceholder : ''}

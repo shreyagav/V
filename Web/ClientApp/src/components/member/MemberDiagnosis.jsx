@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import Table from '../Table';
-import Alert from '../Alert';
-import MultiDropDown from '../MultiDropDown/MultiDropDown';
+import React, { Component } from 'react'
+import Table from '../Table'
+import Alert from '../Alert'
+import MultiDropDown from '../MultiDropDown/MultiDropDown'
 import { withStore } from '../store';
-import CloseUpSVG from '../../svg/CloseUpSVG';
-import EditUpSVG from '../../svg/EditUpSVG';
-import { Service } from '../ApiService';
+import CloseUpSVG from '../../svg/CloseUpSVG'
+import EditUpSVG from '../../svg/EditUpSVG'
+import { Service } from '../ApiService'
+import FixedWrapper from '../FixedWrapper'
 
 class MemberDiagnosis extends Component {
 
@@ -56,8 +57,9 @@ class MemberDiagnosis extends Component {
     onDeleteDiagnosis(row){
         this.elementToEdit = row;
         let el = this.state.diagnosisList.find(element => element.id === row.id);
+        debugger
         this.elementToRemoveProps.description = row.description;
-        this.elementToRemoveProps.name = el.name;
+        this.elementToRemoveProps.name = el.description;
         this.setState({ removeDiagnoseShowAlert: true });
     }
 
@@ -69,10 +71,7 @@ class MemberDiagnosis extends Component {
 
     renderDiagnose(value, row, index, col){
         return (
-            <li 
-                className={col.className ? "table-content " + col.className : "table-content"} 
-                style={{ "display": "flex" }}
-            >
+            <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
                 <div className='flex-nowrap flex-flow-column justify-left align-self-center' style={{"width":"100%"}}>
                     <div className='flex-nowrap justify-space-between align-center'>
                         <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}>{row.name}</span>
@@ -101,7 +100,7 @@ class MemberDiagnosis extends Component {
                                 </button>
                             }
                     </div>
-                    {row.description && <span style={{ "fontSize": "0.9em" }}>{row.description}</span>}
+                    {/*row.description && <span style={{ "fontSize": "0.9em" }}>{row.description}</span>*/}
                 </div>
             </li>
         );
@@ -130,16 +129,15 @@ class MemberDiagnosis extends Component {
             {title:"Description", accesor:"description", className: "italic"}
         ];
         return (
-            <div className='flex-nowrap flex-flow-column justify-center width-100 mt-3' style={{ 'maxWidth': "700px", "width": "100%" }}>
+            <div className = 'flex-nowrap flex-flow-column justify-center w-100 prpl-0'>
                 {this.state.showAddEditDiagnosis &&
-                    <div className = 'wh-bcg' style={{"opacity":"1"}}>
-                        <div className = 'flex-nowrap flex-flow-column align-center justify-center mr-1 ml-1' style={{"width":"100%", "backgroundColor":"#ffffff"}}>
-                            <h2 className='mb-2 mt-2'>{this.headerText}</h2>
+                    <FixedWrapper maxWidth={"600px"}>
+                            <h2 className='mb-2 mt-3'>{this.headerText}</h2>
                             <ul className='input-fields first-child-text-95'>
                                 <li>
                                     <p>Diagnose:</p>
-                                <MultiDropDown
-                                    list={this.state.diagnosisList.filter(a => this.state.diagnosis.find(b => b.id == a.id) == null || a.id === this.state.alertContent.id)}
+                                    <MultiDropDown
+                                        list={this.state.diagnosisList.filter(a => this.state.diagnosis.find(b => b.id == a.id) == null || a.id === this.state.alertContent.id)}
                                         multiSelect={false}
                                         disabled={this.headerText == 'Edit Diagnose'}
                                         toggleable={true}
@@ -171,26 +169,20 @@ class MemberDiagnosis extends Component {
                                     onClick={() => this.setState({showAddEditDiagnosis: false, alertContent: this.alertDafaultContent})}
                                 >Cancel</button>
                             </div>
-                        </div>
-                    </div>
+                    </FixedWrapper>
                 }
                 {this.state.removeDiagnoseShowAlert && 
                         <Alert
-                            headerText = 'Delete'
-                            text='Are you sure you want to delete this option?'
+                            headerText = 'Remove'
+                            text='Are you sure you want to remove from the list'
                             onClose={() => this.setState({ removeDiagnoseShowAlert: false })}
                             mode = 'warning'
                             showOkCancelButtons = {true}
-                    okButtonText='Delete'
-                    onCancelButtonClick={() => this.setState({ removeDiagnoseShowAlert: false })}
-                    onOkButtonClick={() => this.removeDiagnose()}
-                        >   
+                            okButtonText='Remove'
+                            onCancelButtonClick={() => this.setState({ removeDiagnoseShowAlert: false })}
+                            onOkButtonClick={() => this.removeDiagnose()}
+                        >
                             <h4 className='mb-05'>{this.elementToRemoveProps.name}</h4>
-                            {this.elementToRemoveProps.description && this.elementToRemoveProps.description !== '' && 
-                                <p className='mb-05' style={{"textAlign":"center", "fontSize": "0.9em"}}>
-                                    {this.elementToRemoveProps.description}
-                                </p>
-                            }
                             <p className='small-bold' style={{"textAlign":"center"}}>
                                 {this.elementToRemoveProps.categoryName}
                             </p>

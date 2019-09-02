@@ -29,6 +29,12 @@ a:hover {cursor: pointer; color:#0099cc;}
 button {/* background: #ffffff; */}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
 
+.description-text {
+    font-style: italic !important;
+    font-weight: 400 !important;
+    color: #999999;
+}
+
 .italic {
     font-style: italic !important;
     font-weight: 400 !important;
@@ -96,16 +102,16 @@ h4, .h4 {
     h4, .h4 {font-size: 1rem;}
 }
 
-.draft .svg, .published .svg, .canceled .svg {fill: #ffffff !important;}
+.status .svg  {fill: #ffffff !important;}
 
-.draft > svg, .published > svg, .canceled > svg  {
+.status > svg {
     height: 14px !important;
     width: auto !important;
     margin-right: 0.35rem;
     padding-bottom: 0.1rem;
 }
 
-.draft, .published, .canceled {
+.status {
     color: #ffffff; 
     border-radius: 50px; 
     text-transform: uppercase; 
@@ -115,9 +121,7 @@ h4, .h4 {
     align-self: center !important;
 }
 
-.draft > span, 
-.published > span, 
-.canceled > span {
+.status > span {
     text-transform: inherit; 
     color: inherit;
     line-height: 1;
@@ -129,6 +133,7 @@ h4, .h4 {
 .draft {color: #ffffff; background-color: #AB4189;}
 .published {color: #ffffff; background-color: #0099cc;}
 .canceled {color: #ffffff; background-color: #fe7b22;}
+.deleted {color: #ffffff; background-color: #666666;}
 
 .input-label {
     text-transform: uppercase;
@@ -182,6 +187,10 @@ h4, .h4 {
 .pl-1 {padding-left: 1rem !important}
 .mr-05 {margin-right: 0.5rem !important}
 .ml-05 {margin-left: 0.5rem !important}
+.mr-075 {margin-right: 0.75rem !important}
+.ml-075 {margin-left: 0.75rem !important}
+.mb-075 {margin-bottom: 0.75rem !important;}
+.mt-075 {margin-top: 0.75rem !important;}
 .mr-025 {margin-right: 0.25rem !important}
 .ml-025 {margin-left: 0.25rem !important}
 .mb-025 {margin-bottom: 0.25rem !important;}
@@ -190,6 +199,7 @@ h4, .h4 {
 .ml-1 {margin-left: 1rem !important}
 
 .p-05 {padding: 0.5rem !important}
+.m-075 {margin: 0.75rem !important}
 .m-05 {margin: 0.5rem !important}
 .m-025 {margin: 0.25rem !important}
 .p-1 {padding: 1rem !important}
@@ -210,10 +220,12 @@ h4, .h4 {
     .mediaMin500-pl-pr-025 {padding-right: 0vw !important; padding-left: 0vw !important}
 
     .mb-05:not(.mb-non-sc) {margin-bottom: 1.6vw !important;}
+    .mb-075:not(.mb-non-sc) {margin-bottom: 2.4vw !important;}
     .mb-1:not(.mb-non-sc) {margin-bottom: 3.2vw !important;}
     .mb-2:not(.mb-non-sc) {margin-bottom: 6.4vw !important;}
     .mb-3:not(.mb-non-sc) {margin-bottom: 8.4vw !important;}
     .mt-05:not(.mt-non-sc) {margin-top: 1.6vw !important;}
+    .mt-075:not(.mt-non-sc) {margin-top: 2.4vw !important;}
     .mt-1:not(.mt-non-sc) {margin-top: 3.2vw !important;}
     .mt-2:not(.mt-non-sc) {margin-top: 6.4vw !important;}
     .mt-3:not(.mt-non-sc) {margin-top: 8.4vw !important;}
@@ -235,11 +247,14 @@ h4, .h4 {
     .pl-1:not(.pl-non-sc) {padding-left: 3.2vw !important}
     .pl-2:not(.pl-non-sc) {padding-top: 6.4vw !important;}
     .pl-3:not(.pl-non-sc) {padding-top: 8.4vw !important;}
+    .mr-075:not(.mr-non-sc) {margin-right: 2.4vw !important}
+    .ml-075:not(.ml-non-sc) {margin-left: 2.4vw !important}
     .mr-1:not(.mr-non-sc) {margin-right: 3.2vw !important}
     .ml-1:not(.ml-non-sc) {margin-left: 3.2vw !important}
 
     .p-05:not(.p-non-sc) {padding: 1.6vw !important}
     .m-05:not(.m-non-sc) {margin: 1.6vw !important}
+    .m-075:not(.m-non-sc) {margin: 2.4vw !important}
     .p-1:not(.p-non-sc) {padding: 3.2vw !important}
     .m-1:not(.m-non-sc) {margin: 3.2vw !important}
 }
@@ -268,9 +283,11 @@ textarea {
     background: white;
     padding: 0.5em 0.7em;
     padding-right: 2.5em;
-    font-weight: 500;
+    /*font-weight: 500;*/
     color: #666666;
     display: block;
+    font-style: italic !important;
+    font-weight: 400 !important;
 }
 
 input:not(:disabled):not(:read-only):hover, 
@@ -612,20 +629,43 @@ div.round-icon, div.round-button {margin-right: 0.5em;}
 .big-round-icon > svg {
     padding: 5px;
 }
-
+/*
 @media screen and (max-width: 375px){
     ul.main-nav span.sign-in{display: none;}
-}
+}*/
 
 @media screen and (max-width: 700px){
-    ul.main-nav span:not(.sign-in){display: none;}
+    ul.main-nav span/*:not(.sign-in)*/{display: none;}
+    ul.main-nav > li:hover:after {
+        content: attr(hint);
+        position: absolute;
+        top:100%;
+        background-color: #666666;
+        color: #ffffff;
+        border-radius: 50px;
+        padding: 0em 0.5em 0.25em 0.5em;
+        white-space: nowrap;
+    }
+    .main-nav-wrapper > :not(:first-child):not(:last-child) > li:hover:after,
+    .main-nav-wrapper > :last-child > li:not(:last-of-type):hover:after,
+    .main-nav-wrapper > :first-child > li:not(:first-of-type):hover:after
+    {
+        left: 50%;
+        transform:translateX(-50%);
+    }
+    .main-nav-wrapper > :last-child > li:last-of-type:hover:after {
+        right: 0px;
+    }
+    .main-nav-wrapper > :first-child > li:first-of-type:hover:after {
+        left: 0px;
+    }
     div.round-button {margin: 0rem;}
     ul.main-nav a:focus div {border-color: #0099cc;}
-    ul.main-nav a:focus {outline: none;}
+    ul.main-nav a:focus, ul.main-nav button:focus {outline: none;}
 }
-ul.main-nav > li {font-size: 0.8rem; padding: 0.2rem; display: flex; align-items: center;}
+ul.main-nav > li {font-size: 0.8rem; padding: 0.2rem; display: flex; align-items: center; position: relative;}
 ul.main-nav > li:not(:last-child) {margin-right: 0.25em;}
-ul.main-nav a {display: flex; flex-wrap: nowrap; align-items: center;}
+ul.main-nav a, ul.main-nav button {display: flex; flex-wrap: nowrap; align-items: center;}
 ul.main-nav span {white-space: nowrap; font-weight: 600; font-size: 0.8rem;}
 ul.main-nav > li span {text-transform: uppercase;}
 ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
@@ -669,7 +709,7 @@ ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
     align-items: center;
 }
 
-.inner-pages-wrapper > :nth-child(n), .pages-wsm-wrapper > :nth-child(n){
+.inner-pages-wrapper > :nth-child(n), .pages-wsm-wrapper > :nth-child(n):not(.prpl-0){
     padding-right: 1em;
     padding-left: 1em;
 }
@@ -712,15 +752,18 @@ ul.main-nav .svg,
 .light-grey-outline-button:hover .svg,
 .light-grey-outline-button:focus .svg,
 ul.main-nav a:hover .svg, ul.main-nav a:focus .svg, 
+ul.main-nav button:hover .svg, ul.main-nav button:focus .svg, 
 .outline-on-hover:hover .svg,
 .outline-on-hover:focus .svg,
 .grey-outline-button:hover .svg,
 .grey-outline-button:focus .svg {
-    fill: #0099cc;
+    fill: #0099cc !important;
 }
 
 .main-nav-wrapper a:hover > :nth-child(n),
 .main-nav-wrapper a:focus > :nth-child(n),
+.main-nav-wrapper button:hover > :nth-child(n),
+.main-nav-wrapper button:focus > :nth-child(n),
 .light-grey-outline-button:hover,
 .light-grey-outline-button:focus,
 .outline-on-hover:hover,
@@ -731,6 +774,8 @@ ul.main-nav a:hover .svg, ul.main-nav a:focus .svg,
     /* fill: #0099cc; */
     border-color: #0099cc;
 }
+
+.main-nav-wrapper button:focus { border-color: transparent; }
 
 /* clearing default settings ends */
 
@@ -1001,7 +1046,7 @@ button.grey-SVG-button:focus {
 }
 
 .arrow-button .svg {fill: #999999 !important;}
-.arrow-button:hover .svg, .arrow-button:focus .svg {fill: #0099cc !important;}
+.arrow-button:not(:disabled):hover .svg, .arrow-button:focus .svg {fill: #0099cc !important;}
 .arrow-button:hover, .arrow-button:focus {outline: none !important; border: 0px solid;}
 
 button.disabledButton .svg, button.disabledButton:hover .svg, button.disabledButton:focus .svg {fill: #f2f2f2 !important;}
@@ -1070,7 +1115,7 @@ button.disabledButton .svg, button.disabledButton:hover .svg, button.disabledBut
 }
 .input-button-wrapper > button:focus, .input-button-wrapper > button:hover {border: 0px solid;}
 .input-button-wrapper > button:focus .svg, .input-button-wrapper > button:hover .svg {fill: #0099cc;}
-.input-button-wrapper > input {cursor: pointer; width: 100%; /*height: calc(2.5em - 2px) !important; border: 1px solid #999999; */ padding-right: 2.5em;}
+.input-button-wrapper > input {cursor: pointer; width: 100%; /*height: calc(2.5em - 2px) !important; border: 1px solid #999999;  padding-right: 2.5em;*/}
 .input-button-wrapper > input:focus, .input-button-wrapper:focus > input {border-color: #0099cc;}
 .input-button-wrapper:hover, .input-button-wrapper:focus {border-color: #0099cc !important;}
 
@@ -1563,6 +1608,7 @@ p.message-block {
 .wh-bcg {
     position: fixed;
     display: flex;
+    align-content: center;
     justify-content: center;
     overflow-y: auto;
     background-color: #ffffff;
@@ -1575,8 +1621,10 @@ p.message-block {
 }
 
 .wh-bcg > div {
-    width: 100%;
-    background-color: #ffffff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
 }
 
 .ovfy-auto {

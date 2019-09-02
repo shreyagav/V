@@ -149,7 +149,7 @@ class EventBudget extends Component {
                     {this.state.loading && <Loader />}
                     {this.state.addingLine && 
                         <FixedWrapper maxWidth={"600px"}>
-                            <h2 className='m-1 mr-05 ml-05'>{this.state.headerText}</h2>
+                            <h2 className='mt-3 mr-05 ml-05 mb-1'>{this.state.headerText}</h2>
                             <ul className='input-fields first-child-text-110 mt-1'>
                                 <li className={this.emptyName === true ? 'mark-invalid' : ''} error-text='Please enter Item Name'>
                                     <p>Name:</p>
