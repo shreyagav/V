@@ -46,8 +46,13 @@ class NavMenu extends Component {
       <header className="main-nav-wrapper">
             {this.props.store.narrowScreen && this.props.store.withSideBar &&
               <ul className="flex-nowrap main-nav">
-                    <li>
-                      <MenuSVG onClick={() => this.toggleChapters()} />
+                    <li hint='Filters' >
+                    <button onClick={() => this.toggleChapters()}>
+                        <div className='round-button big-round-button grey-outline-button'>
+                            <MenuSVG />
+                        </div>
+                        <span>Filters</span>
+                    </button>
                     </li>
               </ul>
             }
@@ -59,51 +64,51 @@ class NavMenu extends Component {
             }
         
             <ul className="flex-nowrap main-nav">
-                {this.props.match.path != "/" && <li>
+                {this.props.match.path != "/" && <li hint='Calendar'>
                     <Link to="/">
                         <CalendarSVG />
                         <span>Calendar</span>
                     </Link>
                 </li>}
-                {this.props.match.path != "/chapters" && user && user.authType=="Admin" && <li>
+                {this.props.match.path != "/chapters" && user && user.authType=="Admin" && <li hint='Chapters'>
                     <Link to="/chapters">
                         <ChaptersSVG />
                         <span>Chapters</span>
                     </Link>
                 </li>}
-                {this.props.match.path != "/events" && user && (user.authType == "Admin" || user.authType == "Secretary" )&&  <li>
+                {this.props.match.path != "/events" && user && (user.authType == "Admin" || user.authType == "Secretary" )&&  <li hint="Events">
                     <Link to="/events">
                         <EventSVG />
                         <span>Events</span>
                     </Link>
                 </li>}
-                {this.props.match.path != "/members" && user && (user.authType == "Admin" || user.authType == "Secretary") &&<li>
+                {this.props.match.path != "/members" && user && (user.authType == "Admin" || user.authType == "Secretary") &&<li hint='Member'>
                     <Link to="/members">
                         <MembersSVG />
                         <span>Members</span>
                     </Link>
                 </li>}
-                {this.props.match.path != "/reports" && user && (user.authType == "Admin" || user.authType == "Secretary") && <li>
+                {this.props.match.path != "/reports" && user && (user.authType == "Admin" || user.authType == "Secretary") && <li hint='Reports'>
                     <Link to="/reports">
                         <ReportsSVG />
                         <span>Reports</span>
                     </Link>
                 </li>}
-                {this.props.match.path != "/profile" && user && <li>
-                    <Link to="/profile">
-                        <UserSVG />
-                        <span>Profile</span>
-                    </Link>
-                </li>}
         </ul>
         <ul className="flex-nowrap main-nav">
-                {user == null && (<li>
+                {this.props.match.path != "/profile" && user && <li hint='Profile'>
+                    <Link to="/profile">
+                        <UserSVG />
+                        <span className='sign-in ml-05' style={{ 'textTransform': "none" }}>Profile</span>
+                    </Link>
+                </li>}
+                {user == null && (<li hint='Sign In'>
                     <Link to="/SignIn">
                         <SignInSVG />
                         <span className='sign-in' style={{ 'textTransform': "none" }}>Sign In</span>
                     </Link>
                 </li>)}
-                {user != null && (<li>
+                {user != null && (<li hint='Sign Out'>
                     <a href="javascript:" onClick={this.signOut}>
                         <SignOutSVG />
                         <span className='sign-in' style={{ 'textTransform': "none" }}>Sign Out</span>

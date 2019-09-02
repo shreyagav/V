@@ -493,7 +493,7 @@ class MultiDropDown extends React.Component {
         const list = this.createList(this.props.list);
         const propperList = this.getPropperList();
         return (
-            <div className='drop-down' ref={el => this.dropDownRef = el} onBlur = {() => this.onDropDownBlur()}>
+            <div className={'drop-down' + (this.props.disabled === true ? ' drop-down-disabled' : '')} ref={el => this.dropDownRef = el} onBlur = {() => this.onDropDownBlur()}>
                 {!this.props.hideHeader && 
                 <div ref={el => this.dropDownHeaderRef = el}
                     tabIndex={-1} 
@@ -571,6 +571,7 @@ class MultiDropDown extends React.Component {
                         </ul>
                         {this.toggleable /*&& !this.thereIsSearchInput */ &&
                             <button 
+                                disabled={this.props.disabled}
                                 tabIndex = {this.thereIsSearchInput && !(this.props.multiSelect || this.props.expandedMultiSelect) ? -1 : 0}
                                 className={(this.props.multiSelect || this.props.expandedMultiSelect) && list.length !== 0 ? 'arrow-button' : 'arrow-button onFocusWithDDH'} 
                                 onClick={() => {this.toggle()}}

@@ -154,7 +154,7 @@ class MultiDropDownList extends React.Component {
                 let ind = parseInt(element.slice(1));
                 coeff = coeff + this.props.list[ind][this.props.expandBy].length;
             })
-            let xxx = this.simpleBarRef.offsetHeight;
+            let xxx = this.simpleBarRef.offsetHeight; // ???? //
             let regularHeight = 45*(this.props.list.length + coeff);
             if(regularHeight === 0) {regularHeight = 45 + coeff;}
             let simpleBarHeight = 0;

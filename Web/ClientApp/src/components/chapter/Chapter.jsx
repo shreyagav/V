@@ -61,8 +61,8 @@ class Chapter extends Component {
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
         let contactValidators = [
             {'name':'name', 'typeFunction':'nameOTG', 'text':'Name'},
-            {'name':'phone', 'typeFunction':'phone', 'text':'Phone'},
-            {'name':'email', 'typeFunction':'email', 'text':'Email'}, 
+            {'name':'phone', 'typeFunction':'nameOTG', 'text':'Phone'},
+            {'name':'email', 'typeFunction':'nameOTG', 'text':'Email'},
         ];
         this.contactMainValidators = createValidators(contactValidators);
         this.contactGovtValidators = createValidators(contactValidators);
@@ -71,8 +71,8 @@ class Chapter extends Component {
         this.contactOutreachValidators = createValidators(contactValidators);
         let contactValidatorsOTG = [
             {'name':'name', 'typeFunction':'nameOTG', 'text':'Name'},
-            {'name':'phone', 'typeFunction':'phoneOTG', 'text':'Phone'},
-            {'name':'email', 'typeFunction':'emailOTG', 'text':'Email'},
+            {'name':'phone', 'typeFunction':'nameOTG', 'text':'Phone'},
+            {'name':'email', 'typeFunction':'nameOTG', 'text':'Email'},
         ];
         this.contactMainValidatorsOTG = createValidators(contactValidatorsOTG);
         this.contactGovtValidatorsOTG = createValidators(contactValidatorsOTG);
@@ -193,17 +193,17 @@ class Chapter extends Component {
 
                 {this.renderHeader()}
 
-                <div className='flex-wrap flex-flow-column mb-3'>
+                {/*<div className='flex-wrap flex-flow-column mb-3'>
                     <TabComponent 
                         fixedHeight={true}
                         tabList={['information', 'Members']}
                         wasSelected={(index) => this.performIfValid(() => this.setActiveTab(index))}
                         activeTabIndex = {this.state.activeTabIndex}
                     />
-                </div>
-                {this.state.activeTabIndex === 0 &&
+                </div>*/}
+                {/*this.state.activeTabIndex === 0 && */
                 <div style={{"width":"100%", "maxWidth":"600px"}}>
-                    <ul className='input-fields first-child-text-165 pl-1 pr-1'>
+                    <ul className='input-fields first-child-text-165 mt-1 pl-1 pr-1'>
                         <li>
                             <p>Chapter Name:</p>
                             <div className={this.props.store.checkIfShowError('name', this.validators) ? 'error-input-wrapper' : '' }>
@@ -270,7 +270,7 @@ class Chapter extends Component {
                         </li>
                     </ul>
 
-                    <div className = 'flex-nowrap align-center mt-3 mb-3 ml-1 mr-1'>
+                    <div className = 'flex-nowrap align-center mt-2 mb-1 ml-1 mr-1'>
                         <span className='line'></span>
                         <p className='pr-05 pl-05'><strong>CONTACTS</strong></p>
                         <span className='line'></span>
@@ -325,7 +325,7 @@ class Chapter extends Component {
                     </ul>
                 </div>
                 }
-                {this.state.activeTabIndex === 1 && 
+                {/*this.state.activeTabIndex === 1 && 
                 <div style={{"width":"100%", "maxWidth":"600px"}}>
                     <div className="flex-wrap align-center justify-center mt-2 mb-2">
                         <p className='input-label pr-1s '>ADD MEMBERS:</p>
@@ -365,8 +365,8 @@ class Chapter extends Component {
                         }
                     </ul>
                 </div>
-                }
-                <div className='flex-wrap'>
+                */}
+                {/*<div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&
                         <button 
                             className='medium-static-button static-button' 
@@ -379,7 +379,7 @@ class Chapter extends Component {
                             onClick={() => this.performIfValid(() => this.setActiveTab(this.state.activeTabIndex + 1))}
                         >Next</button>
                     }
-                </div>
+                </div>*/}
 
                 { this.state.showError && this.alertNotValid }
 

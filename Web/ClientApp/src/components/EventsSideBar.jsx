@@ -8,6 +8,10 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import SearchUpSVG from '../svg/SearchUpSVG';
 import SearchInput from './SearchInput'
+import StatusDraftSVG from '../svg/StatusDraftSVG'
+import StatusDeletedSVG from '../svg/StatusDeletedSVG';
+import StatusPublishedSVG from '../svg/StatusPublishedSVG';
+import StatusCanceledSVG from '../svg/StatusCanceledSVG';
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
@@ -226,7 +230,7 @@ class EventsSideBar extends Component {
                     <p>Status:</p>
                     <MultiDropDown
                         ref={el => this.statusDropDownRef = el}
-                        list={[{name: 'Draft'}, {name: 'Published'}, {name: 'Closed'}, {name: 'Deleted'}, {name: 'Canceled'}]} 
+                        list={[{name: 'Draft', img: <StatusDraftSVG />}, {name: 'Published', img: <StatusPublishedSVG />}, /* {name: 'Closed'}, */ {name: 'Deleted', img: <StatusDeletedSVG />}, {name: 'Canceled', img: <StatusCanceledSVG />}]} 
                         keyProperty='name'
                         textProperty='name'
                         defaultValue={this.state.status}

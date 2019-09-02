@@ -26,16 +26,13 @@
     margin-left: 0px;
     background-color: transparent;
 }
-
-.drop-down-header:hover {cursor: pointer;}
-.drop-down-header:focus, .ddhOnFocus, .drop-down-header:hover {border: 1px solid #0099cc;}
+div.drop-down-disabled > .drop-down-header {background-color: #cccccc;}
+div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {cursor: pointer;}
+.drop-down-header:focus, .ddhOnFocus, 
+div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {border: 1px solid #0099cc;}
 .drop-down-header:focus > div > button.onFocusWithDDH .svg,
 .ddhOnFocus > div > button.onFocusWithDDH .svg,
-.drop-down-header:hover> div > button.onFocusWithDDH .svg {fill: #0099cc !important;}
-
-/*.drop-down-header > div {*/
-    /*text-transform: uppercase;*/
-/*}*/
+div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover> div > button.onFocusWithDDH .svg {fill: #0099cc !important;}
 
 .drop-down-header ul {
     display: flex;
@@ -170,7 +167,12 @@ ul.drop-down-list li > div {
 }
 
 ul.drop-down-list li > div, ul.drop-down-list li > div > button {flex: 1 1 auto;}
-ul.drop-down-list li > div > button > span {flex: 1 1 auto;}
+ul.drop-down-list li > div > button > span {flex: 1 1 auto}
+ul.drop-down-list li > div > button > span.drop-down-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 ul.drop-down-list li span {
     font-size: inherit;
@@ -179,7 +181,7 @@ ul.drop-down-list li span {
     /*text-transform: uppercase;*/
     font-weight: 600;
     line-height: 1;
-    padding-bottom: 0.125em;
+    /*padding-bottom: 0.125em;*/
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -280,7 +282,7 @@ ul.drop-down-list button .svg {fill: #cccccc;}
 ul.drop-down-list button:hover > span, ul.drop-down-list button:focus > span {color: #0099cc !important;}
 
 .drop-down-icon {flex: 0 0 auto !important; margin: 0 0.5em 0 0 !important;}
-.drop-down-icon svg {height: 1.2em !important;}
+.drop-down-icon svg {height: 1.2rem !important;}
 .drop-down-icon .svg {fill: #666666 !important;}
 div:hover > button .drop-down-icon .svg, 
 div:focus > button .drop-down-icon .svg,

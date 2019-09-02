@@ -1,9 +1,8 @@
 /* Tab Component */
 
 ul.tab-component {
-    /*width: 100%; */
-    font-size: 1rem;
     max-width: 100%;
+    font-size: 1rem;
     border: 1px solid #666666;
     border-radius:999px;
     background-color: inherit;
@@ -25,10 +24,10 @@ ul.tab-component {
 
 ul.tab-component > li {
     font-size:inherit;
-    padding: 0em 0.5em;
     margin: -1px;
+    padding: 0.4em 0.85em;
     border-radius:999px;
-    flex: 1;
+    flex: 0 1 auto;
     text-align: center;
     white-space: nowrap; 
     font-weight: 600;
@@ -38,6 +37,7 @@ ul.tab-component > li {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 ul.tab-component > li:not(:first-child) {
@@ -70,13 +70,15 @@ ul.tab-component > li.selected:focus::after,
 }
 
 ul.tab-component > li > p {
+    box-sizing: border-box;
     font-size: inherit;
     line-height: 1;
-    margin: 0.4em;
     padding-bottom: 0.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-@media screen and (max-width: 500px) {
-    ul.tab-component {height: 9.6vw;} 
-    ul.tab-component:not(.not-shrinkable-font) > li {font-size: 3.2vw;}
+@media screen and (max-width: 600px) {
+    ul.tab-component {height: 8vw;} 
+    ul.tab-component:not(.not-shrinkable-font) > li {font-size: 2.67vw;}
 }

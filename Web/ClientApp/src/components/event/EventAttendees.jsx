@@ -1,19 +1,19 @@
 ﻿//import { Route, Router, history } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import React, { Component } from 'react'
 import { withStore } from './../store'
-import CloseUpSVG from '../../svg/CloseUpSVG';
-import EditUpSVG from '../../svg/EditUpSVG';
-import Table from '../Table';
-import VolunteerUpSVG from '../../svg/VolunteerUpSVG';
-import VeteranUpSVG from '../../svg/VeteranUpSVG';
-import Loader from '../Loader';
-import { Service } from '../ApiService';
-import FixedWrapper from '../FixedWrapper';
-import MultiDropDown from '../MultiDropDown/MultiDropDown';
-import SearchUpSVG from '../../svg/SearchUpSVG';
-import CheckBox from '../CheckBox';
-import SearchInput from '../SearchInput';
+import CloseUpSVG from '../../svg/CloseUpSVG'
+import EditUpSVG from '../../svg/EditUpSVG'
+import Table from '../Table'
+import VolunteerUpSVG from '../../svg/VolunteerUpSVG'
+import VeteranUpSVG from '../../svg/VeteranUpSVG'
+import Loader from '../Loader'
+import { Service } from '../ApiService'
+import FixedWrapper from '../FixedWrapper'
+import MultiDropDown from '../MultiDropDown/MultiDropDown'
+import CheckBox from '../CheckBox'
+import SearchInput from '../SearchInput'
+import Alert from '../Alert'
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -125,7 +125,14 @@ class EventAttendees extends Component {
                     <button 
                         className='round-button small-round-button light-grey-outline-button' 
                         style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                        onClick={() => this.removeMember(row)}
+                        onClick={() => {
+                            this.headerText = 'Warning';
+                            this.dialogText = 'You want to remove the participant'
+                            this.onOkButtonClick = () => {this.removeMember(row); this.setState({showDialog: false})};
+                            this.cancelButtonText = 'Cancel';
+                            this.okButtonText = 'Remove';
+                            this.dialogContent = <h4>{row['firstName'] + ' ' + row['lastName']}</h4>
+                            this.setState({showDialog: true})/*this.removeMember(row)*/}}
                     >
                         <CloseUpSVG />
                     </button>
@@ -165,11 +172,11 @@ class EventAttendees extends Component {
             <div className='w-100 prpl-0'>
                 {this.state.loading && <Loader />}
                 {this.state.addingExistingMembers &&
-                    <FixedWrapper maxWidth={"600px"}>
-                        <h2 className='m-1'>Add Members</h2>
+                    <FixedWrapper maxWidth={"600px"} noPadding={true}>
+                        <h2 className='ml-075 mr-075 mt-2 mb-1'>Add Members</h2>
                         <SearchInput 
                             placeholder='Search members'
-                            wrapperClassName = 'm-1'
+                            wrapperClassName = 'm-075'
                             value={this.state.attendeeFilter}
                             onValueChange={(value) => {
                                 clearTimeout(this.timeoutVar);
@@ -180,7 +187,7 @@ class EventAttendees extends Component {
                                 this.setState({attendeeFilter: ""}, this.createFilteredListWithTimeOut());
                             }}
                         />
-                        <div className='flex-wrap justify-space-between align-center mr-05 ml-05'>
+                        <div className='flex-wrap justify-space-between align-center mr-075 ml-05 mb-05'>
                             <CheckBox 
                                 className='mr-1 mb-1 ml-025' 
                                 onClick={() => {
@@ -239,11 +246,11 @@ class EventAttendees extends Component {
                                 placeholder="Select from the list"
                                 onDropDownValueChange={value => this.setState({ tempMembers: value })}
                                 hideHeader = {true}
-                                substractHeight = {80}
+                                substractHeight = {65}
                                 textPropertyRender = {(element, textProperty) => this.textPropertyRender(element, textProperty)}
                             />
                         }
-                        <div className='flex-nowrap justify-center mt-05 mb-05 mr-1 ml-1'>
+                        <div className='flex-nowrap justify-center mt-1 mb-05 mr-075 ml-075'>
                             <button ref = {el => this.okButtonRef = el} className='medium-static-button static-button' onClick={this.submitMembersToEvent}>OK</button>
                             <button ref = {el => this.cancelButtonRef = el} className='medium-static-button static-button default-button' onClick={() => this.setState({ addingExistingMembers: false, tempMembers:[], attendeeFilter: '' })}> Cancel </button>
                         </div>
@@ -260,6 +267,21 @@ class EventAttendees extends Component {
                     </div>
                 }
                 {members.length > 0 && <Table columns={columns} data={members} className={"break-at-500"} addHeadersForNarrowScreen={true}/>}
+                {this.state.showDialog && 
+                    <Alert 
+                        headerText = {this.headerText}
+                        text = {this.dialogText}
+                        onClose = {() => this.setState({showDialog: false})}
+                        showOkCancelButtons = {true}
+                        onCancelButtonClick = {() => this.setState({showDialog: false})}
+                        onOkButtonClick = {this.onOkButtonClick}
+                        cancelButtonText = {this.cancelButtonText}
+                        okButtonText = {this.okButtonText}
+                        mode = 'warning'
+                    >
+                       {this.dialogContent}
+                    </Alert>
+                }
             </div>
         );
     }

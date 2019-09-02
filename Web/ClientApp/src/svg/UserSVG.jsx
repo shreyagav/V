@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class UserSVG extends React.Component {
     render() {
         return (
-            <div className='round-button big-round-button grey-outline-button'>
+            <div className='no-outline-button' style={{"height":"1rem", "width":"auto"}}>
                 <svg
                     style={{'height' : '100%'}} 
                     version="1.1" 

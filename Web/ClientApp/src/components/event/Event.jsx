@@ -17,6 +17,7 @@ import StatusCanceledSVG from '../../svg/StatusCanceledSVG';
 import Loader from '../Loader';
 import eventValidators from './eventValidators'
 import InputWithClearButton from '../InputWithClearButton';
+import StatusDeletedSVG from '../../svg/StatusDeletedSVG';
 
 class Event extends Component {
 
@@ -304,6 +305,25 @@ class Event extends Component {
         this.performIfValid(() => cancel());
     }
 
+    onDeleteEventButtonClick() {
+        let onOkButtonClick = () => {
+            let event = this.state.eventMain;
+            event.eventStatus = 'deleted';
+            this.updateEvent().then(data => {
+                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading:false });
+            });
+            
+        };
+        let del = () => {
+            this.headerText = 'Delete';
+            this.onOkButtonClick = onOkButtonClick;
+            this.dialogText = "Are you sure you want to delete the event?";
+            this.dialogContent = <div><h4>{this.state.eventMain.name}</h4><p className='m-05'>This action can not be undone. Delete anyway?</p></div>
+            this.setState({showDialog: true});
+        }
+        this.performIfValid(() => del());
+    }
+
     onMoveToDraftsButtonClick() {
         let onOkButtonClick = () => {
             let event = this.state.eventMain;
@@ -315,7 +335,7 @@ class Event extends Component {
         let draft = () => {
             this.headerText = 'Move to drafts';
             this.onOkButtonClick = onOkButtonClick;
-            this.dialogText = "Are you sure you want to move event to drafts?";
+            this.dialogText = "Are you sure you want to move the event to drafts?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
@@ -345,7 +365,7 @@ class Event extends Component {
                     <div className='ipw-600'>
                         <Status eventStatus={eventStatus} className='mr-025' />
                         <div className = 'flex-nowrap align-center'>
-                            {eventStatus !== 'published' && 
+                            {eventStatus !== 'published' && eventStatus !== 'deleted' &&
                                 <button 
                                     className='round-button medium-round-button outline-on-hover' 
                                     onClick = {() => this.onPublishButtonClick()}
@@ -354,7 +374,7 @@ class Event extends Component {
                                     <span>Publish</span>
                                 </button>
                             }
-                            {eventStatus !== 'canceled' && 
+                            {eventStatus !== 'canceled' && eventStatus !== 'deleted' &&
                                 <button 
                                     className='round-button medium-round-button outline-on-hover' 
                                     onClick = {() => this.onCancelEventButtonClick()}
@@ -363,13 +383,22 @@ class Event extends Component {
                                     <span>Cancel</span>
                                 </button>
                             }
-                            {eventStatus !== 'canceled' && eventStatus !== 'draft' && 
+                            {eventStatus !== 'canceled' && eventStatus !== 'draft' && eventStatus !== 'deleted' &&
                                 <button 
                                     className='round-button medium-round-button outline-on-hover'
                                     onClick = {() => this.onMoveToDraftsButtonClick()}
                                 >
                                     <StatusDraftSVG />
-                                    <span>Move to drafts</span>
+                                    <span>Draft</span>
+                                </button>
+                            }
+                            {eventStatus !== 'deleted' && 
+                                <button 
+                                    className='round-button medium-round-button outline-on-hover'
+                                    onClick = {() => this.onDeleteEventButtonClick()}
+                                >
+                                    <StatusDeletedSVG />
+                                    <span>Delete</span>
                                 </button>
                             }
                         </div>
@@ -510,8 +539,7 @@ class Event extends Component {
                                                 ref={el => this.dateEndDropDownRef = el}
                                             />
                                         </li>
-                                    </ul>
-                                
+                                    </ul>                                
                             </div>
                         </li>*/}
 

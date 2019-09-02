@@ -3,6 +3,7 @@ import ArrowUpSVG from '../svg/ArrowUpSVG';
 import './DatePicker.css'
 import TodaySVG from '../svg/TodaySVG';
 import CloseUpSVG from '../svg/CloseUpSVG';
+import DatePickerDropDown from './DatePickerDropDown';
 
 class DatePicker extends Component {
     
@@ -10,13 +11,14 @@ class DatePicker extends Component {
         super(props);
         this.state = {
             calendar: [],
-            dateWasSet: false,
             currentYear: null,
             currentMonth: null,
             currentDate: null,
             regularCalendar: true,
             setFocusTo: -1,
             isOpen: false,
+            incButtonDisabled: false,
+            decButtonDisabled: false,
         };
         this.todayYear = null;
         this.todayMonth = null;
@@ -26,65 +28,81 @@ class DatePicker extends Component {
         this.actTodayMonth = null;
         this.actTodayDate = null;
 
-        this.setFocusToRef = null;
-        this.calendarBodyRef = null;
         this.datePickerRef = null;
         this.dropDownHeaderRef = null;
         this.todayButtonRef = null;
         this.setCurrentDate = this.setCurrentDate.bind(this);
+        this.performMultipleTimes = this.performMultipleTimes.bind(this);
+        this.clearTimeoutAndInterval = this.clearTimeoutAndInterval.bind(this)
+        this.toggleCalendar = this.toggleCalendar.bind(this)
+        this.toggle = this.toggle.bind(this)
+        this.onArrowClick = this.onArrowClick.bind(this)
+        this.calendarKeyDownHandler = this.calendarKeyDownHandler.bind(this)
+        this.onSelect = this.onSelect.bind(this)
+        this.createCalendar = this.createCalendar.bind(this)
+        this.monthPickerKeyDownHandler = this.monthPickerKeyDownHandler.bind(this)
+        this.checkIfDisabled = this.checkIfDisabled.bind(this)
+        this.checkIfActToday = this.checkIfActToday.bind(this)
+        this.setProp = this.setProp.bind(this)
+        this.checkIfMonthIsWalkable = this.checkIfMonthIsWalkable.bind(this)
+        this.checkIfYearIsWalkable = this.checkIfYearIsWalkable.bind(this)
     }
 
     componentWillMount() {
-        if (this.props.value) {
-            this.setCurrentDate(this.props.value, true);
-        } else {
-            this.setCurrentDate(new Date(), false);
-        }
+        if (this.props.value) { this.setCurrentDate(this.props.value, true) } 
+        else { this.setCurrentDate(new Date(), false) }
     }
 
-    componentWillReceiveProps(props) {        
+    componentWillReceiveProps(props) {
         this.actTodayYear = new Date().getFullYear();
         this.actTodayMonth = new Date().getMonth();
         this.actTodayDate = new Date().getDate();
         if(props.value){
-            this.setCurrentDate(props.value, true);
+            this.setCurrentDate(props.value/*, true*/);
         }
         else {
             let actToday = new Date();
             let date = actToday;
             if (props.minDate !== null && props.minDate !== undefined && props.minDate > actToday) {date = props.minDate}
             if (props.maxDate !== null && props.maxDate !== undefined && props.maxDate < actToday) {date = props.maxDate}
-            this.setCurrentDate(date, false);
+            this.setCurrentDate(date/*, false*/);
         }
     }
 
-    setCurrentDate(today, dateSet) {
+    setCurrentDate(today/*, dateSet */) {
         this.todayYear = today.getFullYear();
         this.todayMonth = today.getMonth();
         this.todayDate = today.getDate();
         this.createCalendar(this.todayYear, this.todayMonth);
-        this.setState({ currentDate: this.todayDate, dateWasSet: dateSet });
-    }
-
-    componentDidUpdate() {
-        this.setFocus();
+        this.setState({ currentDate: this.todayDate /*, dateWasSet: dateSet */ });
     }
 
     toggle(){
         this.clearTimeoutAndInterval();
-        if (this.setState.isOpen) {
-            this.setState({isOpen: !this.state.isOpen, setFocusTo: -1});
+        let currentYear = this.state.currentYear;
+        let currentMonth = this.state.currentMonth;
+        let incButtonDisabled = false;
+        let decButtonDisabled = false;
+        if(this.state.regularCalendar) {
+            incButtonDisabled = !this.checkIfMonthIsWalkable(currentYear, currentMonth, true);
+            decButtonDisabled = !this.checkIfMonthIsWalkable(currentYear, currentMonth, false);
         }
         else {
-            this.setState({isOpen: !this.state.isOpen});
+            incButtonDisabled = !this.checkIfYearIsWalkable(currentYear, true);
+            decButtonDisabled = !this.checkIfYearIsWalkable(currentYear, false);
         }
-    }
-
-    setFocus() {
-        if (this.setFocusToRef !== null) {
-            /*setTimeout(() => this.setFocusToRef.focus(), 10);*/
-            this.setFocusToRef.focus();
+        if (this.state.isOpen) {
+            this.setState({ 
+                isOpen: !this.state.isOpen,
+                incButtonDisabled: incButtonDisabled,
+                decButtonDisabled: decButtonDisabled,
+            }, () => { this.dropDownHeaderRef.focus() });
         }
+        else { this.setState({ 
+            isOpen: !this.state.isOpen,
+            incButtonDisabled: incButtonDisabled,
+            decButtonDisabled: decButtonDisabled,
+        }) }
     }
 
     leapYear (year){
@@ -105,15 +123,17 @@ class DatePicker extends Component {
         } else return monthArray[month];
     }
 
-    createCalendar (year, month) {
-        let todayYear = this.todayYear;
-        let todayMonth = this.todayMonth;
-        let todayDate = this.todayDate;
+
+    createCalendar (year, month, callback) {
+        let actToday = new Date();
+        let todayYear = actToday.getFullYear();
+        let todayMonth = actToday.getMonth();
+        let todayDate = actToday.getDate();
+        //let setFocusTo = 0;
         let firstDayOfMonth = (new Date(year, month, 1)).getDay();
         let calendar = [];
         let prevMonth, prevYear, nextMonth, nextYear, prevMonthNumberOfDays;
         let thisMonthNumberOfDays = this.amountOfDays(month, year);
-        let setFocusTo = -1;
         if (month > 0) {
           prevMonthNumberOfDays = this.amountOfDays (month - 1, year);
           prevMonth = month - 1; 
@@ -138,21 +158,38 @@ class DatePicker extends Component {
         } 
         //CURRENT MONTH
         for (let i = 0; i < thisMonthNumberOfDays; i++){
-            if ((year === todayYear)&&(month === todayMonth)&&(i+1===todayDate)) { 
-              calendar.push({label:i+1, className:'today', date:new Date(year, month, i+1)});
-              //setFocusTo = i + firstDayOfMonth;
+            if ((year === todayYear)&&(month === todayMonth)&&(i+1===todayDate)) {
+                calendar.push({label:i+1, className:'actToday current-month', date:new Date(year, month, i+1)}) 
+                //setFocusTo = i + firstDayOfMonth;
             } else calendar.push({label:i+1, className:'current-month', date:new Date(year, month, i+1)})
         }
         //NEXT MONTH
         for (let i = 0; i < 42 - thisMonthNumberOfDays - firstDayOfMonth; i++){
             calendar.push({label:i+1, className:'next-month', date:new Date(nextYear, nextMonth, i+1)});
         }
+        let incButtonDisabled = !this.checkIfMonthIsWalkable(year, month, true);
+        let decButtonDisabled = !this.checkIfMonthIsWalkable(year, month, false);
         //check if to toggle the calendar
         if (this.state.regularCalendar){
-            this.setState({calendar: calendar, currentYear: year, currentMonth: month, setFocusTo: setFocusTo});
+            this.setState({
+                calendar: calendar, 
+                currentYear: year, 
+                currentMonth: month, 
+                setFocusTo: -1,
+                incButtonDisabled: incButtonDisabled,
+                decButtonDisabled: decButtonDisabled,
+            }, () => { if(typeof callback === 'function'){callback()}});
         }
         else {
-            this.setState({calendar: calendar, currentYear: year, currentMonth: month, regularCalendar: true, setFocusTo: setFocusTo});
+            this.setState({
+                calendar: calendar, 
+                currentYear: year, 
+                currentMonth: month, 
+                regularCalendar: true, 
+                setFocusTo: -1,
+                incButtonDisabled: incButtonDisabled,
+                decButtonDisabled: decButtonDisabled,
+            }, () => { if(typeof callback === 'function'){callback()}});
         }
     }
 
@@ -172,251 +209,261 @@ class DatePicker extends Component {
 
     incrementYear(){
         let currentYear = this.state.currentYear;
+        let incButtonDisabled = !this.checkIfYearIsWalkable(currentYear+1, true);
+        let decButtonDisabled = !this.checkIfYearIsWalkable(currentYear+1, false);
         if(currentYear < this.todayYear + 100) {
-            this.setState(() => ({currentYear: currentYear + 1}));
+            this.setState(() => ({
+                currentYear: currentYear + 1,
+                incButtonDisabled: incButtonDisabled,
+                decButtonDisabled: decButtonDisabled,
+            }));
         }
     }
       
     decrementYear(){
         let currentYear = this.state.currentYear;
+        let incButtonDisabled = !this.checkIfYearIsWalkable(currentYear-1, true);
+        let decButtonDisabled = !this.checkIfYearIsWalkable(currentYear-1, false);
         if(currentYear > this.todayYear - 100) {
-            this.setState(() => ({currentYear: currentYear - 1}));
+            this.setState(() => ({
+                currentYear: currentYear - 1,
+                incButtonDisabled: incButtonDisabled,
+                decButtonDisabled: decButtonDisabled,
+            }));
         }
     }
 
     onArrowClick(increment){
         switch(increment) {
             case true:
-                if(this.state.regularCalendar) { this.incrementMonth(); }
-                else {this.incrementYear();}
+                if(this.state.regularCalendar) { if(this.checkIfMonthIsWalkable(this.state.currentYear, this.state.currentMonth, true)){this.incrementMonth()}}
+                else if(this.checkIfYearIsWalkable(this.state.currentYear, true)){this.incrementYear()}
                 break;
             case false:
-                if(this.state.regularCalendar) {this.decrementMonth()}
-                else{this.decrementYear()};
-                this.setState({setFocusTo: -1});
+                if(this.state.regularCalendar) { 
+                    if(this.checkIfMonthIsWalkable(this.state.currentYear, this.state.currentMonth, false)){
+                        this.decrementMonth();
+                        this.setState({setFocusTo: -1});
+                    }}
+                else if(this.checkIfYearIsWalkable(this.state.currentYear, false)){
+                    this.decrementYear();
+                    this.setState({setFocusTo: -1});
+                };
                 break;
         }
     }
 
-    toggleCalendar() {
-        let calendar = this.state.regularCalendar;
-        this.setState(() => ({regularCalendar: !calendar, setFocusTo: -1}));
+    toggleCalendar(callback) {
+        let currentYear = this.state.currentYear;
+        let currentMonth = this.state.currentMonth;
+        let incButtonDisabled = false;
+        let decButtonDisabled = false;
+        if(this.state.regularCalendar) {
+            incButtonDisabled = !this.checkIfYearIsWalkable(currentYear, true);
+            decButtonDisabled = !this.checkIfYearIsWalkable(currentYear, false);
+        }
+        else {
+            incButtonDisabled = !this.checkIfMonthIsWalkable(currentYear, currentMonth, true);
+            decButtonDisabled = !this.checkIfMonthIsWalkable(currentYear, currentMonth, false);
+        }
+        this.setState({ 
+            regularCalendar: !this.state.regularCalendar, 
+            setFocusTo: -1,
+            incButtonDisabled: incButtonDisabled,
+            decButtonDisabled: decButtonDisabled,
+        }, callback);
     }
 
-    monthPickerKeyDownHandler(e, index) {
-        switch (e.keyCode)
-        {
-          case 13: //enter
-            this.createCalendar(this.state.currentYear, index);
-            break;
-          case 39: // Right Arrow
-            if (index<11) {this.setState(()=>({setFocusTo: index+1}))}
-            else {this.setState({currentYear: this.state.currentYear+1, currentMonth: 0, setFocusTo: 0})}
-            break;
-          case 37: //Left arrow
-            if (index>0) {this.setState(()=>({setFocusTo: index-1}))}
-            else {this.setState({currentYear: this.state.currentYear-1, currentMonth: 11, setFocusTo: 11})}
-            break;
-          case 38: //Up Arrow
-            if (index>3) {this.setState(()=>({setFocusTo: index-4}))}
-            else {this.setState({currentYear: this.state.currentYear-1, currentMonth: 11+index-3, setFocusTo: 11+index-3})}
-            e.preventDefault();
-            break;
-          case 40: //Down Arrow
-            if (index<9) {this.setState(()=>({setFocusTo: index+4}))}
-            else {this.setState({currentYear: this.state.currentYear+1, currentMonth: index+3-11, setFocusTo: index+3-11})}
-            e.preventDefault();
-            break;
-          case 27: //escape
-            //this.setState({regularCalendar: true});
-            this.toggle();
-            this.dropDownHeaderRef.focus();
-            break;
-          default: break;
+    monthPickerKeyDownHandler(e) {
+        let index = this.state.setFocusTo;
+        switch (e.keyCode){
+            case 39: // Right Arrow
+                if(this.checkIfMonthIsWalkable(this.state.currentYear, index, true)){
+                    if (index<11) {this.setState(()=>({setFocusTo: index+1}))}
+                    else {
+                        let incButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear+1, true);
+                        let decButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear+1, false);
+                        this.setState({
+                            currentYear: this.state.currentYear+1, 
+                            currentMonth: 0, 
+                            setFocusTo: 0,
+                            incButtonDisabled: incButtonDisabled,
+                            decButtonDisabled: decButtonDisabled,
+                        })
+                    }
+                }
+                break;
+            case 37: //Left arrow
+                if(this.checkIfMonthIsWalkable(this.state.currentYear, index, false)){
+                    if (index>0) {this.setState(()=>({setFocusTo: index-1}))}
+                    else {
+                        let incButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear-1, true);
+                        let decButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear-1, false);
+                        this.setState({
+                            currentYear: this.state.currentYear-1, 
+                            currentMonth: 11, 
+                            setFocusTo: 11,
+                            incButtonDisabled: incButtonDisabled,
+                            decButtonDisabled: decButtonDisabled,
+                        })}
+                }
+                break;
+            case 38: //Up Arrow
+                if (index>3) {
+                    if(this.checkIfMonthIsWalkable(this.state.currentYear, index-4, 5)){
+                        this.setState(()=>({setFocusTo: index-4}))}
+                    }
+                else {
+                    if(this.checkIfMonthIsWalkable(this.state.currentYear-1, 11+index-3, 5)){
+                        let incButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear-1, true);
+                        let decButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear-1, false);
+                        this.setState({
+                            currentYear: this.state.currentYear-1, 
+                            currentMonth: 11+index-3, 
+                            setFocusTo: 11+index-3,
+                            incButtonDisabled: incButtonDisabled,
+                            decButtonDisabled: decButtonDisabled,
+                        })
+                    }
+                }
+                e.preventDefault();
+                break;
+            case 40: //Down Arrow
+                if (index<9) {
+                    if(this.checkIfMonthIsWalkable(this.state.currentYear, index+4, 5)){
+                        this.setState(()=>({setFocusTo: index+4}))
+                    }
+                }
+                else {
+                    if(this.checkIfMonthIsWalkable(this.state.currentYear+1, index+3-11, 5)){
+                        let incButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear+1, true);
+                        let decButtonDisabled = !this.checkIfYearIsWalkable(this.state.currentYear+1, false);
+                        this.setState({
+                            currentYear: this.state.currentYear+1, 
+                            currentMonth: index+3-11, 
+                            setFocusTo: index+3-11,
+                            incButtonDisabled: incButtonDisabled,
+                            decButtonDisabled: decButtonDisabled,
+                        })
+                    }
+                }
+                e.preventDefault();
+                break;
+            default: break;
         }
     }
 
-    calendarKeyDownHandler(e, index, element) {
-        switch (e.keyCode)
-        {
-          /*case 9: //tab
-            if(!e.shiftKey) {
-                if (this.todayButtonRef !== null){
-                    this.setFocusToRef = this.todayButtonRef; 
-                    this.setState(
-                        {setFocusTo: -1}, 
-                        console.log(this.state.setFocusTo)
-                    )
-                } else {
-                    this.toggle();
-                    this.dropDownHeaderRef.focus();
-                }
-            }
-            break;
-        */
-          case 13: //enter 
-            this.setState({currentDate: element.label, dateWasSet: true});
-            this.props.onSelect(element.date);
-            this.toggle();
-            this.dropDownHeaderRef.focus();
-            break;
-          case 39: // Right Arrow
-            if (!(this.props.maxDate !== null && 
-                this.props.maxDate !== undefined &&
-                element.date.getFullYear() === this.props.maxDate.getFullYear() &&
-                element.date.getMonth() === this.props.maxDate.getMonth() &&
-                element.date.getDate() === this.props.maxDate.getDate()
-            )){
-                // if next date is not max date
-                if (index < 41) {
-                    this.setState(()=>({setFocusTo: index+1}));
-                }
-                else {
-                    let date = element.date.getDate();
-                    let year = element.date.getFullYear();
-                    let month = element.date.getMonth();
-                    let firstDayOfMonth = (new Date(year, month, 1)).getDay();
-                    //let lastDayOfMonth = this.amountOfDays(month, year);
-                    // NOTE !!! There is no option the last day is the last day of the month
-                    this.createCalendar (year, month);
-                    this.setState({setFocusTo: date + firstDayOfMonth});
-                }
-            }
-            break;
-          case 37: //Left arrow
-            if (!(this.props.minDate !== null && this.props.minDate !== undefined && 
-                element.date.getFullYear() === this.props.minDate.getFullYear() &&
-                element.date.getMonth() === this.props.minDate.getMonth() &&
-                element.date.getDate() === this.props.minDate.getDate()
-            )){
-                // if previous date is not min date
-                if (index > 0) {
-                    this.setState(()=>({setFocusTo: index-1}));
-                }
-                else {
-                    let date = element.date.getDate();
-                    let year = element.date.getFullYear();
-                    let month = element.date.getMonth();
-                    let firstDayOfMonth = (new Date(year, month, 1)).getDay();
-                    if (date === 1) {
-                        if(month > 0){
-                            this.createCalendar (year, month-1);
-                            this.setState({setFocusTo: this.amountOfDays(month-1, year) + (new Date(year, month-1, 1)).getDay() - 1});
-                        } 
+    calendarKeyDownHandler(e) {
+        let index = this.state.setFocusTo;
+        if(index > -1){
+            let fullDate = this.state.calendar[index].date;
+            switch (e.keyCode){
+                case 39: // Right Arrow
+                    if (!(this.props.maxDate !== null && 
+                        this.props.maxDate !== undefined &&
+                        fullDate.getFullYear() === this.props.maxDate.getFullYear() &&
+                        fullDate.getMonth() === this.props.maxDate.getMonth() &&
+                        fullDate.getDate() === this.props.maxDate.getDate()
+                    )){
+                        // if next date is not max date
+                        if (index < 41) {
+                            this.setState(()=>({setFocusTo: index+1}));
+                        }
                         else {
-                            this.createCalendar (year-1, 11);
-                            this.setState({setFocusTo: this.amountOfDays(11, year-1) + (new Date(year-1, 11, 1)).getDay() - 1});
+                            let date = fullDate.getDate();
+                            let year = fullDate.getFullYear();
+                            let month = fullDate.getMonth();
+                            let firstDayOfMonth = (new Date(year, month, 1)).getDay();
+                            //let lastDayOfMonth = this.amountOfDays(month, year);
+                            // NOTE !!! There is no option the last day is the last day of the month
+                            this.createCalendar (year, month);
+                            this.setState({setFocusTo: date + firstDayOfMonth});
                         }
                     }
-                    else {
-                        this.createCalendar (year, month);
-                        this.setState({setFocusTo: date - 1 + firstDayOfMonth - 1});
-                    }
-                }
-            }
-            break;
-
-          case 38: //Up Arrow 
-          //if(this.state.setFocusTo >= 0 )//
-          {
-            //console.log(element.date);
-            let year = element.date.getFullYear();
-            let month = element.date.getMonth();
-            let date = element.date.getDate();
-            
-            //let year = this.state.calendar[this.state.setFocusTo].date.getFullYear();
-            //let month = this.state.calendar[this.state.setFocusTo].date.getMonth();
-            //let date = this.state.calendar[this.state.setFocusTo].date.getDate();
-            let newDateYear = year;
-            let newDateMonth = month;
-            let newDateDate = date - 7;
-            if (newDateDate < 1) {
-                if (newDateMonth > 0) {newDateMonth = newDateMonth - 1;}
-                else {
-                    newDateMonth = 11;
-                    newDateYear = year - 1;
-                }
-                let newDateLastDayOfMonth = this.amountOfDays(newDateMonth, newDateYear);
-                newDateDate = date + newDateLastDayOfMonth - 7;
-            }
-            if (this.props.minDate === null || this.props.minDate === undefined || new Date(newDateYear, newDateMonth, newDateDate) >= this.props.minDate){
-                if (index > 6) {
-                    let newDate = this.state.calendar[index-7].date;
-                    if (!(this.props.minDate !== null && this.props.minDate !== undefined && newDate < this.props.minDate)){
-                        this.setState(()=>({setFocusTo: index-7}))
-                    }
-                }
-                else {
-                    this.createCalendar (newDateYear, newDateMonth);
-                    let firstDayOfNewMonth = (new Date(newDateYear, newDateMonth, 1)).getDay();
-                    this.setState({setFocusTo: newDateDate + firstDayOfNewMonth - 1});
-                }
-            }}
-            e.preventDefault();
-            break;
-
-          case 40: //Down Arrow
-          //if(this.state.setFocusTo >= 0 )
-          {
-            let year = element.date.getFullYear();
-            let month = element.date.getMonth();
-            let date = element.date.getDate();
-            //let year = this.state.calendar[this.state.setFocusTo].date.getFullYear();
-            //let month = this.state.calendar[this.state.setFocusTo].date.getMonth();
-            //let date = this.state.calendar[this.state.setFocusTo].date.getDate();
-            let lastDayOfMonth = this.amountOfDays(month, year);
-            let newDateYear = year;
-            let newDateMonth = month;
-            let newDateDate = date + 7 - lastDayOfMonth;
-            if (newDateDate > 0){
-                if (month > 10) {newDateMonth = 0; newDateYear = year + 1}
-                else {newDateMonth = month + 1; newDateYear = year;}
-            }
-            if (this.props.maxDate === null || this.props.maxDate === undefined || new Date(newDateYear, newDateMonth, newDateDate) <= this.props.maxDate){
-                if (index < 35) {
-                    let newDate = this.state.calendar[index+7].date;
-                    if (!(this.props.maxDate !== null && 
-                        this.props.maxDate !== undefined && 
-                        newDate > this.props.maxDate
+                    break;
+                case 37: //Left arrow
+                    if (!(this.props.minDate !== null && this.props.minDate !== undefined && 
+                        fullDate.getFullYear() === this.props.minDate.getFullYear() &&
+                        fullDate.getMonth() === this.props.minDate.getMonth() &&
+                        fullDate.getDate() === this.props.minDate.getDate()
                     )){
-                        this.setState(()=>({setFocusTo: index+7}));
+                        // if previous date is not min date
+                        if (index > 0) {
+                            this.setState(()=>({setFocusTo: index-1}));
+                        }
+                        else {
+                            let date = fullDate.getDate();
+                            let year = fullDate.getFullYear();
+                            let month = fullDate.getMonth();
+                            let firstDayOfMonth = (new Date(year, month, 1)).getDay();
+                            if (date === 1) {
+                                if(month > 0){
+                                    this.createCalendar (year, month-1);
+                                    this.setState({setFocusTo: this.amountOfDays(month-1, year) + (new Date(year, month-1, 1)).getDay() - 1});
+                                } 
+                                else {
+                                    this.createCalendar (year-1, 11);
+                                    this.setState({setFocusTo: this.amountOfDays(11, year-1) + (new Date(year-1, 11, 1)).getDay() - 1});
+                                }
+                            }
+                            else {
+                                this.createCalendar (year, month);
+                                this.setState({setFocusTo: date - 1 + firstDayOfMonth - 1});
+                            }
+                        }
                     }
-                }
-                else {
-                    this.createCalendar (newDateYear, newDateMonth);
-                    let firstDayOfNewMonth = (new Date(newDateYear, newDateMonth, 1)).getDay();
-                    if(newDateMonth === month){
-                        this.setState({setFocusTo: date + firstDayOfNewMonth + 6});
+                    break;
+
+                case 38: /* Up Arrow */
+                    {
+                    let year = fullDate.getFullYear();
+                    let month = fullDate.getMonth();
+                    let date = fullDate.getDate();
+                    let newDateYear = year;
+                    let newDateMonth = month;
+                    let newDateDate = date - 7;
+                    if (newDateDate < 1) {
+                        if (newDateMonth > 0) {newDateMonth = newDateMonth - 1;}
+                        else {
+                            newDateMonth = 11;
+                            newDateYear = year - 1;
+                        }
+                        let newDateLastDayOfMonth = this.amountOfDays(newDateMonth, newDateYear);
+                        newDateDate = date + newDateLastDayOfMonth - 7;
                     }
-                    else {this.setState({setFocusTo: newDateDate + firstDayOfNewMonth - 1});}
-                }
-            }}
-            e.preventDefault();
-            break;
+                    if (this.props.minDate === null || this.props.minDate === undefined || new Date(newDateYear, newDateMonth, newDateDate) >= this.props.minDate){
+                        this.createCalendar (newDateYear, newDateMonth);
+                        let firstDayOfNewMonth = (new Date(newDateYear, newDateMonth, 1)).getDay();
+                        this.setState({setFocusTo: newDateDate + firstDayOfNewMonth - 1});
+                    }}
+                    e.preventDefault();
+                    break;
 
-          case 27: //escape
-            this.toggle();
-            this.dropDownHeaderRef.focus();
-            break;
-          default: break;
-        }
-    }
-
-    buttonKeyDownHandler(e) {
-        switch (e.keyCode)
-        {
-          case 38: //Up Arrow
-            e.preventDefault();
-            break;
-          case 40: //Down Arrow
-            e.preventDefault();
-            break;
-          case 27: //escape
-            this.toggle();
-            this.dropDownHeaderRef.focus();
-            break;
-          default: break;
-        }
+                case 40: /* Down Arrow */
+                    {
+                    let year = fullDate.getFullYear();
+                    let month = fullDate.getMonth();
+                    let date = fullDate.getDate();
+                    let lastDayOfMonth = this.amountOfDays(month, year);
+                    let newDateYear = year;
+                    let newDateMonth = month;
+                    let newDateDate = date + 7;
+                    if (newDateDate > lastDayOfMonth){
+                        if (month > 10) {newDateMonth = 0; newDateYear = year + 1}
+                        else {newDateMonth = month + 1; newDateYear = year;}
+                        newDateDate = newDateDate - lastDayOfMonth;
+                    }
+                    if (this.props.maxDate === null || this.props.maxDate === undefined || new Date(newDateYear, newDateMonth, newDateDate) <= this.props.maxDate){
+                        this.createCalendar (newDateYear, newDateMonth);
+                        let firstDayOfNewMonth = (new Date(newDateYear, newDateMonth, 1)).getDay();
+                        if(newDateMonth === month){ this.setState({setFocusTo: date + firstDayOfNewMonth + 6}) }
+                        else {this.setState({setFocusTo: newDateDate + firstDayOfNewMonth - 1});}
+                    }}
+                    e.preventDefault();
+                    break;
+                default: break;
+            }
+        } else {e.preventDefault()}
     }
 
     headerKeyDownHandler(e){
@@ -446,23 +493,23 @@ class DatePicker extends Component {
     onSelect(val) {
         this.toggle();
         if (!this.props.onSelect) {
-            this.setState({ currentDate: val, dateWasSet: true });
+            this.setState({ currentDate: val /*, dateWasSet: true */});
         } else {
             this.props.onSelect(val);
         }
     }
 
-    checkIfDisabled(date) {
+    checkIfDisabled(index) {
         if (this.props.minDate !== null && this.props.minDate !== undefined){
             // the MIN date was set
-            if(date < this.props.minDate){
+            if(this.state.calendar[index].date < this.props.minDate){
                 return true;
             } else return false;
         }
         else {
             if (this.props.maxDate !== null && this.props.maxDate !== undefined) {
                 // the MAX date was set
-                if(date > this.props.maxDate){
+                if(this.state.calendar[index].date > this.props.maxDate){
                     return true;
                 } 
                 else return false;
@@ -470,26 +517,41 @@ class DatePicker extends Component {
         }
     }
 
-    checkIfActToday(date) {
+    checkIfMonthIsWalkable(currentYear, currentMonth, next) {
+        let month = currentMonth;
+        let year = currentYear;
+        if(next === true){
+            if (currentMonth < 11){ month = month + 1 }
+            else {month = 0; year = year + 1}
+        } 
+        if (next === false){
+            if (currentMonth > 0){ month = month - 1 }
+            else {month = 11; year = year - 1}
+        }
+        let monthLastDay = this.amountOfDays(month, year);
+        if(
+            (this.props.minDate === undefined && new Date(year, month, 1) > this.props.maxDate) || 
+            (this.props.maxDate === undefined && new Date(year, month, monthLastDay) < this.props.minDate)
+        ){ return false }
+        else return true;
+    }
+
+    checkIfYearIsWalkable(currentYear, next) {
+        let year = currentYear;
+        if(next === true){year = year + 1}
+        if (next === false){year = year - 1}
+        if(
+            (this.props.minDate === undefined && new Date(year, 0, 1) > this.props.maxDate) || 
+            (this.props.maxDate === undefined && new Date(year, 11, 31) < this.props.minDate)
+        ){ return false }
+        else return true;
+    }
+
+    checkIfActToday(index) {
+        let date = this.state.calendar[index].date;
         if(this.actTodayDate === date.getDate() && this.actTodayMonth === date.getMonth() && this.actTodayYear === date.getFullYear()){
             return true;
         } else return false;
-    }
-
-    todayButtonKeyHandler(e) {
-        switch (e.keyCode){
-            case 9:
-                // tab pressed
-                if(!e.shiftKey) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-                break;
-            default: 
-                e.preventDefault;
-                e.stopPropagation();
-                break;
-        }
     }
 
     performMultipleTimes(callback) {
@@ -509,6 +571,13 @@ class DatePicker extends Component {
         this.intervalVariable = 0;
     }
 
+    setProp = (propName, propValue, callback) => {
+        let newState = this.state;
+        newState[propName] = propValue;
+        if(callback && typeof callback == 'function') { this.setState({newState}, callback) }
+        else this.setState({newState})
+    }
+
     render() {
         const calendar = this.state.calendar;
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -517,7 +586,7 @@ class DatePicker extends Component {
                 <div 
                     className='input-button-wrapper'
                     ref={el => this.dropDownHeaderRef = el}
-                    tabIndex='0' 
+                    tabIndex={0}
                     onClick={() => this.toggle()}
                     onKeyDown={(e) => this.headerKeyDownHandler(e)}
                     style={this.state.isOpen ? {"border":"1px solid #0099cc"} : {}}
@@ -526,153 +595,65 @@ class DatePicker extends Component {
                         readOnly 
                         tabIndex='-1'
                         placeholder='mm/dd/yy' 
-                        value={this.state.dateWasSet ? (("0"+(this.state.currentMonth+1)).slice(-2)+"/"+("0" + this.state.currentDate).slice(-2)+"/"+this.state.currentYear) : ""}
+                        value={(this.props.value === null || this.props.value === undefined) ? "" : (("0"+(this.props.value.getMonth()+1)).slice(-2)+"/"+("0" + this.props.value.getDate()).slice(-2)+"/"+this.props.value.getFullYear())}
                     />
-                    {this.state.dateWasSet && !this.state.isOpen
+                    {!this.state.isOpen 
                     ?
                     <button 
                         className='arrow-button'
                         onClick={(e) => {
-                            this.setState({dateWasSet: false, isOpen: false}); 
+                            this.setState({isOpen: false}); 
                             e.stopPropagation();
                             this.props.onSelect(null);
                         }}
                         onKeyDown={(e) => {
                             if(e.keyCode === 13){
                                 e.stopPropagation();
-                                this.setState({dateWasSet: false, isOpen: false});
+                                this.setState({isOpen: false});
                                 this.props.onSelect(null);
                                 this.dropDownHeaderRef.focus();
                             }}}
-                    >
-                        <CloseUpSVG />
-                    </button>
+                    > <CloseUpSVG /> </button>
                     :
-                    <button 
-                        disabled
-                        className='arrow-button' 
-                    >
+                    <button disabled className='arrow-button'>
                         <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                     }
                 </div>
                 {this.state.isOpen &&
-                    <div 
-                        ref={el => this.calendarBodyRef = el} 
-                        className='flex-nowrap flex-flow-column align-center cw-100 date-picker-drop-down absolute-drop-down'
-                    >
-                        <div className='flex-nowrap justify-stretch mb-05 mt-05 align-center'>
-                            <button className='arrow-button' 
-                                //onClick={() => this.onArrowClick(false)}
-                                //onKeyDown={(e) => this.buttonKeyDownHandler(e)}
-                                onMouseDown={() => this.performMultipleTimes(() => this.onArrowClick(false))}
-                                onMouseUp={() => this.clearTimeoutAndInterval()}
-                                onMouseOut={() => this.clearTimeoutAndInterval()}
-                                onKeyDown={(e) => {
-                                    if(e.keyCode === 13) {
-                                        this.performMultipleTimes(() => this.onArrowClick(false));
-                                        e.preventDefault();
-                                    }
-                                }}
-                                onKeyUp = {() => this.clearTimeoutAndInterval()}
-                            >
-                                <ArrowUpSVG />
-                            </button>
-                            <button 
-                                className="h2 uppercase-text flex11auto align-self-stretch no-outline-button" 
-                                style={{"fontSize": "25px", "paddingBottom":"2px"}}
-                                onClick={() => this.toggleCalendar()} disabled={this.state.regularCalendar ? false : true}
-                                onKeyDown={(e) => this.buttonKeyDownHandler(e)}
-                            >
-                                {this.state.regularCalendar && monthNames[this.state.currentMonth] + ' '}<strong><b>{this.state.currentYear}</b></strong>
-                            </button>
-                            <button className='arrow-button'
-                                onMouseDown={() => this.performMultipleTimes(() => this.onArrowClick(true))}
-                                onMouseUp={() => this.clearTimeoutAndInterval()}
-                                onMouseOut={() => this.clearTimeoutAndInterval()}
-                                onKeyDown={(e) => {
-                                    if(e.keyCode === 13) {
-                                        this.performMultipleTimes(() => this.onArrowClick(true));
-                                        e.preventDefault();
-                                    }
-                                }}
-                                onKeyUp = {() => this.clearTimeoutAndInterval()}
-                            >
-                                <ArrowUpSVG svgClassName='flip180' />
-                            </button>
-                        </div>
-
-                        {this.state.regularCalendar &&
-                            <ul className='calendar-grid calendar-header light-grey-text uppercase-text nonselect'>
-                                <li>Su</li>
-                                <li>Mo</li>
-                                <li>Tu</li>
-                                <li>We</li>
-                                <li>Th</li>
-                                <li>Fr</li>
-                                <li>Sa</li>
-                            </ul>
-                        }
-                        {this.state.regularCalendar &&
-                            <ul className='calendar-grid calendar-content dark-grey-text'>
-                                {calendar.map((element, index) => {
-                                    let disabled = this.checkIfDisabled(element.date);
-                                    let actToday = this.checkIfActToday(element.date);
-                                    return <li key={index} 
-                                        className={element.className + (disabled ? " disabled" : "") + (actToday ? " act-today" : "")}
-                                        tabIndex={disabled ? -1 : 0}
-                                        onKeyDown={e => {if(!disabled){ this.calendarKeyDownHandler(e, index, element)}}}
-                                        onClick={() => {if(!disabled){this.onSelect(element.date)}}}
-                                        onFocus={(e) => {if(!disabled){this.setFocusToRef = e.target}}}
-                                        ref={el => {
-                                            if (index === this.state.setFocusTo || (this.state.setFocusTo === -1 && actToday)) {
-                                                this.setFocusToRef = el;
-                                            }
-                                        }}
-                                    > 
-                                        <div className={element.className}><strong>{element.label}</strong></div>
-                                    </li>
-                                    })}
-                            </ul>
-                        }
-                        {!this.state.regularCalendar &&
-                            <div className='flex-nowrap justify-center'> 
-                                <ul className='calendar-grid month-calendar-grid calendar-content dark-grey-text'>
-                                    {monthNames.map((element, index) =>
-                                        <li 
-                                            key={index} 
-                                            tabIndex='0'
-                                            onClick={() => this.createCalendar(this.state.currentYear, index)}
-                                            onKeyDown={(e) => this.monthPickerKeyDownHandler(e, index)}
-                                            className={(this.state.currentYear === this.todayYear && index === this.todayMonth) ? 'today' : ''}
-                                            ref={el => {
-                                                if ((index === this.state.setFocusTo) || (this.state.setFocusTo === -1 && this.state.currentYear === this.todayYear && index === this.todayMonth) ) {
-                                                    this.setFocusToRef = el
-                                                }
-                                            }}
-                                        >
-                                            <div>
-                                                <span>
-                                                    <strong className='uppercase-text'>{element.slice(0,3)}</strong>
-                                                </span>
-                                            </div>
-                                        </li>
-                                    )}
-                                </ul>
-                            </div>
-                        }
-                        {/*!(this.state.currentMonth === this.todayMonth && this.state.currentYear === this.todayYear && this.state.regularCalendar) && */
-                            <button
-                                style={{'flexShrink' : '0'}}
-                                className='round-button medium-round-button no-outline-button' 
-                                onClick={() => {this.setState({setFocusTo: -1}, this.createCalendar(this.actTodayYear, this.actTodayMonth))}}
-                                onKeyDown={e => this.todayButtonKeyHandler(e)}
-                                ref={el => this.todayButtonRef = el}
-                            >
-                                <span>current month</span>
-                            </button>
-                        }
-                    </div>
+                    <DatePickerDropDown 
+                        value={this.props.value}
+                        dropDownHeaderRef={this.dropDownHeaderRef}
+                        datePickerRef={this.datePickerRef}
+                        performMultipleTimes={(callback) => this.performMultipleTimes(callback)}
+                        clearTimeoutAndInterval={this.clearTimeoutAndInterval}
+                        toggleCalendar={this.toggleCalendar}
+                        toggle={this.toggle}
+                        onArrowClick={this.onArrowClick}
+                        calendarKeyDownHandler={this.calendarKeyDownHandler}
+                        onSelect={this.onSelect}
+                        createCalendar={this.createCalendar}
+                        monthPickerKeyDownHandler={this.monthPickerKeyDownHandler}
+                        todayYear={this.todayYear}
+                        todayMonth={this.todayMonth}
+                        setProp={this.setProp}
+                        todayButtonRef={el => this.todayButtonRef = el}
+                        regularCalendar={this.state.regularCalendar}
+                        currentMonth={this.state.currentMonth}
+                        currentYear={this.state.currentYear}
+                        monthNames={monthNames}
+                        calendar={calendar}
+                        setFocusTo={this.state.setFocusTo}
+                        checkIfDisabled={this.checkIfDisabled}
+                        checkIfActToday={this.checkIfActToday}
+                        setSetTodayButtonRef={el => this.setTodayButtonRef = el}
+                        actTodayYear={this.actTodayYear}
+                        actTodayMonth={this.actTodayMonth}
+                        checkIfMonthIsWalkable={this.checkIfMonthIsWalkable}
+                        checkIfYearIsWalkable={this.checkIfYearIsWalkable}
+                        decButtonDisabled={this.state.decButtonDisabled}
+                        incButtonDisabled={this.state.incButtonDisabled}
+                    />
                 }
             </div>
         );

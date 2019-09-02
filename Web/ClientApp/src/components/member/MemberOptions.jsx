@@ -6,6 +6,7 @@ import { withStore } from '../store';
 import CloseUpSVG from '../../svg/CloseUpSVG';
 import EditUpSVG from '../../svg/EditUpSVG';
 import { Service } from '../ApiService';
+import FixedWrapper from '../FixedWrapper'
 
 class MemberOptions extends Component {
 
@@ -29,6 +30,7 @@ class MemberOptions extends Component {
         this.onEditOption = this.onEditOption.bind(this);
         this.okButtonCallBack = this.okButtonCallBack.bind(this);
         this.onDeleteOption = this.onDeleteOption.bind(this);
+        this.renderDescription = this.renderDescription.bind(this);
 
         this.okButtonText = 'OK';
         this.modalHeader = 'Header';
@@ -92,39 +94,47 @@ class MemberOptions extends Component {
         let category = this.state.optionsList.find(element => element.categoryId === row.categoryId);
         let option = category.options.find(element => element.id === row.optionId);
         return (
-            <li 
-                className={col.className ? "table-content " + col.className : "table-content"} 
-                style={{ "display": "flex" }}
-            >
+            <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
+                <div className='flex-nowrap justify-space-between align-center ' style={{"width":"100%"}}>
+                    <div className='flex-nowrap flex-flow-column  justify-left align-self-center'>
+                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}>{option.name}</span>
+                        {option.description && <span className='description-text'>{option.description}</span>}
+                    </div>
+                    {/*this.props.editsPermitted !== false && */
+                        <button 
+                            className='round-button small-round-button light-grey-outline-button' 
+                            style={{"flex":"0 0 1rem","marginLeft":"0.5em"}} 
+                            onClick={() => this.onDeleteOption(row)}
+                        ><CloseUpSVG /></button>
+                    }
+                </div>
+            </li>
+        );
+    }
+
+    renderDescription(value, row, index, col){
+        return (
+            <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
+                <span className="table-mini-header">Comments: </span>
                 <div className='flex-nowrap flex-flow-column justify-left align-self-center' style={{"width":"100%"}}>
                     <div className='flex-nowrap justify-space-between align-center'>
-                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}>{option.name}</span>
-                            {/*this.props.editsPermitted !== false && */
-                                <button 
-                                    className='round-button small-round-button light-grey-outline-button' 
-                                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                                    onClick={() => this.onDeleteOption(row)}
-                                >
-                                    <CloseUpSVG />
-                                </button>
-                            }
-                            {/*this.props.editsPermitted !== false && */
-                                <button 
-                                    className='round-button small-round-button light-grey-outline-button' 
-                                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                                    onClick={() => {
-                                        this.okButtonText = 'Save Edits';
-                                        this.headerText = 'Edit Option';
-                                        this.okButtonCallBack = this.onEditOption;
-                                        this.elementToEdit = row;
-                                        this.setState({alertContent: row, showAddEditOption: true});
-                                    }}
+                        {<span className='description-text'>{value}</span>}
+                        {/*this.props.editsPermitted !== false && */
+                            <button 
+                                className='round-button small-round-button light-grey-outline-button' 
+                                style={{"flex":"0 0 1rem","marginLeft":"0.5em"}} 
+                                onClick={() => {
+                                    this.okButtonText = 'Save Edits';
+                                    this.headerText = 'Edit Comments';
+                                    this.okButtonCallBack = this.onEditOption;
+                                    this.elementToEdit = row;
+                                    this.setState({alertContent: row, showAddEditOption: true});
+                                }}
                                 >
                                     <EditUpSVG />
-                                </button>
-                            }
+                            </button>
+                        }
                     </div>
-                    {option.description && <span style={{ "fontSize": "0.9em" }}>{option.description}</span>}
                 </div>
             </li>
         );
@@ -134,7 +144,7 @@ class MemberOptions extends Component {
         let category = this.state.optionsList.find(element => element.categoryId === row.categoryId);
         return (
             <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }}>
-                <span class="table-mini-header">Category: </span>
+                <span className="table-mini-header">Category: </span>
                 <span>{category.categoryName}</span>
             </li>
         );
@@ -171,16 +181,20 @@ class MemberOptions extends Component {
         if (this.state.alertContent.categoryId !== null) {
             options = optionsList.find(element => element.categoryId === this.state.alertContent.categoryId).options;
         }
+        let optionsValue = null;
+        if(options.length === 1){
+            optionsValue = options[0].id;
+            if(this.state.alertContent.optionId !== optionsValue){ this.onAlertOptionsChange(optionsValue) }
+        }
         const columns=[
             {title:"Options", accesor:"options", className:'borders-when-display-block', render: this.renderOption},
             {title:"Category", className:'small-bold', accesor:"category", render: this.renderCategory},
-            {title:"Description", accesor:"description", className: "italic"}
+            {title:"Comments", accesor:"description", render: this.renderDescription}
         ];
         return (
-            <div className = 'flex-nowrap flex-flow-column justify-center w-100'>
+            <div className = 'flex-nowrap flex-flow-column justify-center w-100 prpl-0'>
                 {this.state.showAddEditOption &&
-                    <div className = 'wh-bcg' style={{"opacity":"1"}}>
-                        <div className = 'flex-nowrap flex-flow-column align-center justify-center mr-1 ml-1 w-100' style={{"backgroundColor":"#ffffff"}}>
+                    <FixedWrapper maxWidth={"600px"}>
                             <h2 className='mb-2 mt-2'>{this.headerText}</h2>
                             <ul className='input-fields first-child-text-95'>
                                 <li>
@@ -189,7 +203,7 @@ class MemberOptions extends Component {
                                         list={optionsList}
                                         multiSelect={false}
                                         toggleable={true}
-                                        disabled={this.headerText=='Edit Option'}
+                                        disabled={this.headerText=='Edit Comments'}
                                         keyProperty='categoryId'
                                         textProperty='categoryName'
                                         defaultValue={this.state.alertContent.categoryId}
@@ -203,7 +217,7 @@ class MemberOptions extends Component {
                                     <MultiDropDown
                                         list={options}
                                         multiSelect={false}
-                                        disabled={this.headerText == 'Edit Option'}
+                                        disabled={this.headerText == 'Edit Comments'}
                                         toggleable={true}
                                         keyProperty='id'
                                         textProperty='name'
@@ -236,8 +250,7 @@ class MemberOptions extends Component {
                                     onClick={() => this.setState({showAddEditOption: false, alertContent: this.alertDafaultContent})}
                                 >Cancel</button>
                             </div>
-                        </div>
-                    </div>
+                    </FixedWrapper>
                 }
                 {this.state.removeOptionShowAlert && 
                         <Alert

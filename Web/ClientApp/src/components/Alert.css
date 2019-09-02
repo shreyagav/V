@@ -47,7 +47,23 @@
     box-shadow: #ffffff 0em 1em 2em, rgba(0, 0, 0, 0.19) 0em 0.25em 0.25em;
 }
 
-.modal-content {width: 100%;}
+.message-body {
+    padding: 0.5em;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: left;
+    align-items: center;
+}
+.message-body > :first-child {flex: 0 0 auto;}
+
+.message-body.warning {color: #fe7b22;}
+.message-body.success {color: #8bba19;}
+.message-body.error {color: #E53E71;}
+.message-body div, .message-body span {color: inherit}
+.message-body.warning .svg {fill: #fe7b22;}
+.message-body.success .svg {fill: #8bba19;}
+.message-body.error .svg {fill: #E53E71;}
 
 @media screen and (max-width: 400px) {
     .modal-body {

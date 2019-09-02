@@ -35,6 +35,7 @@ class EventDemo extends Component {
             loading: evtId!=0,
             attending: false,
             showAlert: false,
+            showMessage: false,
         };
         this.onAttendanceChanged = this.onAttendanceChanged.bind(this);
     }
@@ -184,7 +185,12 @@ class EventDemo extends Component {
                             <TabComponent
                                 style={{'fontSize':'0.85rem','height':'24px'}}
                                 tabList={["yes", "no"]}
-                                wasSelected={(index) => { if (index == 0) this.onAttendanceChanged(0); else this.setState({ showAlert: true }); }}
+                                wasSelected={(index) => { 
+                                    if (index == 0) {
+                                        this.onAttendanceChanged(0); 
+                                        this.setState({ showMessage: true })
+                                    } else this.setState({ showAlert: true });
+                                }}
                                 activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}
                             />
                         </div>
@@ -266,6 +272,19 @@ class EventDemo extends Component {
                         onOkButtonClick={() => { this.setState({ showAlert: false }); this.onAttendanceChanged(1); }}
                         cancelButtonText = "Attend"
                         okButtonText = "Not Attend"
+                    >
+                        <h4>{this.state.eventMain.name}</h4>
+                    </Alert>
+                }
+                {this.state.showMessage && 
+                    <Alert 
+                        headerText = 'Success'
+                        text = "You signed up to attend the event"
+                        onClose = {()=>this.setState({showMessage: false})}
+                        mode = 'success'
+                        showOkButton = {true}
+                        onOkButtonClick={() => this.setState({ showMessage: false })}
+                        okButtonText = "Ok"
                     >
                         <h4>{this.state.eventMain.name}</h4>
                     </Alert>
