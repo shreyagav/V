@@ -109,7 +109,7 @@ namespace Services
 
         public async Task<EventMainDto> GetEvent(int id, ClaimsPrincipal user)
         {
-            var evt = _context.CalendarEvents.First(e => e.Id == id);
+            var evt = _context.CalendarEvents.Include(a=>a.EventType).First(e => e.Id == id);
             var appUser = await _userManager.GetUserAsync(user);
             var res = new EventMainDto(evt);
             if (appUser != null)

@@ -239,6 +239,8 @@ namespace Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Color");
+
                     b.Property<int>("OldId");
 
                     b.Property<string>("Title");
@@ -486,6 +488,8 @@ namespace Services.Migrations
 
                     b.Property<int>("OldSiteId");
 
+                    b.Property<int>("OldSponsoredById");
+
                     b.Property<int>("OldStatus");
 
                     b.Property<int>("OldType");
@@ -502,7 +506,7 @@ namespace Services.Migrations
 
                     b.Property<int?>("SiteId");
 
-                    b.Property<int>("SponsoredBy");
+                    b.Property<string>("SponsoredById");
 
                     b.Property<string>("State");
 
@@ -525,7 +529,12 @@ namespace Services.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("OldId")
+                        .IsUnique();
+
                     b.HasIndex("SiteId");
+
+                    b.HasIndex("SponsoredById");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -559,6 +568,10 @@ namespace Services.Migrations
 
                     b.Property<string>("CreatedById");
 
+                    b.Property<int?>("OldEventId");
+
+                    b.Property<int?>("OldUserId");
+
                     b.HasKey("UserId", "EventId");
 
                     b.HasIndex("CreatedById");
@@ -576,11 +589,7 @@ namespace Services.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int?>("OptionCategoryId");
-
                     b.HasKey("OptionId", "UserId");
-
-                    b.HasIndex("OptionCategoryId");
 
                     b.HasIndex("UserId");
 
@@ -687,7 +696,7 @@ namespace Services.Migrations
             modelBuilder.Entity("Models.Option", b =>
                 {
                     b.HasOne("Models.OptionCategory", "Category")
-                        .WithMany()
+                        .WithMany("Options")
                         .HasForeignKey("OptionCategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -705,6 +714,10 @@ namespace Services.Migrations
                     b.HasOne("Models.EventSite", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId");
+
+                    b.HasOne("Models.TRRUser", "SponsoredBy")
+                        .WithMany()
+                        .HasForeignKey("SponsoredById");
                 });
 
             modelBuilder.Entity("Models.UserDiagnosis", b =>
@@ -739,10 +752,6 @@ namespace Services.Migrations
 
             modelBuilder.Entity("Models.UserOption", b =>
                 {
-                    b.HasOne("Models.OptionCategory")
-                        .WithMany("Options")
-                        .HasForeignKey("OptionCategoryId");
-
                     b.HasOne("Models.Option", "Option")
                         .WithMany("UserOptions")
                         .HasForeignKey("OptionId")

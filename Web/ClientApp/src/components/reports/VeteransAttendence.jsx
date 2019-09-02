@@ -23,6 +23,7 @@ class VeteransAttendence extends Component {
         this.updateData = this.updateData.bind(this);
         this.dateStartDropDownRef = null;
         this.dateEndDropDownRef = null;
+        this.donwloadExcel = this.donwloadExcel.bind(this);
     }
 
     updateData() {
@@ -33,7 +34,13 @@ class VeteransAttendence extends Component {
     componentDidMount() {
         this.updateData();
     }
-
+    donwloadExcel() {
+        this.setState({ loading: true });
+        Service.downloadWithPost('/api/Reports/VeteransAttandanceToExcel', this.state.range).then(blob => {
+            Service.throwBlob(blob, 'VeteransAttandance.xlsx');
+            this.setState({ loading: false });
+        });
+    }
     render() {
         const columns = [
             { Header: "First Name", accessor: 'firstName', filterable: true },
@@ -73,7 +80,7 @@ class VeteransAttendence extends Component {
                     setTimeout(this.updateData, 50);
                 }}
                 />
-            </div>
+            </div><button onClick={this.donwloadExcel}>Excel</button>
             <ReactTable data={this.state.data} columns={columns} />
         </div>);
     }

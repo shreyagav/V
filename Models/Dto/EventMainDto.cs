@@ -46,7 +46,7 @@ namespace Models.Dto
             Site = evt.SiteId;
             TimeFrom = new TimeDto(evt.StartTime);
             TimeTo = new TimeDto(evt.EndTime);
-            Color = evt.Color;
+            Color = evt.EventType.Color;
             Date = evt.Date;
             EventStatus = evt.Status.ToString().ToLower();
             ProjectedCost = evt.ProjectedCost;

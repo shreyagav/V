@@ -83,9 +83,9 @@ class MemberTRRInfo extends Component {
                             multiSelect={false}
                             keyProperty='id'
                             textProperty='name'
-                            defaultValue={this.props.member.sponsoredBy}
+                            defaultValue={this.props.member.sponsoredById}
                             placeholder="Sponsored By"
-                            onDropDownValueChange={value => { this.props.updateMemberProperty("sponsoredBy", value) }}
+                            onDropDownValueChange={value => { this.props.updateMemberProperty("sponsoredById", value) }}
                             />
                         </li>
 

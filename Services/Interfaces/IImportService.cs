@@ -1,12 +1,15 @@
 ﻿using Models;
+using Services.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
     public interface IImportService
     {
+        ApplicationDbContext GetContext();
         string[] ImportUserEvents(IEnumerable<ImportUserEvent> list);
         void ImportOptionCategories(OptionCategory[] options);
         OptionCategory[] GetAllCategories();
@@ -18,5 +21,7 @@ namespace Services.Interfaces
         void ImportSystemCodes(SystemCode[] codes);
         void ImportUserDiagnoses(UserDiagnosis[] diag);
         void AddRole(TRRRole role);
+        void ImportEvents(IEnumerable<CalendarEvent> newEvents);
+        Task ImportUsers(IEnumerable<TRRUser> newUsers);
     }
 }

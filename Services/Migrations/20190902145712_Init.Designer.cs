@@ -10,8 +10,8 @@ using Services.Data;
 namespace Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190411180503_event2")]
-    partial class event2
+    [Migration("20190902145712_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,6 +131,29 @@ namespace Services.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Models.BudgetLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Cost");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("EventId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<decimal>("Quantity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventBudgets");
+                });
+
             modelBuilder.Entity("Models.CalendarEvent", b =>
                 {
                     b.Property<int>("Id")
@@ -155,7 +178,7 @@ namespace Services.Migrations
 
                     b.Property<int>("EndTime");
 
-                    b.Property<int?>("EventTypeId");
+                    b.Property<int>("EventTypeId");
 
                     b.Property<decimal>("Fee");
 
@@ -189,9 +212,11 @@ namespace Services.Migrations
 
                     b.Property<int>("OldModifiedById");
 
+                    b.Property<decimal>("ProjectedCost");
+
                     b.Property<string>("Report");
 
-                    b.Property<int?>("SiteId");
+                    b.Property<int>("SiteId");
 
                     b.Property<int>("StartTime");
 
@@ -215,6 +240,8 @@ namespace Services.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Color");
 
                     b.Property<int>("OldId");
 
@@ -240,6 +267,21 @@ namespace Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("Models.Diagnosis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("OldId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Diagnoses");
                 });
 
             modelBuilder.Entity("Models.EventSite", b =>
@@ -298,6 +340,86 @@ namespace Services.Migrations
                     b.ToTable("EventSites");
                 });
 
+            modelBuilder.Entity("Models.Option", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("OldId");
+
+                    b.Property<int>("OptionCategoryId");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OptionCategoryId");
+
+                    b.ToTable("Options");
+                });
+
+            modelBuilder.Entity("Models.OptionCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("OldId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OptionCategories");
+                });
+
+            modelBuilder.Entity("Models.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("EventId");
+
+                    b.Property<string>("FileName");
+
+                    b.Property<int>("Height");
+
+                    b.Property<DateTime>("Uploaded");
+
+                    b.Property<string>("Url");
+
+                    b.Property<int>("Width");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("Models.SystemCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CodeType")
+                        .HasMaxLength(2);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("OldId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemCodes");
+                });
+
             modelBuilder.Entity("Models.TRRUser", b =>
                 {
                     b.Property<string>("Id")
@@ -312,6 +434,8 @@ namespace Services.Migrations
                     b.Property<string>("AltPhone");
 
                     b.Property<int>("BranchId");
+
+                    b.Property<string>("City");
 
                     b.Property<string>("Comments");
 
@@ -366,6 +490,8 @@ namespace Services.Migrations
 
                     b.Property<int>("OldSiteId");
 
+                    b.Property<int>("OldSponsoredById");
+
                     b.Property<int>("OldStatus");
 
                     b.Property<int>("OldType");
@@ -380,7 +506,11 @@ namespace Services.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<int>("SponsoredBy");
+                    b.Property<int?>("SiteId");
+
+                    b.Property<string>("SponsoredById");
+
+                    b.Property<string>("State");
 
                     b.Property<string>("TravelTime");
 
@@ -388,6 +518,8 @@ namespace Services.Migrations
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
+
+                    b.Property<string>("Zip");
 
                     b.HasKey("Id");
 
@@ -399,7 +531,71 @@ namespace Services.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("OldId")
+                        .IsUnique();
+
+                    b.HasIndex("SiteId");
+
+                    b.HasIndex("SponsoredById");
+
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Models.UserDiagnosis", b =>
+                {
+                    b.Property<int>("DiagnosisId");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("Note");
+
+                    b.HasKey("DiagnosisId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserDiagnoses");
+                });
+
+            modelBuilder.Entity("Models.UserEvent", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("EventId");
+
+                    b.Property<bool?>("Attended");
+
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("CreatedById");
+
+                    b.Property<int?>("OldEventId");
+
+                    b.Property<int?>("OldUserId");
+
+                    b.HasKey("UserId", "EventId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("UserEvents");
+                });
+
+            modelBuilder.Entity("Models.UserOption", b =>
+                {
+                    b.Property<int>("OptionId");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("Description");
+
+                    b.HasKey("OptionId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserOptions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -447,6 +643,14 @@ namespace Services.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Models.BudgetLine", b =>
+                {
+                    b.HasOne("Models.CalendarEvent", "Event")
+                        .WithMany("Budget")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Models.CalendarEvent", b =>
                 {
                     b.HasOne("Models.TRRUser", "CreatedBy")
@@ -455,7 +659,8 @@ namespace Services.Migrations
 
                     b.HasOne("Models.CalendarEventType", "EventType")
                         .WithMany()
-                        .HasForeignKey("EventTypeId");
+                        .HasForeignKey("EventTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.TRRUser", "ModifiedBy")
                         .WithMany()
@@ -463,7 +668,8 @@ namespace Services.Migrations
 
                     b.HasOne("Models.EventSite", "Site")
                         .WithMany()
-                        .HasForeignKey("SiteId");
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Models.EventSite", b =>
@@ -487,6 +693,76 @@ namespace Services.Migrations
                     b.HasOne("Models.Contact", "Outreach")
                         .WithMany()
                         .HasForeignKey("OutreachId");
+                });
+
+            modelBuilder.Entity("Models.Option", b =>
+                {
+                    b.HasOne("Models.OptionCategory", "Category")
+                        .WithMany("Options")
+                        .HasForeignKey("OptionCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Models.Photo", b =>
+                {
+                    b.HasOne("Models.CalendarEvent", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Models.TRRUser", b =>
+                {
+                    b.HasOne("Models.EventSite", "Site")
+                        .WithMany()
+                        .HasForeignKey("SiteId");
+
+                    b.HasOne("Models.TRRUser", "SponsoredBy")
+                        .WithMany()
+                        .HasForeignKey("SponsoredById");
+                });
+
+            modelBuilder.Entity("Models.UserDiagnosis", b =>
+                {
+                    b.HasOne("Models.Diagnosis", "Diagnosis")
+                        .WithMany("Users")
+                        .HasForeignKey("DiagnosisId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Models.TRRUser", "User")
+                        .WithMany("Diagnoses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Models.UserEvent", b =>
+                {
+                    b.HasOne("Models.TRRUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("Models.CalendarEvent", "Event")
+                        .WithMany("Events")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Models.TRRUser", "User")
+                        .WithMany("Events")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Models.UserOption", b =>
+                {
+                    b.HasOne("Models.Option", "Option")
+                        .WithMany("UserOptions")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Models.TRRUser", "User")
+                        .WithMany("Options")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

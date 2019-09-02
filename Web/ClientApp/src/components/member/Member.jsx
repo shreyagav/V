@@ -53,7 +53,7 @@ class Member extends Component {
                 activeMember: false,
                 deactiveCause: '',
                 joinDate: null,
-                sponsoredBy: null,
+                sponsoredById: null,
                 travelTime: '',
                 medical: 0,
                 injuryDate: null,

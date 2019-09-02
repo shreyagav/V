@@ -160,7 +160,7 @@ namespace Web.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await get(user);
-            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a => a.Event.Site).Where(a => a.UserId == user.Id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
+            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a => a.Event.Site).Where(a => a.UserId == user.Id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.EventType.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
         [HttpGet("[action]/{id}")]
@@ -168,14 +168,13 @@ namespace Web.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             var result = await get(user);
-            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a=>a.Event.Site).Where(a => a.UserId == id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
+            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a=>a.Event.Site).Where(a => a.UserId == id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.EventType.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
 
         private async Task<UserProfileDto> get(TRRUser user)
         {
             var result = new UserProfileDto(user);
-            result.SponsoredBy = _ctx.Users.FirstOrDefault(a => a.OldId == user.SponsoredBy)?.Id;
             result.Roles = (await _userManager.GetRolesAsync(user)).Select(a => roles.First(b => b.Name == a).Id).ToArray();
             return result;
         }
@@ -207,10 +206,11 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public async Task<UserProfileDto> Set(UserProfileDto data)
         {
-            /*throw new Exception("something went wrong");*/
             var user = await _userManager.FindByIdAsync(data.Id);
             data.Map(user);
+            data.Roles.Select(a => roles.First(b => b.Id == a)).ToArray();
             await _userManager.UpdateAsync(user);
+
             return data;
         }
     }

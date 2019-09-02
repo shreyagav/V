@@ -23,7 +23,6 @@ namespace Models
         {
             Name = newEvent.Name;
             Description = newEvent.Description;
-            Color = newEvent.Color;
             StartTime = newEvent.TimeFrom.ToInt();
             EndTime = newEvent.TimeTo.ToInt();
             Date = newEvent.Date.Date;
@@ -47,8 +46,10 @@ namespace Models
         public int StartTime { get; set; }
         public int EndTime { get; set; }
         public TRRUser CreatedBy { get; set; }
+        public String CreatedById { get; set; }
         public DateTime Created { get; set; }
         public TRRUser ModifiedBy { get; set; }
+        public String ModifiedById { get; set; }
         public DateTime Modified { get; set; }
         public string Color { get; set; }
         public decimal Fee { get; set; }

@@ -28,7 +28,9 @@ namespace Models
         public string TravelTime { get; set; }
         [Column(TypeName = "Date")]
         public DateTime? JoinDate { get; set; }
-        public int SponsoredBy { get; set; }
+        public int OldSponsoredById { get; set; }
+        public TRRUser SponsoredBy { get; set; }
+        public string SponsoredById { get; set; }
         public int OldAuthLevel { get; set; }
         public bool Active { get; set; }
         public string DeactiveCause { get; set; }

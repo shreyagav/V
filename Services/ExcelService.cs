@@ -2,6 +2,7 @@
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text;
 
@@ -42,7 +43,56 @@ namespace Services
                     count = 1;
                     foreach (var pair in columnNames)
                     {
-                        ws.Cells[rowCount, count].Value = GetPropertyValue(item, pair.Key).ToString();
+                        ws.Cells[rowCount, count].Value = GetPropertyValue(item, pair.Key)?.ToString();
+                        ws.Cells[rowCount, count].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+                        count++;
+                    }
+                    rowCount++;
+                }
+                if (footerRender != null)
+                {
+                    footerRender(ws, rowCount);
+                }
+                fileContents = package.GetAsByteArray();
+            }
+
+            return fileContents;
+        }
+        public static byte[] GetExcel(DataTable data, Dictionary<string, string> columnNames = null, RenderExcelPart headerRendered = null, RenderExcelPart footerRender = null)
+        {
+            byte[] fileContents = null;
+            if (columnNames == null || columnNames.Count == 0)
+            {
+                columnNames = new Dictionary<string, string>();
+                foreach(DataColumn col in data.Columns)
+                {
+                    columnNames.Add(col.ColumnName, col.ColumnName);
+                }
+            }
+            using (var package = new ExcelPackage())
+            {
+                ExcelWorksheet ws = package.Workbook.Worksheets.Add("Data");
+                int rowCount = 1;
+                if (headerRendered != null)
+                {
+                    rowCount += headerRendered(ws, rowCount);
+                }
+                int count = 1;
+                foreach (var pair in columnNames)
+                {
+                    ws.Cells[rowCount, count].Value = pair.Value;
+                    ws.Cells[rowCount, count].Style.Font.Size = 12;
+                    ws.Cells[rowCount, count].Style.Font.Bold = true;
+                    ws.Cells[rowCount, count].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+                    count++;
+                }
+                rowCount++;
+                foreach (DataRow item in data.Rows)
+                {
+                    count = 1;
+                    foreach (var pair in columnNames)
+                    {
+                        ws.Cells[rowCount, count].Value = data.Columns.Contains(pair.Key)? item[pair.Key]?.ToString(): null;
                         ws.Cells[rowCount, count].Style.Border.Top.Style = ExcelBorderStyle.Hair;
                         count++;
                     }

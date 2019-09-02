@@ -15,6 +15,7 @@ class MembersReport extends Component {
             loading: false
         }
         this.reactTable = null;
+        this.donwloadExcel = this.donwloadExcel.bind(this);
     }
 
     componentDidMount() {
@@ -24,6 +25,13 @@ class MembersReport extends Component {
             this.setState({ data: members, loading: false })
         });
         Service.getEventsByTypeReport().then(data => { console.log(data)});
+    }
+    donwloadExcel() {
+        this.setState({ loading: true });
+        Service.download('/api/Reports/MembersToExcel').then(blob => {
+            Service.throwBlob(blob, 'Members.xlsx');
+            this.setState({ loading: false });
+        });
     }
 
     render() {
@@ -40,8 +48,8 @@ class MembersReport extends Component {
             { Header: "Options", accessor: 'options', filterable: true, Cell: props => <span className='number'>{props.value.map(a=>a+", ")}</span> },
         ]
         return (<div>
-            {this.state.loading && <Loader/>}
-            <h1>Members report</h1>
+            {this.state.loading && <Loader />}
+            <h1>Members report</h1><button onClick={this.donwloadExcel}>Excel</button>
             <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} onFilteredChange={() => console.log(this.reactTable.getResolvedState().sortedData)} />
         </div>);
     }

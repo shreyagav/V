@@ -40,22 +40,24 @@ namespace ImportOldData
             var userService = serviceProvider.GetService<IUserService>();
             var importService = serviceProvider.GetService<IImportService>();
             ICalendarEventService service = serviceProvider.GetService<ICalendarEventService>();
-
             /*DbContextOptionsBuilder<ApplicationDbContext> optBulder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optBulder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             ApplicationDbContext context = new ApplicationDbContext(optBulder.Options);
             CalendarEventService service = new CalendarEventService(context);
             Console.WriteLine("Hello World!");*/
-
+            var failed = new List<XmlNode>();
             XmlDocument doc = new XmlDocument();
             doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin.xml");
-            //var nodes = doc.SelectNodes("//table[@name='site']");
-            //ImportSites(nodes, service);
-            //nodes = doc.SelectNodes("//table[@name='syscode' and ./column='E']");
-            //ImportEventTypes(nodes, service);
-            //nodes = doc.SelectNodes("//table[@name='calendar_events']");
-            //ImportEvents(nodes, service);
+            var nodes = doc.SelectNodes("//table[@name='site']");
 
+            var failedSites = ImportSites(nodes, service);
+            failed.AddRange(failedSites);
+            nodes = doc.SelectNodes("//table[@name='syscode' and ./column='E']");
+            var failedEventTypes = ImportEventTypes(nodes, service);
+            failed.AddRange(failedEventTypes);
+            nodes = doc.SelectNodes("//table[@name='calendar_events']");
+            var failedEvents = ImportEvents(nodes, service, importService);
+            failed.AddRange(failedEvents);
             //nodes = doc.SelectNodes("//table[@name='user']");
             //ImportUsers(nodes, userService);
             //ImportExceptionalEvents(doc,service);
@@ -329,21 +331,34 @@ namespace ImportOldData
             }
         }
 
-        private static void ImportEvents(XmlNodeList nodes, ICalendarEventService service)
+        private static List<XmlNode> ImportEvents(XmlNodeList nodes, ICalendarEventService service, IImportService import)
         {
             var eventTypes = service.AllEventTypes();
+            var failed = new List<XmlNode>();
+            var events = new List<CalendarEvent>();
             foreach (XmlNode t in nodes)
             {
-                ImportEvent(t, service, eventTypes);
+                try
+                {
+                    var temp = ImportEvent(t, service, eventTypes);
+                    events.Add(temp);
+                }
+                catch (Exception ex)
+                {
+                    failed.Add(t);
+                }
+                if (events.Count == 1000)
+                {
+                    import.ImportEvents(events);
+                    events.Clear();
+                }
             }
+            return failed;
         }
-        private static void ImportEvent(XmlNode t, ICalendarEventService service, CalendarEventType[] eventTypes)
+        private static CalendarEvent ImportEvent(XmlNode t, ICalendarEventService service, CalendarEventType[] eventTypes)
         {
             Models.CalendarEvent evt = new Models.CalendarEvent();
             string name = string.Empty;
-            try
-            {
-
                 int month = 0, year = 0, day = 0, createdById = 0, modifiedById = 0, eventType = 0, eventSiteId = 0;
                 string modifiedStr = "";
                 foreach (XmlNode node in t.ChildNodes)
@@ -428,150 +443,45 @@ namespace ImportOldData
                 evt.CreatedBy = service.GetUserByOldId(createdById);
                 if (modifiedById != 0)
                     evt.ModifiedBy = modifiedById != createdById ? service.GetUserByOldId(modifiedById) : evt.CreatedBy;
-                evt.EventType = eventTypes.FirstOrDefault(a => a.OldId == eventType);
-                service.AddEvent(evt);
-            }
-            catch (Exception ex)
-            {
-                File.AppendAllLines("ImportEventsNotAdded5.log", new string[] { evt.OldId.ToString() });
-                File.AppendAllText("ImportEvents5.log", $"{DateTime.Now}  :: Failed to import event with id={evt.OldId}; name={name}; Error={ex.Message};\r\n");
-            }
+                evt.EventTypeId = eventTypes.FirstOrDefault(a => a.OldId == eventType).Id;
+                
+                return evt;
         }
 
-        private async static void ImportUsers(XmlNodeList nodes, IUserService service)
+        private static List<XmlNode> ImportEventTypes(XmlNodeList nodes, ICalendarEventService service)
         {
-            TRRUser user1 = new TRRUser();
-            user1.Email = "dozcent3@mcdean.com";
-            user1.UserName = "dmyt.ro3";
-            var res = await service.SignUp(user1);
-            foreach (XmlNode user in nodes)
-            {
-                TRRUser usr = new TRRUser();
-                foreach (XmlNode node in user.ChildNodes)
-                {
-                    string name = node.Attributes["name"].Value;
-                    try
-                    {
-                        switch (name)
-                        {
-                            case "user_email":
-                                usr.Email = node.InnerText;
-                                break;
-                            case "user_login":
-                                usr.UserName = node.InnerText;
-                                break;
-                                /*case "user_password":
-                                    usr.OldPassword = node.InnerText;
-                                    break;
-                                case "user_first_name":
-                                    usr.FirstName = node.InnerText;
-                                    break;
-                                case "user_last_name":
-                                    usr.LastName = node.InnerText;
-                                    break;
-                                case "user_id":
-                                    usr.OldId = int.Parse(node.InnerText);
-                                    break;
-                                case "user_phone":
-                                    usr.PhoneNumber = node.InnerText;
-                                    break;
-                                case "user_alt_phone":
-                                    usr.AltPhone = node.InnerText;
-                                    break;
-                                case "user_address":
-                                    usr.Address = node.InnerText;
-                                    break;
-
-                                    case "user_dob":
-                                        usr.DateOfBirth = DateTime.Parse(node.InnerText);
-                                        break;
-                                    case "user_site_id":
-                                        usr.OldSiteId = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_type":
-                                        usr.OldType = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_gender":
-                                        usr.Gender = node.InnerText.Length==0?' ':node.InnerText[0];
-                                        break;
-                                    case "user_travel_time":
-                                        usr.TravelTime = node.InnerText;
-                                        break;
-                                    case "user_join_date":
-                                        usr.JoinDate = DateTime.Parse(node.InnerText);
-                                        break;
-                                    case "user_sponsored_by":
-                                        usr.SponsoredBy = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_auth_level":
-                                        usr.OldAuthLevel = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_active":
-                                        usr.Active = node.InnerText[0]=='Y';
-                                        break;
-                                    case "user_deactive_cause":
-                                        usr.DeactiveCause = node.InnerText;
-                                        break;
-                                    case "user_branch_id":
-                                        usr.BranchId = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_status":
-                                        usr.OldStatus = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_medical":
-                                        usr.Medical = int.Parse(node.InnerText);
-                                        break;
-                                    case "user_date_injured":
-                                        usr.DateInjured = DateTime.Parse(node.InnerText);
-                                        break;
-                                    case "user_release_signed":
-                                        usr.ReleaseSigned = node.InnerText == "Y";
-                                        break;
-                                    case "user_liability_signed":
-                                        usr.LiabilitySigned = node.InnerText == "Y";
-                                        break;
-                                    case "user_comments":
-                                        usr.Comments = node.InnerText;
-                                        break;*/
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-                res = await service.SignUp(usr);
-                if (!res.Succeeded)
-                {
-
-                }
-
-            }
-        }
-        private static void ImportEventTypes(XmlNodeList nodes, ICalendarEventService service)
-        {
+            List<XmlNode> failed = new List<XmlNode>();
             foreach (XmlNode t in nodes)
             {
                 Models.CalendarEventType newType = new Models.CalendarEventType();
-                foreach (XmlNode node in t.ChildNodes)
+                try
                 {
-                    string name = node.Attributes["name"].Value;
-                    switch (name)
+                    foreach (XmlNode node in t.ChildNodes)
                     {
-                        case "code_id":
-                            newType.OldId = int.Parse(node.InnerText);
-                            break;
-                        case "code_desc":
-                            newType.Title = node.InnerText;
-                            break;
+                        string name = node.Attributes["name"].Value;
+                        switch (name)
+                        {
+                            case "code_id":
+                                newType.OldId = int.Parse(node.InnerText);
+                                break;
+                            case "code_desc":
+                                newType.Title = node.InnerText;
+                                break;
+                        }
                     }
+                    service.AddEventType(newType);
                 }
-                service.AddEventType(newType);
+                catch (Exception ex)
+                {
+                    failed.Add(t);
+                }
             }
+            return failed;
         }
 
-        static void ImportSites(XmlNodeList sites, ICalendarEventService service)
+        static List<XmlNode> ImportSites(XmlNodeList sites, ICalendarEventService service)
         {
+            List<XmlNode> failed = new List<XmlNode>();
             foreach (XmlNode site in sites)
             {
                 Models.EventSite evtSite = new Models.EventSite();
@@ -580,164 +490,170 @@ namespace ImportOldData
                 Models.Contact vol = new Models.Contact();
                 Models.Contact outreach = new Models.Contact();
                 Models.Contact national = new Models.Contact();
-
-                foreach (XmlNode node in site.ChildNodes)
+                try
                 {
-                    string name = node.Attributes["name"].Value;
-                    try
+                    foreach (XmlNode node in site.ChildNodes)
                     {
-                        switch (name)
+                        string name = node.Attributes["name"].Value;
+                        try
                         {
-                            case "site_id":
-                                evtSite.OldId = int.Parse(node.InnerText);
-                                break;
-                            case "site_name":
-                                evtSite.Name = node.InnerText;
-                                break;
-                            case "site_type_id":
-                                evtSite.TypeId = int.Parse(node.InnerText);
-                                break;
-                            case "site_staff_type":
-                                evtSite.StaffTypeId = int.Parse(node.InnerText);
-                                break;
-                            case "site_comments":
-                                evtSite.Description = node.InnerText;
-                                break;
-                            case "site_main_email":
-                                main.Email = node.InnerText;
-                                break;
-                            case "site_main_name":
-                                main.Name = node.InnerText;
-                                break;
-                            case "site_main_phone":
-                                main.Phone = node.InnerText;
-                                break;
-                            case "site_govt_email":
-                                govt.Email = node.InnerText;
-                                break;
-                            case "site_govt_name":
-                                govt.Name = node.InnerText;
-                                break;
-                            case "site_govt_phone":
-                                govt.Phone = node.InnerText;
-                                break;
-                            case "site_vol_coord_email":
-                                vol.Email = node.InnerText;
-                                break;
-                            case "site_vol_coord_name":
-                                vol.Name = node.InnerText;
-                                break;
-                            case "site_vol_coord_phone":
-                                vol.Phone = node.InnerText;
-                                break;
-                            case "site_national_contact_email":
-                                national.Email = node.InnerText;
-                                break;
-                            case "site_national_contact_name":
-                                national.Name = node.InnerText;
-                                break;
-                            case "site_national_contact_phone":
-                                national.Phone = node.InnerText;
-                                break;
-                            case "site_outreach_email":
-                                outreach.Email = node.InnerText;
-                                break;
-                            case "site_outreach_name":
-                                outreach.Name = node.InnerText;
-                                break;
-                            case "site_outreach_phone":
-                                outreach.Phone = node.InnerText;
-                                break;
-                            case "site_sec_clearance":
-                                evtSite.SecurityClearance = node.InnerText;
-                                break;
-                            case "site_start_date":
-                                evtSite.Originated = DateTime.Parse(node.InnerText);
-                                break;
-                            case "site_status_id":
-                                evtSite.SiteStatusId = int.Parse(node.InnerText);
-                                break;
-                            case "site_pool_rental":
-                                evtSite.PoolRental = node.InnerText == "Y";
-                                break;
-                            case "site_group_id":
-                                evtSite.SiteGroupId = int.Parse(node.InnerText);
-                                break;
+                            switch (name)
+                            {
+                                case "site_id":
+                                    evtSite.OldId = int.Parse(node.InnerText);
+                                    break;
+                                case "site_name":
+                                    evtSite.Name = node.InnerText;
+                                    break;
+                                case "site_type_id":
+                                    evtSite.TypeId = int.Parse(node.InnerText);
+                                    break;
+                                case "site_staff_type":
+                                    evtSite.StaffTypeId = int.Parse(node.InnerText);
+                                    break;
+                                case "site_comments":
+                                    evtSite.Description = node.InnerText;
+                                    break;
+                                case "site_main_email":
+                                    main.Email = node.InnerText;
+                                    break;
+                                case "site_main_name":
+                                    main.Name = node.InnerText;
+                                    break;
+                                case "site_main_phone":
+                                    main.Phone = node.InnerText;
+                                    break;
+                                case "site_govt_email":
+                                    govt.Email = node.InnerText;
+                                    break;
+                                case "site_govt_name":
+                                    govt.Name = node.InnerText;
+                                    break;
+                                case "site_govt_phone":
+                                    govt.Phone = node.InnerText;
+                                    break;
+                                case "site_vol_coord_email":
+                                    vol.Email = node.InnerText;
+                                    break;
+                                case "site_vol_coord_name":
+                                    vol.Name = node.InnerText;
+                                    break;
+                                case "site_vol_coord_phone":
+                                    vol.Phone = node.InnerText;
+                                    break;
+                                case "site_national_contact_email":
+                                    national.Email = node.InnerText;
+                                    break;
+                                case "site_national_contact_name":
+                                    national.Name = node.InnerText;
+                                    break;
+                                case "site_national_contact_phone":
+                                    national.Phone = node.InnerText;
+                                    break;
+                                case "site_outreach_email":
+                                    outreach.Email = node.InnerText;
+                                    break;
+                                case "site_outreach_name":
+                                    outreach.Name = node.InnerText;
+                                    break;
+                                case "site_outreach_phone":
+                                    outreach.Phone = node.InnerText;
+                                    break;
+                                case "site_sec_clearance":
+                                    evtSite.SecurityClearance = node.InnerText;
+                                    break;
+                                case "site_start_date":
+                                    evtSite.Originated = DateTime.Parse(node.InnerText);
+                                    break;
+                                case "site_status_id":
+                                    evtSite.SiteStatusId = int.Parse(node.InnerText);
+                                    break;
+                                case "site_pool_rental":
+                                    evtSite.PoolRental = node.InnerText == "Y";
+                                    break;
+                                case "site_group_id":
+                                    evtSite.SiteGroupId = int.Parse(node.InnerText);
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
                         }
                     }
-                    catch (Exception ex)
+                    if (!string.IsNullOrEmpty(main.Email))
                     {
-
+                        var temp = service.GetContactByEmail(main.Email);
+                        if (temp != null)
+                        {
+                            evtSite.Main = temp;
+                        }
+                        else
+                        {
+                            service.AddContact(main);
+                            evtSite.Main = main;
+                        }
                     }
-                }
-                if (!string.IsNullOrEmpty(main.Email))
+                    if (!string.IsNullOrEmpty(vol.Email))
+                    {
+                        var temp = service.GetContactByEmail(vol.Email);
+                        if (temp != null)
+                        {
+                            evtSite.Coordinator = temp;
+                        }
+                        else
+                        {
+                            service.AddContact(vol);
+                            evtSite.Coordinator = vol;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(govt.Email))
+                    {
+                        var temp = service.GetContactByEmail(govt.Email);
+                        if (temp != null)
+                        {
+                            evtSite.GOVT = temp;
+                        }
+                        else
+                        {
+                            service.AddContact(govt);
+                            evtSite.GOVT = govt;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(national.Email))
+                    {
+                        var temp = service.GetContactByEmail(national.Email);
+                        if (temp != null)
+                        {
+                            evtSite.National = temp;
+                        }
+                        else
+                        {
+                            service.AddContact(national);
+                            evtSite.National = national;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(outreach.Email))
+                    {
+                        var temp = service.GetContactByEmail(outreach.Email);
+                        if (temp != null)
+                        {
+                            evtSite.Outreach = temp;
+                        }
+                        else
+                        {
+                            service.AddContact(outreach);
+                            evtSite.Outreach = outreach;
+                        }
+                    }
+                    service.AddEventSite(evtSite);
+                }catch(Exception ex)
                 {
-                    var temp = service.GetContactByEmail(main.Email);
-                    if (temp != null)
-                    {
-                        evtSite.Main = temp;
-                    }
-                    else
-                    {
-                        service.AddContact(main);
-                        evtSite.Main = main;
-                    }
+                    failed.Add(site);
                 }
-                if (!string.IsNullOrEmpty(vol.Email))
-                {
-                    var temp = service.GetContactByEmail(vol.Email);
-                    if (temp != null)
-                    {
-                        evtSite.Coordinator = temp;
-                    }
-                    else
-                    {
-                        service.AddContact(vol);
-                        evtSite.Coordinator = vol;
-                    }
-                }
-                if (!string.IsNullOrEmpty(govt.Email))
-                {
-                    var temp = service.GetContactByEmail(govt.Email);
-                    if (temp != null)
-                    {
-                        evtSite.GOVT = temp;
-                    }
-                    else
-                    {
-                        service.AddContact(govt);
-                        evtSite.GOVT = govt;
-                    }
-                }
-                if (!string.IsNullOrEmpty(national.Email))
-                {
-                    var temp = service.GetContactByEmail(national.Email);
-                    if (temp != null)
-                    {
-                        evtSite.National = temp;
-                    }
-                    else
-                    {
-                        service.AddContact(national);
-                        evtSite.National = national;
-                    }
-                }
-                if (!string.IsNullOrEmpty(outreach.Email))
-                {
-                    var temp = service.GetContactByEmail(outreach.Email);
-                    if (temp != null)
-                    {
-                        evtSite.Outreach = temp;
-                    }
-                    else
-                    {
-                        service.AddContact(outreach);
-                        evtSite.Outreach = outreach;
-                    }
-                }
-                service.AddEventSite(evtSite);
             }
 
+            return failed;
         }
     }
 }

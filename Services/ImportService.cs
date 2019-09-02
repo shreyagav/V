@@ -1,16 +1,21 @@
-﻿using Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using Services.Data;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services
 {
     public class ImportService : IImportService
     {
         private ApplicationDbContext _context;
+
+        public ApplicationDbContext GetContext() => _context;
+
         public ImportService(ApplicationDbContext context)=> _context = context;
 
         public OptionCategory[] GetAllCategories() => _context.OptionCategories.ToArray();
@@ -44,6 +49,7 @@ namespace Services
         public void ImportSystemCodes(SystemCode[] codes)
         {
             _context.SystemCodes.AddRange(codes);
+            _context.Diagnoses.AddRange(codes.Where(c => c.CodeType == "D").Select(d => new Diagnosis() { Description = d.Description, OldId = d.OldId }));
             _context.SaveChanges();
         }
 
@@ -51,6 +57,11 @@ namespace Services
 
         public TRRUser[] GetAllUsers() => _context.Users.ToArray();
 
+        public void ImportEvents(IEnumerable<CalendarEvent> newEvents)
+        {
+             _context.CalendarEvents.AddRange(newEvents);
+             _context.SaveChanges();
+        }
 
         public string[] ImportUserEvents(IEnumerable<ImportUserEvent> list)
         {
@@ -71,9 +82,11 @@ namespace Services
                         UserId = user.Id,
                         EventId = evt.Id,
                         Attended = usr.UserAttended,
-                        CreatedBy = createdBy,
+                        CreatedById = createdBy.Id,
                         Comment = usr.Comment,
-                        Created = usr.Created
+                        Created = usr.Created,
+                        OldEventId = usr.EventId,
+                        OldUserId = usr.UserId
                     };
                     userEvents.Add(temp);
                 }
@@ -88,5 +101,17 @@ namespace Services
             //if(withUpdate)
         }
 
+        public async Task ImportUsers(IEnumerable<TRRUser> newUsers)
+        {
+            try
+            {
+                _context.Users.AddRange(newUsers);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

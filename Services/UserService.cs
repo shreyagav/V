@@ -27,6 +27,12 @@ namespace Services
             _ctx = ctx;
         }
 
+        public async Task CreateRoles(string[] names)
+        {
+            foreach (var name in names)
+                await _roleManager.CreateAsync(new IdentityRole() { Name = name, NormalizedName = name.ToUpper(), ConcurrencyStamp = DateTime.Now.ToString() });
+        }
+
         public Option[] GetRolesFromOptions()
         {
             return _ctx.Options.Where(a => a.OptionCategoryId == 18).ToArray();
@@ -37,12 +43,12 @@ namespace Services
             return _ctx.UserOptions.Where(a => a.OptionId == id).Include(a => a.User).Select(a=>a.User).ToArray();
         }
 
-        public async Task<Dictionary<TRRUser, IdentityResult>> AddUsersToRole(TRRUser[] users, IdentityRole role)
+        public async Task<Dictionary<TRRUser, IdentityResult>> AddUsersToRole(TRRUser[] users,  string role)
         {
             Dictionary<TRRUser, IdentityResult> result = new Dictionary<TRRUser, IdentityResult>();
             foreach(var user in users)
             {
-                var res = await _userManager.AddToRoleAsync(user, role.Name);
+                var res = await _userManager.AddToRoleAsync(user, role);
                 result.Add(user, res);
             }
             return result;

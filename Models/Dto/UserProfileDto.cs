@@ -34,11 +34,10 @@ namespace Models.Dto
             DeactiveCause = user.DeactiveCause;
             JoinDate = user.JoinDate;
             TravelTime = user.TravelTime;
-            Medical = user.Medical;
             UserType = (int)user.OldType;
             Comments = user.Comments;
             Status = user.OldStatus;
-
+            SponsoredById = user.SponsoredById;
             if (user.Site != null)
             {
                 SiteName = user.Site.Name;
@@ -62,6 +61,16 @@ namespace Models.Dto
             user.Zip = Zip;
             user.Medical = Medical;
             user.DateInjured = InjuryDate;
+
+            user.ReleaseSigned = ReleaseSigned;
+            user.LiabilitySigned = LiabilitySigned;
+            user.Active = ActiveMember;
+            user.DeactiveCause = DeactiveCause;
+            user.JoinDate = JoinDate;
+            user.TravelTime = TravelTime;
+            user.OldType = (TRRUserType)UserType;
+            user.Comments = Comments;
+            user.OldStatus = Status;
         }
 
         public string Id { get; set; }
@@ -87,12 +96,11 @@ namespace Models.Dto
         public bool ActiveMember { get; set; }
         public string DeactiveCause { get; set; }
         public DateTime? JoinDate { get; set; }
-        public string SponsoredBy { get; set; }
         public string TravelTime { get; set; }
         public string[] Roles { get; set; }
         public int UserType { get; set; }
         public string Comments { get; set; }
         public int Status { get; set; }
-
+        public string SponsoredById { get; set; }
     }
 }

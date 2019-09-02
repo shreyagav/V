@@ -20,7 +20,7 @@ export class Service {
         return Service.__get('/Regions.json');
     }
     static getChapterMembers(id) {
-        //TODO: remap
+        //TODO: delete
         return Service.__get('/Members.json');
     }
 
@@ -84,11 +84,11 @@ export class Service {
         return Service.__get(host + '/api/Reports/Members');
     }
 
-    static getEventsByTypeReport() {
-        return Service.__get(host + '/api/Reports/EventsByType');
+    static getEventsByTypeReport(range) {
+        return Service.__post(host + '/api/Reports/EventsByType', range);
     }
-    static getVeteransBySiteReport() {
-        return Service.__get(host + '/api/Reports/VeteransBySite');
+    static getVeteransBySiteReport(range) {
+        return Service.__post(host + '/api/Reports/VeteransBySite', range);
     }
 
     static getVeteransAttendence(range) {
@@ -136,6 +136,30 @@ export class Service {
 
     static getTRRInfoLists() {
         return Service.__get(host + '/api/Profile/TRRInfoLists');
+    }
+
+    static throwBlob(blob, fileName) {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName ? fileName : 'sample.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+    }
+
+    static download(url) {
+        return fetch(host + url).then(resp => resp.blob());
+    }
+
+    static downloadWithPost(url, data) {
+        return fetch(host + url, {
+            method: 'post',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(resp => resp.blob());
     }
 
     static __get(url) {
