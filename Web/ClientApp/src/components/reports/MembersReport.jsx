@@ -1,10 +1,11 @@
-﻿import React, { Component, useState, useRef } from 'react';
-import ReactTable from 'react-table';
+﻿import React, { Component, useState, useRef } from 'react'
+import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import { withStore } from '../store';
-import Alert from '../Alert';
-import { Service } from '../ApiService';
-import Loader from '../Loader';
+import { withStore } from '../store'
+import Alert from '../Alert'
+import { Service } from '../ApiService'
+import Loader from '../Loader'
+import SaveToExcelSVG from '../../svg/SaveToExcelSVG'
 
 class MembersReport extends Component {
 
@@ -26,6 +27,7 @@ class MembersReport extends Component {
         });
         Service.getEventsByTypeReport().then(data => { console.log(data)});
     }
+
     donwloadExcel() {
         this.setState({ loading: true });
         Service.download('/api/Reports/MembersToExcel').then(blob => {
@@ -47,9 +49,18 @@ class MembersReport extends Component {
             { Header: "Joined", accessor: 'joined', filterable: true, Cell: props => <span className='number'>{new Date(props.value).toLocaleString('en-US', options)}</span> },
             { Header: "Options", accessor: 'options', filterable: true, Cell: props => <span className='number'>{props.value.map(a=>a+", ")}</span> },
         ]
-        return (<div>
+        return (
+        <div>
+            <div className='filter-nav-wrapper'>
+                <div className='filter-wrapper'>
+                </div>
+                <button className='round-button medium-round-button outline-on-hover' onClick={this.donwloadExcel} >
+                    <SaveToExcelSVG />
+                    <span>Excel</span>
+                </button>
+            </div>
             {this.state.loading && <Loader />}
-            <h1>Members report</h1><button onClick={this.donwloadExcel}>Excel</button>
+            <h3 className='mr-05 ml-05 mt-2 mb-2 uppercase-text'><strong>Members</strong> report</h3>
             <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} onFilteredChange={() => console.log(this.reactTable.getResolvedState().sortedData)} />
         </div>);
     }

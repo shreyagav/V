@@ -1,10 +1,12 @@
-﻿import React, { Component } from 'react';
-import ReactTable from 'react-table';
+﻿import React, { Component } from 'react'
+import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import { withStore } from '../store';
-import { Service } from '../ApiService';
-import Loader from '../Loader';
-import DatePicker from '../DatePicker';
+import { withStore } from '../store'
+import { Service } from '../ApiService'
+import Loader from '../Loader'
+import DatePicker from '../DatePicker'
+import SaveToExcelSVG from '../../svg/SaveToExcelSVG'
+import { getFirstDayOfMonth, getLastDayOfMonth } from '../dateFunctions'
 
 class VeteransBySite extends Component {
 
@@ -21,9 +23,20 @@ class VeteransBySite extends Component {
             }
         }
         this.updateData = this.updateData.bind(this);
-        this.dateStartDropDownRef = null;
-        this.dateEndDropDownRef = null;
+        //this.dateStartDropDownRef = null;
+        //this.dateEndDropDownRef = null;
         this.donwloadExcel = this.donwloadExcel.bind(this);
+    }
+
+    componentDidMount() {
+        let today = new Date();
+        let lastYearToday = new Date(today.getFullYear()-1, today.getMonth());
+        let range = {
+            start: getFirstDayOfMonth(lastYearToday),
+            end: getLastDayOfMonth(today)
+        }
+        this.setState({range: range})
+        this.updateData();
     }
 
     updateData() {
@@ -31,9 +44,6 @@ class VeteransBySite extends Component {
         Service.getVeteransBySiteReport(this.state.range).then(data => this.setState({ loading: false, data: data }));
     }
 
-    componentDidMount() {
-        this.updateData();
-    }
     donwloadExcel() {
         this.setState({ loading: true });
         Service.downloadWithPost('/api/Reports/VeteransBySiteToExcel', this.state.range).then(blob => {
@@ -48,37 +58,80 @@ class VeteransBySite extends Component {
             { Header: "Unique", accessor: 'unique', filterable: false },
             { Header: "Attendance", accessor: 'attendance', filterable: false }
         ]
-        return (<div>
-            {this.state.loading && <Loader/>}
-            <h1>Veterans by Site</h1>
-            <span>Date From:</span>
-            <div style={{ display: "inline-block", width: "300px" }}>
-                <DatePicker
-                    value={this.state.range.start}
-                    maxDate={this.state.range.end}
-                    ref={el => this.dateStartDropDownRef = el}
-                    onSelect={value => {
-                        var range = this.state.range;
-                        range.start = value;
-                        this.setState({ range: range });
-                        setTimeout(this.updateData, 50);
-                    }}
-                />
+        return (
+        <div>
+            <div className='filter-nav-wrapper'>
+                <div className='filter-wrapper'>
+                    <div className='flex-nowrap align-center'>
+                        <span className='mr-05 uppercase-text'>From:</span>
+                        <DatePicker
+                            value={this.state.range.start}
+                            maxDate={this.state.range.end}
+                            noClearButton={true}
+                            //ref={el => this.dateStartDropDownRef = el}
+                            onSelect={value => {
+                                var range = this.state.range;
+                                range.start = value;
+                                this.setState({ range: range });
+                                setTimeout(this.updateData, 50);
+                            }}
+                        />
+                    </div>
+                    <div className='flex-nowrap align-center'>
+                        <span className='mr-05 uppercase-text'>To:</span>
+                        <DatePicker
+                            value={this.state.range.end}
+                            minDate={this.state.range.start}
+                            noClearButton={true}
+                            //ref={el => this.dateEndDropDownRef = el}
+                            onSelect={value => {
+                                var range = this.state.range;
+                                range.end = value;
+                                this.setState({ range: range });
+                                setTimeout(this.updateData, 50);
+                            }}
+                        />
+                    </div>
+                </div>
+                <button className='round-button medium-round-button outline-on-hover' onClick={this.donwloadExcel} >
+                    <SaveToExcelSVG />
+                    <span>Excel</span>
+                </button>
             </div>
-            <span>Date To:</span>
-            <div style={{ display: "inline-block", width: "300px" }}>
-                <DatePicker
-                    value={this.state.range.end}
-                    minDate={this.state.range.start}
-                    ref={el => this.dateEndDropDownRef = el}
-                    onSelect={value => {
-                        var range = this.state.range;
-                        range.end = value;
-                        this.setState({ range: range });
-                        setTimeout(this.updateData, 50);
-                    }}
-                />
-            </div><button onClick={this.donwloadExcel}>Excel</button>
+            {this.state.loading && <Loader />}
+            <h3 className='mr-05 ml-05 mt-2 mb-2 uppercase-text'><strong>Veterans</strong> by Site</h3>
+            {/*<div>    
+                {this.state.loading && <Loader/>}
+                <h1>Veterans by Site</h1>
+                <span>Date From:</span>
+                <div style={{ display: "inline-block", width: "300px" }}>
+                    <DatePicker
+                        value={this.state.range.start}
+                        maxDate={this.state.range.end}
+                        //ref={el => this.dateStartDropDownRef = el}
+                        onSelect={value => {
+                            var range = this.state.range;
+                            range.start = value;
+                            this.setState({ range: range });
+                            setTimeout(this.updateData, 50);
+                        }}
+                    />
+                </div>
+                <span>Date To:</span>
+                <div style={{ display: "inline-block", width: "300px" }}>
+                    <DatePicker
+                        value={this.state.range.end}
+                        minDate={this.state.range.start}
+                        //ref={el => this.dateEndDropDownRef = el}
+                        onSelect={value => {
+                            var range = this.state.range;
+                            range.end = value;
+                            this.setState({ range: range });
+                            setTimeout(this.updateData, 50);
+                        }}
+                    />
+                </div><button onClick={this.donwloadExcel}>Excel</button>
+            */}
             <ReactTable data={this.state.data} columns={columns} />
         </div>);
     }

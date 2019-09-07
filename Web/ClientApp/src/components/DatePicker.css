@@ -16,6 +16,9 @@
 .date-picker > div:first-child:focus button .svg, 
 .date-picker > div:first-child:hover button .svg {fill: #0099cc;}
 
+.date-picker > div:first-child:focus button.onFocusWithDDH .svg,
+.date-picker > div:first-child:hover button.onFocusWithDDH .svg {fill: #0099cc !important;}
+
 .date-picker > :nth-child(n) {flex: 1 1 auto;}
 .date-picker > div:first-child {display: flex; flex-wrap: nowrap; align-items: center; justify-content: stretch;}
 .date-picker > div:first-child > :first-child {flex: 1 1 auto;}

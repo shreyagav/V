@@ -20,7 +20,7 @@ class MemberDiagnosis extends Component {
                 description: ''
             },
             diagnosis: [],
-            diagnosisList: []
+            diagnosisList: [],
         }
         this.alertDafaultContent = { categoryId: null, diagnosId: null, description: ''};
         this.renderDiagnose = this.renderDiagnose.bind(this);
@@ -28,6 +28,7 @@ class MemberDiagnosis extends Component {
         this.onEditDiagnosis = this.onEditDiagnosis.bind(this);
         this.okButtonCallBack = this.okButtonCallBack.bind(this);
         this.onDeleteDiagnosis = this.onDeleteDiagnosis.bind(this);
+        this.renderComments = this.renderComments.bind(this);
 
         this.okButtonText = 'OK';
         this.modalHeader = 'Header';
@@ -57,7 +58,6 @@ class MemberDiagnosis extends Component {
     onDeleteDiagnosis(row){
         this.elementToEdit = row;
         let el = this.state.diagnosisList.find(element => element.id === row.id);
-        debugger
         this.elementToRemoveProps.description = row.description;
         this.elementToRemoveProps.name = el.description;
         this.setState({ removeDiagnoseShowAlert: true });
@@ -69,38 +69,70 @@ class MemberDiagnosis extends Component {
             .then(userDiagnosis => this.setState({ diagnosis: userDiagnosis, removeDiagnoseShowAlert: false }));
     }
 
+    renderOption(value, row, index, col){
+        let category = this.state.optionsList.find(element => element.categoryId === row.categoryId);
+        let option = category.options.find(element => element.id === row.optionId);
+        return (
+            <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
+                <div className='flex-nowrap justify-space-between align-center ' style={{"width":"100%"}}>
+                    <div className='flex-nowrap flex-flow-column  justify-left align-self-center'>
+                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}>{option.name}</span>
+                        {option.description && <span className='description-text'>{option.description}</span>}
+                    </div>
+                    {/*this.props.editsPermitted !== false && */
+                        <button 
+                            className='round-button small-round-button light-grey-outline-button' 
+                            style={{"flex":"0 0 1rem","marginLeft":"0.5em"}} 
+                            onClick={() => this.onDeleteOption(row)}
+                        ><CloseUpSVG /></button>
+                    }
+                </div>
+            </li>
+        );
+    }
+
     renderDiagnose(value, row, index, col){
         return (
             <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
+                <div className='flex-nowrap justify-space-between align-center w-100'>
+                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}><strong>{row.name}</strong></span>
+                        {/*this.props.editsPermitted !== false && */
+                            <button 
+                                className='round-button small-round-button light-grey-outline-button' 
+                                style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
+                                onClick={() => this.onDeleteDiagnosis(row)}
+                            >
+                                <CloseUpSVG />
+                            </button>
+                        }
+                    </div>
+            </li>
+        );
+    }
+
+    renderComments(value, row, index, col){
+        return (
+            <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
+                <span className="table-mini-header">Comments: </span>
                 <div className='flex-nowrap flex-flow-column justify-left align-self-center' style={{"width":"100%"}}>
                     <div className='flex-nowrap justify-space-between align-center'>
-                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}>{row.name}</span>
-                            {/*this.props.editsPermitted !== false && */
-                                <button 
-                                    className='round-button small-round-button light-grey-outline-button' 
-                                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                                    onClick={() => this.onDeleteDiagnosis(row)}
-                                >
-                                    <CloseUpSVG />
-                                </button>
-                            }
-                            {/*this.props.editsPermitted !== false && */
-                                <button 
-                                    className='round-button small-round-button light-grey-outline-button' 
-                                    style={{"flex":"0 0 1rem","marginLeft":"0.2em"}} 
-                                    onClick={() => {
-                                        this.okButtonText = 'Save Edits';
-                                        this.headerText = 'Edit Diagnose';
-                                        this.okButtonCallBack = this.onEditDiagnosis;
-                                        this.elementToEdit = row;
-                                        this.setState({ alertContent: row, showAddEditDiagnosis: true});
-                                    }}
+                        {<span className='description-text'>{value}</span>}
+                        {/*this.props.editsPermitted !== false && */
+                            <button 
+                                className='round-button small-round-button light-grey-outline-button' 
+                                style={{"flex":"0 0 1rem","marginLeft":"0.5em"}} 
+                                onClick={() => {
+                                    this.okButtonText = 'Save Edits';
+                                    this.headerText = 'Edit Diagnose';
+                                    this.okButtonCallBack = this.onEditDiagnosis;
+                                    this.elementToEdit = row;
+                                    this.setState({ alertContent: row, showAddEditDiagnosis: true});
+                                }}
                                 >
                                     <EditUpSVG />
-                                </button>
-                            }
+                            </button>
+                        }
                     </div>
-                    {/*row.description && <span style={{ "fontSize": "0.9em" }}>{row.description}</span>*/}
                 </div>
             </li>
         );
@@ -126,7 +158,7 @@ class MemberDiagnosis extends Component {
     render() {
         const columns=[
             {title:"Diagnose", accesor:"name", className:'borders-when-display-block', render: this.renderDiagnose},
-            {title:"Description", accesor:"description", className: "italic"}
+            {title:"Comments", accesor:"description", render: this.renderComments}
         ];
         return (
             <div className = 'flex-nowrap flex-flow-column justify-center w-100 prpl-0'>
@@ -218,6 +250,7 @@ class MemberDiagnosis extends Component {
                         <Table columns={columns} data={this.state.diagnosis} className={"break-at-500"} addHeadersForNarrowScreen={true} />
                     </div>
                 }
+                {this.state.showValidationError && this.alertNotValid}
             </div>
         );
     }

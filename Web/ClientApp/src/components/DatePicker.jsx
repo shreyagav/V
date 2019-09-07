@@ -597,7 +597,7 @@ class DatePicker extends Component {
                         placeholder='mm/dd/yy' 
                         value={(this.props.value === null || this.props.value === undefined) ? "" : (("0"+(this.props.value.getMonth()+1)).slice(-2)+"/"+("0" + this.props.value.getDate()).slice(-2)+"/"+this.props.value.getFullYear())}
                     />
-                    {!this.state.isOpen 
+                    {!(this.state.isOpen || this.props.noClearButton)
                     ?
                     <button 
                         className='arrow-button'
@@ -615,7 +615,10 @@ class DatePicker extends Component {
                             }}}
                     > <CloseUpSVG /> </button>
                     :
-                    <button disabled className='arrow-button'>
+                    <button 
+                        disabled 
+                        className={'arrow-button' + (this.props.noClearButton === true ? " onFocusWithDDH" : "")}
+                    >
                         <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                     </button>
                     }

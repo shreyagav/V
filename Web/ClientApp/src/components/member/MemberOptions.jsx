@@ -30,7 +30,7 @@ class MemberOptions extends Component {
         this.onEditOption = this.onEditOption.bind(this);
         this.okButtonCallBack = this.okButtonCallBack.bind(this);
         this.onDeleteOption = this.onDeleteOption.bind(this);
-        this.renderDescription = this.renderDescription.bind(this);
+        this.renderComments = this.renderComments.bind(this);
 
         this.okButtonText = 'OK';
         this.modalHeader = 'Header';
@@ -95,9 +95,9 @@ class MemberOptions extends Component {
         let option = category.options.find(element => element.id === row.optionId);
         return (
             <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
-                <div className='flex-nowrap justify-space-between align-center ' style={{"width":"100%"}}>
+                <div className='flex-nowrap justify-space-between align-center w-100'>
                     <div className='flex-nowrap flex-flow-column  justify-left align-self-center'>
-                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}>{option.name}</span>
+                        <span style={{ "fontSize": "1.1em", "marginRight": "auto" }}><strong>{option.name}</strong></span>
                         {option.description && <span className='description-text'>{option.description}</span>}
                     </div>
                     {/*this.props.editsPermitted !== false && */
@@ -112,7 +112,7 @@ class MemberOptions extends Component {
         );
     }
 
-    renderDescription(value, row, index, col){
+    renderComments(value, row, index, col){
         return (
             <li className={col.className ? "table-content " + col.className : "table-content"} style={{ "display": "flex" }} >
                 <span className="table-mini-header">Comments: </span>
@@ -125,7 +125,7 @@ class MemberOptions extends Component {
                                 style={{"flex":"0 0 1rem","marginLeft":"0.5em"}} 
                                 onClick={() => {
                                     this.okButtonText = 'Save Edits';
-                                    this.headerText = 'Edit Comments';
+                                    this.headerText = 'Edit Option';
                                     this.okButtonCallBack = this.onEditOption;
                                     this.elementToEdit = row;
                                     this.setState({alertContent: row, showAddEditOption: true});
@@ -189,7 +189,7 @@ class MemberOptions extends Component {
         const columns=[
             {title:"Options", accesor:"options", className:'borders-when-display-block', render: this.renderOption},
             {title:"Category", className:'small-bold', accesor:"category", render: this.renderCategory},
-            {title:"Comments", accesor:"description", render: this.renderDescription}
+            {title:"Comments", accesor:"description", render: this.renderComments}
         ];
         return (
             <div className = 'flex-nowrap flex-flow-column justify-center w-100 prpl-0'>
@@ -203,7 +203,7 @@ class MemberOptions extends Component {
                                         list={optionsList}
                                         multiSelect={false}
                                         toggleable={true}
-                                        disabled={this.headerText=='Edit Comments'}
+                                        disabled={this.headerText=='Edit Option'}
                                         keyProperty='categoryId'
                                         textProperty='categoryName'
                                         defaultValue={this.state.alertContent.categoryId}
@@ -217,13 +217,13 @@ class MemberOptions extends Component {
                                     <MultiDropDown
                                         list={options}
                                         multiSelect={false}
-                                        disabled={this.headerText == 'Edit Comments'}
+                                        disabled={this.headerText == 'Edit Option'}
                                         toggleable={true}
                                         keyProperty='id'
                                         textProperty='name'
                                         defaultValue={this.state.alertContent.optionId}
                                         placeholder="Select the Option"
-                                        onDropDownValueChange={(value) => this.onAlertOptionsChange(value)}
+                                        onDropDownValueChange={(value) => {this.onAlertOptionsChange(value)}}
                                     />
                                 </li>
                                 }

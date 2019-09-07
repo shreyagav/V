@@ -26,7 +26,6 @@ li {list-style-type:none; }
 a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
 :focus {outline: none;}
-button {/* background: #ffffff; */}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
 
 .description-text {
@@ -73,7 +72,7 @@ h2, .h2 {font-size: 2.8rem; line-height: 1; }
 
 h3, .h3 {
     font-size: 1.8rem;
-    font-weight: 600;
+    /*font-weight: 500;*/
     line-height: 1;
     text-transform: uppercase;
     margin-bottom: 0.2rem;
@@ -177,6 +176,7 @@ h4, .h4 {
 .pb-3 {padding-bottom: 3rem !important;}
 .pr-025 {padding-right: 0.25rem !important}
 .pr-05 {padding-right: 0.5rem !important}
+.pr-075 {padding-right: 0.75rem !important}
 .pr-3 {padding-right: 3rem !important}
 .pr-2 {padding-right: 2rem !important}
 .pr-1 {padding-right: 1rem !important}
@@ -239,6 +239,7 @@ h4, .h4 {
     .pb-3:not(.pb-non-sc) {padding-bottom: 8.4vw !important;}
     .pr-025:not(.pr-non-sc) {padding-right: 0.8vw !important}
     .pr-05:not(.pr-non-sc) {padding-right: 1.6vw !important}
+    .pr-075:not(.pr-non-sc) {padding-right: 2.4vw !important}
     .pr-1:not(.pr-non-sc) {padding-right: 3.2vw !important}
     .pr-2:not(.pr-non-sc) {padding-top: 6.4vw !important;}
     .pr-3:not(.pr-non-sc) {padding-top: 8.4vw !important;}
@@ -669,6 +670,31 @@ ul.main-nav a, ul.main-nav button {display: flex; flex-wrap: nowrap; align-items
 ul.main-nav span {white-space: nowrap; font-weight: 600; font-size: 0.8rem;}
 ul.main-nav > li span {text-transform: uppercase;}
 ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
+
+/* filter nav wrapper */
+
+.filter-nav-wrapper {
+    padding: 0.25rem;
+    width: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 40px;
+}
+
+.filter-nav-wrapper > button {flex: 0 0 auto;}
+
+.filter-nav-wrapper > div.filter-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: stretch;
+}
+
+.filter-nav-wrapper > div.filter-wrapper > :nth-child(n) {
+    padding: 0.25rem;
+}
 
 /* second nav */
 .second-nav-wrapper {

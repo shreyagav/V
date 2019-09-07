@@ -4,6 +4,7 @@ import DatePicker from '../DatePicker';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
 import { withStore } from '../store';
 import CheckBox from '../CheckBox';
+import { filterSearch } from '../filterSearch'
 
 class MemberTRRInfo extends Component {
 
@@ -74,18 +75,18 @@ class MemberTRRInfo extends Component {
                         <li>
                             <p>Sponsored By:</p>
                             <MultiDropDown
-                            ref={this.props.setSponsoredByDropDownRef}
-                            list={this.props.sponsors}
-                            search={(list, filter, param) => { 
-                                console.log(param); 
-                                return list.filter(a => a.name.indexOf(filter) >= 0) 
-                            }}
-                            multiSelect={false}
-                            keyProperty='id'
-                            textProperty='name'
-                            defaultValue={this.props.member.sponsoredById}
-                            placeholder="Sponsored By"
-                            onDropDownValueChange={value => { this.props.updateMemberProperty("sponsoredById", value) }}
+                                ref={this.props.setSponsoredByDropDownRef}
+                                list={this.props.sponsors}
+                                search={(list, filter, param) => { 
+                                    return filterSearch(list, filter, ['name']);
+                                    //return list.filter(a => a.name.indexOf(filter) >= 0) 
+                                }}
+                                multiSelect={false}
+                                keyProperty='id'
+                                textProperty='name'
+                                defaultValue={this.props.member.sponsoredById}
+                                placeholder="Sponsored By"
+                                onDropDownValueChange={value => { this.props.updateMemberProperty("sponsoredById", value) }}
                             />
                         </li>
 

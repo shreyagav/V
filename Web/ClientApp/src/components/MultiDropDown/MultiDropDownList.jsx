@@ -30,10 +30,8 @@ class MultiDropDownList extends React.Component {
     }
 
     componentWillMount() {
-        if(this.props.toggleable){ 
-            document.addEventListener('wheel', this.handleWheel, {passive : false});
-            document.addEventListener("mousedown", this.handleClick, false);
-        } 
+        document.addEventListener('wheel', this.handleWheel, {passive : false});
+        document.addEventListener("mousedown", this.handleClick, false); 
         window.addEventListener("resize", this.setHeight);
     }
 
@@ -66,7 +64,7 @@ class MultiDropDownList extends React.Component {
     }
 
     handleClick(e) {
-        if(!(this.props.dropDownHeaderRef.contains(e.target) || this.props.simpleBarWrapperRef.contains(e.target))){ 
+        if(this.props.dropDownHeaderRef !== null && this.props.simpleBarWrapperRef !== null && !(this.props.dropDownHeaderRef.contains(e.target) || this.props.simpleBarWrapperRef.contains(e.target))){ 
             this.props.toggle() 
         }
     }
@@ -201,6 +199,7 @@ class MultiDropDownList extends React.Component {
             if (this.props.toggleable && this.props.isOpen) {this.props.toggle();}
             return;
         }
+        if(this.props.list.length >= 100){return}
         var cancelScrollEvent = function(e){
             e.stopImmediatePropagation();
             e.preventDefault();
@@ -355,7 +354,7 @@ class MultiDropDownList extends React.Component {
             >
                 {/*<SimpleBar>*/}
                 <div style={{"height": "100%"}} data-simplebar >
-                <ul className='drop-down-list' 
+                <ul className={'drop-down-list' + (this.props.list.length < 100 ? "" : " pr-0")}
                     ref={ el => this.simpleBarRef = el} 
                     /*style={{'height':this.simpleBarHeight}} */
                 >   

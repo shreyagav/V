@@ -26,7 +26,7 @@
     margin-left: 0px;
     background-color: transparent;
 }
-div.drop-down-disabled > .drop-down-header {background-color: #cccccc;}
+div.drop-down-disabled > .drop-down-header {background-color: #efefef;}
 div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {cursor: pointer;}
 .drop-down-header:focus, .ddhOnFocus, 
 div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {border: 1px solid #0099cc;}

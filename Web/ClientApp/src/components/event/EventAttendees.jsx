@@ -237,6 +237,7 @@ class EventAttendees extends Component {
                         {this.state.filteredList.length === 0 && <p className='message-block mb-2 mt-2'>There are no members that meet this criteria.</p>}
                         {this.state.filteredList.length > 0 &&
                             <MultiDropDown
+                                className = 'pr-075'
                                 list={this.state.filteredList}
                                 multiSelect={true}
                                 toggleable={false}

@@ -5,13 +5,15 @@ import { withStore } from '../store';
 import { Service } from '../ApiService';
 import Loader from '../Loader';
 import DatePicker from '../DatePicker';
+import SaveToExcelSVG from '../../svg/SaveToExcelSVG'
+import { getFirstDayOfMonth, getLastDayOfMonth } from '../dateFunctions'
 
 class EventsByType extends Component {
 
     constructor(props) {
         super(props);
-        var date = new Date();
-        var date2 = new Date(date - 12 * 30 * 24 * 3600 * 1000);
+        var date = new Date(); // ??
+        var date2 = new Date(date - 12 * 30 * 24 * 3600 * 1000);  // ????
         this.state = {
             data: [],
             columns:[],
@@ -22,10 +24,22 @@ class EventsByType extends Component {
             }
         }
         this.updateData = this.updateData.bind(this);
-        this.dateStartDropDownRef = null;
-        this.dateEndDropDownRef = null;
+        //this.dateStartDropDownRef = null;
+        //this.dateEndDropDownRef = null;
         this.donwloadExcel = this.donwloadExcel.bind(this);
     }
+
+    componentDidMount() {
+        let today = new Date();
+        let lastYearToday = new Date(today.getFullYear()-1, today.getMonth());
+        let range = {
+            start: getFirstDayOfMonth(lastYearToday),
+            end: getLastDayOfMonth(today)
+        }
+        this.setState({range: range})
+        this.updateData();
+    }
+
     updateData() {
         this.setState({ loading: true });
         Service.getEventsByTypeReport(this.state.range).then(
@@ -35,9 +49,6 @@ class EventsByType extends Component {
             });
     }
 
-    componentDidMount() {
-        this.updateData();
-    }
     donwloadExcel() {
         this.setState({ loading: true });
         Service.downloadWithPost('/api/Reports/EventsByTypeToExcel', this.state.range).then(blob => {
@@ -47,36 +58,48 @@ class EventsByType extends Component {
     }
 
     render() {
-        return (<div>
-            {this.state.loading && <Loader />}
-            <h1>Events by Type</h1><span>Date From:</span>
-            <div style={{ display: "inline-block", width: "300px" }}>
-                <DatePicker
-                    value={this.state.range.start}
-                    maxDate={this.state.range.end}
-                    ref={el => this.dateStartDropDownRef = el}
-                    onSelect={value => {
-                        var range = this.state.range;
-                        range.start = value;
-                        this.setState({ range: range });
-                        setTimeout(this.updateData, 50);
-                    }}
-                />
+        return (
+        <div>
+            <div className='filter-nav-wrapper'>
+                <div className='filter-wrapper'>
+                    <div className='flex-nowrap align-center'>
+                        <span className='mr-05 uppercase-text'>From:</span>
+                        <DatePicker
+                            value={this.state.range.start}
+                            maxDate={this.state.range.end}
+                            noClearButton={true}
+                            //ref={el => this.dateStartDropDownRef = el}
+                            onSelect={value => {
+                                var range = this.state.range;
+                                range.start = value;
+                                this.setState({ range: range });
+                                setTimeout(this.updateData, 50);
+                            }}
+                        />
+                    </div>
+                    <div className='flex-nowrap align-center'>
+                        <span className='mr-05 uppercase-text'>To:</span>
+                        <DatePicker
+                            value={this.state.range.end}
+                            minDate={this.state.range.start}
+                            noClearButton={true}
+                            //ref={el => this.dateEndDropDownRef = el}
+                            onSelect={value => {
+                                var range = this.state.range;
+                                range.end = value;
+                                this.setState({ range: range });
+                                setTimeout(this.updateData, 50);
+                            }}
+                        />
+                    </div>
+                </div>
+                <button className='round-button medium-round-button outline-on-hover' onClick={this.donwloadExcel} >
+                    <SaveToExcelSVG />
+                    <span>Excel</span>
+                </button>
             </div>
-            <span>Date To:</span>
-            <div style={{ display: "inline-block", width: "300px" }}>
-                <DatePicker
-                    value={this.state.range.end}
-                    minDate={this.state.range.start}
-                    ref={el => this.dateEndDropDownRef = el}
-                    onSelect={value => {
-                        var range = this.state.range;
-                        range.end = value;
-                        this.setState({ range: range });
-                        setTimeout(this.updateData, 50);
-                    }}
-                />
-            </div><button onClick={this.donwloadExcel}>Excel</button>
+            {this.state.loading && <Loader />}
+            <h3 className='mr-05 ml-05 mt-2 mb-2 uppercase-text'><strong>Events</strong> by Type</h3>
             <ReactTable data={this.state.data} columns={this.state.columns} />
         </div>);
     }
