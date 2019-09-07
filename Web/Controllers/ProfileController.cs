@@ -208,9 +208,13 @@ namespace Web.Controllers
         {
             var user = await _userManager.FindByIdAsync(data.Id);
             data.Map(user);
-            data.Roles.Select(a => roles.First(b => b.Id == a)).ToArray();
             await _userManager.UpdateAsync(user);
-
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var toRemoveIds = roles.Select(a => a.Id).Except(data.Roles);
+            var names = roles.Where(a => toRemoveIds.Contains(a.Id)).Select(a=>a.Name).Intersect(currentRoles);
+            var res = await _userManager.RemoveFromRolesAsync(user, names);
+            var toAdd = roles.Where(a => data.Roles.Contains(a.Id)).Select(a => a.Name).Except(currentRoles);
+            res = await _userManager.AddToRolesAsync(user, toAdd);
             return data;
         }
     }
