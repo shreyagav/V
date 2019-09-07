@@ -113,14 +113,14 @@ class MemberTRRInfo extends Component {
                                 textProperty='name'
                                 defaultValue={this.props.member.roles}
                                 placeholder="Select Authentification Level"
-                                onDropDownValueChange={value => this.props.updateMemberProperty("authLevel", value)}
+                            onDropDownValueChange={value => this.props.updateMemberProperty("roles", value)}
                             />
                         </li>
                         <li>
                             <p>TRR User Type:</p>
                             <MultiDropDown
                                 ref={this.props.setUserTypeDropDownRef}
-                                list={[{ name: 'Staff', id: 53 }, { name: 'Paddler', id: 54 }]}
+                                list={[{ name: 'Civilian', id: 54 }, { name: 'Veteran', id: 53 }, { name: 'Veteran Family/Caregiver', id: 55 }]}
                                 multiSelect={false}
                                 keyProperty='id'
                                 textProperty='name'

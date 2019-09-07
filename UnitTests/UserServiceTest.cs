@@ -62,6 +62,10 @@ namespace UnitTests
 
             var failedSites = ImportSites(nodes, eventService);
             failed.AddRange(failedSites);
+            importService.GetContext().Database.ExecuteSqlCommand(@"update EventSites set GroupName=SUBSTRING(Name, 0, CHARINDEX('-',Name,0));
+update dest set GroupId=source.GroupId
+from EventSites dest left join 
+(select ROW_NUMBER() over (order by groupName) as GroupId, GroupName from  (select distinct GroupName from EventSites) temp) source on dest.GroupName=source.GroupName;");
             nodes = doc.SelectNodes("//table[@name='syscode' and ./column='E']");
             Console.WriteLine($"{DateTime.Now} ImportEventTypes");
             var failedEventTypes = ImportEventTypes(nodes, eventService);

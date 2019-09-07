@@ -167,7 +167,7 @@ namespace Services
             int siteId = _context.CalendarEvents.First(a => a.Id == eventId).SiteId;
             var ids = _context.UserEvents.Where(ue => ue.EventId == eventId).Select(a=>a.UserId);
             var res = _context.Users
-                .Where(ue => ue.SiteId == siteId && !ids.Contains(ue.Id))
+                .Where(ue => /*ue.SiteId == siteId &&*/ !ids.Contains(ue.Id))
                 .Select(u => new EventAttendeeDto()
                 {
                     Id = u.Id,

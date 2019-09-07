@@ -480,6 +480,7 @@ namespace UnitTests
                     }
 
                 }
+                usr.SecurityStamp = DateTime.Now.ToString();
                 usr.SiteId = sites.Where(a => a.OldId == usr.OldSiteId).FirstOrDefault()?.Id;
                 var exists = usersProcessed.FirstOrDefault(a => String.Compare( a.UserName,usr.UserName,true)==0);
                 if (exists == null)
