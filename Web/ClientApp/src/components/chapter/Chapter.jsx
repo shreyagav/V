@@ -56,7 +56,7 @@ class Chapter extends Component {
     componentWillMount(){
         let chapterValidators = [
             {'name':'name', 'typeFunction':'notEmptyString', 'text':'Chapter Name'},
-            {'name':'groupId', 'typeFunction':'chapter', 'text':'Region'},
+            {'name':'groupId', 'typeFunction':'dropDownValue', 'text':'Region'},
      ];
         this.validators = createValidators(chapterValidators);
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));

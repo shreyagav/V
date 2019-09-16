@@ -10,19 +10,17 @@
 
 .date-picker > div {font-size: inherit;}
 
-.date-picker > div:first-child {border: 1px solid #999999;}
-.date-picker > div:first-child:hover {cursor: pointer;}
-.date-picker > div:first-child:focus {border: 1px solid #0099cc;}
-.date-picker > div:first-child:focus button .svg, 
-.date-picker > div:first-child:hover button .svg {fill: #0099cc;}
-
-.date-picker > div:first-child:focus button.onFocusWithDDH .svg,
-.date-picker > div:first-child:hover button.onFocusWithDDH .svg {fill: #0099cc !important;}
+/* .date-picker > div:first-child {border: 1px solid #999999;} */
+.date-picker .drop-down-header {cursor: pointer !important;}
+.date-picker .drop-down-header:hover {border: 1px solid #0099cc;}
+.date-picker .drop-down-header:focus {border: 1px solid #0099cc;}
+.date-picker .drop-down-header:focus button .svg, 
+.date-picker .drop-down-header:hover button .svg {fill: #0099cc;}  
 
 .date-picker > :nth-child(n) {flex: 1 1 auto;}
-.date-picker > div:first-child {display: flex; flex-wrap: nowrap; align-items: center; justify-content: stretch;}
-.date-picker > div:first-child > :first-child {flex: 1 1 auto;}
-.date-picker > div:first-child > :nth-child(n):not(:first-child) {flex: 0 0 2.5em;}
+.date-picker .drop-down-header {display: flex; flex-wrap: nowrap; align-items: center; justify-content: stretch;}
+.date-picker .drop-down-header > :first-child {flex: 1 1 auto;}
+.date-picker .drop-down-header > :nth-child(n):not(:first-child) {flex: 0 0 2.5em;}
 .date-picker input {border: 0px solid !important; background-color: transparent; font-size: inherit;}
 
 .date-picker-drop-down {

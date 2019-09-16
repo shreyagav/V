@@ -132,39 +132,6 @@ class Event extends Component {
         return data;
     }
 
-    /*validation() {
-        let validationPassed = true;
-            if (this.state.activeTabIndex === 0){
-                if(this.state.eventMain.name.length < 1) {
-                    this.emptyTitle = true;
-                }
-                if(this.state.eventMain.site === 0) {
-                    this.emptyChapter = true;
-                }
-                if(this.state.eventMain.date === '') {
-                    this.emptyStartDate = true;
-                }
-                if(!this.state.eventMain.timeFrom.activated) {
-                    this.emptyTimeFrom = true;
-                }
-                if(!this.state.eventMain.timeTo.activated) {
-                    this.emptyTimeTo = true;
-                }
-
-                if(this.state.eventMain.eventType === null || this.state.eventMain.eventType === 0) {
-                    this.emptyType = true;
-                }
-                if(this.state.eventMain.color === '') {
-                    this.emptyColor = true;
-                }
-                if (this.emptyTitle || this.emptyChapter || this.emptyStartDate || this.emptyTimeFrom || this.emptyTimeTo || this.emptyType || this.emptyColor){
-                    this.setState({showError: true});
-                    validationPassed = false;
-                }
-            }
-        return validationPassed;
-    } */
-
     updateEvent() {
         var event = Object.assign({}, this.state.eventMain);
         event.id = this.state.eventId;
@@ -460,15 +427,19 @@ class Event extends Component {
                             className={this.emptyStartDate ? 'mark-invalid' : ''}
                             error-text='Please enter the date'
                         >
-                        <p>Start Date:</p>
-                        <DatePicker 
-                            value={this.state.eventMain.date}
-                            ref={el => this.dateStartDropDownRef = el}
-                            onSelect={value => {
-                                this.emptyStartDate = false;
-                                this.updateEventProperty("date", value);
-                            }}
-                        />
+                        <p>Date:</p>
+                        <div className={this.props.store.checkIfShowError('date', this.validators) ? 'error-input-wrapper' : ""}>
+                            <DatePicker 
+                                value={this.state.eventMain.date}
+                                ref={el => this.dateStartDropDownRef = el}
+                                onSelect={value => {
+                                    this.emptyStartDate = false;
+                                    this.props.store.updateValidators("date", value, this.validators);
+                                    this.updateEventProperty("date", value);
+                                }}
+                            />
+                            { this.props.store.displayValidationErrors('date', this.validators) }
+                        </div>
                         </li>
                     {/*<li>
                             <p></p>
@@ -547,30 +518,38 @@ class Event extends Component {
                                     className={this.emptyTimeFrom ? 'mark-invalid' : ''}
                                     error-text='Please enter the time'
                                 >
-                                    <TimePicker 
-                                        ref={el => this.timeFromDropDownRef = el}
-                                        timePickerMode={true}
-                                        value={this.state.eventMain.timeFrom}
-                                        onChange={value => {
-                                            if (value.activated) {this.emptyTimeFrom = false;}
-                                            this.updateEventProperty("timeFrom", value);
-                                        }}
-                                    />
+                                    <div className={this.props.store.checkIfShowError('timeFrom', this.validators) ? 'error-input-wrapper' : ""}>
+                                        <TimePicker 
+                                            ref={el => this.timeFromDropDownRef = el}
+                                            timePickerMode={true}
+                                            value={this.state.eventMain.timeFrom}
+                                            onChange={value => {
+                                                if (value.activated) {this.emptyTimeFrom = false;}
+                                                this.props.store.updateValidators("timeFrom", value, this.validators);
+                                                this.updateEventProperty("timeFrom", value);
+                                            }}
+                                        />
+                                        { this.props.store.displayValidationErrors('timeFrom', this.validators) }
+                                    </div>
                                 </li>
                                 <li><p>to:</p></li>
                                 <li
                                     className={this.emptyTimeTo ? 'mark-invalid' : ''}
                                     error-text='Please enter the time'
                                 >
-                                    <TimePicker 
-                                        ref={el => this.timeToDropDownRef = el}
-                                        timePickerMode={true}
-                                        value={this.state.eventMain.timeTo}
-                                        onChange={value => {
-                                            if (value.activated) {this.emptyTimeTo = false;}
-                                            this.updateEventProperty("timeTo", value);
-                                        }}
-                                    />
+                                    <div className={this.props.store.checkIfShowError('timeTo', this.validators) ? 'error-input-wrapper' : ""}>
+                                        <TimePicker 
+                                            ref={el => this.timeToDropDownRef = el}
+                                            timePickerMode={true}
+                                            value={this.state.eventMain.timeTo}
+                                            onChange={value => {
+                                                if (value.activated) {this.emptyTimeTo = false;}
+                                                this.props.store.updateValidators("timeTo", value, this.validators);
+                                                this.updateEventProperty("timeTo", value);
+                                            }}
+                                        />
+                                        { this.props.store.displayValidationErrors('timeTo', this.validators) }
+                                    </div>
                                 </li>
                             </ul>
                         </li>
@@ -579,18 +558,22 @@ class Event extends Component {
                             error-text='Please select the Event Type'
                         >
                             <p>Type of event:</p>
-                            <MultiDropDown
-                                ref={el => this.typeOfEventDropDownRef = el}
-                                list={this.props.store.eventTypes}
-                                keyProperty='id'
-                                textProperty='title'
-                                defaultValue={this.state.eventMain.eventType}
-                                placeholder='Event type'
-                                onDropDownValueChange={value => {
-                                    this.emptyType = false;
-                                    this.updateEventProperty("eventType",value)
-                                }}
-                            />
+                            <div className={this.props.store.checkIfShowError('eventType', this.validators) ? 'error-input-wrapper' : ""}>
+                                <MultiDropDown
+                                    ref={el => this.typeOfEventDropDownRef = el}
+                                    list={this.props.store.eventTypes}
+                                    keyProperty='id'
+                                    textProperty='title'
+                                    defaultValue={this.state.eventMain.eventType}
+                                    placeholder='Event type'
+                                    onDropDownValueChange={value => {
+                                        this.emptyType = false;
+                                        this.props.store.updateValidators("eventType", value, this.validators);
+                                        this.updateEventProperty("eventType", value)
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('eventType', this.validators) }
+                            </div>
                         </li>
                         <li>
                             <p className='mark-optional'>Description:</p>

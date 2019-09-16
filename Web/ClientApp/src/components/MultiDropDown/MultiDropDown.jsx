@@ -42,7 +42,6 @@ class MultiDropDown extends React.Component {
         this.getPropperList = this.getPropperList.bind(this);
         this.onInputClick = this.onInputClick.bind(this);
     }
-
     componentWillMount() {
         // check if toggleable
         if (this.props.hideHeader || this.props.hideList) { this.toggleable = false }
@@ -513,7 +512,7 @@ class MultiDropDown extends React.Component {
                                     let targetElement;
                                     if(element.childElement !== undefined){targetElement = element.childElement}
                                     else {targetElement = element.parentElement}
-                                    return <li key={index}>
+                                    return <li key={index} className='flex-nowrap'>
                                         {targetElement.color && 
                                             <span 
                                                 className='colorIndicator'
@@ -521,7 +520,7 @@ class MultiDropDown extends React.Component {
                                             </span>
                                         }
                                         {targetElement.img && <span className='drop-down-icon'>{targetElement.img}</span>}
-                                        <span>{
+                                        <span style={{"flex":"1 0 auto"}}>{
                                             element.childElement 
                                             ? 
                                             element.childElement[this.props.expandedTextProperty] + ', ' + element.parentElement[this.props.textProperty]

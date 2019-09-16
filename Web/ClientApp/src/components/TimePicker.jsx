@@ -42,6 +42,7 @@ export class TimePicker extends Component {
         this.numberIncrement = this.numberIncrement.bind(this)
         this.numberDecrement = this.numberDecrement.bind(this)
         this.toggle = this.toggle.bind(this)
+        this.activate = this.activate.bind(this)
     }
 
     componentDidUpdate(){
@@ -244,14 +245,18 @@ export class TimePicker extends Component {
         }
     }
 
+    activate(){
+        let time = this.props.value;
+        this.props.onChange({hours: time.hours, minutes: time.minutes, am: time.am, activated: true});
+    }
+
     render() { 
         return (
-            <div 
-                ref={el => this.timeNumberPickerRef = el} 
+            <div ref={el => this.timeNumberPickerRef = el} 
                 className={this.props.timePickerMode ? 'drop-down time-picker position-wrapper' : 'drop-down number-picker position-wrapper'}
             >
                 <div 
-                    className='input-button-wrapper'
+                    className='drop-down-header'
                     ref={el => this.dropDownHeaderRef = el}
                     tabIndex='0' 
                     onClick={() => this.toggle()}
@@ -277,7 +282,7 @@ export class TimePicker extends Component {
                             <CloseUpSVG />
                         </button>
                         :
-                        <button disabled className='arrow-button'>
+                        <button disabled className={'arrow-button onFocusWithDDH'}>
                             <ArrowUpSVG svgClassName={this.state.isOpen ? 'flip90' : 'flip270'}/>
                         </button>
                     }
@@ -287,7 +292,7 @@ export class TimePicker extends Component {
                         <TimePickerDropDown 
                             data={this.props.state}
                             properties={this.props}
-
+                            activate={this.activate}
                             performMultipleTimes={this.performMultipleTimes}
                             clearTimeoutAndInterval={this.clearTimeoutAndInterval}
                             timeNumberPickerRef={this.timeNumberPickerRef}

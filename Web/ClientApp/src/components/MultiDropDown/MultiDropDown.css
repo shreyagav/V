@@ -25,11 +25,17 @@
     padding-right: 0em;
     margin-left: 0px;
     background-color: transparent;
+    cursor: inherit;
 }
+
 div.drop-down-disabled > .drop-down-header {background-color: #efefef;}
 div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {cursor: pointer;}
 .drop-down-header:focus, .ddhOnFocus, 
 div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {border: 1px solid #0099cc;}
+
+.drop-down-header:focus button.onFocusWithDDH .svg,
+.drop-down-header:hover button.onFocusWithDDH .svg {fill: #0099cc !important;}
+
 .drop-down-header:focus > div > button.onFocusWithDDH .svg,
 .ddhOnFocus > div > button.onFocusWithDDH .svg,
 div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover> div > button.onFocusWithDDH .svg {fill: #0099cc !important;}
@@ -180,11 +186,15 @@ ul.drop-down-list li span {
     color: #666666;
     /*text-transform: uppercase;*/
     font-weight: 600;
-    line-height: 1;
-    /*padding-bottom: 0.125em;*/
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.drop-down-text {
+    line-height: 1;
+    margin-top: 0.125em; 
+    padding-bottom: 0.125em; /* need this because of line -height 1*/
 }
 
 ul.drop-down-list li label{

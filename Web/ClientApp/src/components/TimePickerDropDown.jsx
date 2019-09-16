@@ -52,6 +52,7 @@ export class TimePickerDropDown extends Component {
                         ref={el => this.props.setHoursRef(el)}
                         onKeyDown={(e) => this.props.handleKeyDown(e, () => this.props.hoursIncrement(), () => this.props.hoursDecrement())}
                         onKeyUp = {() => this.props.clearTimeoutAndInterval()}
+                        onClick = {() => this.props.activate()}
                     >
                         {("0" + this.props.properties.value.hours).slice(-2)}
                     </span>
@@ -81,6 +82,7 @@ export class TimePickerDropDown extends Component {
                         ref={el => this.props.setMinutesRef(el)}
                         onKeyDown={(e) => this.props.handleKeyDown(e, () => this.props.minutesIncrement(), () => this.props.minutesDecrement())}
                         onKeyUp = {() => this.props.clearTimeoutAndInterval()}
+                        onClick = {() => this.props.activate()}
                     >
                         {("0"+this.props.properties.value.minutes).slice(-2)}
                     </span>
@@ -110,6 +112,7 @@ export class TimePickerDropDown extends Component {
                         className='lastTabElement'
                         onKeyDown={(e) => this.props.handleKeyDown(e, () => this.props.amPmToggler(), () => this.props.amPmToggler())}
                         onKeyUp = {() => this.props.clearTimeoutAndInterval()}
+                        onClick = {() => this.props.activate()}
                     >
                         {this.props.properties.value.am ? 'AM' : "PM"}
                     </span>

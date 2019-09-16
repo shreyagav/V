@@ -45,7 +45,7 @@ const storeValidatorsRules = {
             { test: /^$|^[^@]+(@([^@%',]*(\.([a-z]{1,})?)?)?)?$/, message: message1 },
         ];
     },
-    chapter: (text) => {
+    dropDownValue: (text) => {
         let message1 = 'Please select the ' + text;
         return [
             { test: (value) => { return value > 0 }, message: message1 },
@@ -61,6 +61,18 @@ const storeValidatorsRules = {
         let message = 'Please enter the ' + text;
         return [
             { test: (value) => { return value.length > 0 }, message: message },
+        ];
+    },
+    timePickerValue: (text) => {
+        let message = 'Enter the ' + text;
+        return [
+            { test: (value) => { return value.activated }, message: message },
+        ];
+    },
+    datePickerValue: (text) => {
+        let message = 'Please enter the ' + text;
+        return [
+            { test: (value) => { return (value !== undefined && value !== null) }, message: message },
         ];
     },
 };
