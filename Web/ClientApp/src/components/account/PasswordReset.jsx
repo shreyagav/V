@@ -56,10 +56,11 @@ class PasswordReset extends Component {
             })
                 .then(res => res.json())
                 .then(json => {
-                    if (json.error != null) {
-                        this.setState({ loading: false, error: json.error });
-                    } else {
+                    console.log(json);
+                    if (json.succeeded === true) {
                         this.setState({ loading: false, message: "Password was reset." });
+                    } else {
+                        this.setState({ loading: false, error: json.errors[0].description });
                     }
                 })
                 .catch(err => this.setState({ loading: false, error: err }));

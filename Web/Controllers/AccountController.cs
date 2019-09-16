@@ -103,14 +103,15 @@ namespace Web.Controllers
             var users = _ctx.Users.Where(a => a.NormalizedUserName == normalized || a.NormalizedEmail == normalized).ToArray();
             if (users.Length == 1)
             {
-                var user = await _userManager.FindByIdAsync(users[0].Id);
-                var res = await _userManager.ChangePasswordAsync(user, model.Token, model.NewPassword);
-                if (!res.Succeeded)
+                if(model.NewPassword != model.NewPasswordRepeat)
                 {
-                    return BadRequest(res.Errors);
+                    return Ok(new { Succeeded = false, Errors = new IdentityError[] { new IdentityError() { Description = "Passwords are not matching." } } });
                 }
+                var user = await _userManager.FindByIdAsync(users[0].Id);
+                var res = await _userManager.ResetPasswordAsync(user, WebUtility.UrlDecode(model.Token), model.NewPassword);
+                return Ok(res);
             }
-            return Ok(new {Ok = true });
+            return Ok(new { Succeeded = false, Errors = new IdentityError[] { new IdentityError(){Description="We couldn't find provided login or email in the database." } } });
         }
 
 
