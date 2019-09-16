@@ -10,7 +10,7 @@ namespace Services.Interfaces
 {
     public interface IEventService
     {
-        EventMainDto ChangeEvent(EventMainDto data);
+        Task<EventMainDto> ChangeEvent(EventMainDto data, ClaimsPrincipal user);
         EventAttendeeDto[] GetEventAttendees(int eventId);
         EventAttendeeDto[] RemoveEventAttendees(int eventId, EventAttendeeDto attendee);
         EventAttendeeDto[] GetSiteMembers(int eventId);

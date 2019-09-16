@@ -207,8 +207,28 @@ namespace Web.Controllers
         public async Task<UserProfileDto> Set(UserProfileDto data)
         {
             var user = await _userManager.FindByIdAsync(data.Id);
-            data.Map(user);
-            await _userManager.UpdateAsync(user);
+            IdentityResult updateRes = null;
+            if (user == null)
+            {
+                data.Id = Guid.NewGuid().ToString();
+                data.JoinDate = DateTime.Now;
+                user = new TRRUser();
+                data.Map(user);
+                user.UserName = data.Email;
+                updateRes = await _userManager.CreateAsync(user);
+                if (updateRes.Succeeded)
+                {
+                    //TODO: send password email
+                }
+            }
+            else {
+                data.Map(user);
+                updateRes = await _userManager.UpdateAsync(user);
+            }
+            if (!updateRes.Succeeded)
+            {
+                throw new Exception(string.Join('\n', updateRes.Errors));
+            }
             var currentRoles = await _userManager.GetRolesAsync(user);
             var toRemoveIds = roles.Select(a => a.Id).Except(data.Roles);
             var names = roles.Where(a => toRemoveIds.Contains(a.Id)).Select(a=>a.Name).Intersect(currentRoles);

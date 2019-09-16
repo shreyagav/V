@@ -53,7 +53,6 @@ class Event extends Component {
                     am: true,
                 },
                 type:null,
-                color: "#666666",
                 groupId: 0,
                 date: new Date(),
                 eventStatus: "draft",
@@ -69,7 +68,6 @@ class Event extends Component {
             minutes: 0,
             am: true,
         };
-        this.colorDropDownRef = null;
         this.dayDropDownRef = null;
         this.numberDropDownRef = null;
         this.timeFromDropDownRef = null;
@@ -90,7 +88,6 @@ class Event extends Component {
         this.emptyTimeFrom = false;
         this.emptyTimeTo = false;
         this.emptyType = false;
-        this.emptyColor = false;
         this.headerText = '';
     }
 
@@ -596,19 +593,6 @@ class Event extends Component {
                             />
                         </li>
                         <li>
-                            <p>Color:</p>
-                            <MultiDropDown
-                                ref={el => this.colorDropDownRef = el}
-                                list={this.props.store.colorList}
-                                keyProperty='color'
-                                textProperty='name'
-                                defaultValue={this.state.eventMain.color}
-                                placeholder='Color'
-                                onDropDownValueChange={value => this.updateEventProperty("color", value)}
-                            />
-
-                        </li>
-                        <li>
                             <p className='mark-optional'>Description:</p>
                             <div className='input-button-wrapper'>
                                 <textarea 
@@ -645,7 +629,7 @@ class Event extends Component {
                     {this.state.activeTabIndex < 3 &&
                         <button 
                             className='medium-static-button static-button default-button' 
-                            onClick={() => this.performIfValid(() => (() => this.nextStep()))}
+                            onClick={() => this.performIfValid(this.nextStep)}
                         >Next</button>
                     }
                 </div>

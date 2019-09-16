@@ -114,6 +114,19 @@ left join AspNetRoles b on a.Role = b.Name");
             var count = importService.GetContext().UserEvents.Count();
             Console.WriteLine($"{DateTime.Now} ImportUserEvents imported {count} out of {nodes.Count}");
 
+            importService.GetContext().Database.ExecuteSqlCommand(@"  DECLARE @cat INT;
+  UPDATE dbo.UserOptions SET OptionId=37 WHERE OptionId=32 AND UserId NOT IN (SELECT UserId WHERE OptionId=37);
+  UPDATE dbo.Options SET Title='Veteran' WHERE Id=37;
+  SELECT @cat = OptionCategoryId FROM dbo.Options WHERE Id=32;
+  DELETE FROM dbo.Options WHERE id=32;
+  DELETE FROM dbo.OptionCategories WHERE Id=@cat;
+  
+  DELETE FROM dbo.UserOptions WHERE OptionId IN ( SELECT Id FROM dbo.Options WHERE OptionCategoryId IN (SELECT Id FROM dbo.OptionCategories WHERE OldId IN (15,13,19)));
+  delete FROM dbo.Options WHERE OptionCategoryId IN (SELECT Id FROM dbo.OptionCategories WHERE OldId IN (15,13,19));
+  DELETE FROM dbo.OptionCategories WHERE OldId IN (13,15,19);
+DELETE FROM dbo.CalendarEvents WHERE EventTypeId IN (SELECT Id FROM dbo.CalendarEventTypes WHERE OldId=100);
+  DELETE FROM dbo.CalendarEventTypes WHERE OldId=100;");
+
 
             String result = "<?xml version=\"1.0\" encoding=\"utf-8\"?><pma_xml_export>";
             result += string.Join("\n", failed.Select(a => a.OuterXml).ToArray());

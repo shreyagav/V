@@ -32,6 +32,9 @@ namespace Models.Dto
             }
             return res;
         }
+        public string ToString() {
+            return $"{Hours}:{Minutes} {(Am?"AM":"PM")}";
+        }
     }
 
     public class EventMainDto

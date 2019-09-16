@@ -186,8 +186,14 @@ export class Service {
             if (response.status == 404) {
                 return Promise.reject(new Error('Page not found: ' + url));
             }
-            return Promise.reject(new Error('HTTP error: ' + response.status));
+            
+            return response.json().then(err => {
+                console.log(err);
+                return Promise.reject(err);
+            });
+            
         }).catch(error => {
+            console.log(error);
             return Promise.reject(new Error(error.message));
         });
     }

@@ -71,6 +71,7 @@ namespace Models.Dto
             user.OldType = (TRRUserType)UserType;
             user.Comments = Comments;
             user.OldStatus = Status;
+            user.SponsoredById = SponsoredById;
         }
 
         public string Id { get; set; }

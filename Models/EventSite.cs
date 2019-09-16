@@ -25,11 +25,11 @@ namespace Models
         public DateTime? Originated { get; set; }
         public string SecurityClearance { get; set; }
         public bool PoolRental { get; set; }
-
         public int TypeId { get; set; }
         public int StaffTypeId { get; set; }
         public int SiteGroupId { get; set; }
         public int SiteStatusId { get; set; }
         public int OldId { get; set; }
+        public bool AllowEverybody { get; set; }
     }
 }

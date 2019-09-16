@@ -40,9 +40,9 @@ class EventDemo extends Component {
         this.onAttendanceChanged = this.onAttendanceChanged.bind(this);
     }
 
-    setEventMain(data) {
+    setEventMain(data, showMessage = false) {
         data.date = new Date(data.date);
-        this.setState({ eventMain: data, loading: false });
+        this.setState({ eventMain: data, loading: false, showMessage: showMessage });
     }
 
     componentDidMount() {
@@ -132,7 +132,7 @@ class EventDemo extends Component {
             return;
         }
         var func = index === 0 ? Service.selfSignUp : Service.selfSignOff;
-        func(this.state.eventMain.id).then(data => this.setEventMain(data));
+        func(this.state.eventMain.id).then(data => this.setEventMain(data, true)).catch(err => alert(err));
     }
 
     render() {
@@ -188,7 +188,6 @@ class EventDemo extends Component {
                                 wasSelected={(index) => { 
                                     if (index == 0) {
                                         this.onAttendanceChanged(0); 
-                                        this.setState({ showMessage: true })
                                     } else this.setState({ showAlert: true });
                                 }}
                                 activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}

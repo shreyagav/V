@@ -34,6 +34,7 @@ class Chapter extends Component {
                 securityClearance: '',
                 description: '',
                 poolRental: false,
+                allowEverybody: false,
                 main: {name: '', phone: '', email: ''},
                 govt: {name: '', phone: '', email: ''},
                 coordinator: {name: '', phone: '', email: ''},
@@ -113,7 +114,7 @@ class Chapter extends Component {
 
     setActiveTab(index) {
         if (index > 0) {
-            Service.saveChapter(this.state.chapter).then(data => { this.setState({ activeTabIndex: index }) });
+            
         } else {
             this.setState({ activeTabIndex: index })
         }
@@ -145,7 +146,9 @@ class Chapter extends Component {
         else { this.setState({showError: true}) };
     }
 
-    saveChapter(){  alert('save chapter')  }
+    saveChapter() {
+        Service.saveChapter(this.state.chapter).catch(data => alert(data));
+    }
 
     onContactInputValueChange(contact, param, newValue, validators, validatorsOTG){
         let value = this.state.chapter[contact];
@@ -268,6 +271,16 @@ class Chapter extends Component {
                                 labelText = {this.state.chapter.poolRental ? "Yes" : "No"}
                             />
                         </li>
+                            <li className='alignCenter'>
+                                <p>For everybody:</p>
+                                <CheckBox
+                                    className='mb-025'
+                                    onClick={() => this.updateChapterProperty("allowEverybody", !this.state.chapter.allowEverybody)}
+                                    checked={this.state.chapter.allowEverybody}
+                                    labelClassName='uppercase-text bold-text'
+                                    labelText={this.state.chapter.allowEverybody ? "Yes" : "No"}
+                                />
+                            </li>
                     </ul>
 
                     <div className = 'flex-nowrap align-center mt-2 mb-1 ml-1 mr-1'>

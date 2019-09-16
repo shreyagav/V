@@ -134,7 +134,11 @@ class Member extends Component {
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
             if(data === undefined) {this.setState({ loading: false, showErrorSaveDialog: true })}
-            else {this.setState({ loading: false, showSuccessfullySavedDialog: true })}
+            else {
+                var temp = this.state.member;
+                temp.id = data.id;
+                this.setState({ member:temp, loading: false, showSuccessfullySavedDialog: true })
+            }
         }).catch(er => {
             this.setState({ loading: false, showErrorSaveDialog: true });
         });

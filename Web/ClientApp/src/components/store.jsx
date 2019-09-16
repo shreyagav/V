@@ -161,7 +161,7 @@ const createStore = WrappedComponent => {
     componentDidMount() {
         var component = this;
         Service.getChaptersForSelector().then(data => component.setState({ chapterList: data, modifiedChapterList: data }));
-        Service.getEventTypes().then(data => component.setState({ eventTypes: data}, console.log(this.state.eventTypes)));
+        Service.getEventTypes().then(data => component.setState({ eventTypes: data}));
     }
 
     componentWillUnmount() {

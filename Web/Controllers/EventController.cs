@@ -19,15 +19,17 @@ namespace Web.Controllers
     {
         private readonly IEventService _service;
         private readonly IStorageService _storageService;
-        public EventController(IEventService service, IStorageService storageService)
+        private readonly IMailService _mailService;
+        public EventController(IEventService service, IStorageService storageService, IMailService mailService)
         {
             _service = service;
             _storageService = storageService;
+            _mailService = mailService;
         }
         [HttpPost("[action]")]
-        public EventMainDto ChangeEvent(EventMainDto evnt)
+        public async Task<EventMainDto> ChangeEvent(EventMainDto evnt)
         {
-            return _service.ChangeEvent(evnt);
+            return await _service.ChangeEvent(evnt, User);
         }
         [HttpGet("[action]/{id}")]
         public async Task<EventMainDto> GetEventById(int id)
@@ -36,10 +38,18 @@ namespace Web.Controllers
         }
         [Authorize]
         [HttpGet("[action]/{id}")]
-        public async Task<EventMainDto> Attend(int id)
+        public async Task<IActionResult> Attend(int id)
         {
-            await _service.AddEventAttendees(id, User);
-            return await GetEventById(id);
+            try {
+                await _service.AddEventAttendees(id, User);
+                var evt = await GetEventById(id);
+                return Ok(evt);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { message = ex.Message});
+            }
+
         }
         [Authorize]
         [HttpGet("[action]/{id}")]

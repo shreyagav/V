@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -8,12 +9,27 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Dto;
 using Services.Data;
+using Services.Interfaces;
 
 namespace Web.Controllers
 {
+    public class ChangePasswordDto
+    {
+        public string Email { get; set; }
+        public string NewPassword { get; set; }
+        public string NewPasswordRepeat { get; set; }
+        public string Token { get; set; }
+    }
+    public class ChangePasswordEmailDto
+    {
+        public string UserName { get; set; }
+    }
+
+
     [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
@@ -22,12 +38,14 @@ namespace Web.Controllers
         private readonly SignInManager<TRRUser> _signInManager;
         private readonly UserManager<TRRUser> _userManager;
         private readonly ApplicationDbContext _ctx;
+        private readonly IMailService _mailService;
         public AccountController(SignInManager<TRRUser> signInManager,
-            UserManager<TRRUser> userManager, ApplicationDbContext ctx)
+            UserManager<TRRUser> userManager, ApplicationDbContext ctx, IMailService mailService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _ctx = ctx;
+            _mailService = mailService;
         }
 
         [HttpGet("[action]")]
@@ -51,6 +69,50 @@ namespace Web.Controllers
             }
             return res;
         }
+        [HttpPost("[action]")]
+        public async Task<ActionResult> SendResetPasswordToken(ChangePasswordEmailDto model)
+        {
+            var normalized = model.UserName.ToUpper();
+            var users = _ctx.Users.Include(a=>a.Site).Include(a=>a.Site.Main).Where(a => a.NormalizedUserName == normalized || a.NormalizedEmail == normalized).ToArray();
+            if (users.Length == 1)
+            {
+                var trrUser = users[0];
+                if (string.IsNullOrWhiteSpace(trrUser.Email))
+                {
+                    return BadRequest($"Your account doesn't have email. Please contact {trrUser.Site.Main.Name} <{trrUser.Site.Main.Email}> to update email at your account and then use password reset feature.");
+                }
+                var user = await _userManager.FindByIdAsync(users[0].Id);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                token = WebUtility.UrlEncode(token);
+                //TODO: update url
+                var html = $"To reset your password <a href=\"https://trr.azurewebsites.net/PasswordReset/{token}\">click here</a>";
+                try
+                {
+                    await _mailService.Send("TRR Password reset", null, html, (trrUser.Site.Main.Email, trrUser.Site.Main.Name),
+                     new[] { (trrUser.Email, $"{trrUser.FirstName} {trrUser.LastName}") });
+                }
+                catch { }
+            }
+            return Ok(new { Ok = true });
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult> ResetPassword(ChangePasswordDto model)
+        {
+            var normalized = model.Email.ToUpper();
+            var users = _ctx.Users.Where(a => a.NormalizedUserName == normalized || a.NormalizedEmail == normalized).ToArray();
+            if (users.Length == 1)
+            {
+                var user = await _userManager.FindByIdAsync(users[0].Id);
+                var res = await _userManager.ChangePasswordAsync(user, model.Token, model.NewPassword);
+                if (!res.Succeeded)
+                {
+                    return BadRequest(res.Errors);
+                }
+            }
+            return Ok(new {Ok = true });
+        }
+
 
         private async Task FillSignInResponse(TRRUser user, SignInResponse resp)
         {

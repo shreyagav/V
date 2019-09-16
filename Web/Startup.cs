@@ -37,11 +37,13 @@ namespace Web
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<IChapterService, ChapterService>();
             services.AddTransient<IStorageService, StorageService>();
+            services.AddTransient<IMailService, MailService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));
             services.AddIdentity<TRRUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             //var secretes = Configuration.Get<Secretes>();
             //services.AddAuthentication().AddFacebook(fbOptions=> {
             //    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];

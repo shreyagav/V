@@ -28,6 +28,7 @@ import EventsByType from './components/reports/EventsByType';
 import VeteransBySite from './components/reports/VeteransBySite';
 import VeteransAttendence from './components/reports/VeteransAttendence';
 import ReportsList from './components/reports/ReportsList';
+import PasswordReset from './components/account/PasswordReset';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -62,8 +63,11 @@ class App extends Component {
                   <Route path='/profile' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
                   <Route path='/member/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
                   <Route path='/SignIn' render={(match) => <div><SimpleLayout><SignIn {...match} /></SimpleLayout></div>} />
+                  <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>} />
+                  <Route path='/ForgotPassword' render={(match) => <div><SimpleLayout><PasswordReset {...match} /></SimpleLayout></div>} />
+                  <Route path='/PasswordReset/:token' render={(match) => <div><SimpleLayout><PasswordReset {...match} /></SimpleLayout></div>} />
+
                   <Route path='/reports' render={(match) => <div><NavMenu {...match} /><SimpleLayout><ReportsList {...match} /></SimpleLayout></div>} />
-                  <Route path='/SignUp' render={(match) => <div><SimpleLayout><SignUp {...match} /></SimpleLayout></div>}/>
                   <Route path='/event-view/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventDemo {...match} /></SimpleLayout></div>} />
                   <Route path='/new-chapter' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />
                   <Route path='/edit-chapter/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapter {...match} /></SimpleLayout></div>} />

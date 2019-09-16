@@ -69,6 +69,10 @@ namespace Services.Data
             modelBuilder.Entity<TRRUser>()
                 .HasIndex(a => a.OldId)
                 .IsUnique();
+            modelBuilder.Entity<EventSite>(entity =>
+            {
+                entity.Property(p => p.AllowEverybody).HasDefaultValue(false);
+            });
         }
     }
 }

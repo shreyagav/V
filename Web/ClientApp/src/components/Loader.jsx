@@ -22,11 +22,11 @@ class Loader extends Component {
             document.body.offsetHeight, document.documentElement.offsetHeight,
             document.body.clientHeight, document.documentElement.clientHeight
         );
-        console.log("DOCUMENT HEIGHT");
-        console.log(scrollHeight);
+        console.debug("DOCUMENT HEIGHT");
+        console.debug(scrollHeight);
         if(this.modalShadowRef !== null){
-            console.log("SHADOW HEIGHT");
-            console.log(this.modalShadowRef.offsetHeight);
+            console.debug("SHADOW HEIGHT");
+            console.debug(this.modalShadowRef.offsetHeight);
         }
     }
 

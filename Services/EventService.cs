@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Dto;
@@ -18,15 +19,22 @@ namespace Services
     {
         private ApplicationDbContext _context;
         private readonly UserManager<TRRUser> _userManager;
-        public EventService(ApplicationDbContext context, UserManager<TRRUser> userManager)
+        private IMailService mailService;
+        public EventService(ApplicationDbContext context, UserManager<TRRUser> userManager, IMailService mail)
         {
             _context = context;
             _userManager = userManager;
+            mailService = mail;
         }
-        [Authorize]
+        
         public async Task AddEventAttendees(int id, ClaimsPrincipal user)
         {
             var appUser = await _userManager.GetUserAsync(user);
+            var evt = _context.CalendarEvents.Include(s=>s.Site).Include(s=>s.Site.Main).First(e => e.Id == id);
+            if (evt.SiteId != appUser.SiteId && !evt.Site.AllowEverybody)
+            {
+                throw new Exception("Only chapter members can participate in this event.");
+            }
             var temp = new UserEvent();
             temp.Created = DateTime.Now;
             temp.CreatedBy = appUser;
@@ -34,6 +42,12 @@ namespace Services
             temp.UserId = appUser.Id;
             _context.UserEvents.Add(temp);
             await _context.SaveChangesAsync();
+            await mailService.Send($"You are going to attend {evt.Name} event",
+                $"We are thrilled to see you at {new TimeDto(evt.StartTime).ToString()} on {evt.Date.ToString("D")}",
+                null,
+                (evt.Site.Main.Email, evt.Site.Main.Name),
+                new[] { (appUser.Email, $"{appUser.FirstName} {appUser.LastName}") }
+                );
         }
 
         [Authorize]
@@ -84,9 +98,10 @@ namespace Services
             return _context.EventBudgets.Where(a => a.EventId == eventId).ToArray();
         }
 
-        public EventMainDto ChangeEvent(EventMainDto newEvent)
+        public async Task<EventMainDto> ChangeEvent(EventMainDto newEvent, ClaimsPrincipal user)
         {
             CalendarEvent temp;
+            var appUser = await _userManager.GetUserAsync(user);
             if (newEvent.Id <= 0)
             {
                 temp = new CalendarEvent(newEvent);
@@ -100,6 +115,12 @@ namespace Services
                 temp.Map(newEvent);
                 temp.Modified = DateTime.Now;
                 _context.Entry(temp).State = EntityState.Modified;
+            }
+            var site = _context.EventSites.First(s => s.Id == temp.SiteId);
+            var isAdmin = await _userManager.IsInRoleAsync(appUser, "Admin");
+            if(site.AllowEverybody && isAdmin)
+            {
+                throw new Exception("Only Administrators can add events to this chapter.");
             }
             _context.SaveChanges();
             newEvent.Id = temp.Id;
