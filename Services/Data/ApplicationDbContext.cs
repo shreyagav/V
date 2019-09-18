@@ -73,6 +73,7 @@ namespace Services.Data
             {
                 entity.Property(p => p.AllowEverybody).HasDefaultValue(false);
             });
+            modelBuilder.Entity<CalendarEventType>().HasIndex(e => e.Order);
         }
     }
 }

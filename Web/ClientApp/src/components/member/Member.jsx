@@ -97,6 +97,7 @@ class Member extends Component {
         this.emptyState = false;
 
         this.saveMemberInfo = this.saveMemberInfo.bind(this);
+        this.close = this.close.bind(this);
     }
 
     componentWillMount(){
@@ -129,7 +130,9 @@ class Member extends Component {
             }
         });
     }
-
+    close() {
+        this.props.history.goBack();
+    }
     saveMemberInfo() {
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
@@ -244,6 +247,13 @@ class Member extends Component {
                             >
                                 <SaveUpSVG />
                                 <span>Save</span>
+                            </button>
+                            <button
+                                className='round-button medium-round-button outline-on-hover'
+                                onClick={this.close}
+                            >
+                                <SaveUpSVG />
+                                <span>Close</span>
                             </button>
                         </div>
                     </div>

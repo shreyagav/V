@@ -18,7 +18,7 @@ namespace Services
 
         public CalendarEventType[] EventTypes()
         {
-            return _ctx.CalendarEventTypes.ToArray();
+            return _ctx.CalendarEventTypes.OrderBy(a=>a.Order).ToArray();
         }
     }
 }
