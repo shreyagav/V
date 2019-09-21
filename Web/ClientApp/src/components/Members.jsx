@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import MultiDropDown from './MultiDropDown/MultiDropDown';
-import { withStore } from './store';
-import { Service } from './ApiService';
-import Table from './Table';
-import VolunteerUpSVG from '../svg/VolunteerUpSVG';
-import PaddlerUpSVG from '../svg/PaddlerUpSVG';
-import ExclamationSVG from '../svg/ExclamationSVG';
-import EditUpSVG from '../svg/EditUpSVG';
-import Loader from './Loader';
-import { Link } from 'react-router-dom';
-import UserSVG from '../svg/UserSVG';
+import React, { Component } from 'react'
+import MultiDropDown from './MultiDropDown/MultiDropDown'
+import { withStore } from './store'
+import { Service } from './ApiService'
+import Table from './Table'
+import VolunteerUpSVG from '../svg/VolunteerUpSVG'
+import PaddlerUpSVG from '../svg/PaddlerUpSVG'
+import CaregiverUpSVG from '../svg/CaregiverUpSVG'
+
+import Loader from './Loader'
+import { Link } from 'react-router-dom'
+import UserSVG from '../svg/UserSVG'
 import Message from './Message'
 
 class Members extends Component {
@@ -64,16 +64,50 @@ class Members extends Component {
     }
 
     renderFullNameColumn(value, row, index, col) {
+        const getIconBackgroundColor = () => {
+            //debugger
+            let backgroundColor = {};
+            switch (row['userType']) {
+                case 53: 
+                    backgroundColor = {"backgroundColor":"#8bba19"}; 
+                    break;
+                case 54: 
+                    backgroundColor = {"backgroundColor":"#fe7b22"}; 
+                    break;
+                case 55: 
+                    backgroundColor = {"backgroundColor":"#339999"}; 
+                    break;
+                default: backgroundColor = {"backgroundColor":"#ffffff"};
+            } 
+            return backgroundColor;
+        }
+        const getIcon = () => {
+            //debugger
+            let icon;
+            switch (row['userType']) {
+                case 53: 
+                    icon = <VolunteerUpSVG svgClassName='fill-white' />
+                    break;
+                case 54: 
+                    icon = <PaddlerUpSVG svgClassName='fill-white' />;
+                    break;
+                case 55: 
+                    icon = <CaregiverUpSVG svgClassName='fill-white' />; 
+                    break;
+                default: icon = <div></div>
+            } 
+            return icon;
+        }
+        const backgroundColor = getIconBackgroundColor();
+        const icon = getIcon();
         return (
             <li 
                 key={index} 
                 className={col.className ? "table-content " + col.className : "table-content"} 
                 style={{"display":"flex", "alignItems":"center"}}
             >
-                <div className='flex-nowrap align-self-stretch align-center pr-05 pl-05' style={ row['oldType'] === 54 ? {"backgroundColor":"#fe7b22"} : {"backgroundColor":"#8bba19"}}>
-                    <span style={{"flex":"0 0 auto","height":"1.5rem"}}>
-                        {row['oldType'] === 54 ? <PaddlerUpSVG svgClassName='fill-white'/> : <VolunteerUpSVG svgClassName='fill-white' />}
-                    </span>
+                <div className='flex-nowrap align-self-stretch align-center pr-05 pl-05' style={backgroundColor}>
+                    <span style={{"flex":"0 0 auto","height":"1.5rem"}}> {icon} </span>
                 </div>
                 <Link to={"/member/" + row["id"]}>
                     <span style={{ "display": "flex", "flexFlow": "column", "flexWrap": "nowrap", "flex": "1 1 auto" }} className="blue-link link">

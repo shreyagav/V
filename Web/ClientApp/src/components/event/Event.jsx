@@ -19,6 +19,10 @@ import eventValidators from './eventValidators'
 import InputWithClearButton from '../InputWithClearButton';
 import StatusDeletedSVG from '../../svg/StatusDeletedSVG';
 
+import DeleteUpSVG from '../../svg/DeleteUpSVG'
+import SaveUpSVG from '../../svg/SaveUpSVG'
+import ReturnUpSVG from '../../svg/ReturnUpSVG'
+
 class Event extends Component {
 
     constructor(props) {
@@ -125,6 +129,7 @@ class Event extends Component {
                 .catch(exception => component.setState({ error: exception, loading: false }));
         }
     }
+    
     fixMainEventData(data) {
         data.date = new Date(data.date);
         data.timeFrom["activated"] = true;
@@ -138,10 +143,17 @@ class Event extends Component {
         this.setState({ loading: true });
         return Service.changeEvent(event);
     }
+
     onSaveClick() {
-        let save = () => { this.updateEvent().then(() => { this.props.history.push('/');})}
-        this.performIfValid(() => save());
+        let save = () => { this.updateEvent().then(() => { 
+            this.setState({ loading: false });
+            /* show sucess window */
+        }).catch(()=>{
+            /* show Error Window */
+        })}
+        this.performIfValid(() => save(), () => this.setState({showError: true}) );
     }
+
     setActiveStep(num) {
         var me = this;
         var afterStep = (data) => {
@@ -247,7 +259,7 @@ class Event extends Component {
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
-        this.performIfValid(() => publish());
+        this.performIfValid(() => publish(), () => this.setState({showError: true}) );
     }
 
     onCancelEventButtonClick() {
@@ -266,17 +278,21 @@ class Event extends Component {
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
-        this.performIfValid(() => cancel());
+        this.performIfValid(() => cancel(), () => this.setState({showError: true}) );
     }
 
     onDeleteEventButtonClick() {
         let onOkButtonClick = () => {
             let event = this.state.eventMain;
             event.eventStatus = 'deleted';
+            this.setState({ loading:true });
             this.updateEvent().then(data => {
-                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading:false });
+                this.setState({ 
+                    eventMain: this.fixMainEventData(data), 
+                    showDialog: false, 
+                    /*loading:false */
+                }, () => this.props.history.goBack());
             });
-            
         };
         let del = () => {
             this.headerText = 'Delete';
@@ -285,7 +301,12 @@ class Event extends Component {
             this.dialogContent = <div><h4>{this.state.eventMain.name}</h4><p className='m-05'>This action can not be undone. Delete anyway?</p></div>
             this.setState({showDialog: true});
         }
-        this.performIfValid(() => del());
+        let checkIfEventHasID = () => {
+            console.log(this.state.eventId);
+            if(this.state.eventId === 0){this.props.history.goBack()}
+            else del();
+        }
+        this.performIfValid(() => del(), checkIfEventHasID);
     }
 
     onMoveToDraftsButtonClick() {
@@ -303,7 +324,7 @@ class Event extends Component {
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
             this.setState({showDialog: true});
         }
-        this.performIfValid(() => draft());
+        this.performIfValid(() => draft(), () => this.setState({showError: true}) );
     }
 
     renderHeader() {
@@ -314,9 +335,11 @@ class Event extends Component {
         }
     }
 
-    performIfValid(callback){
-        if (this.props.store.isFormValid(this.validators, this.state.eventMain)) { callback(); } 
-        else { this.setState({showError: true}) };
+    performIfValid(callback, callback2){
+        if (this.props.store.isFormValid(this.validators, this.state.eventMain)) { callback() } 
+        else { 
+            if(callback2) {callback2()} 
+        };
     }
 
     render() {
@@ -327,12 +350,13 @@ class Event extends Component {
             <div className='pages-wsm-wrapper ipw-800'>
                 <div className='second-nav-wrapper'>
                     <div className='ipw-600'>
-                        <Status eventStatus={eventStatus} className='mr-025' />
                         <div className = 'flex-nowrap align-center'>
+                            <Status eventStatus={eventStatus} className='mr-025' />
                             {eventStatus !== 'published' && eventStatus !== 'deleted' &&
                                 <button 
-                                    className='round-button medium-round-button outline-on-hover' 
+                                    className='round-button medium-round-button outline-on-hover hlo500' 
                                     onClick = {() => this.onPublishButtonClick()}
+                                    hint = 'Publish'
                                 >
                                     <StatusPublishedSVG />
                                     <span>Publish</span>
@@ -340,8 +364,9 @@ class Event extends Component {
                             }
                             {eventStatus !== 'canceled' && eventStatus !== 'deleted' &&
                                 <button 
-                                    className='round-button medium-round-button outline-on-hover' 
+                                    className='round-button medium-round-button outline-on-hover hlo500' 
                                     onClick = {() => this.onCancelEventButtonClick()}
+                                    hint = "Cancel"
                                 >
                                     <StatusCanceledSVG />
                                     <span>Cancel</span>
@@ -349,22 +374,42 @@ class Event extends Component {
                             }
                             {eventStatus !== 'canceled' && eventStatus !== 'draft' && eventStatus !== 'deleted' &&
                                 <button 
-                                    className='round-button medium-round-button outline-on-hover'
+                                    className='round-button medium-round-button outline-on-hover hlo500'
                                     onClick = {() => this.onMoveToDraftsButtonClick()}
+                                    hint = "Draft"
                                 >
                                     <StatusDraftSVG />
                                     <span>Draft</span>
                                 </button>
                             }
+                        </div>
+                        <div className = 'flex-nowrap align-center'>
                             {eventStatus !== 'deleted' && 
                                 <button 
-                                    className='round-button medium-round-button outline-on-hover'
+                                    className='round-button medium-round-button outline-on-hover hlo500'
                                     onClick = {() => this.onDeleteEventButtonClick()}
+                                    hint="Delete"
                                 >
-                                    <StatusDeletedSVG />
+                                    <DeleteUpSVG />
                                     <span>Delete</span>
                                 </button>
                             }
+                            <button
+                                className='round-button medium-round-button outline-on-hover hlo500' 
+                                hint="Save"
+                                onClick={this.onSaveClick}
+                            >
+                                <SaveUpSVG />
+                                <span>Save</span>
+                            </button>
+                            <button
+                                className='round-button medium-round-button outline-on-hover hlo500'
+                                hint="Exit"
+                                onClick={() => this.props.history.goBack()}
+                            >
+                                <ReturnUpSVG />
+                                <span>Exit</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -374,7 +419,7 @@ class Event extends Component {
                     <TabComponent 
                         fixedHeight={true}
                         tabList={['information', 'attendees', 'budget', 'pictures']}
-                        wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index))}
+                        wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index), () => this.setState({showError: true}) )}
                         activeTabIndex={this.state.activeTabIndex}
                     />
                 </div>
@@ -606,13 +651,13 @@ class Event extends Component {
                     {this.state.activeTabIndex > 0 &&
                         <button 
                             className='medium-static-button static-button' 
-                            onClick={() => this.performIfValid(() => this.setActiveStep(this.state.activeTabIndex-1))}
+                            onClick={() => this.performIfValid(() => this.setActiveStep(this.state.activeTabIndex-1), () => this.setState({showError: true}) )}
                         >Back</button>
                     }
                     {this.state.activeTabIndex < 3 &&
                         <button 
                             className='medium-static-button static-button default-button' 
-                            onClick={() => this.performIfValid(this.nextStep)}
+                            onClick={() => this.performIfValid(this.nextStep, () => this.setState({showError: true})) }
                         >Next</button>
                     }
                 </div>

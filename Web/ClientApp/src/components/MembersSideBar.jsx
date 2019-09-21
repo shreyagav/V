@@ -8,6 +8,7 @@ import 'simplebar/dist/simplebar.min.css'
 import VolunteerUpSVG from '../svg/VolunteerUpSVG'
 import PaddlerUpSVG from '../svg/PaddlerUpSVG'
 import SearchInput from './SearchInput'
+import CaregiverUpSVG from '../svg/CaregiverUpSVG'
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
@@ -33,6 +34,14 @@ class EventsSideBar extends Component {
 
     componentWillMount(){
         this.setFilters();
+    }
+
+    componentDidMount(){
+        let today = new Date();
+        let state = this.state;
+        state.dateFrom = new Date(today.getFullYear()-60, today.getMonth());
+        state.dateTo = new Date(today.getFullYear()-20, today.getMonth());
+        this.setState({state});
     }
 
     setFilters() {
@@ -120,7 +129,7 @@ class EventsSideBar extends Component {
                 <p>Type:</p>
                 <MultiDropDown
                     ref={el => this.roleDropDownRef = el}
-                        list={[{ name: 'Veteran', img: <PaddlerUpSVG />, id: 54 }, { name: 'Civilian', img: <VolunteerUpSVG />, id: 53 }, { name: 'Veteran Family/Caregiver', img: <VolunteerUpSVG />, id: 55 }/*TODO: icon for veteran family*/ ]} 
+                    list={[{ name: 'Veteran', img: <PaddlerUpSVG />, id: 54 }, { name: 'Civilian', img: <VolunteerUpSVG />, id: 53 }, { name: 'Veteran Family/Caregiver', img: <CaregiverUpSVG />, id: 55 }/*TODO: icon for veteran family*/ ]} 
                     keyProperty='id'
                     textProperty='name'
                     defaultValue={this.state.role}
@@ -136,6 +145,7 @@ class EventsSideBar extends Component {
                     value={this.state.dateFrom}
                     maxDate={this.state.dateTo}
                     ref={el => this.dateStartDropDownRef = el}
+                    noClearButton={true}
                     onSelect={value => {
                         this.setState({dateFrom: value});
                         this.updateFilter("dateFrom", value);
@@ -147,6 +157,7 @@ class EventsSideBar extends Component {
                     value={this.state.dateTo}
                     minDate={this.state.dateFrom}
                     ref={el => this.dateEndDropDownRef = el}
+                    noClearButton={true}
                     onSelect={value => {
                         this.setState({dateTo: value});
                         this.updateFilter("dateTo", value);

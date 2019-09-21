@@ -8,17 +8,16 @@ import MemberTRRInfo from './MemberTRRInfo'
 import MemberEvents from './MemberEvents'
 import MemberOptions from './MemberOptions'
 import MemberDiagnosis from './MemberDiagnosis'
-import RadioBoxSVG from '../../svg/RadioBoxSVG'
 import Alert from '../Alert'
 import RadioButton from '../RadioButton'
-import EditUpSVG from '../../svg/EditUpSVG'
 import { Service } from '../ApiService'
 import Loader from '../Loader'
 import { alertNotValid } from '../alerts'
 
 import memberValidators from './memberValidators'
-import DeleteUpSVG from '../../svg/DeleteUpSVG';
-import SaveUpSVG from '../../svg/SaveUpSVG';
+import DeleteUpSVG from '../../svg/DeleteUpSVG'
+import SaveUpSVG from '../../svg/SaveUpSVG'
+import ReturnUpSVG from '../../svg/ReturnUpSVG'
 
 import InputWithClearButton from '../InputWithClearButton'
 
@@ -84,18 +83,6 @@ class Member extends Component {
         this.authLevelDropDownRef = null;
         this.userTypeDropDownRef = null;
 
-        this.emptyChapter = false;
-        this.emptyFirstName = false;
-        this.emptyLastName = false;
-        this.emptyPhone = false;
-        this.emptyEmail = false;
-        this.emptyDateOfBirth = false;
-        this.emptyGender = false;
-        this.emptyStreetAddress = false;
-        this.emptyCity = false;
-        this.emptyZip = false;
-        this.emptyState = false;
-
         this.saveMemberInfo = this.saveMemberInfo.bind(this);
         this.close = this.close.bind(this);
     }
@@ -130,9 +117,9 @@ class Member extends Component {
             }
         });
     }
-    close() {
-        this.props.history.goBack();
-    }
+
+    close() { this.props.history.goBack(); }
+
     saveMemberInfo() {
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
@@ -252,8 +239,8 @@ class Member extends Component {
                                 className='round-button medium-round-button outline-on-hover'
                                 onClick={this.close}
                             >
-                                <SaveUpSVG />
-                                <span>Close</span>
+                                <ReturnUpSVG />
+                                <span>Exit</span>
                             </button>
                         </div>
                     </div>
@@ -292,13 +279,17 @@ class Member extends Component {
                         <li className='input-wrapper'>
                             <p>Last Name:</p>
                             <div className={this.props.store.checkIfShowError('lastName', this.validators) ? 'input-wrapper error-input-wrapper' : 'input-wrapper'}>
-                                <input 
+                                <InputWithClearButton 
                                     type='text' 
                                     placeholder='Last Name'
                                     value = {this.state.member.lastName}
                                     onChange={e => {
-                                        this.props.store.updateValidators("lastName", e.target.value, this.validators);
                                         this.updateMemberProperty("lastName", e.target.value);
+                                        this.props.store.updateValidators("lastName", e.target.value, this.validators);
+                                    }}
+                                    onClearValue = {() => {
+                                        this.updateMemberProperty("lastName", ""); 
+                                        this.props.store.updateValidators("lastName", "", this.validators);
                                     }}
                                 />
                                 { this.props.store.displayValidationErrors('lastName', this.validators) }
@@ -327,8 +318,22 @@ class Member extends Component {
                                 { this.props.store.displayValidationErrors('siteId', this.validators) }
                             </div>
                         </li>
+                        <li className='input-wrapper' >
+                            <p>Email:</p>
+                            <div className={this.props.store.checkIfShowError('email', this.validators) ? 'error-input-wrapper' : ""}>
+                                <input type='text' 
+                                    placeholder='Email'
+                                    value = {this.state.member.email}
+                                    onChange={e => {
+                                        this.props.store.updateValidators("email", e.target.value, this.validators);
+                                        this.updateMemberProperty("email", e.target.value);
+                                    }}
+                                />
+                                { this.props.store.displayValidationErrors('email', this.validators) }
+                            </div>
+                        </li>
                         <li className='input-wrapper'>
-                            <p>Phone #:</p>
+                            <p className='mark-optional'>Phone #:</p>
                             <input 
                                 type='text' 
                                 placeholder='Phone Number'
@@ -338,18 +343,37 @@ class Member extends Component {
                                 }}
                             />
                         </li>
-                        <li className='input-wrapper' >
-                            <p>Email:</p>
-                            <input type='text' 
-                                placeholder='Email'
-                                value = {this.state.member.email}
-                                onChange={e => {
-                                    this.updateMemberProperty("email", e.target.value);
-                                }}
-                            />
+                        <li>
+                            <p>Gender:</p>
+                            <div>
+                                <div className={'flex-wrap justify-left radio-inline-wrapper' + (this.props.store.checkIfShowError('gender', this.validators) ? ' error-input-wrapper' : "")}>
+                                    <RadioButton
+                                        style = {{"marginRight":"0.75rem"}}
+                                        radioGroupElement = {this.state.member.gender}
+                                        radioButtonValue = 'M'
+                                        onClick = {(value) => {
+                                            this.props.store.updateValidators("gender", value, this.validators);
+                                            this.updateMemberProperty("gender", value);
+                                        }}
+                                        labelClassName = "checkbox-text"
+                                        labelText = 'Male'
+                                    />
+                                    <RadioButton
+                                        radioGroupElement = {this.state.member.gender}
+                                        radioButtonValue = 'F'
+                                        onClick = {(value) => {
+                                            this.props.store.updateValidators("gender", value, this.validators);
+                                            this.updateMemberProperty("gender", value);
+                                        }}
+                                        labelClassName = "checkbox-text"
+                                        labelText = 'Female'
+                                    />
+                                </div>
+                                { this.props.store.displayValidationErrors('gender', this.validators) }
+                            </div>
                         </li>
                         <li>
-                            <p>Date of Birth:</p>
+                            <p className='mark-optional'>Date of Birth:</p>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
                                 value={this.state.member.dateOfBirth}
@@ -359,99 +383,65 @@ class Member extends Component {
                             />
                     </li>
                     <li>
-                        <p>Injury Date:</p>
+                        <p className='mark-optional'>Injury Date:</p>
                         <DatePicker
                             ref={el => this.injuryDateDropDownRef = el}
                             value={this.state.member.injuryDate}
                             onSelect={value => { this.updateMemberProperty("injuryDate", value) }}
                         />
                     </li>
-                        <li>
-                            <p>Gender:</p>
-                            <div className='flex-wrap justify-left radio-inline-wrapper'>
-                                <RadioButton
-                                    style = {{"marginRight":"0.75rem"}}
-                                    radioGroupElement = {this.state.member.gender}
-                                    radioButtonValue = 'M'
-                                    onClick = {(value) => {
-                                        this.updateMemberProperty("gender", value);
-                                        this.emptyGender = false;
-                                    }}
-                                    labelClassName = "checkbox-text"
-                                    labelText = 'Male'
+                    <li className='input-wrapper'>
+                        <p className='mark-optional'>Address:</p>
+                        <input 
+                            type='text' 
+                            placeholder='Street Address'
+                            value={this.state.member.streetAddress}
+                            onChange={e => this.updateMemberProperty("streetAddress", e.target.value)}
+                        />
+                    </li>
+                    <li>
+                        <span className='empty'></span>
+                        <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
+                            <li 
+                                className='input-wrapper'
+                                style={{"flex":"1 1 auto"}}
+                            >
+                                <input 
+                                    type='text' 
+                                    placeholder='City' 
+                                    value={this.state.member.city}
+                                    onChange={e => this.updateMemberProperty("city", e.target.value)}
                                 />
-                                <RadioButton
-                                    radioGroupElement = {this.state.member.gender}
-                                    radioButtonValue = 'F'
-                                    onClick = {(value) => {
-                                        this.updateMemberProperty("gender", value);
-                                        this.emptyGender = false;
-                                    }}
-                                    labelClassName = "checkbox-text"
-                                    labelText = 'Female'
+                            </li>
+                            <li className='input-wrapper' style={{"flex":"1 0 150px"}}>
+                                <MultiDropDown
+                                    ref={el => this.stateDropDownRef = el}
+                                    list={stateList}
+                                    multiSelect={false}
+                                    keyProperty='abbreviation'
+                                    textProperty='abbreviation'
+                                    defaultValue={this.state.member.state}
+                                    placeholder="State"
+                                    textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
+                                    onDropDownValueChange={value => this.updateMemberProperty("state", value)}
+                                    search={this.filterList}
+                                    searchParams={['abbreviation', 'name']}
+                                    //searchMinCharacterCount = {5}
                                 />
-                            </div>
-                        </li>
-                        <li className='input-wrapper'>
-                            <p>Address:</p>
-                            <input 
-                                type='text' 
-                                placeholder='Street Address'
-                                value={this.state.member.streetAddress}
-                                onChange={e => {
-                                    this.updateMemberProperty("streetAddress", e.target.value);
-                                }}
-                            />
-                        </li>
-                        <li>
-                            <span className='empty'></span>
-                            <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
-                                <li 
-                                    className='input-wrapper'
-                                    style={{"flex":"1 1 auto"}}
-                                >
-                                    <input 
-                                        type='text' 
-                                        placeholder='City' 
-                                        value={this.state.member.city}
-                                        onChange={e => {
-                                            this.updateMemberProperty("city", e.target.value);
-                                        }}
-                                    />
-                                </li>
-                                <li className='input-wrapper' style={{"flex":"1 0 150px"}}>
-                                        <MultiDropDown
-                                            ref={el => this.stateDropDownRef = el}
-                                            list={stateList}
-                                            multiSelect={false}
-                                            keyProperty='abbreviation'
-                                            textProperty='abbreviation'
-                                            defaultValue={this.state.member.state}
-                                            placeholder="State"
-                                            textPropertyRender = {(element, textProperty) => this.stateNameAndAbbrRender(element, textProperty)}
-                                            onDropDownValueChange={value => {
-                                                this.updateMemberProperty("state", value);
-                                            }}
-                                            search={this.filterList}
-                                            searchParams={['abbreviation', 'name']}
-                                            //searchMinCharacterCount = {5}
-                                        />
-                                </li>
-                                <li className='input-wrapper' style={{"flex":"0 0 100px"}}>
-                                    <input 
-                                        type='text' 
-                                        placeholder='Zip' 
-                                        maxLength={5} 
-                                        value = {this.state.member.zip}
-                                        onChange={e => {
-                                            this.updateMemberProperty("zip", e.target.value);
-                                        }}
-                                    />
-                                </li>
-                            </ul>
+                            </li>
+                            <li className='input-wrapper' style={{"flex":"0 0 100px"}}>
+                                <input 
+                                    type='text' 
+                                    placeholder='Zip' 
+                                    maxLength={5} 
+                                    value = {this.state.member.zip}
+                                    onChange={e => this.updateMemberProperty("zip", e.target.value)}
+                                />
+                            </li>
+                        </ul>
                     </li>
                     <li className='input-wrapper'>
-                        <p>Travel Time:</p>
+                        <p className='mark-optional'>Travel Time:</p>
                         <input
                             type='text'
                             placeholder='Travel Time'
@@ -460,7 +450,7 @@ class Member extends Component {
                         />
                     </li>
                     <li>
-                        <p>Medical:</p>
+                        <p className='mark-optional'>Medical:</p>
                         <MultiDropDown
                             ref={el=>this.medicalDropDownRef=el}
                             list={[{ name: 'Inpatient', id: 42 }, { name: 'Outpatient', id: 43 }, { name: 'Vet Center', id: 44 }, { name: 'Other', id: 45 }, { name: 'None', id: 46 }, { name: 'Unknown', id: 94 }]}

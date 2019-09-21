@@ -36,7 +36,7 @@ const storeValidatorsRules = {
     email: (text) => {
         let message1 = text + ' is not valid';
         return [
-            {test: /^$|^.+@[^\.].*\.[a-z]{2,}$/, message: message1 },
+            {test: /^.+@[^\.].*\.[a-z]{2,}$/, message: message1 },
         ];
     },
     emailOTG: (text) => {
@@ -73,6 +73,12 @@ const storeValidatorsRules = {
         let message = 'Please enter the ' + text;
         return [
             { test: (value) => { return (value !== undefined && value !== null) }, message: message },
+        ];
+    },
+    gender: (text) => {
+        let message = 'Please choose ' + text;
+        return [
+            { test: (value) => { return (value === 'M' || value === 'F') }, message: message },
         ];
     },
 };
