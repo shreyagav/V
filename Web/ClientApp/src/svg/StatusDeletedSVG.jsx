@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class StatusDeletedSVG extends React.Component {
     render() {
         return (
-                <svg className={'svg-container '+this.props.svgClassName} version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 16 16" >
+               < svg className={'svg-container '+this.props.svgClassName} version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 16 16" >
                     <path className='svg' d="M0.5,4.6L1.3,16H9L9.8,4.6L0.5,4.6z M3.3,14C3.1,14,3,13.9,3,13.7L2.9,7.3C2.9,7.2,3,7,3.2,7
 	c0.1,0,0.3,0.2,0.3,0.3l0.2,6.3C3.6,13.8,3.5,14,3.3,14z M5.5,13.7c0,0.1-0.2,0.3-0.3,0.3c-0.2,0-0.3-0.1-0.3-0.3V7.4
 	C4.9,7.2,5,7,5.2,7c0.1,0,0.3,0.2,0.3,0.3V13.7z M7.3,13.7C7.3,13.9,7.2,14,7,14c-0.2,0-0.3-0.1-0.3-0.3l0.2-6.3C6.9,7.2,7,7,7.2,7

@@ -700,7 +700,7 @@ ul.main-nav a, .grey-outline-icon {border-color: #666666; color: #666666;}
 .second-nav-wrapper {
     position: fixed;
     height: 40px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     top: 55px;
     width: 100%;
     background-color: #f4f4f4;
@@ -1378,11 +1378,11 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
 
 .mark-optional::after {
     position: absolute;
-    top: 1.5em;
+    top: 2em;
     right: 0em;
     content: 'optional';
     color: #999999;
-    font-size: 0.75em;
+    font-size: 0.6em;
     text-transform: uppercase;
     font-weight: 400;
 }
@@ -1392,6 +1392,10 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
 }
 
 /* error */
+
+.error-input-wrapper label.radio > svg {
+    border-color: #E53E71 !important;
+}
 
 .error-input-wrapper input {
     border-color: #E53E71;
@@ -1675,4 +1679,26 @@ p.message-block {
 
 .fill-white > .svg {
     fill: #ffffff !important;
+}
+
+button.hlo500 > span { display: none;}
+@media screen and (max-width: 499px){
+    button.hlo500 {border-color: transparent !important; padding: 0rem 0.25rem; position: relative; overflow: visible !important;}
+    button.hlo500 > svg {margin-right: 0rem !important; padding: 0.15rem;}
+    button.hlo500:hover::before {
+        content: attr(hint);
+        position: absolute;
+        top:140%;
+        background-color: #666666;
+        color: #ffffff;
+        border-radius: 50px !important;
+        padding: 0em 0.5em 0.25em 0.5em;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        font-weight: 400 !important;
+        text-transform: none !important;
+    }
+}
+@media screen and (min-width: 500px){
+    button.hlo500 > span { display: block; }
 }

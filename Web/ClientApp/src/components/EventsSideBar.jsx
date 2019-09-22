@@ -175,6 +175,7 @@ class EventsSideBar extends Component {
                         value={this.state.dateFrom}
                         maxDate={this.state.dateTo}
                         ref={el => this.dateStartDropDownRef = el}
+                        noClearButton={true}
                         onSelect={value => {
                             this.setState({dateFrom: value});
                             this.updateFilter("dateFrom", value);
@@ -186,6 +187,7 @@ class EventsSideBar extends Component {
                         value={this.state.dateTo}
                         minDate={this.state.dateFrom}
                         ref={el => this.dateEndDropDownRef = el}
+                        noClearButton={true}
                         onSelect={value => {
                             this.setState({dateTo: value});
                             this.updateFilter("dateTo", value);
