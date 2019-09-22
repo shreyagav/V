@@ -86,7 +86,7 @@ namespace Web.Controllers
         [HttpGet("[action]")]
         public MemeberReportLine[] Members()
         {
-            var res = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include("Options.Option").Include("Options.Option.Category")
+            var res = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include("Options.Option").Include("Options.Option.Category").Where(a=>a.Active && !a.Deleted)
                 .Select(a=>new MemeberReportLine() {
                     Id = a.Id,
                     FirstName = a.FirstName,
@@ -160,7 +160,7 @@ namespace Web.Controllers
         {
             var ids = new int[] { 32, 37 };
 
-            var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => a.Options.Any(b => ids.Contains(b.OptionId))).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
+            //var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => a.Options.Any(b => ids.Contains(b.OptionId))).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
             var veteranAttendance = _ctx.Users
                 .Include(a => a.Site)
                 .Include(a => a.Options)

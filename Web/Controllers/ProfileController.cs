@@ -198,44 +198,80 @@ namespace Web.Controllers
                 && (!filter.Role.HasValue || a.OldType == filter.Role.Value)
                 && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && EF.Functions.Like(a.Zip, filter.Zip)))
                 && ((filter.Chapters == null || filter.Chapters.Length == 0) || filter.Chapters.Contains(a.SiteId.Value))
+                && !a.Deleted
                 )
                 .Take(1000).Select(a => new UserProfileDto(a)).ToArray();
             return res;
         }
 
         [HttpPost("[action]")]
-        public async Task<UserProfileDto> Set(UserProfileDto data)
+        public async Task<dynamic> Delete(UserProfileDto data)
+        {
+            var user = await _userManager.FindByIdAsync(data.Id);
+            if(user != null)
+            {
+                user.Deleted = true;
+                var updateRes = await _userManager.UpdateAsync(user);
+                if (!updateRes.Succeeded)
+                {
+                    throw new Exception(string.Join('\n', updateRes.Errors));
+                }
+            }
+            return new { Ok = true };
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult> Set(UserProfileDto data)
         {
             var user = await _userManager.FindByIdAsync(data.Id);
             IdentityResult updateRes = null;
-            if (user == null)
+            try
             {
-                data.Id = Guid.NewGuid().ToString();
-                data.JoinDate = DateTime.Now;
-                user = new TRRUser();
-                data.Map(user);
-                user.UserName = data.Email;
-                updateRes = await _userManager.CreateAsync(user);
-                if (updateRes.Succeeded)
+                if (user == null)
                 {
-                    //TODO: send password email
+                    data.Id = Guid.NewGuid().ToString();
+                    data.JoinDate = DateTime.Now;
+                    user = new TRRUser();
+                    data.Map(user);
+                    user.UserName = data.Email;
+                    user.Created = DateTime.Now;
+                    user.OldType = TRRUserType.Civilian;
+                    user.Active = true;
+                    updateRes = await _userManager.CreateAsync(user);
+                    if (updateRes.Succeeded)
+                    {
+                        //TODO: send password email
+                    }
+                    data.Roles = new string[] { roles.First(a => a.Name == "Member").Id };
                 }
+                else
+                {
+                    var normalizedEmail = data.Email.ToUpper();
+                    if (_ctx.Users.Where(a => a.NormalizedEmail == normalizedEmail && a.Id.Equals(data.Id, StringComparison.OrdinalIgnoreCase)).Any())
+                        throw new Exception("User with such email already exists.");
+                    if (user.Email.Equals(user.UserName, StringComparison.OrdinalIgnoreCase) && !user.Email.Equals(data.Email, StringComparison.OrdinalIgnoreCase))
+                    {
+                        user.UserName = data.Email;
+                    }
+                    data.Map(user);
+                    updateRes = await _userManager.UpdateAsync(user);
+                }
+                if (!updateRes.Succeeded)
+                {
+                    return BadRequest(updateRes.Errors);
+                }
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var toRemoveIds = roles.Select(a => a.Id).Except(data.Roles);
+                var names = roles.Where(a => toRemoveIds.Contains(a.Id)).Select(a => a.Name).Intersect(currentRoles);
+                var res = await _userManager.RemoveFromRolesAsync(user, names);
+                var toAdd = roles.Where(a => data.Roles.Contains(a.Id)).Select(a => a.Name).Except(currentRoles);
+                res = await _userManager.AddToRolesAsync(user, toAdd);
+                return Ok(await GetById(data.Id));
             }
-            else {
-                data.Map(user);
-                updateRes = await _userManager.UpdateAsync(user);
+            catch (Exception ex) {
+                return BadRequest(new dynamic[] { new { Description = ex.Message } });
             }
-            if (!updateRes.Succeeded)
-            {
-                throw new Exception(string.Join('\n', updateRes.Errors));
-            }
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            var toRemoveIds = roles.Select(a => a.Id).Except(data.Roles);
-            var names = roles.Where(a => toRemoveIds.Contains(a.Id)).Select(a=>a.Name).Intersect(currentRoles);
-            var res = await _userManager.RemoveFromRolesAsync(user, names);
-            var toAdd = roles.Where(a => data.Roles.Contains(a.Id)).Select(a => a.Name).Except(currentRoles);
-            res = await _userManager.AddToRolesAsync(user, toAdd);
-            return data;
+            
         }
     }
 }

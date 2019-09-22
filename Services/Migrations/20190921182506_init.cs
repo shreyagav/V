@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Services.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,8 @@ namespace Services.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(nullable: true),
                     OldId = table.Column<int>(nullable: false),
-                    Color = table.Column<string>(nullable: true)
+                    Color = table.Column<string>(nullable: true),
+                    Order = table.Column<byte>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,7 +139,8 @@ namespace Services.Migrations
                     StaffTypeId = table.Column<int>(nullable: false),
                     SiteGroupId = table.Column<int>(nullable: false),
                     SiteStatusId = table.Column<int>(nullable: false),
-                    OldId = table.Column<int>(nullable: false)
+                    OldId = table.Column<int>(nullable: false),
+                    AllowEverybody = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -228,7 +230,7 @@ namespace Services.Migrations
                     Zip = table.Column<string>(nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "Date", nullable: true),
                     OldSiteId = table.Column<int>(nullable: false),
-                    OldType = table.Column<int>(nullable: false),
+                    OldType = table.Column<int>(nullable: false, defaultValue: 54),
                     Gender = table.Column<string>(nullable: false),
                     TravelTime = table.Column<string>(nullable: true),
                     JoinDate = table.Column<DateTime>(type: "Date", nullable: true),
@@ -244,7 +246,9 @@ namespace Services.Migrations
                     ReleaseSigned = table.Column<bool>(nullable: false),
                     LiabilitySigned = table.Column<bool>(nullable: false),
                     Comments = table.Column<string>(nullable: true),
-                    SiteId = table.Column<int>(nullable: true)
+                    SiteId = table.Column<int>(nullable: true),
+                    Created = table.Column<DateTime>(type: "Date", nullable: false),
+                    Deleted = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -621,6 +625,11 @@ namespace Services.Migrations
                 name: "IX_CalendarEvents_SiteId",
                 table: "CalendarEvents",
                 column: "SiteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CalendarEventTypes_Order",
+                table: "CalendarEventTypes",
+                column: "Order");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventBudgets_EventId",

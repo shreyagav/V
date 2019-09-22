@@ -13,7 +13,7 @@ namespace Services.Data
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner3;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer("Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }
@@ -69,6 +69,11 @@ namespace Services.Data
             modelBuilder.Entity<TRRUser>()
                 .HasIndex(a => a.OldId)
                 .IsUnique();
+            modelBuilder.Entity<TRRUser>(entity =>
+            {
+                entity.Property(p => p.Deleted).HasDefaultValue(false);
+                entity.Property(p => p.OldType).HasDefaultValue(TRRUserType.Civilian);
+            });
             modelBuilder.Entity<EventSite>(entity =>
             {
                 entity.Property(p => p.AllowEverybody).HasDefaultValue(false);

@@ -47,5 +47,8 @@ namespace Models
         public virtual ICollection<UserEvent> Events { get; set; }
         public virtual ICollection<UserOption> Options { get; set; }
         public virtual ICollection<UserDiagnosis> Diagnoses { get; set; }
+        [Column(TypeName = "Date")]
+        public DateTime Created { get; set; }
+        public bool Deleted { get; set; }
     }
 }

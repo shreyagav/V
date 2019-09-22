@@ -33,7 +33,7 @@ namespace UnitTests
             services.AddTransient<IImportService, ImportService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                             options.UseSqlServer(
-                                "Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner3;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
+                                "Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
             services.AddIdentity<TRRUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserService, UserService>();
@@ -57,7 +57,7 @@ namespace UnitTests
             var failed = new List<XmlNode>();
             XmlDocument doc = new XmlDocument();
             Console.WriteLine($"{DateTime.Now} ImportSites");
-            doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin (1).xml");
+            doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin.xml");
             var nodes = doc.SelectNodes("//table[@name='site']");
 
             var failedSites = ImportSites(nodes, eventService);
@@ -115,7 +115,7 @@ left join AspNetRoles b on a.Role = b.Name");
             Console.WriteLine($"{DateTime.Now} ImportUserEvents imported {count} out of {nodes.Count}");
 
             importService.GetContext().Database.ExecuteSqlCommand(@"  DECLARE @cat INT;
-  UPDATE dbo.UserOptions SET OptionId=37 WHERE OptionId=32 AND UserId NOT IN (SELECT UserId WHERE OptionId=37);
+  UPDATE dbo.UserOptions SET OptionId=37 WHERE OptionId=32 AND UserId NOT IN (SELECT UserId from dbo.UserOptions WHERE OptionId=37);
   UPDATE dbo.Options SET Title='Veteran' WHERE Id=37;
   SELECT @cat = OptionCategoryId FROM dbo.Options WHERE Id=32;
   DELETE FROM dbo.Options WHERE id=32;

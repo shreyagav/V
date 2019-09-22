@@ -448,6 +448,9 @@ namespace Services.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("Date");
+
                     b.Property<DateTime?>("DateInjured")
                         .HasColumnType("Date");
 
@@ -455,6 +458,10 @@ namespace Services.Migrations
                         .HasColumnType("Date");
 
                     b.Property<string>("DeactiveCause");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -500,7 +507,9 @@ namespace Services.Migrations
 
                     b.Property<int>("OldStatus");
 
-                    b.Property<int>("OldType");
+                    b.Property<int>("OldType")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(54);
 
                     b.Property<string>("PasswordHash");
 

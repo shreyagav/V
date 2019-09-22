@@ -73,6 +73,9 @@ export class Service {
     static getProfileById(id) {
         return Service.__get(host + '/api/Profile/GetById/'+id);
     }
+    static deleteProfile(info) {
+        return Service.__post(host + '/api/Profile/Delete', info);
+    }
     static setProfile(info) {
         return Service.__post(host + '/api/Profile/Set',info);
     }
@@ -163,18 +166,8 @@ export class Service {
     }
 
     static __get(url) {
-        //var promice = fetch(url).then(resp => {
-        //    if (!resp.ok) {
-        //        throw Error(resp.statusText);
-        //    }
-        //    return resp;
-        //});
-        //promice.catch(err => { throw Error(err); });
-        //return promice.then(data => {
-        //    return data.json();
-        //}, err => {  });
         return fetch(url).then(response  => {
-            if (response .ok) {
+            if (response.ok) {
                 const contentType = response.headers.get('Content-Type') || '';
                 if (contentType.includes('application/json')) {
                     return response.json().catch(error => {
@@ -182,16 +175,14 @@ export class Service {
                     });
                 }
                 return Promise.reject(new Error('Invalid content type: ' + contentType));
+            } else {
+                if (response.status == 404) {
+                    return Promise.reject(new Error('Page not found: ' + url));
+                }
+                return response.json().then(err => {
+                    return Promise.reject(err);
+                });
             }
-            if (response.status == 404) {
-                return Promise.reject(new Error('Page not found: ' + url));
-            }
-            
-            return response.json().then(err => {
-                console.log(err);
-                return Promise.reject(err);
-            });
-            
         }).catch(error => {
             console.log(error);
             return Promise.reject(new Error(error.message));
@@ -199,17 +190,46 @@ export class Service {
     }
     
     static __post(url, data) {
-        var promice = fetch(url, {
+        //var promice = fetch(url, {
+        //    method: 'post',
+        //    body: JSON.stringify(data),
+        //    headers: {
+        //        'Content-Type': 'application/json'
+        //    }
+        //});
+        //promice.catch(err => console.error(err));
+        //return promice.then(data => {
+        //    return data.json();
+        //}).catch(err => console.error(err));
+
+
+        return fetch(url, {
             method: 'post',
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json'
             }
+        }).then(response => {
+            if (response.ok) {
+                const contentType = response.headers.get('Content-Type') || '';
+                if (contentType.includes('application/json')) {
+                    return response.json().catch(error => {
+                        return Promise.reject(new Error('Invalid JSON: ' + error.message));
+                    });
+                }
+                return Promise.reject(new Error('Invalid content type: ' + contentType));
+            } else {
+                if (response.status == 404) {
+                    return Promise.reject(new Error('Page not found: ' + url));
+                }
+                return response.json().then(err => {
+                    return Promise.reject(err);
+                });
+            }
+        }).catch(error => {
+            console.log(error);
+            return Promise.reject(new Error(error.message));
         });
-        promice.catch(err => console.error(err));
-        return promice.then(data => {
-            return data.json();
-        }).catch(err => console.error(err));
     }
     static uploadPictures(eventId, input) {
         let formData = new FormData();

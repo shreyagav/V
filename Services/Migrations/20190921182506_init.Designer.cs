@@ -10,8 +10,8 @@ using Services.Data;
 namespace Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190918214203_color-index")]
-    partial class colorindex
+    [Migration("20190921182506_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -450,6 +450,9 @@ namespace Services.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("Date");
+
                     b.Property<DateTime?>("DateInjured")
                         .HasColumnType("Date");
 
@@ -457,6 +460,10 @@ namespace Services.Migrations
                         .HasColumnType("Date");
 
                     b.Property<string>("DeactiveCause");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -502,7 +509,9 @@ namespace Services.Migrations
 
                     b.Property<int>("OldStatus");
 
-                    b.Property<int>("OldType");
+                    b.Property<int>("OldType")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(54);
 
                     b.Property<string>("PasswordHash");
 
