@@ -46,7 +46,9 @@ class PasswordReset extends Component {
     }
 
     componentWillMount = () => {
-        this.validators = resetPasswordValidators1();
+        if (this.props.match.params.token) {
+            this.validators = resetPasswordValidators2()
+        } else this.validators = resetPasswordValidators1();
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
     }
 
