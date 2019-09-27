@@ -42,10 +42,17 @@ namespace Services
             temp.UserId = appUser.Id;
             _context.UserEvents.Add(temp);
             await _context.SaveChangesAsync();
+            string from = "webmaster@teamriverrunner.org";
+            string fromName = "Webmaster Team River Runner";
+            if (evt.Site.Main != null && !string.IsNullOrWhiteSpace(evt.Site.Main.Email))
+            {
+                from = evt.Site.Main.Email;
+                fromName = evt.Site.Main.Name;
+            }
             await mailService.Send($"You are going to attend {evt.Name} event",
                 $"We are thrilled to see you at {new TimeDto(evt.StartTime).ToString()} on {evt.Date.ToString("D")}",
                 null,
-                (evt.Site.Main.Email, evt.Site.Main.Name),
+                (from, fromName),
                 new[] { (appUser.Email, $"{appUser.FirstName} {appUser.LastName}") }
                 );
         }
@@ -106,6 +113,7 @@ namespace Services
             {
                 temp = new CalendarEvent(newEvent);
                 temp.Created = temp.Modified = DateTime.Now;
+                temp.CreatedById = appUser.Id;
                 temp.Status = EventStatus.Draft;
                 var added = _context.CalendarEvents.Add(temp);
             }
@@ -116,6 +124,7 @@ namespace Services
                 temp.Modified = DateTime.Now;
                 _context.Entry(temp).State = EntityState.Modified;
             }
+            temp.ModifiedById = appUser.Id;
             var site = _context.EventSites.First(s => s.Id == temp.SiteId);
             var isAdmin = await _userManager.IsInRoleAsync(appUser, "Admin");
             if(site.AllowEverybody && isAdmin)

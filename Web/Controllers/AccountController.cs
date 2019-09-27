@@ -84,11 +84,17 @@ namespace Web.Controllers
                 var user = await _userManager.FindByIdAsync(users[0].Id);
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 token = WebUtility.UrlEncode(token);
-                //TODO: update url
-                var html = $"To reset your password <a href=\"https://trr.azurewebsites.net/PasswordReset/{token}\">click here</a>";
+                var html = $"To reset your password <a href=\"https://ors.teamriverrunner.org/PasswordReset/{token}\">click here</a>";
                 try
                 {
-                    await _mailService.Send("TRR Password reset", null, html, (trrUser.Site.Main.Email, trrUser.Site.Main.Name),
+                    string from = "webmaster@teamriverrunner.org";
+                    string fromName = "Webmaster Team River Runner";
+                    if (trrUser.Site != null && trrUser.Site.Main != null && !string.IsNullOrWhiteSpace(trrUser.Site.Main.Email))
+                    {
+                        from = trrUser.Site.Main.Email;
+                        fromName = trrUser.Site.Main.Name;
+                    }
+                    await _mailService.Send("TRR Password reset", null, html, (from, fromName),
                      new[] { (trrUser.Email, $"{trrUser.FirstName} {trrUser.LastName}") });
                 }
                 catch { }
@@ -147,14 +153,14 @@ namespace Web.Controllers
                     throw new Exception("User with provided email already exists. Use 'Forgot Password' to regain access.");
                 }
                 user = new TRRUser();
-                user.Active = false;
+                user.Active = true;
                 user.Email = info.Email;
                 user.Address = info.Zip;
                 user.UserName = info.Email;
                 user.PhoneNumber = info.Phone;
                 user.FirstName = info.FirstName;
                 user.LastName = info.LastName;
-
+                user.Created = DateTime.Now;
                 var add_res = await _userManager.CreateAsync(user, info.Password);
                 if (add_res.Succeeded)
                 {
