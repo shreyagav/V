@@ -13,6 +13,7 @@
 }
 /* clearing browser settings for numeric inputs */
 input, button {display: block;}
+input::-ms-reveal {display:none;}
 input[type=number] {-moz-appearance: textfield;}
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -72,7 +73,7 @@ h2, .h2 {font-size: 2.8rem; line-height: 1; }
 
 h3, .h3 {
     font-size: 1.8rem;
-    /*font-weight: 500;*/
+    font-weight: 500;
     line-height: 1;
     text-transform: uppercase;
     margin-bottom: 0.2rem;
@@ -1445,9 +1446,6 @@ li.mark-invalid label > svg {
     border-color: #E53E71;
 }
 
-.overflow-auto {overflow: auto;}
-.overflow-hidden {overflow: hidden;}
-
 .email {
     font-size: 0.85em !important;
     text-transform: none !important;
@@ -1635,6 +1633,32 @@ p.message-block {
 .height-100 {height: 100%;}
 .height-auto {height: auto !important;}
 
+/* Correct wrapper - container code !!! */
+.abs-wrapper {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.abs-wrapper > div {
+    padding: 0em 1em;
+    width: 100%;
+    max-width: 500px;
+    max-height: 100vh;
+    display: flex;
+    align-content: center;
+    justify-items: center;
+    flex-flow: column;
+    flex-wrap: nowrap;
+}
+/* Correct wrapper - container code ends!!! */
+
 .wh-bcg {
     position: fixed;
     display: flex;
@@ -1647,15 +1671,17 @@ p.message-block {
     bottom: 0px;
     right: 0px;
     z-index: 9999;
-    opacity: 1;
 }
 
 .wh-bcg > div {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
+    opacity: 1;
 }
+
+.overflow-auto {overflow: auto;}
 
 .ovfy-auto {
     overflow-y: auto;
@@ -1665,7 +1691,7 @@ p.message-block {
     overflow-x: hidden;
 }
 
-.ovf-hidden {
+.overflow-hidden, .ovf-hidden {
     overflow: hidden;
 }
 
@@ -1702,3 +1728,7 @@ button.hlo500 > span { display: none;}
 @media screen and (min-width: 500px){
     button.hlo500 > span { display: block; }
 }
+
+.display-none {display: none !important;}
+.display-flex {display: flex !important;}
+

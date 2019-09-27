@@ -44,14 +44,12 @@ class NewEvents extends Component {
                 actualFilters[a.name] = a.value;
             }
         });
-        console.log(props.filters, actualFilters);
         Service.getEventsList(actualFilters).then(json => { this.setState({ events: json, loading:false }); });
     }
 
     componentWillReceiveProps(props) {
         let temp = JSON.stringify(props.filters);
         if (temp != this.filtersStr) {
-            console.log("update");
             this.filtersStr = temp;
             this.updateList(props);
         }

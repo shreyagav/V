@@ -65,6 +65,7 @@ class Event extends Component {
             eventId: evtId,
             showError: false,
             showDialog: false,
+            showMessage: false,
         };
         this.defaultTimeValue = {
             activated: false,
@@ -145,12 +146,16 @@ class Event extends Component {
     }
 
     onSaveClick() {
-        let save = () => { this.updateEvent().then(() => { 
-            this.setState({ loading: false });
-            /* show sucess window */
-        }).catch(()=>{
-            /* show Error Window */
-        })}
+        let save = () => { 
+            this.updateEvent().then(() => { 
+                /* SHOW SUCCESS MESSAGE */
+                this.headerText = 'Hurray!';
+                this.dialogText = "Information was successfully saved for the event";
+                this.dialogContent = <h4>{this.state.eventMain.name}</h4>
+                this.mode = 'success'
+                this.setState({ loading: false, showMessage: true });
+            })/*.catch(()=>{/* show Error Window *//*})*/
+        }
         this.performIfValid(() => save(), () => this.setState({showError: true}) );
     }
 
@@ -302,7 +307,6 @@ class Event extends Component {
             this.setState({showDialog: true});
         }
         let checkIfEventHasID = () => {
-            console.log(this.state.eventId);
             if(this.state.eventId === 0){this.props.history.goBack()}
             else del();
         }
@@ -552,7 +556,7 @@ class Event extends Component {
                                                 ref={el => this.dateEndDropDownRef = el}
                                             />
                                         </li>
-                                    </ul>                                
+                                    </ul>
                             </div>
                         </li>*/}
 
@@ -675,6 +679,20 @@ class Event extends Component {
                         cancelButtonText = "Cancel"
                         okButtonText = "Ok"
                         mode = 'warning'
+                    >
+                       {this.dialogContent}
+                    </Alert>
+                }
+
+                {this.state.showMessage && 
+                    <Alert 
+                        headerText = {this.headerText}
+                        text = {this.dialogText}
+                        onClose = {() => this.setState({showMessage: false})}
+                        showOkButton = {true}
+                        onOkButtonClick = {() => this.setState({showMessage: false})}
+                        okButtonText = "Ok"
+                        mode = {this.mode}
                     >
                        {this.dialogContent}
                     </Alert>

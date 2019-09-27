@@ -70,7 +70,6 @@ class EventsSideBar extends Component {
     }
 
     updateFilter(filterName, value) {
-        console.log(filterName, value);
         let filters = this.props.filters;
         let element = filters.find(element => element.name === filterName); 
         element.value = value;

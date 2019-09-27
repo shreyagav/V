@@ -20,8 +20,7 @@ class NavMenu extends Component {
     super(props);
       this.state = {};
       this.signOut = this.signOut.bind(this);
-      console.log(props.match.path);
-  }
+    }
 
     signOut() {
         var me = this;

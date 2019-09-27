@@ -49,7 +49,7 @@ class SideBarLayout extends Component {
   }
 
   updateFilters(filters){
-    this.setState({filters: filters}, console.log(this.state.filters));
+    this.setState({filters: filters});
   }
 
   startTouch(e) {

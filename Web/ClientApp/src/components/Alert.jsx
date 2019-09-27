@@ -3,6 +3,7 @@ import CloseUpSVG from '../svg/CloseUpSVG';
 import CheckBoxSVG from '../svg/CheckBoxSVG';
 import './Alert.css'
 import ExclamationSVG from '../svg/ExclamationSVG';
+import FixedWrapper from './FixedWrapper';
 
 class Alert extends Component {
 
@@ -15,6 +16,7 @@ class Alert extends Component {
         this.cancelButtonRef = null;
         this.closeButtonRef = null;
         this.setFocusTo = null;
+        this.elWithScroll = null;
     }
 
     componentWillMount() {document.body.classList.add("ovf-hidden")}
@@ -42,8 +44,7 @@ class Alert extends Component {
 
     render() {
         return (
-            <div>
-                <div className='modal-shadow'></div>
+            <FixedWrapper maxWidth={"600px"} /*noPadding={true}*/ >
                 <div className = {this.props.mode ? 'modal-body ' + this.props.mode : 'modal-body'}>
                     <button 
                         ref = {el => this.closeButtonRef = el}
@@ -70,10 +71,12 @@ class Alert extends Component {
                         }
                         {this.props.headerText && <h3>{this.props.headerText}</h3>}
                     </div>
-                    <div className = 'modal-content mb-1'>
-                        {this.props.text && <p className='alertText'>{this.props.text}</p>}
-                    </div>
-                    <div className = 'modal-content mb-1 mt-05'>{this.props.children}</div>
+                    {this.props.text &&
+                        <div className = 'modal-content mb-1'>
+                            <p className='alertText'>{this.props.text}</p>
+                        </div>
+                    }
+                    {this.props.children && <div className = 'modal-content mb-1 mt-05'>{this.props.children}</div>}
                     {this.props.showOkButton &&
                         <button 
                             ref = {el => this.singleOkButtonRef = el}
@@ -103,7 +106,7 @@ class Alert extends Component {
                         </div>
                     }
                 </div>
-            </div>
+            </FixedWrapper>
         )
     }
 }

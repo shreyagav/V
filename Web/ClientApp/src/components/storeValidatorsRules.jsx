@@ -45,10 +45,33 @@ const storeValidatorsRules = {
             { test: /^$|^[^@]+(@([^@%',]*(\.([a-z]{1,})?)?)?)?$/, message: message1 },
         ];
     },
+    password: (text) => {
+        let message1 = text + ' must be a minimum of 6 characters in length';
+        let message2 = text + ' must contain at least one non alphanumeric character';
+        let message3 = text + ' must contain at least one lowercase (\'a\'-\'z\') character';
+        let message4 = text + ' must contain at least one uppercase (\'A\'-\'Z\') character';
+        return [ 
+            { test: (value) => { return value.length >= 6 }, message: message1 },
+            { test: /(?=.*\W|_)/, message: message2 },
+            { test: /(?=.*[a-z])/, message: message3 },
+            { test: /(?=.*[A-Z])/, message: message4 },
+        ];
+    },
+    compareValues: (text) => {
+        return [
+            { test: (value) => { return value === true }, message: text }
+        ]
+    },
     dropDownValue: (text) => {
         let message1 = 'Please select the ' + text;
         return [
             { test: (value) => { return value > 0 }, message: message1 },
+        ];
+    },
+    zip: (text) => {
+        let message1 = text + ' is not valid';
+        return [ 
+            { test: /^\d{1,5}(?:[-\s]\d{0,4})?$/, message: message1 },
         ];
     },
     zipOTG: (text) => {

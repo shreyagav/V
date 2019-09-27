@@ -150,7 +150,7 @@ namespace Web.Controllers
                 var user = _ctx.Users.FirstOrDefault(u => u.UserName == info.Email);
                 if(user != null)
                 {
-                    throw new Exception("User with provided email already exists. Use forgot password to regain access.");
+                    throw new Exception("User with provided email already exists. Use 'Forgot Password' to regain access.");
                 }
                 user = new TRRUser();
                 user.Active = true;
