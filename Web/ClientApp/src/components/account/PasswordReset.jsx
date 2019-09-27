@@ -168,7 +168,7 @@ class PasswordReset extends Component {
                         </li>
                         {this.state.passwordReset.Token && <section>
                             <li>
-                                <p>New Password:</p>
+                                <p className = 'mb-1'>New Password:</p>
                                 <PasswordComponent
                                     className = 'mb-1'
                                     checkIfShowError = {(field, validators) => this.props.store.checkIfShowError(field, validators)}
@@ -182,7 +182,7 @@ class PasswordReset extends Component {
                                 />
                             </li>
                             <li>
-                                <p>Repeat Password:</p>
+                                <p className = 'mb-1'>Repeat Password:</p>
                                 <PasswordComponent
                                     className = 'mb-1'
                                     checkIfShowError = {(field, validators) => this.props.store.checkIfShowError(field, validators)}

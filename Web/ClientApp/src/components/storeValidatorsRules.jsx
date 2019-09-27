@@ -50,11 +50,13 @@ const storeValidatorsRules = {
         let message2 = text + ' must contain at least one non alphanumeric character';
         let message3 = text + ' must contain at least one lowercase (\'a\'-\'z\') character';
         let message4 = text + ' must contain at least one uppercase (\'A\'-\'Z\') character';
+        let message5 = text + ' must contain at least one digit (\'0\'-\'9\')';
         return [ 
             { test: (value) => { return value.length >= 6 }, message: message1 },
             { test: /(?=.*\W|_)/, message: message2 },
             { test: /(?=.*[a-z])/, message: message3 },
             { test: /(?=.*[A-Z])/, message: message4 },
+            { test: /(?=.*\d)/, message: message5 },
         ];
     },
     compareValues: (text) => {
