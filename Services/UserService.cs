@@ -97,6 +97,9 @@ namespace Services
                 {
                     user.JoinDate = null;
                 }
+                user.OldType = TRRUserType.Civilian;
+                user.Created = DateTime.Now;
+                user.Deleted = false;
                 var res = await _userManager.CreateAsync(user);
                 return res;
             }catch(Exception ex)

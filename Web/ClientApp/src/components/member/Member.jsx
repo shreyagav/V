@@ -92,18 +92,22 @@ class Member extends Component {
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
     }
 
+    fixData(data) {
+        if (data.dateOfBirth != null) {
+            data.dateOfBirth = new Date(data.dateOfBirth);
+        }
+        if (data.injuryDate != null) {
+            data.injuryDate = new Date(data.injuryDate);
+        }
+        if (data.joinDate != null) {
+            data.joinDate = new Date(data.joinDate);
+        }
+        return data;
+    }
+
     componentDidMount() {
         var onSuccess = (data) => {
-            if (data.dateOfBirth != null) {
-                data.dateOfBirth = new Date(data.dateOfBirth);
-            }
-            if (data.injuryDate != null) {
-                data.injuryDate = new Date(data.injuryDate);
-            }
-            if (data.joinDate != null) {
-                data.joinDate = new Date(data.joinDate);
-            }
-            this.setState({ loading: false, member: data });
+            this.setState({ loading: false, member: this.fixData(data) });
         };
         this.setState({ loading: true });
         Service.getTRRInfoLists().then(data => {
@@ -125,12 +129,16 @@ class Member extends Component {
         Service.setProfile(this.state.member).then(data => {
             if(data === undefined) {this.setState({ loading: false, showErrorSaveDialog: true })}
             else {
-                var temp = this.state.member;
-                temp.id = data.id;
-                this.setState({ member:temp, loading: false, showSuccessfullySavedDialog: true })
+
+                this.setState({ member: this.fixData(data), loading: false, showSuccessfullySavedDialog: true })
             }
         }).catch(er => {
-            this.setState({ loading: false, showErrorSaveDialog: true });
+            var mess = 'Something went wrong.';
+            console.log(typeof (er));
+            if (Array.isArray(er)) {
+                mess.forEach(a => { mess += '; ' + a; });
+            } 
+            this.setState({ loading: false, showErrorSaveDialog: true, messageErrorSaveDialog: mess });
         });
     }
 
@@ -146,8 +154,8 @@ class Member extends Component {
         </span>
     }
 
-    deleteMember(){
-        alert("delete member")
+    deleteMember() {
+        Service.deleteProfile(this.state.member).then(this.close);
     }
 
     renderHeader() {
@@ -541,8 +549,8 @@ class Member extends Component {
                         onOkButtonClick={() => this.setState({showErrorSaveDialog: false})}
                         okButtonText="Ok"
                         mode='error'
-                    >
-                        <p className='mb-05' style={{"textAlign":"center"}}> Something went wrong. </p>
+                >
+                    <p className='mb-05' style={{ "textAlign": "center" }}> {this.state.messageErrorSaveDialog} </p>
                         <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
                         <p style={{"textAlign":"center"}}> was not saved </p>
                     </Alert>

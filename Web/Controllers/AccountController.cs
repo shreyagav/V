@@ -73,7 +73,7 @@ namespace Web.Controllers
         public async Task<ActionResult> SendResetPasswordToken(ChangePasswordEmailDto model)
         {
             var normalized = model.UserName.ToUpper();
-            var users = _ctx.Users.Include(a=>a.Site).Include(a=>a.Site.Main).Where(a => a.NormalizedUserName == normalized || a.NormalizedEmail == normalized).ToArray();
+            var users = _ctx.Users.Include(a=>a.Site).Include(a=>a.Site.Main).Where(a => (a.NormalizedUserName == normalized || a.NormalizedEmail == normalized) && !a.Deleted).ToArray();
             if (users.Length == 1)
             {
                 var trrUser = users[0];
@@ -100,7 +100,7 @@ namespace Web.Controllers
         public async Task<ActionResult> ResetPassword(ChangePasswordDto model)
         {
             var normalized = model.Email.ToUpper();
-            var users = _ctx.Users.Where(a => a.NormalizedUserName == normalized || a.NormalizedEmail == normalized).ToArray();
+            var users = _ctx.Users.Where(a => (a.NormalizedUserName == normalized || a.NormalizedEmail == normalized) && !a.Deleted).ToArray();
             if (users.Length == 1)
             {
                 if(model.NewPassword != model.NewPasswordRepeat)
@@ -187,7 +187,7 @@ namespace Web.Controllers
         {
             var resp = new SignInResponse() { Error = null };
             try {
-                var user = _ctx.Users.FirstOrDefault(u => u.UserName == info.UserName || u.OldLogin == info.UserName || u.Email == info.UserName);
+                var user = _ctx.Users.FirstOrDefault(u => (u.UserName == info.UserName || u.OldLogin == info.UserName || u.Email == info.UserName) && !u.Deleted && u.Active);
                 var res = await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
                 if (res.Succeeded)
                 {
