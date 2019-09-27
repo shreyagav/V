@@ -22,9 +22,8 @@ class Chapters extends Component {
     }
 
     componentWillMount(){
-        console.log('mount');
         var me = this;
-        setTimeout(() => {console.log('set state'); me.setState({stateFilter1:[401, 354]});},2000)
+        setTimeout(() => {me.setState({stateFilter1:[401, 354]});},2000)
     }
 
     renderStateName(value, row, index, col) {

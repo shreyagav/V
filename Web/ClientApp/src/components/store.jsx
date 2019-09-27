@@ -96,17 +96,11 @@ const createStore = WrappedComponent => {
           return outcome;
         }
       },
-      
-      //TODO : delete when proven not used
-      /*
-      resetValidators: (validators) => {
-        Object.keys(validators).forEach((fieldName) => {
-          validators[fieldName].errors = [];
-          validators[fieldName].valid = false;
-          validators[fieldName].activated = false;
-        });
+
+      performIfValid: (element, validators, callback, callback2) => {
+        if (this.state.isFormValid(validators, element)) { callback() } 
+        else { if(callback2) {callback2()} };
       },
-      */
 
       displayValidationErrors: (fieldName, validators) => {
         const validator = validators[fieldName];

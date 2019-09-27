@@ -40,7 +40,6 @@ class Members extends Component {
                 actualFilters[a.name] = a.value;
             }
         });
-        console.log(actualFilters);
         Service.getFilteredMembers(actualFilters).then(json => { this.setState({ members: json, loadData:false }); });
     }
 

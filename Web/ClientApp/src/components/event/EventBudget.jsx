@@ -36,7 +36,7 @@ class EventBudget extends Component {
     componentDidMount() {
         this.setState({ loading: true });
         Service.getBudget(this.state.eventId)
-            .then(data => this.setState({ budget: data, loading: false, calculatedCost: this.getCalculatedCost(data) }, console.log(this.state)));
+            .then(data => this.setState({ budget: data, loading: false, calculatedCost: this.getCalculatedCost(data) }));
     }
 
     getCalculatedCost(all) {

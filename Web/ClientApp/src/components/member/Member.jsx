@@ -136,7 +136,6 @@ class Member extends Component {
 
     updateMemberProperty(property, value){
         let member = this.state.member;
-        console.log(member);
         member[property] = value;
         this.setState({member, member});
     }

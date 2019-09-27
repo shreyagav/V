@@ -45,7 +45,6 @@ class MultiDropDown extends React.Component {
     }
 
     componentWillMount() {
-        //console.log("component Will Mount");
         //this.setState({onFocus: true});
         this.toggleable = this.checkIfTogglable();
         if(this.toggleable){document.addEventListener('wheel', this.handleWheel, {passive : false})} 
@@ -57,7 +56,6 @@ class MultiDropDown extends React.Component {
     }
 
     componentWillUpdate(){
-        //console.log("component Will Update");
         this.setHeight(); 
     }
 

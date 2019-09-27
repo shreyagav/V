@@ -24,10 +24,7 @@ class ImageGallery extends Component {
     }
 
     /*componentWillReceiveProps(props){
-        console.log("componentWillReceiveProps");
         if(this.imageGalleryRef !== null){
-            console.log("props");
-            console.log(props);
             this.formatImageList(props.pictures, 1);
         }
     }*/
