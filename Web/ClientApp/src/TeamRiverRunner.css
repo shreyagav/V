@@ -26,6 +26,7 @@ ul {list-style: none; margin: 0px !important;}
 li {list-style-type:none; }
 a {text-decoration: none;}
 a:hover {cursor: pointer; color:#0099cc;}
+.a:focus {color: #0099cc;}
 :focus {outline: none;}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
 
@@ -296,6 +297,11 @@ input:not(:disabled):not(:read-only):hover,
 input:not(:disabled):not(:read-only):focus, 
 textarea:not(:disabled):not(:read-only):focus, 
 textarea:not(:disabled):not(:read-only):hover {border-color: #0099cc !important;}
+
+.error-input-wrapper > input:not(:disabled):not(:read-only):hover, 
+.error-input-wrapper > input:not(:disabled):not(:read-only):focus,
+.error-input-wrapper > .input-button-wrapper > input:not(:disabled):not(:read-only):hover, 
+.error-input-wrapper > .input-button-wrapper > input:not(:disabled):not(:read-only):focus {border-color: #FF99CC !important;}
 
 input:disabled {
     background-color: #f7f7f7 !important;

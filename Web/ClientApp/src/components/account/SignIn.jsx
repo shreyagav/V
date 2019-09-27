@@ -6,6 +6,7 @@ import { alertNotValid } from '../alerts'
 import LogoSVG from '../../svg/LogoSVG';
 import { signInValidators } from './signUpValidators'
 import PasswordComponent from '../PasswordComponent'
+import CheckBox from '../CheckBox';
 
 class SignIn extends Component {
     static displayName = SignIn.name;
@@ -60,9 +61,9 @@ class SignIn extends Component {
         this.setState({ signInData: tmp });
     }
 
-    changeIsPersistant(event) {
+    changeIsPersistant = () => {
         var user = this.state.signInData;
-        user.IsPersistant = event.target.checked;
+        user.IsPersistant = !user.IsPersistant;
         this.setState({ signInData: user });
     }
     
@@ -142,7 +143,14 @@ class SignIn extends Component {
                                 displayValidationErrors = {(name, validators) => this.props.store.displayValidationErrors(name, validators)} 
                             />
                             <div className='flex-wrap justify-space-between align-center mt-1'>
-                                <span className='flex-nowrap justify-left align-center'>
+                                <CheckBox 
+                                    className = 'mb-05'
+                                    onClick = {this.changeIsPersistant}
+                                    checked = {this.state.signInData.IsPersistant}
+                                    labelClassName = 'uppercase-text bold-text'
+                                    labelText = 'Remember me'
+                                />
+                                {/*<span className='flex-nowrap justify-left align-center'>
                                     <label>
                                         <input type="checkbox" checked={this.state.signInData.IsPersistant} onChange={this.changeIsPersistant} />
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 12 12" >
@@ -150,13 +158,13 @@ class SignIn extends Component {
                                         </svg>
                                     </label>
                                     <p className='pl-05' style={{"marginTop":"0px"}}>Remember me</p>
-                                </span>
+                                </span>*/}
                                 <button 
                                     type="button" 
                                     className='medium-static-button static-button default-button' 
                                     onClick={() => this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError)}
                                 >Sign In</button>
-                                <a href="/ForgotPassword">Forgot Password?</a>
+                                <a className = 'a' href="/ForgotPassword">Forgot Password?</a>
                             </div>
                         </div>
                     </li>
