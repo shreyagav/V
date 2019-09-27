@@ -53,10 +53,19 @@ class VeteransBySite extends Component {
     }
 
     render() {
+        var totalUnique = 0, totalAttandance = 0;
+        this.state.data.forEach(a => {
+            totalAttandance += a.attendance;
+            totalUnique += a.unique;
+        });
         const columns = [
             { Header: "Chapter", accessor: 'name', filterable: true },
-            { Header: "Unique", accessor: 'unique', filterable: false },
-            { Header: "Attendance", accessor: 'attendance', filterable: false }
+            {
+                Header: (<span>Unique, Total:<b>{totalUnique}</b></span>), accessor: 'unique', filterable: false
+            },
+            {
+                Header: (<span>Attendance, Total:<b>{totalAttandance}</b></span>), accessor: 'attendance', filterable: false
+            }
         ]
         return (
         <div>

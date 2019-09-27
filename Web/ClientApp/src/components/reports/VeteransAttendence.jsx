@@ -51,13 +51,17 @@ class VeteransAttendence extends Component {
         });
     }
     render() {
+        let total = 0;
+        this.state.data.forEach(a => { total += a.attendance; })
         const columns = [
             { Header: "First Name", accessor: 'firstName', filterable: true },
             { Header: "Last Name", accessor: 'lastName', filterable: true },
             { Header: "Chapter", accessor: 'chapter', filterable: true },
             { Header: "Address", accessor: 'address', filterable: true },
             { Header: "Zip", accessor: 'zip', filterable: true },
-            { Header: "Events Attended", accessor: 'count', filterable: true }
+            {
+                Header: (<span>Events Attended: <b>{total}</b></span>), accessor: 'attendance', filterable: true
+            }
         ]
         return (
         <div>

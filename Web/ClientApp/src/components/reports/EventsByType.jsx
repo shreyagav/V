@@ -44,7 +44,25 @@ class EventsByType extends Component {
         this.setState({ loading: true });
         Service.getEventsByTypeReport(this.state.range).then(
             data => {
-                var cols = data.columns.map(a => { return { accessor: a.key, Header: a.value }; });
+                data.columns.forEach(b => {
+                    if (b.key.match(/\d+/) || b.key == 'total') {
+                        b.total = 0;
+                    }
+                })
+                data.data.forEach(a => {
+                    data.columns.forEach(b => {
+                        if (b.key.match(/\d+/) || b.key == 'total') {
+                            b.total += a[b.key] ? a[b.key]: 0;
+                        }
+                    })
+                });
+                console.log(data.columns);
+                var cols = data.columns.map(a => {
+                    return {
+                        accessor: a.key, Header: (<span style={{ whiteSpace: 'normal' }}>{a.value}: <b>{a.total}</b></span>)
+                    };
+                });
+
                 this.setState({ loading: false, data: data.data, columns: cols });
             });
     }

@@ -247,7 +247,7 @@ namespace Web.Controllers
                 else
                 {
                     var normalizedEmail = data.Email.ToUpper();
-                    if (_ctx.Users.Where(a => a.NormalizedEmail == normalizedEmail && a.Id.Equals(data.Id, StringComparison.OrdinalIgnoreCase)).Any())
+                    if (_ctx.Users.Where(a => a.NormalizedEmail == normalizedEmail && !a.Id.Equals(data.Id, StringComparison.OrdinalIgnoreCase)).Any())
                         throw new Exception("User with such email already exists.");
                     if (user.Email.Equals(user.UserName, StringComparison.OrdinalIgnoreCase) && !user.Email.Equals(data.Email, StringComparison.OrdinalIgnoreCase))
                     {

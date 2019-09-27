@@ -136,14 +136,12 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public dynamic[] VeteransBySite(DateRange range)
         {
-            var ids = new int[] { 32, 37 };
-
-            var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => a.Options.Any(b => ids.Contains(b.OptionId))).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
+            var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => (a.Options.Any(b => b.OptionId == 37) || a.OldType == TRRUserType.Veteran)).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
             var veteranAttendance = _ctx.Users
                 .Include(a => a.Site)
                 .Include(a => a.Options)
                 .Include(a => a.Events)
-                .Where(a => a.Options.Any(b => ids.Contains(b.OptionId)) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value && b.Event.Date>=range.Start && b.Event.Date<=range.End))
+                .Where(a => (a.Options.Any(b => b.OptionId == 37) || a.OldType == TRRUserType.Veteran) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value && b.Event.Date>=range.Start && b.Event.Date<=range.End))
                 .Select(a => new { a.SiteId, a.Events.Count }).ToArray();
 
             veteranAttendance = veteranAttendance.GroupBy(a=>a.SiteId).Select(a=>new { SiteId = a.Key, Count = a.Sum(b=>b.Count)}).ToArray();
@@ -158,14 +156,11 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public dynamic[] VeteransAttandance(DateRange range)
         {
-            var ids = new int[] { 32, 37 };
-
-            //var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => a.Options.Any(b => ids.Contains(b.OptionId))).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
             var veteranAttendance = _ctx.Users
                 .Include(a => a.Site)
                 .Include(a => a.Options)
                 .Include(a => a.Events)
-                .Where(a => a.Options.Any(b => ids.Contains(b.OptionId)) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value))
+                .Where(a => (a.Options.Any(b => b.OptionId==37)||a.OldType==TRRUserType.Veteran ) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value))
                 .Select(a => new VeteranAttendance() { Id= a.Id, FirstName= a.FirstName, LastName = a.LastName, Chapter = a.Site.Name, Address = a.Address, Zip = a.Zip, Attendance = a.Events.Where(b=> b.Event.Date >= range.Start && b.Event.Date <= range.End).Count() }).ToArray();
             return veteranAttendance;
         }

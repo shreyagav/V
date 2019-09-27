@@ -78,7 +78,7 @@ class PasswordReset extends Component {
                     if (json.error != null) {
                         this.setState({ loading: false, error: json.error });
                     } else {
-                        this.setState({ loading: false, message: "Email with further instractions was sent." });
+                        this.setState({ loading: false, message: "An email with further instructions was sent" });
                     }
                 })
                 .catch(err => this.setState({ loading: false, error: err }));
