@@ -79,33 +79,5 @@ namespace Services
             }
             return res;
         }
-
-        public async Task<IdentityResult> SignUp(TRRUser user)
-        {
-            DateTime min = new DateTime(1900, 1, 1);
-            try
-            {
-                if (user.DateInjured.HasValue && user.DateInjured.Value < min)
-                {
-                    user.DateInjured = null;
-                }
-                if (user.DateOfBirth.HasValue && user.DateOfBirth.Value < min)
-                {
-                    user.DateOfBirth = null;
-                }
-                if (user.JoinDate.HasValue && user.JoinDate.Value < min)
-                {
-                    user.JoinDate = null;
-                }
-                user.OldType = TRRUserType.Civilian;
-                user.Created = DateTime.Now;
-                user.Deleted = false;
-                var res = await _userManager.CreateAsync(user);
-                return res;
-            }catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
     }
 }

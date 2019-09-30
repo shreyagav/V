@@ -136,16 +136,6 @@ DELETE FROM dbo.CalendarEvents WHERE EventTypeId IN (SELECT Id FROM dbo.Calendar
 
 
         [TestMethod]
-        public async Task CreateUserTestMethod()
-        {
-            TRRUser user = new TRRUser();
-            user.Email = "dozcent3@mcdean.com";
-            user.UserName = "dmyt.ro3";
-            var res = await userService.SignUp(user);
-            Assert.AreEqual(false, res.Succeeded);
-        }
-
-        [TestMethod]
         public async Task AddLoginTestMethod()
         {
             TRRUser user = new TRRUser();
