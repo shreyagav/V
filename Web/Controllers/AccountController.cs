@@ -155,7 +155,7 @@ namespace Web.Controllers
                 user = new TRRUser();
                 user.Active = true;
                 user.Email = info.Email;
-                user.Address = info.Zip;
+                user.Zip = info.Zip;
                 user.UserName = info.Email;
                 user.PhoneNumber = info.Phone;
                 user.FirstName = info.FirstName;
