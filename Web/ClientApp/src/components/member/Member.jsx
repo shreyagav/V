@@ -76,9 +76,9 @@ class Member extends Component {
         this.dateOfBirthDropDownRef = null;
         this.chaptersDropDownRef = null;
         this.joinDateDropDownRef = null;
-        this.sponsoredByDropDownRef = null;
-        this.medicalDropDownRef = null;
-        this.injuryDateDropDownRef = null;
+        //this.sponsoredByDropDownRef = null;
+        //this.medicalDropDownRef = null;
+        //this.injuryDateDropDownRef = null;
         this.statusDropDownRef = null;
         this.authLevelDropDownRef = null;
         this.userTypeDropDownRef = null;
@@ -111,7 +111,7 @@ class Member extends Component {
         };
         this.setState({ loading: true });
         Service.getTRRInfoLists().then(data => {
-            this.setState({ sponsors: data.sponsors, authLevels:data.roles });
+            this.setState({ /*sponsors: data.sponsors,*/ authLevels:data.roles });
             if (this.props.match.path == '/profile') {
                 Service.getProfile().then(onSuccess);
             } else if (this.props.match.path == '/new-member') {
@@ -389,14 +389,14 @@ class Member extends Component {
                                 }}
                             />
                     </li>
-                    <li>
+                    {/*<li>
                         <p className='mark-optional'>Injury Date:</p>
                         <DatePicker
                             ref={el => this.injuryDateDropDownRef = el}
                             value={this.state.member.injuryDate}
                             onSelect={value => { this.updateMemberProperty("injuryDate", value) }}
                         />
-                    </li>
+                    </li>*/}
                     <li className='input-wrapper'>
                         <p className='mark-optional'>Address:</p>
                         <input 
@@ -447,7 +447,7 @@ class Member extends Component {
                             </li>
                         </ul>
                     </li>
-                    <li className='input-wrapper'>
+                    {/*<li className='input-wrapper'>
                         <p className='mark-optional'>Travel Time:</p>
                         <input
                             type='text'
@@ -459,7 +459,7 @@ class Member extends Component {
                     <li>
                         <p className='mark-optional'>Medical:</p>
                         <MultiDropDown
-                            ref={el=>this.medicalDropDownRef=el}
+                            ref={el => this.medicalDropDownRef = el}
                             list={[{ name: 'Inpatient', id: 42 }, { name: 'Outpatient', id: 43 }, { name: 'Vet Center', id: 44 }, { name: 'Other', id: 45 }, { name: 'None', id: 46 }, { name: 'Unknown', id: 94 }]}
                             multiSelect={false}
                             keyProperty='id'
@@ -468,7 +468,7 @@ class Member extends Component {
                             placeholder="Medical"
                             onDropDownValueChange={value => this.updateMemberProperty("medical", value)}
                         />
-                    </li>
+                    </li>*/}
                     </ul>
                 }
                 {this.state.activeTabIndex === 1 &&
@@ -477,13 +477,13 @@ class Member extends Component {
                 {this.state.activeTabIndex === 2 && 
                     <MemberTRRInfo 
                     setJoinDateDropDownRef={el => this.joinDateDropDownRef = el}
-                    setSponsoredByDropDownRef={el => this.sponsoredByDropDownRef = el}
+                    /*setSponsoredByDropDownRef={el => this.sponsoredByDropDownRef = el}*/
                     setStatusDropDownRef={el => this.statusDropDownRef = el}
                     setAuthLevelDropDownRef={el => this.authLevelDropDownRef = el}
                     setUserTypeDropDownRef={el => this.userTypeDropDownRef = el}
                     member={this.state.member}
                     updateMemberProperty={(property, value) => this.updateMemberProperty(property, value)}
-                    sponsors={this.state.sponsors}
+                    /*sponsors={this.state.sponsors}*/
                     roles={this.state.authLevels}
                     />
                 }

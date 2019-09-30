@@ -72,7 +72,7 @@ class MemberTRRInfo extends Component {
                                 onSelect={value => {this.props.updateMemberProperty("joinDate", value)}}
                             />
                         </li>
-                        <li>
+                    {/*<li>
                             <p>Sponsored By:</p>
                             <MultiDropDown
                                 ref={this.props.setSponsoredByDropDownRef}
@@ -88,7 +88,7 @@ class MemberTRRInfo extends Component {
                                 placeholder="Sponsored By"
                                 onDropDownValueChange={value => { this.props.updateMemberProperty("sponsoredById", value) }}
                             />
-                        </li>
+                        </li>*/}
 
                         <li>
                             <p>Status:</p>

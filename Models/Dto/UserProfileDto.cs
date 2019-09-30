@@ -59,19 +59,19 @@ namespace Models.Dto
             user.City = City;
             user.State = State;
             user.Zip = Zip;
-            user.Medical = Medical;
-            user.DateInjured = InjuryDate;
+            //user.Medical = Medical;
+            //user.DateInjured = InjuryDate;
 
             user.ReleaseSigned = ReleaseSigned;
             user.LiabilitySigned = LiabilitySigned;
             user.Active = ActiveMember;
             user.DeactiveCause = DeactiveCause;
             user.JoinDate = JoinDate;
-            user.TravelTime = TravelTime;
+            //user.TravelTime = TravelTime;
             user.OldType = (TRRUserType)UserType;
             user.Comments = Comments;
             user.OldStatus = Status;
-            user.SponsoredById = SponsoredById;
+            //user.SponsoredById = SponsoredById;
         }
 
         public string Id { get; set; }
