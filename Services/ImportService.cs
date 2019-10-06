@@ -99,6 +99,9 @@ namespace Services
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
+                    if (ex.InnerException != null)
+                        Console.WriteLine(ex.InnerException.Message);
                     errors.Add(ex.Message);
                 }
             }
