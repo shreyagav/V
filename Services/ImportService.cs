@@ -57,6 +57,11 @@ namespace Services
 
         public TRRUser[] GetAllUsers() => _context.Users.Where(a=>!a.Deleted).ToArray();
 
+        public void ImportEvent(CalendarEvent newEvent)
+        {
+            _context.CalendarEvents.Add(newEvent);
+            _context.SaveChanges();
+        }
         public void ImportEvents(IEnumerable<CalendarEvent> newEvents)
         {
              _context.CalendarEvents.AddRange(newEvents);
@@ -74,7 +79,7 @@ namespace Services
                     var user = _context.Users.FirstOrDefault(u => u.OldId == usr.UserId);
                     if (user == null) throw new Exception($"Event attendee couldn't be found userId={usr.UserId}");
                     var createdBy = _context.Users.FirstOrDefault(u => u.OldId == usr.CreatedById);
-                    if (createdBy == null) throw new Exception($"Author couldn't be found authorId={usr.CreatedById}");
+                    //if (createdBy == null) throw new Exception($"Author couldn't be found authorId={usr.CreatedById}");
                     var evt = _context.CalendarEvents.FirstOrDefault(e => e.OldId == usr.EventId);
                     if (evt == null) throw new Exception($"Event couldn't be found eventId={usr.EventId}");
                     var temp = new UserEvent()
@@ -82,21 +87,23 @@ namespace Services
                         UserId = user.Id,
                         EventId = evt.Id,
                         Attended = usr.UserAttended,
-                        CreatedById = createdBy.Id,
+                        CreatedById = createdBy?.Id,
                         Comment = usr.Comment,
                         Created = usr.Created,
                         OldEventId = usr.EventId,
                         OldUserId = usr.UserId
                     };
-                    userEvents.Add(temp);
+                    //userEvents.Add(temp);
+                    _context.UserEvents.Add(temp);
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
                     errors.Add(ex.Message);
                 }
             }
-            _context.UserEvents.AddRange(userEvents.ToArray());
-            _context.SaveChanges();
+            //_context.UserEvents.AddRange(userEvents.ToArray());
+            //_context.SaveChanges();
             return errors.ToArray();
             //if(withUpdate)
         }

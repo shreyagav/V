@@ -265,19 +265,26 @@ namespace UnitTests
                 try
                 {
                     var temp = ImportEvent(t, service, eventTypes);
+                    if (temp.EventTypeId == 100) continue;
+                    import.ImportEvent(temp);
                     events.Add(temp);
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine(ex.InnerException.Message);
+                    }
                     failed.Add(t);
                 }
-                if (events.Count == 1000)
-                {
-                    import.ImportEvents(events);
-                    events.Clear();
-                }
+                //if (events.Count == 1000)
+                //{
+                //    import.ImportEvents(events);
+                //    events.Clear();
+                //}
             }
-            import.ImportEvents(events);
+            //import.ImportEvents(events);
             return failed;
         }
         private static CalendarEvent ImportEvent(XmlNode t, ICalendarEventService service, CalendarEventType[] eventTypes)
@@ -365,9 +372,9 @@ namespace UnitTests
             evt.Date = new DateTime(year == 0 ? 2010 : year, month, day);
             evt.Modified = modifiedStr == "0000-00-00" ? evt.Created : DateTime.Parse(modifiedStr);
             evt.Site = service.GetEventSite(eventSiteId);
-            evt.CreatedById = service.GetUserByOldId(createdById).Id;
+            evt.CreatedById = service.GetUserByOldId(createdById)?.Id;
             if (modifiedById != 0)
-                evt.ModifiedById = modifiedById != createdById ? service.GetUserByOldId(modifiedById).Id : evt.CreatedById;
+                evt.ModifiedById = modifiedById != createdById ? service.GetUserByOldId(modifiedById)?.Id : evt.CreatedById;
             evt.EventTypeId = eventTypes.FirstOrDefault(a => a.OldId == eventType).Id;
 
             return evt;
@@ -745,6 +752,8 @@ namespace UnitTests
 
                 }
             }
+            if(users.Count>0)
+            service.ImportUserEvents(users);
 
             var all = service.GetContext().UserEvents.ToArray();
             return processed.Where(a => all.FirstOrDefault(b => b.OldUserId == a.Key.UserId && b.OldEventId == a.Key.EventId) == null).Select(a => a.Value).ToList();

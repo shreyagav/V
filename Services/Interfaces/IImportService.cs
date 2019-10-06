@@ -22,6 +22,7 @@ namespace Services.Interfaces
         void ImportUserDiagnoses(UserDiagnosis[] diag);
         void AddRole(TRRRole role);
         void ImportEvents(IEnumerable<CalendarEvent> newEvents);
+        void ImportEvent(CalendarEvent newEvents);
         Task ImportUsers(IEnumerable<TRRUser> newUsers);
     }
 }
