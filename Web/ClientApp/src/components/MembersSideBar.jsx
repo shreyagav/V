@@ -9,6 +9,7 @@ import VolunteerUpSVG from '../svg/VolunteerUpSVG'
 import PaddlerUpSVG from '../svg/PaddlerUpSVG'
 import SearchInput from './SearchInput'
 import CaregiverUpSVG from '../svg/CaregiverUpSVG'
+import CheckBox from './CheckBox';
 
 class EventsSideBar extends Component {
     static displayName = EventsSideBar.name;
@@ -21,6 +22,7 @@ class EventsSideBar extends Component {
             dateTo: null,
             role: '',
             zip: '',
+            active: true
         };
         this.simpleBarWrapperRef = null;
         this.dateStartDropDownRef = null;
@@ -57,13 +59,14 @@ class EventsSideBar extends Component {
         filters.push({name: "dateFrom", value: initialDateFrom});
         filters.push({name: "dateTo", value: initialDateTo});
         filters.push({name: "zip", value: initialZip});
-
+        filters.push({ name: "active", value: true });
         let initialState = {
             name: initialName, 
             role: initialRole,
             dateFrom: initialDateFrom, 
             dateTo: initialDateTo,
-            zip: initialZip
+            zip: initialZip,
+            active: true
         };
         this.setState(initialState);
         this.props.updateFilters(filters);
@@ -108,7 +111,13 @@ class EventsSideBar extends Component {
                     onValueChange={(value) => this.onTextFilterChange("name", value)}
                     onClearValueButtonClick={() => this.onTextFilterChange("name", "")}
                 />
-
+                    <CheckBox
+                        style={{ "marginTop": "0.6rem" }}
+                        onClick={() => { this.onTextFilterChange( 'active', !this.state.active);  }}
+                        checked={this.state.active}
+                        labelClassName='uppercase-text bold-text'
+                        labelText='Active'
+                    />
                 <p>Chapters:</p>
                 <MultiDropDown 
                     ref={el => this.chaptersDropDownRef = el}

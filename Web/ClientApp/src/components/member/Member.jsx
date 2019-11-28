@@ -13,11 +13,12 @@ import RadioButton from '../RadioButton'
 import { Service } from '../ApiService'
 import Loader from '../Loader'
 import { alertNotValid } from '../alerts'
-
+import EditContact from '../EditContact';
 import memberValidators from './memberValidators'
 import DeleteUpSVG from '../../svg/DeleteUpSVG'
 import SaveUpSVG from '../../svg/SaveUpSVG'
 import ReturnUpSVG from '../../svg/ReturnUpSVG'
+import { createValidators } from '../storeValidatorsRules'
 
 import InputWithClearButton from '../InputWithClearButton'
 
@@ -61,7 +62,8 @@ class Member extends Component {
                 comments: '',
                 events:[],
                 options: [],
-                status:0
+                status: 0,
+                emergencyContact: {}
             },
             activeTabIndex: 0,
             showError: false,
@@ -84,7 +86,14 @@ class Member extends Component {
         this.userTypeDropDownRef = null;
 
         this.saveMemberInfo = this.saveMemberInfo.bind(this);
+        this.onContactInputValueChange = this.onContactInputValueChange.bind(this);
         this.close = this.close.bind(this);
+        this.contactValidators = createValidators([
+            { 'name': 'name', 'typeFunction': 'nameOTG', 'text': 'Name' },
+            { 'name': 'phone', 'typeFunction': 'nameOTG', 'text': 'Phone' },
+            { 'name': 'email', 'typeFunction': 'nameOTG', 'text': 'Email' },
+        ]);
+
     }
 
     componentWillMount(){
@@ -101,6 +110,9 @@ class Member extends Component {
         }
         if (data.joinDate != null) {
             data.joinDate = new Date(data.joinDate);
+        }
+        if (data.emergencyContact == null) {
+            data.emergencyContact = {};
         }
         return data;
     }
@@ -188,6 +200,11 @@ class Member extends Component {
         })
         return allParamsWereFound;
     }
+    onContactInputValueChange(param, newValue) {
+        let member = this.state.member;
+        member.emergencyContact[param] = newValue;
+        this.setState({ member: member});
+    }
 
     searchValueIntoArray(filter){
         /* remove all " " at the beginning and double ' ' inside the filter expression if they are there */
@@ -263,6 +280,7 @@ class Member extends Component {
                     />
                 </div>
                 {this.state.activeTabIndex === 0 &&
+                    <div>
                     <ul className='input-fields first-child-text-125 pl-1 pr-1'>
                         <li>
                             <p>First Name:</p>
@@ -470,6 +488,18 @@ class Member extends Component {
                         />
                     </li>*/}
                     </ul>
+                <ul className='input-fields first-child-text-165 mt-3 mb-2 pl-1 pr-1'>
+                    <EditContact
+                        header={"Emergency Contact:"}
+                        value={this.state.member.emergencyContact}
+                        onInputValueChange={this.onContactInputValueChange}
+                        isFormValid={() => true}
+                        showError={() => this.setState({ showError: true })}
+                        validators={this.contactValidators}
+                        updateValidators={param => null}
+                    />
+                    </ul>
+                    </div>
                 }
                 {this.state.activeTabIndex === 1 &&
                     <MemberEvents events={this.state.member.events} />

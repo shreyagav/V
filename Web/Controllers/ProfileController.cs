@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Models;
 using Models.Dto;
 using Services.Data;
@@ -175,6 +176,10 @@ namespace Web.Controllers
         private async Task<UserProfileDto> get(TRRUser user)
         {
             var result = new UserProfileDto(user);
+            if (user.EmergencyContactId != null)
+            {
+                result.EmergencyContact = _ctx.Contacts.Where(e => e.Id == user.EmergencyContactId).FirstOrDefault();
+            }
             result.Roles = (await _userManager.GetRolesAsync(user)).Select(a => roles.First(b => b.Name == a).Id).ToArray();
             return result;
         }
@@ -199,6 +204,7 @@ namespace Web.Controllers
                 && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && EF.Functions.Like(a.Zip, filter.Zip)))
                 && ((filter.Chapters == null || filter.Chapters.Length == 0) || filter.Chapters.Contains(a.SiteId.Value))
                 && !a.Deleted
+                && a.Active == filter.Active
                 )
                 .Take(1000).Select(a => new UserProfileDto(a)).ToArray();
             return res;
@@ -259,6 +265,24 @@ namespace Web.Controllers
                 if (!updateRes.Succeeded)
                 {
                     return BadRequest(updateRes.Errors);
+                }
+                if(!string.IsNullOrWhiteSpace(data.EmergencyContact.Email) || !string.IsNullOrWhiteSpace(data.EmergencyContact.Name)|| !string.IsNullOrWhiteSpace(data.EmergencyContact.Phone))
+                {
+                    if(data.EmergencyContact.Id == 0)
+                    {
+                        var c = _ctx.Contacts.Add(data.EmergencyContact);
+                        user.EmergencyContactId = c.Entity.Id;
+                        await _userManager.UpdateAsync(user);
+                    }
+                    else
+                    {
+                        var c = _ctx.Contacts.Where(a => a.Id == data.EmergencyContact.Id).FirstOrDefault();
+                        c.Email = data.EmergencyContact.Email;
+                        c.Name = data.EmergencyContact.Name;
+                        c.Phone = data.EmergencyContact.Phone;
+                        _ctx.SaveChanges();
+                    }
+                    
                 }
                 var currentRoles = await _userManager.GetRolesAsync(user);
                 var toRemoveIds = roles.Select(a => a.Id).Except(data.Roles);

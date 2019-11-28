@@ -103,5 +103,6 @@ namespace Models.Dto
         public string Comments { get; set; }
         public int Status { get; set; }
         public string SponsoredById { get; set; }
+        public Contact EmergencyContact { get; set; }
     }
 }

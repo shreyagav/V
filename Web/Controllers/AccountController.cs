@@ -89,11 +89,11 @@ namespace Web.Controllers
                 {
                     string from = "webmaster@teamriverrunner.org";
                     string fromName = "Webmaster Team River Runner";
-                    if (trrUser.Site != null && trrUser.Site.Main != null && !string.IsNullOrWhiteSpace(trrUser.Site.Main.Email))
-                    {
-                        from = trrUser.Site.Main.Email;
-                        fromName = trrUser.Site.Main.Name;
-                    }
+                    //if (trrUser.Site != null && trrUser.Site.Main != null && !string.IsNullOrWhiteSpace(trrUser.Site.Main.Email))
+                    //{
+                    //    from = trrUser.Site.Main.Email;
+                    //    fromName = trrUser.Site.Main.Name;
+                    //}
                     await _mailService.Send("TRR Password reset", null, html, (from, fromName),
                      new[] { (trrUser.Email, $"{trrUser.FirstName} {trrUser.LastName}") });
                 }

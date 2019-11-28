@@ -50,5 +50,7 @@ namespace Models
         [Column(TypeName = "Date")]
         public DateTime Created { get; set; }
         public bool Deleted { get; set; }
+        public Contact EmergencyContact { get; set; }
+        public int? EmergencyContactId { get; set; }
     }
 }

@@ -22,10 +22,8 @@ class MembersReport extends Component {
     componentDidMount() {
         this.setState({ loading: true });
         Service.getMembersReport().then(members => {
-            console.log(members[0]);
             this.setState({ data: members, loading: false })
         });
-        Service.getEventsByTypeReport().then(data => { console.log(data)});
     }
 
     donwloadExcel() {

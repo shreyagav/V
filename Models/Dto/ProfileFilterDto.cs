@@ -12,5 +12,6 @@ namespace Models.Dto
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
         public string Zip { get; set; }
+        public bool Active { get; set; }
     }
 }
