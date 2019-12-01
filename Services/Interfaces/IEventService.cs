@@ -25,5 +25,6 @@ namespace Services.Interfaces
         Task<EventMainDto> GetEvent(int id, ClaimsPrincipal user);
         Task AddEventAttendees(int id, ClaimsPrincipal user);
         Task RemoveEventAttendees(int eventId, ClaimsPrincipal user);
+        dynamic ToggleAttendance(ToggleAttendanceDto dto);
     }
 }

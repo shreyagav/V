@@ -31,5 +31,6 @@ namespace Models
         public int SiteStatusId { get; set; }
         public int OldId { get; set; }
         public bool AllowEverybody { get; set; }
+        public bool Deleted { get; set; }
     }
 }

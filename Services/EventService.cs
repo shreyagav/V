@@ -164,15 +164,15 @@ namespace Services
                 .Where(ue => ue.EventId == eventId)
                 .Include(e => e.User)
                 .Select(u => new EventAttendeeDto()
-                    {
-                        Id = u.UserId,
-                        FirstName = u.User.FirstName,
-                        LastName = u.User.LastName,
-                        Email = u.User.Email,
-                        MemberTypeId = tempMemberType(),
-                        Phone = u.User.PhoneNumber
-                    })
-                .ToArray();
+                {
+                    Id = u.UserId,
+                    FirstName = u.User.FirstName,
+                    LastName = u.User.LastName,
+                    Email = u.User.Email,
+                    MemberTypeId = tempMemberType(),
+                    Phone = u.User.PhoneNumber,
+                    Attended = u.Attended.HasValue ? u.Attended.Value : false
+                }).ToArray();
             return res;
         }
 
@@ -226,6 +226,30 @@ namespace Services
         public Photo GetPhotoById(int id)
         {
             return _context.Photos.FirstOrDefault(a => a.Id == id);
+        }
+
+        public dynamic ToggleAttendance(ToggleAttendanceDto dto)
+        {
+            string error = "";
+            try
+            {
+                var userEvent = _context.UserEvents.FirstOrDefault(a => a.EventId == dto.EventId && a.UserId == dto.UserId);
+                if (userEvent != null)
+                {
+                    userEvent.Attended = dto.Attended;
+                    _context.SaveChanges();
+                    return new { Ok = true };
+                }
+                else
+                {
+                    error = "Attendee not found at this event";
+                }
+            }catch(Exception ex)
+            {
+                error = ex.Message;
+            }
+            return new { error };
+
         }
     }
 }

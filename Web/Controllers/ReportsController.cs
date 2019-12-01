@@ -83,6 +83,7 @@ namespace Web.Controllers
                 })
                 .ToArray();
         }
+
         [HttpGet("[action]")]
         public MemeberReportLine[] Members()
         {
@@ -124,6 +125,8 @@ namespace Web.Controllers
             return result;
         }
 
+
+
         [HttpPost("[action]")]
         public ActionResult EventsByTypeToExcel(DateRange range)
         {
@@ -133,20 +136,67 @@ namespace Web.Controllers
                 cols.Add(c.Key, c.Value);
             return File(ExcelService.GetExcel(res.Data, cols), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "EventsByType.xlsx");
         }
+
+        [HttpPost("[action]")]
+        public PivotResult VeteransByEventType(DateRange range)
+        {
+            var columns = _ctx.CalendarEventTypes.Select(a => new KeyValuePair<string, string>(a.Id.ToString(), a.Title)).ToList();
+            columns.Insert(0, new KeyValuePair<string, string>("name", "Veteran Name"));
+            columns.Insert(1, new KeyValuePair<string, string>("total", "All"));
+            var veterans = from u in _ctx.Users
+                           join uo in _ctx.UserOptions on u.Id equals uo.UserId
+                           where u.OldType == TRRUserType.Veteran || uo.OptionId == 37
+                           select u;
+            var veteransWithEvents = (from a in _ctx.EventSites
+                                      join b in _ctx.CalendarEvents on a.Id equals b.SiteId
+                                      join c in _ctx.UserEvents on b.Id equals c.EventId
+                                      join d in veterans.Distinct() on c.UserId equals d.Id
+                                      where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                      select new { d.Id, Name = d.FirstName + " " + d.LastName, b.EventTypeId, Duration = ((double)(60 * b.EndTime / 100 + b.EndTime % 100 - 60 * b.StartTime / 100 + b.StartTime % 100)) / 60 }).ToArray();
+
+            var data = ToPivotTable(veteransWithEvents, item => item.EventTypeId, item => item.Name, items => items.Any() ? items.Count() : 0);
+            var result = new PivotResult() { Columns = columns, Data = data };
+            return result;
+        }
+        [HttpPost("[action]")]
+        public ActionResult VeteransByEventTypeToExcel(DateRange range)
+        {
+            var res = VeteransByEventType(range);
+            Dictionary<string, string> cols = new Dictionary<string, string>();
+            foreach (var c in res.Columns)
+                cols.Add(c.Key, c.Value);
+            return File(ExcelService.GetExcel(res.Data, cols), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "VeteransByEventType.xlsx");
+        }
         [HttpPost("[action]")]
         public dynamic[] VeteransBySite(DateRange range)
         {
-            var siteVeterans = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Where(a => (a.Options.Any(b => b.OptionId == 37) || a.OldType == TRRUserType.Veteran)).GroupBy(a => a.SiteId).Select(a => new { SiteId = a.Key, Count = a.Count() }).ToArray();
-            var veteranAttendance = _ctx.Users
-                .Include(a => a.Site)
-                .Include(a => a.Options)
-                .Include(a => a.Events)
-                .Where(a => (a.Options.Any(b => b.OptionId == 37) || a.OldType == TRRUserType.Veteran) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value && b.Event.Date>=range.Start && b.Event.Date<=range.End))
-                .Select(a => new { a.SiteId, a.Events.Count }).ToArray();
+            var veterans = from u in _ctx.Users
+                           join uo in _ctx.UserOptions on u.Id equals uo.UserId
+                           where u.OldType == TRRUserType.Veteran || uo.OptionId == 37
+                           select u.Id;
+            var veteransBySite = (from a in _ctx.EventSites
+                                  join b in _ctx.CalendarEvents on a.Id equals b.SiteId
+                                  join c in _ctx.UserEvents on b.Id equals c.EventId
+                                  join d in veterans.Distinct() on c.UserId equals d
+                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                  group c by a.Id into newGroup
+                                  select new { SiteId = newGroup.Key, Count = newGroup.Count() }).ToArray();
 
-            veteranAttendance = veteranAttendance.GroupBy(a=>a.SiteId).Select(a=>new { SiteId = a.Key, Count = a.Sum(b=>b.Count)}).ToArray();
-            var sites = _ctx.EventSites.ToList();
-            return sites.GroupJoin(siteVeterans, a => a.Id, b => b.SiteId, (a, b) => new { a.Id, a.Name, Count = b.Sum(c=>c.Count) }).GroupJoin(veteranAttendance, a=>a.Id,a=>a.SiteId, (a,b)=>new VeteransBySite() { Name = a.Name, Unique = a.Count, Attendance  = b.Sum(c=>c.Count)}).ToArray();
+            var uniqueVeteransBySiteFlat = (from a in _ctx.EventSites
+                                            join b in _ctx.CalendarEvents on a.Id equals b.SiteId
+                                            join c in _ctx.UserEvents on b.Id equals c.EventId
+                                            join d in veterans.Distinct() on c.UserId equals d
+                                            where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                            select new { SiteId = a.Id, UserId = c.UserId }).Distinct().OrderBy(a=>a.SiteId).ToArray();
+            var uniqueVeteransBySite = from a in uniqueVeteransBySiteFlat
+                                       group a by a.SiteId into newGroup
+                                       select new { SiteId = newGroup.Key, Count = newGroup.Count() };
+
+            var result = (from a in veteransBySite
+                          join b in uniqueVeteransBySite on a.SiteId equals b.SiteId
+                          join c in _ctx.EventSites on a.SiteId equals c.Id
+                          select new VeteransBySite (){ Name = c.Name, Unique = b.Count, Attendance = a.Count }).ToArray();
+            return result;
         }
         [HttpPost("[action]")]
         public ActionResult VeteransBySiteToExcel(DateRange range)
@@ -156,13 +206,23 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public dynamic[] VeteransAttandance(DateRange range)
         {
-            var veteranAttendance = _ctx.Users
-                .Include(a => a.Site)
-                .Include(a => a.Options)
-                .Include(a => a.Events)
-                .Where(a => (a.Options.Any(b => b.OptionId==37)||a.OldType==TRRUserType.Veteran ) && a.Events.Any(b => b.Attended.HasValue && b.Attended.Value))
-                .Select(a => new VeteranAttendance() { Id= a.Id, FirstName= a.FirstName, LastName = a.LastName, Chapter = a.Site.Name, Address = a.Address, Zip = a.Zip, Attendance = a.Events.Where(b=> b.Event.Date >= range.Start && b.Event.Date <= range.End).Count() }).ToArray();
-            return veteranAttendance;
+            var veterans = from u in _ctx.Users
+                           join uo in _ctx.UserOptions on u.Id equals uo.UserId
+                           where u.OldType == TRRUserType.Veteran || uo.OptionId == 37
+                           select u.Id;
+            var veteransWithAttendance = (from a in _ctx.EventSites
+                                  join b in _ctx.CalendarEvents on a.Id equals b.SiteId
+                                  join c in _ctx.UserEvents on b.Id equals c.EventId
+                                  join d in veterans.Distinct() on c.UserId equals d
+                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                  group c by d into newGroup
+                                  select new { UserId = newGroup.Key, Count = newGroup.Count() });
+            var result =   from va in veteransWithAttendance
+                          join a in _ctx.Users on va.UserId equals a.Id
+                          join site in _ctx.EventSites on a.SiteId equals site.Id
+                          select new VeteranAttendance() { Id = a.Id, FirstName = a.FirstName, LastName = a.LastName, Chapter = site.Name, Address = a.Address, Zip = a.Zip, Attendance = va.Count };
+
+            return result.ToArray();
         }
         [HttpPost("[action]")]
         public ActionResult VeteransAttandanceToExcel(DateRange range)

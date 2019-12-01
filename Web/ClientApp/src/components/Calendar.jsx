@@ -313,7 +313,7 @@ class Calendar extends Component {
                         <div style={{"marginLeft":"-0.5em", "marginRight":"-0.5em"}}>
                             <MultiDropDown 
                                 toggleable={false}
-                                list={this.props.store.chapterList}
+                                list={this.props.store.chapterList.filter(a=>!a.deleted)}
                                 multiSelect={true}
                                 keyProperty='id'
                                 textProperty='state'

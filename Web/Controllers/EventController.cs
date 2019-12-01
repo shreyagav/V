@@ -13,6 +13,7 @@ using Services.Interfaces;
 
 namespace Web.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class EventController : ControllerBase
@@ -26,6 +27,14 @@ namespace Web.Controllers
             _storageService = storageService;
             _mailService = mailService;
         }
+        [HttpPost("[action]")]
+        public  dynamic ToggleAttendance(ToggleAttendanceDto dto)
+        {
+
+            return _service.ToggleAttendance(dto);
+        }
+
+        
         [HttpPost("[action]")]
         public async Task<EventMainDto> ChangeEvent(EventMainDto evnt)
         {

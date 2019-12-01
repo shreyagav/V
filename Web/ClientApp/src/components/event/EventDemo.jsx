@@ -181,17 +181,17 @@ class EventDemo extends Component {
                 <div className='second-nav-wrapper'>
                     <div className='ipw-1000'>
                         <div className='flex-nowrap justify-center align-center'>
-                            <span style={{'textTransform':"uppercase", 'marginRight':"0.5em", "fontWeight": "500"}}>Attend</span>
-                            <TabComponent
-                                style={{'fontSize':'0.85rem','height':'24px'}}
-                                tabList={["yes", "no"]}
-                                wasSelected={(index) => { 
-                                    if (index == 0) {
-                                        this.onAttendanceChanged(0); 
-                                    } else this.setState({ showAlert: true });
-                                }}
-                                activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}
-                            />
+                            {this.state.eventMain.date > new Date() && <div className='flex-nowrap justify-center align-center'><span style={{ 'textTransform': "uppercase", 'marginRight': "0.5em", "fontWeight": "500" }}>Attend</span>
+                                <TabComponent
+                                    style={{ 'fontSize': '0.85rem', 'height': '24px' }}
+                                    tabList={["yes", "no"]}
+                                    wasSelected={(index) => {
+                                        if (index == 0) {
+                                            this.onAttendanceChanged(0);
+                                        } else this.setState({ showAlert: true });
+                                    }}
+                                    activeTabIndex={this.state.eventMain.curentUserAttends ? 0 : 1}
+                                /></div>}
                         </div>
                         <div>
                             {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
@@ -248,7 +248,7 @@ class EventDemo extends Component {
                         <span className='mb-1'>{this.state.eventMain.description}</span>
                     </div>
                 }
-                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} editsPermitted={false}/> }
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} editsPermitted={false} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date < new Date()}/> }
                 {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} editsPermitted={false} projectedCost={this.state.eventMain.projectedCost}/>}
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
                 {!(user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site))) && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}

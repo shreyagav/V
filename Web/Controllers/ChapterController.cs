@@ -34,11 +34,27 @@ namespace Web.Controllers
         {
             return _service.Set(site);
         }
-
+        [Authorize(Roles = "Admin")]
+        [HttpPost("[action]")]
+        public dynamic Delete(EventSite site)
+        {
+            try
+            {
+                site.Deleted = true;
+                _service.Set(site);
+                return new { Ok = true };
+            }
+            catch (Exception ex)
+            {
+                return new { Error = ex.Message };
+            }
+        }
         [HttpGet("[action]")]
         public SiteListItemView[] GetGrouppedChapters()
         {
             return _service.SiteListItemView();
         }
+
+
     }
 }

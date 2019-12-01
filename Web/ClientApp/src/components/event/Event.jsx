@@ -347,6 +347,7 @@ class Event extends Component {
     }
 
     render() {
+        const user = this.props.store.userInfo;
         let eventStatus = this.state.eventMain.eventStatus;
         if (eventStatus === undefined) {eventStatus = "draft"}
         //const pictures = this.state.formattedPicturesList;
@@ -453,7 +454,7 @@ class Event extends Component {
                             <div className={this.props.store.checkIfShowError('site', this.validators) ? 'error-input-wrapper' : ""}>
                                 <MultiDropDown
                                     ref={el => this.chaptersDropDownRef = el}
-                                    list={this.props.store.chapterList}
+                                    list={this.props.store.chapterList.filter(a => !a.deleted)}
                                     multiSelect={false}
                                     keyProperty='id'
                                     textProperty='state'
@@ -463,7 +464,7 @@ class Event extends Component {
                                     expandedMultiSelect={false}
                                     defaultValue={this.state.eventMain.site}
                                     placeholder="Select chapter"
-                                    disabled={!(this.props.store.userInfo && this.props.store.userInfo.authType=="Admin")}
+                                    disabled={!(user && user.authType=="Admin")}
                                     onDropDownValueChange={value => {
                                         this.props.store.updateValidators("site", value, this.validators);
                                         this.updateEventProperty("site", value);
@@ -642,7 +643,7 @@ class Event extends Component {
                         </li>
                     </ul>
                 }
-                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} />}
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date<new Date()} />}
                 {this.state.activeTabIndex === 2 && 
                     <EventBudget 
                         eventId={this.state.eventId} 

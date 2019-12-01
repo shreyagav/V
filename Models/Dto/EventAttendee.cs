@@ -13,5 +13,6 @@ namespace Models.Dto
         public string Phone { get; set; }
         public int MemberTypeId { get; set; }
         public bool Active { get; set; }
+        public bool Attended { get; set; }
     }
 }

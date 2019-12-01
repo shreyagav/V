@@ -45,6 +45,7 @@ class Chapter extends Component {
             regions: [],
             members: [],
             showError: false,
+            error:'',
             showDeleteDialog: false,
             showSuccessfullySavedDialog: false,
         };
@@ -147,7 +148,22 @@ class Chapter extends Component {
     }
 
     saveChapter() {
-        Service.saveChapter(this.state.chapter).catch(data => alert(data));
+        Service.saveChapter(this.state.chapter).then(data => { this.setState({ showSuccessfullySavedDialog: true }); }).catch(data => alert(data));
+    }
+
+    deleteChapter() {
+        Service.deleteChapter(this.state.chapter).then(data => {
+            if (data.ok == true) {
+                this.props.store.refreshChapters();
+                this.props.history.push('/chapters');
+            } else {
+                var error = 'Something wrong happened on the server.';
+                if (data.error) {
+                    error = data.error;
+                }
+                this.setState({ error: error, showError: true });
+            }
+        });
     }
 
     onContactInputValueChange(contact, param, newValue, validators, validatorsOTG){
@@ -231,7 +247,7 @@ class Chapter extends Component {
                             <div className={this.props.store.checkIfShowError('groupId', this.validators) ? 'error-input-wrapper' : ""}>
                                 <MultiDropDown
                                     ref={el => this.regionsDropDownRef = el}
-                                    list={this.props.store.chapterList}
+                                        list={this.props.store.chapterList.filter(a => !a.deleted)}
                                     multiSelect={false}
                                     keyProperty='id'
                                     textProperty='state'
@@ -426,7 +442,19 @@ class Chapter extends Component {
                         <p style={{"textAlign":"center"}}> Was successfully saved </p>
                     </Alert>
                 }
-
+                {this.state.showError &&
+                    <Alert
+                        headerText='Success'
+                        onClose={() => this.setState({ showError: false })}
+                        showOkButton={true}
+                        onOkButtonClick={() => this.setState({ showError: false })}
+                        okButtonText="Ok"
+                         mode='error'
+                    >
+                        <h4 className='mb-05'>Error while deleting chapter {this.state.chapter.name}</h4>
+                        <p style={{ "textAlign": "center" }}> {this.state.error} </p>
+                    </Alert>
+                }
             </div>
         );
     }

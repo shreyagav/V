@@ -37,7 +37,9 @@ const createStore = WrappedComponent => {
         delete state[key]
         this.setState(state)
       },
-
+        refreshChapters: () => {
+            this.componentDidMount();
+        },
       /* validators */
 
       validateOTG: (fieldName, value, validators) => {

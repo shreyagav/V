@@ -48,7 +48,7 @@ class Chapters extends Component {
     }
 
     filterList() {
-        let list = this.props.store.chapterList;
+        let list = this.props.store.chapterList.filter(a=>!a.deleted);
         let filterList = this.state.stateFilter;
         if (filterList.length > 0) {
             const newList = [];
@@ -78,7 +78,7 @@ class Chapters extends Component {
                         <p>CHAPTER:</p>
                         <MultiDropDown 
                             ref={el => this.chaptersDropDownRef = el}
-                            list={this.props.store.chapterList}
+                            list={this.props.store.chapterList.filter(a => !a.deleted)}
                             multiSelect={true}
                             keyProperty='id'
                             textProperty='state'

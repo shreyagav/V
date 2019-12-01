@@ -41,7 +41,12 @@ export default class ReportsList extends Component {
                             <span>Veteran's Attendence</span>
                         </Link>
                     </li>
-            
+                    <li className='java'>
+                        <Link to="/Report/VeteransByEventType">
+                            <span><AttendanceUpSVG /></span>
+                            <span>Veterans By Event Type</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
         );

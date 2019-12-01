@@ -29,6 +29,7 @@ import VeteransBySite from './components/reports/VeteransBySite';
 import VeteransAttendence from './components/reports/VeteransAttendence';
 import ReportsList from './components/reports/ReportsList';
 import PasswordReset from './components/account/PasswordReset';
+import VeteransByEventType from './components/reports/VeteransByEventType';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -77,6 +78,7 @@ class App extends Component {
                   <Route path='/Report/EventsByType' render={(match) => <div><NavMenu {...match} /><SimpleLayout><EventsByType {...match} /></SimpleLayout></div>} />
                   <Route path='/Report/VeteransBySite' render={(match) => <div><NavMenu {...match} /><SimpleLayout><VeteransBySite {...match} /></SimpleLayout></div>} />
                   <Route path='/Report/VeteransAttendence' render={(match) => <div><NavMenu {...match} /><SimpleLayout><VeteransAttendence {...match} /></SimpleLayout></div>} />
+                  <Route path='/Report/VeteransByEventType' render={(match) => <div><NavMenu {...match} /><SimpleLayout><VeteransByEventType {...match} /></SimpleLayout></div>} />
 
                   <Route path='/test' component={TestPage} />
                   </Switch>

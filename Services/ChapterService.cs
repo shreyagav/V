@@ -53,6 +53,7 @@ namespace Services
             site.SecurityClearance = eventSite.SecurityClearance;
             site.PoolRental = eventSite.PoolRental;
             site.AllowEverybody = eventSite.AllowEverybody;
+            site.Deleted = eventSite.Deleted;
             if(site.Id == 0)
             {
                 _ctx.EventSites.Add(site);

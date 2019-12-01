@@ -14,6 +14,7 @@ import MultiDropDown from '../MultiDropDown/MultiDropDown'
 import CheckBox from '../CheckBox'
 import SearchInput from '../SearchInput'
 import Alert from '../Alert'
+import TabComponent from '../TabComponent';
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -43,6 +44,7 @@ class EventAttendees extends Component {
         this.addExistingMember = this.addExistingMember.bind(this);
         this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
         this.filterMemberList = this.filterMemberList.bind(this);
+        this.renderToggler = this.renderToggler.bind(this);
     }
 
     submitMembersToEvent() {
@@ -161,13 +163,45 @@ class EventAttendees extends Component {
         this.setState({ addingExistingMembers: false, attendeeFilter: ''})
     }
 
+    renderToggler(value, row, index, col) {
+        console.log(value);
+        return (<li className="table-content"><TabComponent
+            style={{ 'fontSize': '0.85rem', 'height': '24px' }}
+            tabList={["yes", "no"]}
+            wasSelected={(index) => {
+                if (index != value) {
+                    var attendies = this.state.members;
+                    var one = attendies.find(a => a.id == row.id);
+                    if (one != null) {
+                        this.setState({ loading: true });
+                        Service.toggleAttendance({ userId: one.id, eventId: this.state.eventId, attended: index == 0 })
+                            .then(res => {
+                                if (res.ok) {
+                                    one.attended = index == 0;
+                                    this.setState({ member: attendies });
+                                } else {
+                                    alert(res.error);
+                                }
+                                this.setState({ loading: false });
+                            });
+                    }
+                }
+            }}
+            activeTabIndex={row.attended ? 0 : 1}
+        /></li>)
+    }
+
     render() {
         const members = this.state.members;
+        console.log(members);
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
             {title:"Phone", accesor:"phone"},
-            {title:"Email", accesor:"email", className:'word-break'}
+            { title: "Email", accesor: "email", className: 'word-break' }
         ];
+        if (this.props.showAttended) {
+            columns.push({ title: "Attended", accessor: "attended", render: this.renderToggler });
+        }
         return (
             <div className='w-100 prpl-0'>
                 {this.state.loading && <Loader />}

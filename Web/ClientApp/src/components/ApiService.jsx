@@ -15,6 +15,11 @@ export class Service {
         return Service.__post(host + '/api/Chapter/Save', data)
     }
 
+    static deleteChapter(data) {
+        return Service.__post(host + '/api/Chapter/Delete', data)
+    }
+
+
     static getAllRegeions() {
         //TODO: remap
         return Service.__get('/Regions.json');
@@ -43,6 +48,11 @@ export class Service {
     static addEventAttendees(id, ids) {
         return Service.__post(host + '/api/Event/AddEventAttendees/' + id, ids);
     }
+
+    static toggleAttendance(data) {
+        return Service.__post(host + '/api/Event/ToggleAttendance/', data);
+    }
+
     static removeEventAttendee(id, attendee) {
         return Service.__post(host + '/api/Event/RemoveEventAttendees/' + id, attendee)
     }
@@ -89,6 +99,9 @@ export class Service {
 
     static getEventsByTypeReport(range) {
         return Service.__post(host + '/api/Reports/EventsByType', range);
+    }
+    static getVeteransByEventTypeReport(range) {
+        return Service.__post(host + '/api/Reports/VeteransByEventType', range);
     }
     static getVeteransBySiteReport(range) {
         return Service.__post(host + '/api/Reports/VeteransBySite', range);

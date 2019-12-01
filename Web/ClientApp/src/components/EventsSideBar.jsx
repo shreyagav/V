@@ -157,7 +157,7 @@ class EventsSideBar extends Component {
                     <p>CHAPTER:</p>
                     <MultiDropDown
                         ref={el => this.chaptersDropDownRef = el}
-                        list={this.props.store.chapterList}
+                        list={this.props.store.chapterList.filter(a => !a.deleted)}
                         multiSelect={true}
                         keyProperty='id'
                         textProperty='state'
