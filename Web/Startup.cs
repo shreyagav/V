@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Models;
 using Services;
 using Services.Data;
@@ -40,7 +42,7 @@ namespace Web
             services.AddTransient<IMailService, MailService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"), b=>b.MigrationsAssembly("Web")));
+                    Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Web")));
             services.AddIdentity<TRRUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -74,6 +76,15 @@ namespace Web
                 });
         }
 
+        void onPrepResp(StaticFileResponseContext ctx)
+        {
+            const int durationInSeconds = 60 * 60 * 12;
+            ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+            "public,max-age=" + durationInSeconds;
+            if(!ctx.Context.Response.Headers.ContainsKey(HeaderNames.IfMatch))
+                ctx.Context.Response.Headers.Add(HeaderNames.IfMatch,"test");
+
+        }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -101,7 +112,10 @@ namespace Web
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
-
+                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions()
+                {
+                    OnPrepareResponse = this.onPrepResp
+                };
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
