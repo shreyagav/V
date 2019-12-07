@@ -6,6 +6,7 @@ import Alert from '../Alert'
 import { Service } from '../ApiService'
 import Loader from '../Loader'
 import SaveToExcelSVG from '../../svg/SaveToExcelSVG'
+import './report.css'
 
 class MembersReport extends Component {
 
@@ -34,6 +35,19 @@ class MembersReport extends Component {
         });
     }
 
+    handleTrProps = (state, rowInfo, column) => {
+        var me = this;
+        return {
+            onClick: () => {
+                me.props.history.push('/member/' + rowInfo.original.id);
+            },
+            style: {
+                cursor: 'pointer'
+            },
+            className:'report-row'
+        };
+    }
+
     render() {
         var options = { year: 'numeric', month: 'short', day: 'numeric' };
         const columns = [
@@ -59,7 +73,7 @@ class MembersReport extends Component {
             </div>
             {this.state.loading && <Loader />}
             <h3 className='mr-05 ml-05 mt-2 mb-2 uppercase-text'><strong>Members</strong> report</h3>
-            <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} onFilteredChange={() => console.log(this.reactTable.getResolvedState().sortedData)} />
+                <ReactTable ref={r => (this.reactTable = r)} data={this.state.data} columns={columns} getTrProps={this.handleTrProps} onFilteredChange={() => console.log(this.reactTable.getResolvedState().sortedData)} />
         </div>);
     }
 
