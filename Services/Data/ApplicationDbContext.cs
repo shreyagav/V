@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Services.Data
@@ -38,6 +39,11 @@ namespace Services.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        public IQueryable<TRRUser> Veterans()
+        {
+            return this.Users.Where(a => a.OldType == TRRUserType.Veteran || a.Options.Any(b => b.OptionId == 37));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

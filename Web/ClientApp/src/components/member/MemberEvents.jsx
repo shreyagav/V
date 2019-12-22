@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import Table from '../Table';
 import { withStore } from '../store';
+import { Link } from 'react-router-dom'
 
 class MemberEvents extends Component {
 
     renderColumnName(value, row, index, col) {
         return (
-            <li key={index} className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
-                <span style={{'backgroundColor':row['color']}}></span>
+            
+                <li  className={col.className ? "table-content " + col.className : "table-content"} style={{"alignItems":"stretch"}}>
+                        <span style={{'backgroundColor':row['color']}}></span>
                 <span className="display-flex flex-flow-column flex-nowrap justify-left">                                                
-                    <span style={{"fontSize":"1.1em"}}>{value}</span>
+                    <Link to={"/event-view/" + row["id"]}>
+                            <span style={{"fontSize":"1.1em"}}>{value}</span>
+                        
+                    </Link>
                     <span className='chapter'>{row['chapter']}</span>
-                </span>
-            </li>
+                        </span>
+                </li>
+            
         );
     }
 
@@ -22,6 +28,7 @@ class MemberEvents extends Component {
             {title:"Title", accesor:"name", className:"borders-when-display-block", columnMinWidth:'max-content', render: this.renderColumnName},
             {title:"Date", accesor:"date"}
         ];
+        console.log(eventsList);
         return (
             <div className='flex-nowrap flex-flow-column align-center mediaMin500-pl-pr-025 prpl-0 w-100'>
                 {eventsList && eventsList.length > 0 &&

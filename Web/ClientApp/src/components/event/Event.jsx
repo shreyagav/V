@@ -454,7 +454,7 @@ class Event extends Component {
                             <div className={this.props.store.checkIfShowError('site', this.validators) ? 'error-input-wrapper' : ""}>
                                 <MultiDropDown
                                     ref={el => this.chaptersDropDownRef = el}
-                                    list={this.props.store.chapterList.filter(a => !a.deleted)}
+                                    list={this.props.store.chapterList}
                                     multiSelect={false}
                                     keyProperty='id'
                                     textProperty='state'

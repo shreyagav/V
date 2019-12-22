@@ -87,8 +87,8 @@ namespace Web.Controllers
                 var html = $"To reset your password <a href=\"https://ors.teamriverrunner.org/PasswordReset/{token}\">click here</a>";
                 try
                 {
-                    string from = "webmaster@teamriverrunner.org";
-                    string fromName = "Webmaster Team River Runner";
+                    string from = "dana@teamriverrunner.org";
+                    string fromName = "Team River Runner Administrator";
                     //if (trrUser.Site != null && trrUser.Site.Main != null && !string.IsNullOrWhiteSpace(trrUser.Site.Main.Email))
                     //{
                     //    from = trrUser.Site.Main.Email;

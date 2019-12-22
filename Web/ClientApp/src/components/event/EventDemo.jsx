@@ -157,11 +157,9 @@ class EventDemo extends Component {
             });
             chapter = state.chapters.find(element => {return element.id === this.state.eventMain.site});
         }
-        if(this.state.eventMain.date !== undefined) {
-            eventDate = 
-            ("0" + this.state.eventMain.date.getMonth()).slice(-2) + "/" + 
-            ("0" + this.state.eventMain.date.getDate()).slice(-2) + "/" + 
-            this.state.eventMain.date.getFullYear();
+        if (this.state.eventMain.date !== undefined) {
+            var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            eventDate = this.state.eventMain.date.toLocaleDateString('en-US', options);
             eventTime = 
             ("0" + this.state.eventMain.timeFrom.hours).slice(-2) + ":" + 
             ("0" + this.state.eventMain.timeFrom.minutes).slice(-2) + 

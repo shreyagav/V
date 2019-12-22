@@ -114,11 +114,11 @@ class MultiDropDownList extends React.Component {
 
     setFocus(){
         if(this.onFocusRef !== null){
-            var list = this.simpleBarRef;
-            var parentTop = list.parentElement.getBoundingClientRect().top;
+            //var list = this.simpleBarRef;
+            //var parentTop = list.parentElement.getBoundingClientRect().top;
             //var top = list.getBoundingClientRect().top;
             var elem = this.onFocusRef;
-            var elemTop = elem.getBoundingClientRect().top;
+            /*var elemTop = elem.getBoundingClientRect().top;
             var elemBottom = elem.getBoundingClientRect().bottom;
             var parentBottom = list.parentElement.getBoundingClientRect().bottom;
             if(parentTop > elemTop){
@@ -126,7 +126,7 @@ class MultiDropDownList extends React.Component {
             }
             if(elemBottom > parentBottom){
                 list.parentElement.scrollTop = elemBottom - parentBottom + list.parentElement.scrollTop;
-            }
+            }*/
             elem.classList.add("onFocus");
         }
     }
@@ -230,9 +230,10 @@ class MultiDropDownList extends React.Component {
         }
     }
 
-    renderListItem(element, index, style){
+    renderListItem(element, index, style) {
+        if (element.deleted === true) return null;
         let checked = this.checkIfCheckboxChecked(index);
-        let isOpen = (this.props.openStateIndex["_"+index.toString()] === true);
+        let isOpen = (this.props.openStateIndex["_" + index.toString()] === true);
         return(
             <li key={index} className={isOpen ? 'openChapter' : ''} style={style} >
                 <div

@@ -213,7 +213,7 @@ class PasswordReset extends Component {
                 {this.state.showError && this.alertNotValid}
                 {this.state.message && 
                     <Alert
-                        headerText="Sucess"
+                        headerText="Success"
                         text={this.state.message}
                         mode="success"
                         onClose={() => this.props.history.push('/')}

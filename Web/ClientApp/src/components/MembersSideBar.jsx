@@ -121,7 +121,7 @@ class EventsSideBar extends Component {
                 <p>Chapters:</p>
                 <MultiDropDown 
                     ref={el => this.chaptersDropDownRef = el}
-                        list={this.props.store.chapterList.filter(a => !a.deleted)}
+                        list={this.props.store.chapterList}
                     multiSelect={true}
                     keyProperty='id'
                     textProperty='state'
@@ -137,7 +137,7 @@ class EventsSideBar extends Component {
                 <p>Type:</p>
                 <MultiDropDown
                     ref={el => this.roleDropDownRef = el}
-                    list={[{ name: 'Veteran', img: <PaddlerUpSVG />, id: 54 }, { name: 'Civilian', img: <VolunteerUpSVG />, id: 53 }, { name: 'Veteran Family/Caregiver', img: <CaregiverUpSVG />, id: 55 }/*TODO: icon for veteran family*/ ]} 
+                        list={[{ name: 'Veteran', img: <VolunteerUpSVG />, id: 53 }, { name: 'Civilian', img: <PaddlerUpSVG />, id: 54 }, { name: 'Veteran Family/Caregiver', img: <CaregiverUpSVG />, id: 55 }/*TODO: icon for veteran family*/ ]} 
                     keyProperty='id'
                     textProperty='name'
                     defaultValue={this.state.role}

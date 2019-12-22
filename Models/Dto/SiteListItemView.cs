@@ -10,6 +10,7 @@ namespace Models.Dto
         public string Name { get; set; }
         public int Id { get; set; }
         public SiteListItemType Type { get; set; }
+        public bool Deleted { get; set; }
     }
 
     public class SiteListItemView
