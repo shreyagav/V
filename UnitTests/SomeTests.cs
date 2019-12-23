@@ -15,9 +15,42 @@ namespace UnitTests
         public string Chapter { get; set; }
         public DateTime Date { get; set; }
     }
+
+    public class TestItem
+    {
+        public int Id { get; set; }
+        public decimal Amount { get; set; }
+        public string Description { get; set; }
+    }
     [TestClass]
     public class SomeTests
     {
+        [TestMethod]
+        public void GroupingTest()
+        {
+            var list = new List<TestItem>()
+            {
+                new TestItem(){ Id = 1, Amount=100, Description = "goods1"},
+                new TestItem(){ Id = 1, Amount=6, Description = "tax1"},
+                new TestItem(){ Id = 1, Amount=8, Description = "tax2"},
+                new TestItem(){ Id = 2, Amount=300, Description = "goods2"},
+                new TestItem(){ Id = 2, Amount=13, Description = "tax1"},
+                new TestItem(){ Id = 2, Amount=34, Description = "tax2"},
+                new TestItem(){ Id = 3, Amount=-400, Description = "return1"},
+                new TestItem(){ Id = 3, Amount=-13, Description = "tax1"},
+                new TestItem(){ Id = 3, Amount=-34, Description = "tax2"},
+            };
+            var grouped = list.GroupBy(c => c.Id);
+            var temp = list.Max(a => Math.Abs(a.Amount));
+            var res = grouped.Select(c => new
+            {
+                Id = c.Key,
+                Amount = c.Sum(a=>a.Amount),
+                Description = c.Where(b=>Math.Abs(b.Amount) == c.Max(a=>Math.Abs(a.Amount))).Select(b=>b.Description).First()
+            });
+
+        }
+
         public Func<T, bool> GetQuery<T>(dynamic obj)
         {
             Expression lambda = null;
