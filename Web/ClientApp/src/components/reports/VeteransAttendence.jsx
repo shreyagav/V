@@ -34,13 +34,13 @@ class VeteransAttendence extends Component {
     }
 
     componentDidMount() {
-        let today = new Date();
-        let lastYearToday = new Date(today.getFullYear()-1, today.getMonth());
-        let range = {
-            start: getFirstDayOfMonth(lastYearToday),
-            end: getLastDayOfMonth(today)
-        }
-        this.setState({range: range})
+        //let today = new Date();
+        //let lastYearToday = new Date(today.getFullYear()-1, today.getMonth());
+        //let range = {
+        //    start: getFirstDayOfMonth(lastYearToday),
+        //    end: getLastDayOfMonth(today)
+        //}
+        //this.setState({range: range})
         this.updateData();
     }
     donwloadExcel() {

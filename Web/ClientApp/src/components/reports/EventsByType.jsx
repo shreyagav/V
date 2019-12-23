@@ -13,7 +13,7 @@ class EventsByType extends Component {
     constructor(props) {
         super(props);
         var date = new Date(); // ??
-        var date2 = new Date(date - 12 * 30 * 24 * 3600 * 1000);  // ????
+        var date2 = new Date(date - 6 * 30 * 24 * 3600 * 1000);  // ????
         this.state = {
             data: [],
             columns:[],
@@ -30,13 +30,13 @@ class EventsByType extends Component {
     }
 
     componentDidMount() {
-        let today = new Date();
-        let lastYearToday = new Date(today.getFullYear()-1, today.getMonth());
-        let range = {
-            start: getFirstDayOfMonth(lastYearToday),
-            end: getLastDayOfMonth(today)
-        }
-        this.setState({range: range})
+        //let today = new Date();
+        //let lastYearToday = new Date(today.getFullYear()-1, today.getMonth());
+        //let range = {
+        //    start: getFirstDayOfMonth(lastYearToday),
+        //    end: getLastDayOfMonth(today)
+        //}
+        //this.setState({range: range})
         this.updateData();
     }
 

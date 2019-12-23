@@ -39,16 +39,20 @@ class Chapters extends Component {
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
                 <span className='table-mini-header'>{col.title + ": "}</span>
                 <ul>
-                    {row['chapters'].map(element => 
-                        <li style={{ "fontSize": "1.1em" }} key={index + element['name']}><a href={'/edit-chapter/' + element['id']}>{element['name']}</a></li>
-                    )}
+                    {row['chapters'].map(element => {
+                        var style = { "fontSize": "1.1em" };
+                        if (element.deleted === true)
+                            style.textDecoration = 'line-through';
+                        return (<li style={style} key={index + element['name']}>{element.deleted === true ? <span>{element['name']}</span> : <a href={'/edit-chapter/' + element['id']}>{element['name']}</a>}</li>)
+    }
+    )}
                 </ul>
             </li>
         );
     }
 
     filterList() {
-        let list = this.props.store.chapterList.filter(a=>!a.deleted);
+        let list = this.props.store.chapterListAll;
         let filterList = this.state.stateFilter;
         if (filterList.length > 0) {
             const newList = [];
@@ -62,7 +66,7 @@ class Chapters extends Component {
 
     render() {
         const chapterList = this.filterList();
-        const stateList = Array.from(this.props.store.chapterList, element => {return {"name":element.state.name}});
+        const stateList = Array.from(this.props.store.chapterListAll, element => {return {"name":element.state.name}});
         const columns=[
             {title:"State", accesor:"state", className:"borders-when-display-block", render: this.renderStateName},
             {title:"Chapters", accesor:"chapters", render: this.renderChaptersList}
@@ -78,7 +82,7 @@ class Chapters extends Component {
                         <p>CHAPTER:</p>
                         <MultiDropDown 
                             ref={el => this.chaptersDropDownRef = el}
-                            list={this.props.store.chapterList.filter(a => !a.deleted)}
+                            list={this.props.store.chapterList}
                             multiSelect={true}
                             keyProperty='id'
                             textProperty='state'

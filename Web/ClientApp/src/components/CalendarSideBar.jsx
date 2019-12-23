@@ -24,7 +24,7 @@ class CalendarSidebar extends Component {
                 }
             </div>
             <MultiDropDown 
-                list={this.props.store.chapterList.filter(a=>!a.deleted)}
+                list={this.props.store.chapterList}
                 toggleable = {false}
                 multiSelect={true}
                 keyProperty='id'

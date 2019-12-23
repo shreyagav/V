@@ -78,12 +78,8 @@ namespace Web
 
         void onPrepResp(StaticFileResponseContext ctx)
         {
-            const int durationInSeconds = 60 * 60 * 12;
-            ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-            "public,max-age=" + durationInSeconds;
-            if(!ctx.Context.Response.Headers.ContainsKey(HeaderNames.IfMatch))
-                ctx.Context.Response.Headers.Add(HeaderNames.IfMatch,"test");
-
+            const int durationInSeconds = 10 * 60;
+            ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
