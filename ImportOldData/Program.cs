@@ -33,7 +33,7 @@ namespace ImportOldData
             services.AddDbContext<ApplicationDbContext>(options =>
                             options.UseSqlServer(
                                 "Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
-            services.AddDefaultIdentity<TRRUser>()
+            services.AddIdentity<TRRUser,TRRRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddScoped<IUserService, UserService>();
             var serviceProvider = services.BuildServiceProvider();

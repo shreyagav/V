@@ -19,8 +19,8 @@ namespace Web.Controllers
         {
             _service = service;
         }
-
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("[action]")]
         public CalendarView[] GetMonthEvents(CalendarViewFilter filter)
         {
             return _service.GetMonthEvents(filter);

@@ -11,8 +11,8 @@ namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IHostingEnvironment HostingEnv { get; }
-        public HomeController(IHostingEnvironment env)
+        public IWebHostEnvironment HostingEnv { get; }
+        public HomeController(IWebHostEnvironment env)
         {
             HostingEnv = env;
         }

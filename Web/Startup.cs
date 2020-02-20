@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using Models;
 using Services;
@@ -40,6 +41,7 @@ namespace Web
             services.AddTransient<IChapterService, ChapterService>();
             services.AddTransient<IStorageService, StorageService>();
             services.AddTransient<IMailService, MailService>();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Web")));
@@ -52,7 +54,7 @@ namespace Web
             //    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             //});
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -65,7 +67,6 @@ namespace Web
                 options.Cookie.Name = "TRRAntiforgery";
                 options.Cookie.HttpOnly = false;
             });
-
             services.ConfigureApplicationCookie(options =>
                 {
                     options.Events.OnRedirectToLogin = context =>
@@ -82,7 +83,7 @@ namespace Web
             ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -99,12 +100,17 @@ namespace Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}");
+                endpoints.MapControllers();
             });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller}/{action}/{id?}");
+            //});
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

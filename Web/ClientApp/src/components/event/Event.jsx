@@ -356,7 +356,7 @@ class Event extends Component {
                 <div className='second-nav-wrapper'>
                     <div className='ipw-600'>
                         <div className = 'flex-nowrap align-center'>
-                            <Status eventStatus={eventStatus} className='mr-025' />
+                            {/*<Status eventStatus={eventStatus} className='mr-025' />
                             {eventStatus !== 'published' && eventStatus !== 'deleted' &&
                                 <button 
                                     className='round-button medium-round-button outline-on-hover hlo500' 
@@ -386,7 +386,7 @@ class Event extends Component {
                                     <StatusDraftSVG />
                                     <span>Draft</span>
                                 </button>
-                            }
+                            }*/}
                         </div>
                         <div className = 'flex-nowrap align-center'>
                             {eventStatus !== 'deleted' && 

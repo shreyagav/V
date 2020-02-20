@@ -36,6 +36,7 @@ namespace Services
                  && (!filter.Status.HasValue || filter.Status.Value == evt.Status)
                  && (!filter.Status.HasValue || filter.Status.Value == evt.Status)
                  && (!filter.TypeOfEvent.HasValue || filter.TypeOfEvent.Value == evt.EventTypeId)
+                 && evt.Status!=EventStatus.Deleted
             ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt=>new EventListRow() {Name = evt.Name,Chapter=evt.Site.Name,Color=evt.EventType.Color,Date=evt.Date.ToString("d"),Id=evt.Id,Status=evt.Status,Time=$"{Converters.IntTimeToStr(evt.StartTime)} - {Converters.IntTimeToStr(evt.EndTime)}", Type=evt.EventType.Title }) .ToArray();
             return events;
         }
@@ -109,11 +110,11 @@ namespace Services
             CalendarEvent[] events;
             if (filter.Sites != null && filter.Sites.Length > 0)
             {
-                events = _context.CalendarEvents.Include(a => a.EventType).Where(e => e.Date >= start && e.Date < end && filter.Sites.Contains(e.Site.Id)).OrderBy(a => a.Date).ThenBy(a => a.StartTime).ToArray();
+                events = _context.CalendarEvents.Include(a => a.EventType).Where(e => e.Date >= start && e.Date < end && filter.Sites.Contains(e.Site.Id) && e.Status != EventStatus.Deleted).OrderBy(a => a.Date).ThenBy(a => a.StartTime).ToArray();
             }
             else
             {
-                events = _context.CalendarEvents.Include(a=>a.EventType).Where(e => e.Date >= start && e.Date < end).OrderBy(a => a.Date).ThenBy(a => a.StartTime).ToArray();
+                events = _context.CalendarEvents.Include(a=>a.EventType).Where(e => e.Date >= start && e.Date < end && e.Status != EventStatus.Deleted).OrderBy(a => a.Date).ThenBy(a => a.StartTime).ToArray();
             }
             return (from e in events
                           group e by $"{e.Date.Month}-{e.Date.Day}" into ge

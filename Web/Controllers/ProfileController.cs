@@ -217,6 +217,9 @@ namespace Web.Controllers
             if(user != null)
             {
                 user.Deleted = true;
+                if (user.UserName.Equals(user.Email, StringComparison.OrdinalIgnoreCase))
+                    user.UserName = user.Id;
+                user.Email = $"{user.Id}+{user.Email}";
                 var updateRes = await _userManager.UpdateAsync(user);
                 if (!updateRes.Succeeded)
                 {
@@ -253,7 +256,7 @@ namespace Web.Controllers
                 else
                 {
                     var normalizedEmail = data.Email.ToUpper();
-                    if (_ctx.Users.Where(a => a.NormalizedEmail == normalizedEmail && !a.Id.Equals(data.Id, StringComparison.OrdinalIgnoreCase)).Any())
+                    if (_ctx.Users.Where(a => a.NormalizedEmail == normalizedEmail && !a.Id.Equals(data.Id)).Any())
                         throw new Exception("User with such email already exists.");
                     if (user.Email.Equals(user.UserName, StringComparison.OrdinalIgnoreCase) && !user.Email.Equals(data.Email, StringComparison.OrdinalIgnoreCase))
                     {

@@ -52,5 +52,9 @@ namespace Models
         public bool Deleted { get; set; }
         public Contact EmergencyContact { get; set; }
         public int? EmergencyContactId { get; set; }
+        public bool TRRBackgroundCheck { get; set; }
+        public bool OtherBackgroundCheck { get; set; }
+        public bool CodeOfConductTraining { get; set; }
+        public string OtherBackgroundCheckComment { get; set; }
     }
 }

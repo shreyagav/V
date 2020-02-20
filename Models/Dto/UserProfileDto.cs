@@ -27,7 +27,6 @@ namespace Models.Dto
             Zip = user.Zip;
             Medical = user.Medical;
             InjuryDate = user.DateInjured;
-
             ReleaseSigned = user.ReleaseSigned;
             LiabilitySigned = user.LiabilitySigned;
             ActiveMember = user.Active;
@@ -38,6 +37,11 @@ namespace Models.Dto
             Comments = user.Comments;
             Status = user.OldStatus;
             SponsoredById = user.SponsoredById;
+            CodeOfConductTraining = user.CodeOfConductTraining;
+            TRRBackgroundCheck = user.TRRBackgroundCheck;
+            OtherBackgroundCheck = user.OtherBackgroundCheck;
+            OtherBackgroundCheckComment = user.OtherBackgroundCheckComment;
+
             if (user.Site != null)
             {
                 SiteName = user.Site.Name;
@@ -47,6 +51,7 @@ namespace Models.Dto
 
         public void Map(TRRUser user)
         {
+
             user.Id = Id;
             user.FirstName = FirstName;
             user.LastName = LastName;
@@ -71,6 +76,10 @@ namespace Models.Dto
             user.OldType = (TRRUserType)UserType;
             user.Comments = Comments;
             user.OldStatus = Status;
+            user.CodeOfConductTraining = CodeOfConductTraining;
+            user.TRRBackgroundCheck = TRRBackgroundCheck;
+            user.OtherBackgroundCheck = OtherBackgroundCheck;
+            user.OtherBackgroundCheckComment = OtherBackgroundCheckComment;
             //user.SponsoredById = SponsoredById;
         }
 
@@ -104,5 +113,9 @@ namespace Models.Dto
         public int Status { get; set; }
         public string SponsoredById { get; set; }
         public Contact EmergencyContact { get; set; }
+        public bool TRRBackgroundCheck { get; set; }
+        public bool OtherBackgroundCheck { get; set; }
+        public bool CodeOfConductTraining { get; set; }
+        public string OtherBackgroundCheckComment { get; set; }
     }
 }

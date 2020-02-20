@@ -222,7 +222,7 @@ class EventAttendees extends Component {
                             }}
                         />
                         <div className='flex-wrap justify-space-between align-center mr-075 ml-05 mb-05'>
-                            <CheckBox 
+                        {/*<CheckBox 
                                 className='mr-1 mb-1 ml-025' 
                                 onClick={() => {
                                     clearTimeout(this.timeoutVar); // ????
@@ -238,7 +238,7 @@ class EventAttendees extends Component {
                                 checked={this.state.selectAllCheckboxChecked}
                                 labelStyle={{"fontSize":"0.9rem"}}
                                 labelText={<span>Select All<strong>{" "+ this.state.filteredList.length.toString()}</strong></span>}
-                            />
+                            />*/}
                             <div className='flex-wrap justify-left'>
                                 <CheckBox 
                                     className='mr-1 mb-1 ml-025' 

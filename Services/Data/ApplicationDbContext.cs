@@ -45,6 +45,7 @@ namespace Services.Data
         {
             return this.Users.Where(a => a.OldType == TRRUserType.Veteran || a.Options.Any(b => b.OptionId == 37));
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

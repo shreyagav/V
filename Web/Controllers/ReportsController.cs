@@ -120,7 +120,7 @@ namespace Web.Controllers
             var columns = _ctx.CalendarEventTypes.Select(a=> new KeyValuePair<string, string>(a.Id.ToString(), a.Title)).ToList();
             columns.Insert(0, new KeyValuePair<string, string>("name", "Site Name"));
             columns.Insert(1, new KeyValuePair<string, string>("total", "All"));
-            var data = ToPivotTable(_ctx.CalendarEvents.Include(a => a.Site).Where(a=>a.Date>=range.Start && a.Date<=range.End).ToArray(), item => item.EventTypeId, item => item.Site.Name, items => items.Any() ? items.Count() : 0);
+            var data = ToPivotTable(_ctx.CalendarEvents.Include(a => a.Site).Where(a=>a.Date>=range.Start && a.Date<=range.End && a.Status != EventStatus.Deleted).ToArray(), item => item.EventTypeId, item => item.Site.Name, items => items.Any() ? items.Count() : 0);
             var result = new PivotResult() { Columns = columns, Data = data };
             return result;
         }
@@ -148,7 +148,7 @@ namespace Web.Controllers
                                       join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                       join c in _ctx.UserEvents on b.Id equals c.EventId
                                       join d in veterans on c.UserId equals d.Id
-                                      where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                      where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                                       select new { d.Id, Name = d.FirstName + " " + d.LastName, b.EventTypeId, Duration = ((double)(60 * b.EndTime / 100 + b.EndTime % 100 - 60 * b.StartTime / 100 + b.StartTime % 100)) / 60 }).ToArray();
 
             var data = ToPivotTable(veteransWithEvents, item => item.EventTypeId, item => item.Name, items => items.Any() ? items.Count() : 0);
@@ -172,7 +172,7 @@ namespace Web.Controllers
                                   join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                   join c in _ctx.UserEvents on b.Id equals c.EventId
                                   join d in veterans on c.UserId equals d.Id
-                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                                   group c by a.Id into newGroup
                                   select new { SiteId = newGroup.Key, Count = newGroup.Count() }).ToArray();
 
@@ -180,7 +180,7 @@ namespace Web.Controllers
                                             join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                             join c in _ctx.UserEvents on b.Id equals c.EventId
                                             join d in veterans.Distinct() on c.UserId equals d.Id
-                                            where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
+                                            where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                                             select new { SiteId = a.Id, UserId = c.UserId }).Distinct().OrderBy(a=>a.SiteId).ToArray();
             var uniqueVeteransBySite = from a in uniqueVeteransBySiteFlat
                                        group a by a.SiteId into newGroup
@@ -205,8 +205,8 @@ namespace Web.Controllers
                                   join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                   join c in _ctx.UserEvents on b.Id equals c.EventId
                                   join d in veterans on c.UserId equals d.Id
-                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted
-                                  group c by d into newGroup
+                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                          group c by d into newGroup
                                   select new { User = newGroup.Key, Count = newGroup.Count() });
             var result =   from va in veteransWithAttendance
                           join site in _ctx.EventSites on va.User.SiteId equals site.Id

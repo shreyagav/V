@@ -32,7 +32,7 @@ namespace Models.Dto
             }
             return res;
         }
-        public string ToString() {
+        public override string ToString() {
             return $"{Hours}:{Minutes} {(Am?"AM":"PM")}";
         }
     }

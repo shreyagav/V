@@ -26,7 +26,33 @@ class MemberTRRInfo extends Component {
                     labelClassName = 'uppercase-text bold-text'
                     labelText = 'Liability Signed'
                 />
-
+                <CheckBox
+                    className='mb-05'
+                    onClick={() => this.props.updateMemberProperty("trrBackgroundCheck", !this.props.member.trrBackgroundCheck)}
+                    checked={this.props.member.trrBackgroundCheck}
+                    labelClassName='uppercase-text bold-text'
+                    labelText='TRR Background Check'
+                />
+                <CheckBox
+                    className='mb-05'
+                    onClick={() => this.props.updateMemberProperty("codeOfConductTraining", !this.props.member.codeOfConductTraining)}
+                    checked={this.props.member.codeOfConductTraining}
+                    labelClassName='uppercase-text bold-text'
+                    labelText='Code Of Conduct Training'
+                />
+                <CheckBox
+                    className='mb-05'
+                    onClick={() => this.props.updateMemberProperty("otherBackgroundCheck", !this.props.member.otherBackgroundCheck)}
+                    checked={this.props.member.otherBackgroundCheck}
+                    labelClassName='uppercase-text bold-text'
+                    labelText='Other Background Check'
+                />
+                {this.props.member.otherBackgroundCheck && (<div><p>Other Background Check:</p>
+                    <textarea
+                        placeholder='Other Background Check Comments'
+                    value={this.props.member.otherBackgroundCheckComment}
+                        onChange={e => this.props.updateMemberProperty("otherBackgroundCheckComment", e.target.value)}
+                    /></div>)}
                 <div className = 'flex-nowrap align-center mt-2 mb-2'>
                     <span className='line'></span>
                         <p className='pr-05 pl-05'><strong>ACTIVE</strong></p>
