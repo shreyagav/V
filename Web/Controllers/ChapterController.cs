@@ -23,7 +23,7 @@ namespace Web.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("[action]/{id}")]
+        [HttpGet("[action]/{id:int}")]
         public EventSite GetById(int id)
         {
             return _service.Get(id);
