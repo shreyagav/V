@@ -274,6 +274,7 @@ namespace Web.Controllers
                     if(data.EmergencyContact.Id == 0)
                     {
                         var c = _ctx.Contacts.Add(data.EmergencyContact);
+                        _ctx.SaveChanges();
                         user.EmergencyContactId = c.Entity.Id;
                         await _userManager.UpdateAsync(user);
                     }
