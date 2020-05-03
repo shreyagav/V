@@ -97,7 +97,7 @@ namespace Services
             var sites = _ctx.EventSites.ToArray();
             var temp = (from e in sites
                         group e by e.GroupId into ge
-                        select new SiteListItemView() { Id = ge.Key , Chapters = ge.Select(a => new SiteItem() { Id = a.Id, Name = a.Name, Type = SiteListItemType.Site, Deleted=a.Deleted }).ToArray() }).ToArray();
+                        select new SiteListItemView() { Id = ge.Key , Chapters = ge.Select(a => new SiteItem() { Id = a.Id, Name = a.Name, Type = SiteListItemType.Site, Deleted=a.Deleted }).OrderBy(x=>x.Name).ToArray() }).ToArray();
             foreach(SiteListItemView t in temp)
             {
                 var b = sites.First(a => a.GroupId == t.Id);

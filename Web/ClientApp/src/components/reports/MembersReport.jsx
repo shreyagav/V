@@ -51,15 +51,11 @@ class MembersReport extends Component {
     render() {
         var options = { year: 'numeric', month: 'short', day: 'numeric' };
         const columns = [
-            { Header: "First Name", accessor: 'firstName', filterable:true },
-            { Header: "Last Name", accessor: 'lastName', filterable: true },
-            { Header: "User Name", accessor: 'userName', filterable: true },
-            { Header: "Gender", accessor: 'gender', filterable: true },
-            { Header: "Email", accessor: 'email', filterable: true },
-            { Header: "Phone", accessor: 'phone', filterable: true },
-            { Header: "Chapter", accessor: 'chapter', filterable: true },
-            { Header: "Joined", accessor: 'joined', filterable: true, Cell: props => <span className='number'>{new Date(props.value).toLocaleString('en-US', options)}</span> },
-            { Header: "Options", accessor: 'options', filterable: true, Cell: props => <span className='number'>{props.value.map(a=>a+", ")}</span> },
+            { Header: "Name", columns: [{ Header: "First", accessor: 'firstName', filterable: true }, { Header: "Last", accessor: 'lastName', filterable: true }, { Header: "User", accessor: 'userName', filterable: true }]},
+            { Header: "Contact", columns: [{ Header: "Email", accessor: 'email', filterable: true }, { Header: "Phone", accessor: 'phone', filterable: true }]},
+            { Header: "Basic Info", columns: [{ Header: "Gender", accessor: 'gender', filterable: true }, { Header: "Chapter", accessor: 'chapter', filterable: true }, { Header: "Joined", accessor: 'joined', filterable: true, Cell: props => <span className='number'>{new Date(props.value).toLocaleString('en-US', options)}</span> }]},
+            { Header: "Emergency Contact", columns: [{ Header: "Name", accessor: 'emergencyContactName', filterable: true },{ Header: "Email", accessor: 'emergencyContactEmail', filterable: true },{ Header: "Phone", accessor: 'emergencyContactPhone', filterable: true }]},
+            { Header: "Options", columns: [{ accessor: 'options', filterable: true, Cell: props => <span className='number'>{props.value.map(a => a + ", ")}</span> }]},
         ]
         return (
         <div>

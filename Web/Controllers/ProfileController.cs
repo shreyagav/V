@@ -206,7 +206,7 @@ namespace Web.Controllers
                 && !a.Deleted
                 && a.Active == filter.Active
                 )
-                .Take(1000).Select(a => new UserProfileDto(a)).ToArray();
+                .Take(1000).OrderBy(a => a.FirstName).ThenBy(a => a.LastName).Select(a => new UserProfileDto(a)).ToArray();
             return res;
         }
 

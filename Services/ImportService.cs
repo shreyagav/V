@@ -56,7 +56,7 @@ namespace Services
 
         public Option[] GetAllOptions() => _context.Options.ToArray();
 
-        public TRRUser[] GetAllUsers() => _context.Users.Where(a=>!a.Deleted).ToArray();
+        public TRRUser[] GetAllUsers() => _context.Users.Where(a=>!a.Deleted).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName).ToArray();
 
         public void ImportEvent(CalendarEvent newEvent)
         {

@@ -36,6 +36,9 @@ namespace Web.Controllers
         public string Type { get; set; }
         public bool Active { get; set; }
         public string[] Options { get; set; }
+        public string EmergencyContactName { get; internal set; }
+        public string EmergencyContactEmail { get; internal set; }
+        public string EmergencyContactPhone { get; internal set; }
     }
 
     public class PivotResult
@@ -80,14 +83,14 @@ namespace Web.Controllers
                     UserName = a.UserName,
                     Gender = a.Gender == 'F' ? "Female" : "Male",
                     Type = a.OldType.ToString()
-                })
+                }).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName)
                 .ToArray();
         }
 
         [HttpGet("[action]")]
         public MemeberReportLine[] Members()
         {
-            var res = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include("Options.Option").Include("Options.Option.Category").Where(a=>a.Active && !a.Deleted)
+            var res = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include(a=>a.EmergencyContact).Include("Options.Option").Include("Options.Option.Category").Where(a=>a.Active && !a.Deleted)
                 .Select(a=>new MemeberReportLine() {
                     Id = a.Id,
                     FirstName = a.FirstName,
@@ -102,8 +105,11 @@ namespace Web.Controllers
                     Address = a.Address,
                     UserName = a.UserName,
                     Gender = a.Gender == 'F' ? "Female" : "Male",
-                    Type = a.OldType.ToString()
-                })
+                    Type = a.OldType.ToString(),
+                    EmergencyContactName=a.EmergencyContact.Name,
+                    EmergencyContactEmail = a.EmergencyContact.Email,
+                    EmergencyContactPhone = a.EmergencyContact.Phone
+                }).OrderBy(a => a.FirstName).ThenBy(a => a.LastName)
                 .ToArray();
             //var temp = res.Where(a => a.Options.Count > 2).ToArray();
             return res;
@@ -149,6 +155,7 @@ namespace Web.Controllers
                                       join c in _ctx.UserEvents on b.Id equals c.EventId
                                       join d in veterans on c.UserId equals d.Id
                                       where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                      orderby d.FirstName,d.LastName
                                       select new { d.Id, Name = d.FirstName + " " + d.LastName, b.EventTypeId, Duration = ((double)(60 * b.EndTime / 100 + b.EndTime % 100 - 60 * b.StartTime / 100 + b.StartTime % 100)) / 60 }).ToArray();
 
             var data = ToPivotTable(veteransWithEvents, item => item.EventTypeId, item => item.Name, items => items.Any() ? items.Count() : 0);
@@ -189,7 +196,7 @@ namespace Web.Controllers
             var result = (from a in veteransBySite
                           join b in uniqueVeteransBySite on a.SiteId equals b.SiteId
                           join c in _ctx.EventSites on a.SiteId equals c.Id
-                          select new VeteransBySite (){ Name = c.Name, Unique = b.Count, Attendance = a.Count }).ToArray();
+                          select new VeteransBySite (){ Name = c.Name, Unique = b.Count, Attendance = a.Count }).OrderBy(a => a.Name).ToArray();
             return result;
         }
         [HttpPost("[action]")]
@@ -202,22 +209,23 @@ namespace Web.Controllers
         {
             var veterans = _ctx.Veterans();
             var veteransWithAttendance = (from a in _ctx.EventSites
-                                  join b in _ctx.CalendarEvents on a.Id equals b.SiteId
-                                  join c in _ctx.UserEvents on b.Id equals c.EventId
-                                  join d in veterans on c.UserId equals d.Id
-                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
-                                          group c by d into newGroup
-                                  select new { User = newGroup.Key, Count = newGroup.Count() });
+                        join b in _ctx.CalendarEvents on a.Id equals b.SiteId
+                        join c in _ctx.UserEvents on b.Id equals c.EventId
+                        join d in veterans on c.UserId equals d.Id
+                        where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                        select new { User = d, a.Id}).ToArray().GroupBy(a => a.User).Select(a => new { User = a.Key, Count = a.Count() });
+            var events = _ctx.EventSites.ToArray();
+
             var result =   from va in veteransWithAttendance
-                          join site in _ctx.EventSites on va.User.SiteId equals site.Id
+                          join site in events on va.User.SiteId equals site.Id
                           select new VeteranAttendance() { Id = va.User.Id, FirstName = va.User.FirstName, LastName = va.User.LastName, Chapter = site.Name, Address = va.User.Address, Zip = va.User.Zip, Attendance = va.Count };
 
-            return result.ToArray();
+            return result.OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName).ToArray();
         }
         [HttpPost("[action]")]
         public ActionResult VeteransAttandanceToExcel(DateRange range)
         {
-            return File(ExcelService.GetExcel(VeteransAttandance(range)), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "VeteransAttandance.xlsx");
+            return File(ExcelService.GetExcel( VeteransAttandance(range)), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "VeteransAttandance.xlsx");
         }
         public static DataTable ToPivotTable<T, TColumn, TRow, TData>(
     IEnumerable<T> source,

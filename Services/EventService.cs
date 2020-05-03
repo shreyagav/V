@@ -204,7 +204,7 @@ namespace Services
                     MemberTypeId = tempMemberType(),
                     Phone = u.PhoneNumber,
                     Active = u.Active
-                })
+                }).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName)
                 .ToArray();
             return res;
         }

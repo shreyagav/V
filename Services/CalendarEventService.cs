@@ -37,7 +37,8 @@ namespace Services
                  && (!filter.Status.HasValue || filter.Status.Value == evt.Status)
                  && (!filter.TypeOfEvent.HasValue || filter.TypeOfEvent.Value == evt.EventTypeId)
                  && evt.Status!=EventStatus.Deleted
-            ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt=>new EventListRow() {Name = evt.Name,Chapter=evt.Site.Name,Color=evt.EventType.Color,Date=evt.Date.ToString("d"),Id=evt.Id,Status=evt.Status,Time=$"{Converters.IntTimeToStr(evt.StartTime)} - {Converters.IntTimeToStr(evt.EndTime)}", Type=evt.EventType.Title }) .ToArray();
+            ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt=>new EventListRow() {Name = evt.Name,Chapter=evt.Site.Name,Color=evt.EventType.Color,Date=evt.Date.ToString("d"),Id=evt.Id,Status=evt.Status,Time=$"{Converters.IntTimeToStr(evt.StartTime)} - {Converters.IntTimeToStr(evt.EndTime)}", Type=evt.EventType.Title }) 
+            .ToArray();
             return events;
         }
 
