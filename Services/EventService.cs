@@ -65,7 +65,6 @@ namespace Services
                 temp.Created = DateTime.Now;
                 temp.CreatedBy = appUser;
                 temp.EventId = id;
-                
                 temp.UserId = usrId;
                 newAttendies.Add(temp);
             }
@@ -168,6 +167,7 @@ namespace Services
                     Email = u.User.Email,
                     MemberTypeId = tempMemberType(),
                     Phone = u.User.PhoneNumber,
+                    SiteId = u.User.SiteId,
                     Attended = u.Attended.HasValue ? u.Attended.Value : false
                 }).ToArray();
             return res;
@@ -203,7 +203,8 @@ namespace Services
                     Email = u.Email,
                     MemberTypeId = tempMemberType(),
                     Phone = u.PhoneNumber,
-                    Active = u.Active
+                    Active = u.Active,
+                    SiteId = u.SiteId
                 }).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName)
                 .ToArray();
             return res;

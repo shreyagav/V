@@ -643,7 +643,7 @@ class Event extends Component {
                         </li>
                     </ul>
                 }
-                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date<new Date()} />}
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} chapterId={this.state.eventMain.site} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date<new Date()} />}
                 {this.state.activeTabIndex === 2 && 
                     <EventBudget 
                         eventId={this.state.eventId} 

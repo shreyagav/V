@@ -154,7 +154,7 @@ namespace Web.Controllers
                                       join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                       join c in _ctx.UserEvents on b.Id equals c.EventId
                                       join d in veterans on c.UserId equals d.Id
-                                      where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                      where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                                       orderby d.FirstName,d.LastName
                                       select new { d.Id, Name = d.FirstName + " " + d.LastName, b.EventTypeId, Duration = ((double)(60 * b.EndTime / 100 + b.EndTime % 100 - 60 * b.StartTime / 100 + b.StartTime % 100)) / 60 }).ToArray();
 
@@ -179,7 +179,7 @@ namespace Web.Controllers
                                   join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                   join c in _ctx.UserEvents on b.Id equals c.EventId
                                   join d in veterans on c.UserId equals d.Id
-                                  where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                  where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                                   group c by a.Id into newGroup
                                   select new { SiteId = newGroup.Key, Count = newGroup.Count() }).ToArray();
 
@@ -187,7 +187,7 @@ namespace Web.Controllers
                                             join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                             join c in _ctx.UserEvents on b.Id equals c.EventId
                                             join d in veterans.Distinct() on c.UserId equals d.Id
-                                            where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                            where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                                             select new { SiteId = a.Id, UserId = c.UserId }).Distinct().OrderBy(a=>a.SiteId).ToArray();
             var uniqueVeteransBySite = from a in uniqueVeteransBySiteFlat
                                        group a by a.SiteId into newGroup
@@ -212,7 +212,7 @@ namespace Web.Controllers
                         join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                         join c in _ctx.UserEvents on b.Id equals c.EventId
                         join d in veterans on c.UserId equals d.Id
-                        where c.Attended.HasValue && c.Attended.Value && b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                        where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
                         select new { User = d, a.Id}).ToArray().GroupBy(a => a.User).Select(a => new { User = a.Key, Count = a.Count() });
             var events = _ctx.EventSites.ToArray();
 

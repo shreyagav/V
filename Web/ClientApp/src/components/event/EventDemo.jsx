@@ -246,7 +246,7 @@ class EventDemo extends Component {
                         <span className='mb-1'>{this.state.eventMain.description}</span>
                     </div>
                 }
-                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} editsPermitted={false} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date < new Date()}/> }
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} chapterId={this.state.eventMain.site} editsPermitted={false} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date < new Date()} />}
                 {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} editsPermitted={false} projectedCost={this.state.eventMain.projectedCost}/>}
                 {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
                 {!(user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site))) && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}

@@ -33,6 +33,7 @@ class EventAttendees extends Component {
             activeMembersOnlyChecked: true,
             selectedMembersOnlyChecked: false,
             attendeeFilter: '',
+            chapterOnlyMembers: true
         };
         this.substractHeightElRef = null;
         this.modalWindowRef = null;
@@ -68,7 +69,7 @@ class EventAttendees extends Component {
                 siteMembers: data, 
                 loading: false, 
                 addingExistingMembers: true
-            }, () => this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)) });
+            }, () => this.filterMemberList()) });
     }
 
     removeMember(member) {
@@ -83,10 +84,12 @@ class EventAttendees extends Component {
     }
 
     createFilteredListWithTimeOut(){
-        this.timeoutVar = setTimeout(() => {this.filterMemberList(this.state.siteMembers, this.state.attendeeFilter)}, 150);
+        this.timeoutVar = setTimeout(() => {this.filterMemberList()}, 150);
     }
 
-    filterMemberList = (list, filter) => {
+    filterMemberList = () => {
+        let list = this.state.siteMembers;
+        let filter = this.state.attendeeFilter;
         /* check if element meets criteria */
         let checkIfElementMeetsCriteria = (el, filterList) => {
             let meetsCriteria = true;
@@ -109,6 +112,7 @@ class EventAttendees extends Component {
         list.forEach(element => {
             if(((filterList.length > 0 && checkIfElementMeetsCriteria(element, filterList)) || filterList === '') &&
                 (this.state.activeMembersOnlyChecked === false || (this.state.activeMembersOnlyChecked === true && element.active === true)) &&
+                ((this.state.chapterOnlyMembers && element.siteId==this.props.chapterId) || !this.state.chapterOnlyMembers) &&
                 (this.state.selectedMembersOnlyChecked === false || (
                     this.state.selectedMembersOnlyChecked === true && this.state.tempMembers.indexOf(element.id) > -1))
             ){filteredList.push(element)}
@@ -200,7 +204,7 @@ class EventAttendees extends Component {
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {
-            columns.push({ title: "Attended", accessor: "attended", render: this.renderToggler });
+            //columns.push({ title: "Attended", accessor: "attended", render: this.renderToggler });
         }
         return (
             <div className='w-100 prpl-0'>
@@ -239,6 +243,15 @@ class EventAttendees extends Component {
                                 labelStyle={{"fontSize":"0.9rem"}}
                                 labelText={<span>Select All<strong>{" "+ this.state.filteredList.length.toString()}</strong></span>}
                             />*/}
+                        <CheckBox
+                                className='mr-1 mb-1 ml-025'
+                            onClick={() => {
+                                this.setState({ chapterOnlyMembers: !this.state.chapterOnlyMembers }, this.filterMemberList);
+                                }}
+                                checked={this.state.chapterOnlyMembers}
+                                labelStyle={{"fontSize":"0.9rem"}}
+                                labelText={<span>Event chapter only</span>}
+                            />
                             <div className='flex-wrap justify-left'>
                                 <CheckBox 
                                     className='mr-1 mb-1 ml-025' 
@@ -265,7 +278,7 @@ class EventAttendees extends Component {
                                     checked={this.state.selectedMembersOnlyChecked}
                                     labelStyle={{"fontSize":"0.9rem"}}
                                     labelText={<span>Selected Only<strong>{" "+ this.state.tempMembers.length.toString()}</strong></span>}
-                                />
+                            />
                             </div>
                         </div>
                         {this.state.filteredList.length === 0 && <p className='message-block mb-2 mt-2'>There are no members that meet this criteria.</p>}
