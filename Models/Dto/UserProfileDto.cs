@@ -45,7 +45,7 @@ namespace Models.Dto
             if (user.Site != null)
             {
                 SiteName = user.Site.Name;
-                StateName = user.Site.GroupName;
+                StateName = user.Site.Region.RegionName;
             }
         }
 

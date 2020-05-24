@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import MultiDropDown from './MultiDropDown/MultiDropDown';
 import DatePicker from './DatePicker';
 import CloseUpSVG from '../svg/CloseUpSVG';
@@ -27,9 +28,10 @@ class Chapters extends Component {
     }
 
     renderStateName(value, row, index, col) {
+        console.log(row);
         return (
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
-                <span className='chapter'>{value}</span>
+                <span className='chapter'><Link to={`/region/${row.id}`}>{value}</Link></span>
             </li>
         );
     }
@@ -76,7 +78,8 @@ class Chapters extends Component {
                 <div className='inner-pages-wrapper ipw-600'>
                     <div className="flex-wrap align-center justify-space-between w-100 mb-2 ">
                         <h1 className='uppercase-text'><strong>Chapters</strong></h1>
-                        <a className='big-static-button static-button' href="/new-chapter"><p>NEW CHAPTER</p></a>
+                    <a className='medium-static-button static-button' href="/new-chapter"><p>NEW CHAPTER</p></a>
+                    <a className='medium-static-button static-button' href="/new-region"><p>NEW REGION</p></a>
                     </div>
                     <div className="label-input-wrapper mb-1">
                         <p>CHAPTER:</p>

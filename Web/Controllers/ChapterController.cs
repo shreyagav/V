@@ -55,6 +55,29 @@ namespace Web.Controllers
             return _service.SiteListItemView();
         }
 
+        [HttpGet("[action]")]
+        public Region[] AllRegions()
+        {
+            return _service.AllRegions();
+        }
 
+        [HttpGet("[action]/{id:int}")]
+        public Region Region(int id)
+        {
+            return _service.GetRegion(id);
+        }
+
+        [HttpPost("[action]")]
+        public Region SaveRegion(Region r)
+        {
+            return _service.SaveRegion(r);
+        }
+
+        [HttpPost("[action]")]
+        public dynamic DeleteRegion(Region r)
+        {
+            _service.DeleteRegion(r);
+            return new { Ok = true };
+        }
     }
 }

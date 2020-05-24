@@ -498,6 +498,22 @@ button.big-blue-button {
     align-items: center;
 }
 
+.static-button-small {
+    height: 3em;
+    border: 1px solid #666666;
+    color: #666666;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    line-height: 1;
+    position: relative;
+    margin: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 h1 ~ a.static-button {
     margin: 0rem;
 }

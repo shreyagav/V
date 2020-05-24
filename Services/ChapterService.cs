@@ -20,7 +20,7 @@ namespace Services
 
         public EventSite Get(int id)
         {
-            var temp = _ctx.EventSites.Include(a => a.GOVT).Include(a => a.Main).Include(a => a.National).Include(a => a.Outreach).Include(a => a.Coordinator).FirstOrDefault(a => a.Id == id);
+            var temp = _ctx.EventSites.Include(a => a.GOVT).Include(a => a.Main).Include(a => a.National).Include(a => a.Outreach).Include(a => a.Coordinator).Include(a=>a.Region).FirstOrDefault(a => a.Id == id);
             if (temp.GOVT == null)
                 temp.GOVT = new Contact();
             if (temp.Coordinator == null)
@@ -47,8 +47,7 @@ namespace Services
             }
             
             site.Name = eventSite.Name;
-            site.GroupId = eventSite.GroupId;
-            site.GroupName = eventSite.GroupName;
+            site.RegionId = eventSite.RegionId;
             site.Description = eventSite.Description;
             site.SecurityClearance = eventSite.SecurityClearance;
             site.PoolRental = eventSite.PoolRental;
@@ -95,16 +94,50 @@ namespace Services
         public SiteListItemView[] SiteListItemView()
         {
             var sites = _ctx.EventSites.ToArray();
+            var regions = _ctx.Regions.ToArray();
             var temp = (from e in sites
-                        group e by e.GroupId into ge
-                        select new SiteListItemView() { Id = ge.Key , Chapters = ge.Select(a => new SiteItem() { Id = a.Id, Name = a.Name, Type = SiteListItemType.Site, Deleted=a.Deleted }).OrderBy(x=>x.Name).ToArray() }).ToArray();
+                        where !e.Region.Deleted
+                        group e by e.RegionId into ge
+                        select new SiteListItemView() { Id = ge.Key.Value , Chapters = ge.Select(a => new SiteItem() { Id = a.Id, Name = a.Name, Type = SiteListItemType.Site, Deleted=a.Deleted }).OrderBy(x=>x.Name).ToArray() }).ToArray();
             foreach(SiteListItemView t in temp)
             {
-                var b = sites.First(a => a.GroupId == t.Id);
-                t.State = b.GroupName;
+                var b = regions.First(a => a.RegionId == t.Id);
+                t.State = b.RegionName;
                 
             }
             return temp.OrderBy(a=>a.State).ToArray();
+        }
+
+        public Region[] AllRegions()
+        {
+            return _ctx.Regions.Where(a=>!a.Deleted).ToArray();
+        }
+
+        public Region GetRegion(int id)
+        {
+            return _ctx.Regions.FirstOrDefault(a => a.RegionId == id && !a.Deleted);
+        }
+
+        public Region SaveRegion(Region region)
+        {
+            if (region.RegionId != 0)
+            {
+                _ctx.Regions.Attach(region);
+                _ctx.Entry(region).State = EntityState.Modified;
+            }
+            else
+            {
+                _ctx.Regions.Add(region);
+            }
+            _ctx.SaveChanges();
+            return region;
+        }
+
+        public void DeleteRegion(Region region)
+        {
+            _ctx.Regions.Attach(region);
+            region.Deleted = true;
+            _ctx.SaveChanges();
         }
     }
 }

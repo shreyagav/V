@@ -29,7 +29,7 @@ class Chapter extends Component {
             chapter: {
                 id: chapterId,
                 name:'',
-                groupId: 0,
+                regionId: 0,
                 groupName: 0,
                 securityClearance: '',
                 description: '',
@@ -57,7 +57,7 @@ class Chapter extends Component {
     componentWillMount(){
         let chapterValidators = [
             {'name':'name', 'typeFunction':'notEmptyString', 'text':'Chapter Name'},
-            {'name':'groupId', 'typeFunction':'dropDownValue', 'text':'Region'},
+            {'name':'regionId', 'typeFunction':'dropDownValue', 'text':'Region'},
      ];
         this.validators = createValidators(chapterValidators);
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
@@ -84,12 +84,11 @@ class Chapter extends Component {
     }
 
     componentDidMount(){
-        var component = this;
+        Service.getAllRegions()
+            .then(data => this.setState({ regions: data }));
         if (this.state.chapter.id != 0) {
             Service.getChapterById(this.state.chapter.id)
                 .then(data => this.setState({ chapter: data }));
-            Service.getAllRegeions()
-                .then(data => this.setState({ regions: data }));
             Service.getChapterMembers(this.state.chapter.id)
                 .then(data => this.setState({ members: data }));
         }
@@ -244,21 +243,21 @@ class Chapter extends Component {
                         </li>
                         <li>
                             <p>Region:</p>
-                            <div className={this.props.store.checkIfShowError('groupId', this.validators) ? 'error-input-wrapper' : ""}>
+                            <div className={this.props.store.checkIfShowError('regionId', this.validators) ? 'error-input-wrapper' : ""}>
                                 <MultiDropDown
-                                    ref={el => this.regionsDropDownRef = el}
-                                        list={this.props.store.chapterList}
+                                        ref={el => this.regionsDropDownRef = el}
+                                        list={this.state.regions}
                                     multiSelect={false}
-                                    keyProperty='id'
-                                    textProperty='state'
-                                    defaultValue={this.state.chapter.groupId}
+                                        keyProperty='regionId'
+                                        textProperty='regionName'
+                                    defaultValue={this.state.chapter.regionId}
                                     placeholder="Select state"
                                     onDropDownValueChange={value => {
-                                        this.updateChapterProperty('groupId', value);
-                                        this.props.store.updateValidators('groupId', value, this.validators);
+                                        this.updateChapterProperty('regionId', value);
+                                        this.props.store.updateValidators('regionId', value, this.validators);
                                     }}
                                 />
-                                { this.props.store.displayValidationErrors('groupId', this.validators) }
+                                    {this.props.store.displayValidationErrors('regionId', this.validators) }
                             </div>
                         </li>
 

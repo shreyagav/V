@@ -32,5 +32,7 @@ namespace Models
         public int OldId { get; set; }
         public bool AllowEverybody { get; set; }
         public bool Deleted { get; set; }
+        public int? RegionId { get; set; }
+        public Region Region { get; set; }
     }
 }

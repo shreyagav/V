@@ -20,9 +20,17 @@ export class Service {
     }
 
 
-    static getAllRegeions() {
-        //TODO: remap
-        return Service.__get('/Regions.json');
+    static getAllRegions() {
+        return Service.__get('/api/Chapter/AllRegions');
+    }
+    static getRegionById(id) {
+        return Service.__get(`/api/Chapter/Region/${id}`);
+    }
+    static saveRegion(region) {
+        return Service.__post(`/api/Chapter/SaveRegion`, region);
+    }
+    static deleteRegion(region) {
+        return Service.__post(`/api/Chapter/DeleteRegion`, region);
     }
     static getChapterMembers(id) {
         //TODO: delete

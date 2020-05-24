@@ -35,6 +35,7 @@ namespace Services.Data
         public DbSet<SystemCode> SystemCodes { get; set; }
         public DbSet<BudgetLine> EventBudgets { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Region> Regions { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -85,6 +86,7 @@ namespace Services.Data
             {
                 entity.Property(p => p.AllowEverybody).HasDefaultValue(false);
             });
+            modelBuilder.Entity<EventSite>().HasOne(e => e.Region).WithMany(r => r.EventSites).HasForeignKey(a => a.RegionId);
             modelBuilder.Entity<CalendarEventType>().HasIndex(e => e.Order);
         }
     }

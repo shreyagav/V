@@ -30,6 +30,7 @@ import VeteransAttendence from './components/reports/VeteransAttendence';
 import ReportsList from './components/reports/ReportsList';
 import PasswordReset from './components/account/PasswordReset';
 import VeteransByEventType from './components/reports/VeteransByEventType';
+import Region from './components/chapter/Region';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 class App extends Component {
   static displayName = App.name;
@@ -59,7 +60,9 @@ class App extends Component {
                   <Route path='/members' render={(match) => <div><NavMenu {...match} /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
                   <Route path='/event-edit/:id' render={(match) => <div><NavMenu {...match}  /><SimpleLayout><Event {...match} /></SimpleLayout></div>} />
                   <Route path='/new-event' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Event {...match} /></SimpleLayout></div>} />
-                  <Route path='/chapters' render={(match) => <div><NavMenu {...match}  /><SimpleLayout><Chapters {...match} /></SimpleLayout></div>} />
+                  <Route path='/chapters' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapters {...match} /></SimpleLayout></div>} />
+                  <Route path='/region/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Region {...match} /></SimpleLayout></div>} />
+                  <Route path='/new-region' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Region {...match} /></SimpleLayout></div>} />
                   <Route path='/new-member' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
                   <Route path='/profile' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
                   <Route path='/member/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Member {...match} /></SimpleLayout></div>} />
