@@ -192,7 +192,7 @@ namespace Web.Controllers
             if (!string.IsNullOrEmpty(filter.Zip))
                 filter.Zip = $"%{filter.Zip}%";
 
-            var res = _ctx.Users.Include(a=>a.Site).Where(a =>
+            var res = _ctx.Users.Include(a=>a.Site).Include(a=>a.Site.Region).Where(a =>
                 (string.IsNullOrEmpty(filter.Name) || (EF.Functions.Like(a.FirstName,filter.Name)
                 || EF.Functions.Like(a.LastName, filter.Name)
                 || EF.Functions.Like(a.Email, filter.Name)

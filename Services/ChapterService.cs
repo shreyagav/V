@@ -87,6 +87,7 @@ namespace Services
             if(create)
             {
                 _ctx.Contacts.Add(dest);
+                _ctx.SaveChanges();
             }
             return dest.Id;
         }
