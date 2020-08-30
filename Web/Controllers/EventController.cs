@@ -133,7 +133,11 @@ namespace Web.Controllers
         {
             return _service.GetSiteMembers(id);
         }
-
+        [HttpGet("[action]/{id}")]
+        public EventAttendeeDto[] GetSiteMembersOnly(int id)
+        {
+            return _service.GetSiteMembersOnly(id);
+        }
         [HttpGet("[action]/{id}")]
         public BudgetLine[] GetBudget(int id)
         {

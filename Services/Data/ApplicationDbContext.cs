@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Logging;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Text;
 
 namespace Services.Data
 {
+
     public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
         public ApplicationDbContext CreateDbContext(string[] args)
@@ -36,12 +38,23 @@ namespace Services.Data
         public DbSet<BudgetLine> EventBudgets { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Region> Regions { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationAttachment> NotificationAttachments { get; set; }
+        public DbSet<NotificationRecepient> NotificationRecepients { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
+        public static readonly ILoggerFactory factory
+            = LoggerFactory.Create(builder => { 
+                builder.AddConsole(); 
+            });
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLoggerFactory(factory).EnableSensitiveDataLogging(); ;
+        }
         public IQueryable<TRRUser> Veterans()
         {
             return this.Users.Where(a => a.OldType == TRRUserType.Veteran || a.Options.Any(b => b.OptionId == 37));
@@ -88,6 +101,14 @@ namespace Services.Data
             });
             modelBuilder.Entity<EventSite>().HasOne(e => e.Region).WithMany(r => r.EventSites).HasForeignKey(a => a.RegionId);
             modelBuilder.Entity<CalendarEventType>().HasIndex(e => e.Order);
+            modelBuilder.Entity<NotificationRecepient>().HasKey(a => new { a.NotificationId, a.UserId });
+            modelBuilder.Entity<NotificationRecepient>().HasOne(a => a.User).WithMany(a=>a.NotificationRecepients).HasForeignKey(a=>a.UserId);
+            modelBuilder.Entity<NotificationRecepient>().HasOne(a => a.Notification).WithMany(a => a.Recepients).HasForeignKey(a=>a.NotificationId);
+            modelBuilder.Entity<NotificationAttachment>().HasOne(a => a.Notification).WithMany(a => a.NotificationAttachments).HasForeignKey(a => a.NotificationId);
+            modelBuilder.Entity<NotificationAttachment>().Ignore(a => a.AttachmentData);
+            modelBuilder.Entity<NotificationAttachment>().Ignore(a => a.AttachmentDataStr);
+            modelBuilder.Entity<Notification>().HasOne(a => a.EventSite).WithMany(a => a.Notifications).HasForeignKey(a => a.EventSiteId).IsRequired(false);
+            modelBuilder.Entity<Notification>().HasOne(a => a.Event).WithMany(a => a.Notifications).HasForeignKey(a => a.EventId).IsRequired(false);
         }
     }
 }

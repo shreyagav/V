@@ -56,5 +56,6 @@ namespace Models
         public bool OtherBackgroundCheck { get; set; }
         public bool CodeOfConductTraining { get; set; }
         public string OtherBackgroundCheckComment { get; set; }
+        public ICollection<NotificationRecepient> NotificationRecepients { get; set; } 
     }
 }

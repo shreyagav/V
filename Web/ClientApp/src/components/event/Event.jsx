@@ -23,6 +23,7 @@ import DeleteUpSVG from '../../svg/DeleteUpSVG'
 import SaveUpSVG from '../../svg/SaveUpSVG'
 import ReturnUpSVG from '../../svg/ReturnUpSVG'
 
+
 class Event extends Component {
 
     constructor(props) {
@@ -423,7 +424,7 @@ class Event extends Component {
                 <div className = 'flex-wrap flex-flow-column mb-3'>
                     <TabComponent 
                         fixedHeight={true}
-                        tabList={['information', 'attendees', 'budget', 'pictures']}
+                        tabList={['main', 'attendees', 'budget', 'pictures']}
                         wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index), () => this.setState({showError: true}) )}
                         activeTabIndex={this.state.activeTabIndex}
                     />

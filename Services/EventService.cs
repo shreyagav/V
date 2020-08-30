@@ -249,5 +249,24 @@ namespace Services
             return new { error };
 
         }
+
+        public EventAttendeeDto[] GetSiteMembersOnly(int siteId)
+        {
+            var res = _context.Users
+                .Where(ue => ue.SiteId == siteId)
+                .Select(u => new EventAttendeeDto()
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    MemberTypeId = tempMemberType(),
+                    Phone = u.PhoneNumber,
+                    Active = u.Active,
+                    SiteId = u.SiteId
+                }).OrderBy(a => a.FirstName).ThenBy(a => a.LastName)
+                .ToArray();
+            return res;
+        }
     }
 }

@@ -41,6 +41,7 @@ namespace Web
             services.AddTransient<IChapterService, ChapterService>();
             services.AddTransient<IStorageService, StorageService>();
             services.AddTransient<IMailService, MailService>();
+            services.AddTransient<INotificationService, NotificationService>();
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

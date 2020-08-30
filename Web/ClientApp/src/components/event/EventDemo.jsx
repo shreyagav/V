@@ -13,6 +13,7 @@ import EditUpSVG from '../../svg/EditUpSVG';
 import Loader from '../Loader';
 import Alert from '../Alert';
 import { Service } from '../ApiService';
+import EventNotifications from './EventNotifications';
 
 class EventDemo extends Component {
 
@@ -209,7 +210,7 @@ class EventDemo extends Component {
                 <div className='flex-wrap flex-flow-column mb-3'>
                     <TabComponent
                         fixedHeight={true}
-                        tabList={['information', 'attendees', 'budget', 'pictures']}
+                        tabList={['main', 'attendees', 'emails', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
                     />
@@ -247,8 +248,9 @@ class EventDemo extends Component {
                     </div>
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} chapterId={this.state.eventMain.site} editsPermitted={false} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date < new Date()} />}
-                {this.state.activeTabIndex === 2 && <EventBudget eventId={this.state.eventId} editsPermitted={false} projectedCost={this.state.eventMain.projectedCost}/>}
-                {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
+                {this.state.activeTabIndex === 2 && <EventNotifications eventId={this.state.eventId} chapterId={this.state.eventMain.site} />}
+                {this.state.activeTabIndex === 3 && <EventBudget eventId={this.state.eventId} editsPermitted={false} projectedCost={this.state.eventMain.projectedCost}/>}
+                {this.state.activeTabIndex === 4 && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
                 {!(user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site))) && <EventPictures eventId={this.state.eventId} editsPermitted={false} />}
                 {/*<div className='flex-wrap'>
                     {this.state.activeTabIndex > 0 &&

@@ -1,5 +1,13 @@
 ﻿const host = "";//"https://trr.azurewebsites.net";
 export class Service {
+
+    static getEventNotification(eventid) {
+        return Service.__get(host + `/api/Common/EventNotification/${eventid}`);
+    }
+    static addEventNotification(notification) {
+        return Service.__post(host + '/api/Common/AddNotification', notification);
+    }
+
     static getCalendarEvents(month, year, sites) {
         return Service.__post(host + '/api/Calendar/GetMonthEvents', { month, year, sites })
     }
@@ -66,6 +74,9 @@ export class Service {
     }
     static getSiteMembers(id) {
         return Service.__get(host + '/api/Event/GetSiteMembers/' + id)
+    }
+    static getSiteMembersOnly(id) {
+        return Service.__get(host + '/api/Event/GetSiteMembersOnly/' + id)
     }
 
     static getBudget(eventId) {

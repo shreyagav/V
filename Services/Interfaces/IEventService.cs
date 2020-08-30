@@ -14,6 +14,7 @@ namespace Services.Interfaces
         EventAttendeeDto[] GetEventAttendees(int eventId);
         EventAttendeeDto[] RemoveEventAttendees(int eventId, EventAttendeeDto attendee);
         EventAttendeeDto[] GetSiteMembers(int eventId);
+        EventAttendeeDto[] GetSiteMembersOnly(int siteId);
         Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids, ClaimsPrincipal user);
         BudgetLine[] GetEventBudget(int eventId);
         BudgetLine[] AddBudgetLines(int eventId, BudgetLine[] lines);

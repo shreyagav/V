@@ -69,5 +69,7 @@ namespace Models
         public Char OldEventVisibility { get; set; }
         public ICollection<UserEvent> Events { get; set; }
         public ICollection<BudgetLine> Budget { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+
     }
 }
