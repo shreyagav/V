@@ -22,7 +22,7 @@ import StatusDeletedSVG from '../../svg/StatusDeletedSVG';
 import DeleteUpSVG from '../../svg/DeleteUpSVG'
 import SaveUpSVG from '../../svg/SaveUpSVG'
 import ReturnUpSVG from '../../svg/ReturnUpSVG'
-
+import EventNotifications from './EventNotifications';
 
 class Event extends Component {
 
@@ -424,7 +424,7 @@ class Event extends Component {
                 <div className = 'flex-wrap flex-flow-column mb-3'>
                     <TabComponent 
                         fixedHeight={true}
-                        tabList={['main', 'attendees', 'budget', 'pictures']}
+                        tabList={['main', 'attendees', 'budget','emails', 'pictures']}
                         wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index), () => this.setState({showError: true}) )}
                         activeTabIndex={this.state.activeTabIndex}
                     />
@@ -652,7 +652,8 @@ class Event extends Component {
                         onProjectedCostChange={value => this.updateEventProperty("projectedCost", value)}
                     />
                 }
-                {this.state.activeTabIndex === 3 && <EventPictures eventId={this.state.eventId}/> }
+                {this.state.activeTabIndex === 3 && <EventNotifications eventId={this.state.eventId} chapterId={this.state.eventMain.site} />}
+                {this.state.activeTabIndex === 4 && <EventPictures eventId={this.state.eventId}/> }
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
                         <button 
@@ -660,7 +661,7 @@ class Event extends Component {
                             onClick={() => this.performIfValid(() => this.setActiveStep(this.state.activeTabIndex-1), () => this.setState({showError: true}) )}
                         >Back</button>
                     }
-                    {this.state.activeTabIndex < 3 &&
+                    {this.state.activeTabIndex < 4 &&
                         <button 
                             className='medium-static-button static-button default-button' 
                             onClick={() => this.performIfValid(this.nextStep, () => this.setState({showError: true})) }

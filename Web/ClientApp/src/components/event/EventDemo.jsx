@@ -136,6 +136,12 @@ class EventDemo extends Component {
         func(this.state.eventMain.id).then(data => this.setEventMain(data, true)).catch(err => alert(err));
     }
 
+    getStartAndEnd(date, from, to) {
+        var start = new Date(date.getTime() + (((from.am ? 1 : 12) + from.hours) * 60 * 60 * 1000) + (from.minutes * 60 * 1000)).toISOString().replace(/[\:\-\.]/ig,"");
+        var end = new Date(date.getTime() + (((to.am ? 1 : 12) + to.hours) * 60 * 60 * 1000) + (to.minutes * 60 * 1000)).toISOString().replace(/[\:\-\.]/ig, "");
+        return { start, end };
+    }
+
     render() {
         let tabSatellite = () => {
             return <div className = 'status-wrapper mb-2'>
@@ -160,6 +166,7 @@ class EventDemo extends Component {
         }
         if (this.state.eventMain.date !== undefined) {
             var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            var { start, end } = this.getStartAndEnd(this.state.eventMain.date, this.state.eventMain.timeFrom, this.state.eventMain.timeTo);
             eventDate = this.state.eventMain.date.toLocaleDateString('en-US', options);
             eventTime = 
             ("0" + this.state.eventMain.timeFrom.hours).slice(-2) + ":" + 
@@ -171,6 +178,7 @@ class EventDemo extends Component {
             if(this.props.store.eventTypes.length > 0){
                 eventType = this.props.store.eventTypes.find(element => element.id === this.state.eventMain.eventType).title;
             }
+            var link = `http://www.google.com/calendar/render?action=TEMPLATE&text=${this.state.eventMain.name}&dates=${start}/${end}&details=${eventType}, ${chapter.name}, ${this.state.eventMain.description}&trp=false&sprop=&sprop=name:`;
         }
         let eventStatus = this.state.eventMain.eventStatus;
         if (eventStatus === undefined) {eventStatus = "draft"}
@@ -219,9 +227,9 @@ class EventDemo extends Component {
                     <div className='flex-wrap flex-flow-column justify-center align-center'>
                         <div className='flex-nowrap justify-space-between align-top w-100'>
                             <ul className='icon-text-set mb-1'>
-                                {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
+                                {/*user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
                                     <li> <Status eventStatus={eventStatus} /> </li>
-                                }
+                                */}
                                 <li>
                                     <DateUpSVG />
                                     <span>{eventDate}</span>
@@ -237,14 +245,16 @@ class EventDemo extends Component {
                                 <li>
                                     <EventUpSVG />
                                     <span>{eventType}</span>
-                                </li>
-                            </ul>
+                            </li>
+                        </ul>
+                        
                             {/*<button style={{"flex": "0 0 auto"}} class="medium-static-button static-button">Attend</button>*/}
                             {/*user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
                                 <Status eventStatus={eventStatus} />
                             */}
                         </div>
-                        <span className='mb-1'>{this.state.eventMain.description}</span>
+                    <span className='mb-1'>{this.state.eventMain.description}</span>
+                    <a href={link} target="_blank" rel="nofollow" style={{ textDecoration:"underline" }}>Add to my Google calendar</a>
                     </div>
                 }
                 {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} chapterId={this.state.eventMain.site} editsPermitted={false} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date < new Date()} />}
