@@ -105,7 +105,7 @@ class EventNotifications extends Component {
                         </div>
                     </FixedWrapper>
                 }
-                {notifications.length === 0 && <p className='message-block mb-2 pr-1 pl-1'>There are no messa registered for the event.</p>}
+                {notifications.length === 0 && <p className='message-block mb-2 pr-1 pl-1'>There are no messages registered for the event.</p>}
                 {this.props.editsPermitted !== false &&
                     <div className="flex-wrap align-center justify-center mb-2 pr-1 pl-1">
                     <button className='big-static-button static-button' onClick={() => { this.setState({ addNewNotification: true }); }}>Send Email</button>
