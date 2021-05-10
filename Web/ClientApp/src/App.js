@@ -58,8 +58,8 @@ class App extends Component {
                   </div>}/>
                   <Route path='/events' render={(match) => <div><NavMenu {...match} /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
                   <Route path='/members' render={(match) => <div><NavMenu {...match} /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
-                  <Route path='/event-edit/:id' render={(match) => <div><NavMenu {...match}  /><SimpleLayout><Event {...match} /></SimpleLayout></div>} />
-                  <Route path='/new-event' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Event {...match} /></SimpleLayout></div>} />
+                  <Route path='/event-edit/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Event {...match} newEvent={false} /></SimpleLayout></div>} />
+                  <Route path='/new-event' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Event {...match} newEvent={ true } /></SimpleLayout></div>} />
                   <Route path='/chapters' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapters {...match} /></SimpleLayout></div>} />
                   <Route path='/region/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Region {...match} /></SimpleLayout></div>} />
                   <Route path='/new-region' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Region {...match} /></SimpleLayout></div>} />

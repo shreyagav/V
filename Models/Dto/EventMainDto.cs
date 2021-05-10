@@ -37,6 +37,8 @@ namespace Models.Dto
         }
     }
 
+
+    public enum EventFrequency { Days = 1 , Weeks = 2, Month = 3, Year = 4 };
     public class EventMainDto
     {
         public EventMainDto() { }
@@ -67,5 +69,10 @@ namespace Models.Dto
         public string Color { get; set; }
         public decimal ProjectedCost { get; set; }
         public bool CurentUserAttends { get; set; }
+        public bool IsRepeatable { get; set; }
+        public EventFrequency FrequencyType { get; set; }
+        public int Frequency { get; set; }
+        public DateTime EndDate { get; set; }
+
     }
 }

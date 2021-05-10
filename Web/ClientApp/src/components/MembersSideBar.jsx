@@ -110,7 +110,8 @@ class EventsSideBar extends Component {
                     value={this.state.name}
                     onValueChange={(value) => this.onTextFilterChange("name", value)}
                     onClearValueButtonClick={() => this.onTextFilterChange("name", "")}
-                />
+                    />
+                    <span>(search by first OR last name only OR email)</span>
                     <CheckBox
                         style={{ "marginTop": "0.6rem" }}
                         onClick={() => { this.onTextFilterChange( 'active', !this.state.active);  }}

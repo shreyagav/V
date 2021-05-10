@@ -6,7 +6,7 @@ const eventValidators = () => createValidators([
       {'name':'eventType', 'typeFunction':'dropDownValue', 'text':'Type of Event'},
       {'name':'timeTo', 'typeFunction':'timePickerValue', 'text':'time'},
       {'name':'timeFrom', 'typeFunction':'timePickerValue', 'text':'time'},
-      {'name':'date', 'typeFunction':'datePickerValue', 'text':'date'},
+    { 'name': 'date', 'typeFunction': 'datePickerValue', 'text': 'date' },
 ]);
   
 export default eventValidators;

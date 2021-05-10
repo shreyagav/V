@@ -18,6 +18,7 @@ import Loader from '../Loader';
 import eventValidators from './eventValidators'
 import InputWithClearButton from '../InputWithClearButton';
 import StatusDeletedSVG from '../../svg/StatusDeletedSVG';
+import CheckBox from '../CheckBox';
 
 import DeleteUpSVG from '../../svg/DeleteUpSVG'
 import SaveUpSVG from '../../svg/SaveUpSVG'
@@ -39,7 +40,7 @@ class Event extends Component {
             members: [],
             budget: [],
             pictures: [],
-            loading: evtId!=0,
+            loading: evtId != 0,
             eventMain: {
                 name: "",
                 description: "",
@@ -57,7 +58,10 @@ class Event extends Component {
                     minutes: 0,
                     am: true,
                 },
-                type:null,
+                isRepeatable: false,
+                frequency: 1,
+                frequencyType:1,
+                type: null,
                 groupId: 0,
                 date: new Date(),
                 eventStatus: "draft",
@@ -79,9 +83,11 @@ class Event extends Component {
         this.timeFromDropDownRef = null;
         this.timeToDropDownRef = null;
         this.dateStartDropDownRef = null;
+        this.endDateDropDownRef = null;
         this.dateEndDropDownRef = null;
         this.chaptersDropDownRef = null;
         this.typeOfEventDropDownRef = null;
+        this.frequencyTypeDropDownRef = null;
         this.nextStep = this.nextStep.bind(this);
         this.updateEvent = this.updateEvent.bind(this);
         this.fixMainEventData = this.fixMainEventData.bind(this);
@@ -97,7 +103,7 @@ class Event extends Component {
         this.headerText = '';
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.validators = eventValidators();
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
     }
@@ -125,13 +131,13 @@ class Event extends Component {
         if (this.state.eventId != 0) {
             Service.getEvent(this.state.eventId)
                 .then(data => {
-                    
+
                     component.setState({ eventMain: component.fixMainEventData(data), loading: false });
                 })
                 .catch(exception => component.setState({ error: exception, loading: false }));
         }
     }
-    
+
     fixMainEventData(data) {
         data.date = new Date(data.date);
         data.timeFrom["activated"] = true;
@@ -147,8 +153,8 @@ class Event extends Component {
     }
 
     onSaveClick() {
-        let save = () => { 
-            this.updateEvent().then(() => { 
+        let save = () => {
+            this.updateEvent().then(() => {
                 /* SHOW SUCCESS MESSAGE */
                 this.headerText = 'Hurray!';
                 this.dialogText = "Information was successfully saved for the event";
@@ -157,7 +163,7 @@ class Event extends Component {
                 this.setState({ loading: false, showMessage: true });
             })/*.catch(()=>{/* show Error Window *//*})*/
         }
-        this.performIfValid(() => save(), () => this.setState({showError: true}) );
+        this.performIfValid(() => save(), () => this.setState({ showError: true }));
     }
 
     setActiveStep(num) {
@@ -198,14 +204,14 @@ class Event extends Component {
         this.setActiveStep(this.state.activeTabIndex + 1);
     }
 
-    onTestChange(newVal){
+    onTestChange(newVal) {
         var tmp = this.state.eventMain;
         tmp.test = newVal;
-        this.setState({eventMain:tmp});
+        this.setState({ eventMain: tmp });
     }
 
-    toggleRepeatedEvents(){
-        this.setState({repeatedEventsIsOpen: !this.state.repeatedEventsIsOpen});
+    toggleRepeatedEvents() {
+        this.setState({ repeatedEventsIsOpen: !this.state.repeatedEventsIsOpen });
     }
 
     formatImageList(pageNumber) {
@@ -217,31 +223,31 @@ class Event extends Component {
         let counter = 0;
         let tryUntill = 0;
         let imageList = this.state.pictures;
-        if (pageNumber*this.state.amountPerPage < imageList.length) {
-            tryUntill = pageNumber*this.state.amountPerPage;
+        if (pageNumber * this.state.amountPerPage < imageList.length) {
+            tryUntill = pageNumber * this.state.amountPerPage;
         }
         else tryUntill = imageList.length;
-        for (let i=(pageNumber-1)*this.state.amountPerPage; i < tryUntill; i++) {
+        for (let i = (pageNumber - 1) * this.state.amountPerPage; i < tryUntill; i++) {
             totalWidth = totalWidth + (imageList[i].width * rowHeight) / imageList[i].height;
             counter = counter + 1;
             newArray.push(imageList[i]);
             if (totalWidth > maxWidth) {
-                for (let j=0; j < newArray.length; j++){
-                    newArray[j].flexBasis = (((newArray[j].width * rowHeight)/newArray[j].height) /totalWidth)*100*(1 - (10*(counter-1))/maxWidth);
+                for (let j = 0; j < newArray.length; j++) {
+                    newArray[j].flexBasis = (((newArray[j].width * rowHeight) / newArray[j].height) / totalWidth) * 100 * (1 - (10 * (counter - 1)) / maxWidth);
                 }
                 newImageList.push(newArray);
-                counter=0;
+                counter = 0;
                 totalWidth = 0;
-                newArray = []; 
+                newArray = [];
             }
         }
         if (newArray.length > 0) {
-            for (let j=0; j < newArray.length; j++){
-                newArray[j].flexBasis = (((newArray[j].width * rowHeight)/newArray[j].height) /maxWidth)*100*(1 - (10*(counter-1))/maxWidth);
+            for (let j = 0; j < newArray.length; j++) {
+                newArray[j].flexBasis = (((newArray[j].width * rowHeight) / newArray[j].height) / maxWidth) * 100 * (1 - (10 * (counter - 1)) / maxWidth);
             }
             newImageList.push(newArray);
         }
-        this.setState(() => ({formattedPicturesList: newImageList}));
+        this.setState(() => ({ formattedPicturesList: newImageList }));
     }
 
     updateEventProperty(property, value) {
@@ -263,9 +269,9 @@ class Event extends Component {
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to publish event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
-            this.setState({showDialog: true});
+            this.setState({ showDialog: true });
         }
-        this.performIfValid(() => publish(), () => this.setState({showError: true}) );
+        this.performIfValid(() => publish(), () => this.setState({ showError: true }));
     }
 
     onCancelEventButtonClick() {
@@ -273,29 +279,29 @@ class Event extends Component {
             let event = this.state.eventMain;
             event.eventStatus = 'canceled';
             this.updateEvent().then(data => {
-                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading:false });
+                this.setState({ eventMain: this.fixMainEventData(data), showDialog: false, loading: false });
             });
-            
+
         };
         let cancel = () => {
             this.headerText = 'Cancel';
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to cancel event?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
-            this.setState({showDialog: true});
+            this.setState({ showDialog: true });
         }
-        this.performIfValid(() => cancel(), () => this.setState({showError: true}) );
+        this.performIfValid(() => cancel(), () => this.setState({ showError: true }));
     }
 
     onDeleteEventButtonClick() {
         let onOkButtonClick = () => {
             let event = this.state.eventMain;
             event.eventStatus = 'deleted';
-            this.setState({ loading:true });
+            this.setState({ loading: true });
             this.updateEvent().then(data => {
-                this.setState({ 
-                    eventMain: this.fixMainEventData(data), 
-                    showDialog: false, 
+                this.setState({
+                    eventMain: this.fixMainEventData(data),
+                    showDialog: false,
                     /*loading:false */
                 }, () => this.props.history.goBack());
             });
@@ -305,10 +311,10 @@ class Event extends Component {
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to delete the event?";
             this.dialogContent = <div><h4>{this.state.eventMain.name}</h4><p className='m-05'>This action can not be undone. Delete anyway?</p></div>
-            this.setState({showDialog: true});
+            this.setState({ showDialog: true });
         }
         let checkIfEventHasID = () => {
-            if(this.state.eventId === 0){this.props.history.goBack()}
+            if (this.state.eventId === 0) { this.props.history.goBack() }
             else del();
         }
         this.performIfValid(() => del(), checkIfEventHasID);
@@ -327,9 +333,9 @@ class Event extends Component {
             this.onOkButtonClick = onOkButtonClick;
             this.dialogText = "Are you sure you want to move the event to drafts?";
             this.dialogContent = <h4>{this.state.eventMain.name}</h4>
-            this.setState({showDialog: true});
+            this.setState({ showDialog: true });
         }
-        this.performIfValid(() => draft(), () => this.setState({showError: true}) );
+        this.performIfValid(() => draft(), () => this.setState({ showError: true }));
     }
 
     renderHeader() {
@@ -340,23 +346,23 @@ class Event extends Component {
         }
     }
 
-    performIfValid(callback, callback2){
-        if (this.props.store.isFormValid(this.validators, this.state.eventMain)) { callback() } 
-        else { 
-            if(callback2) {callback2()} 
+    performIfValid(callback, callback2) {
+        if (this.props.store.isFormValid(this.validators, this.state.eventMain)) { callback() }
+        else {
+            if (callback2) { callback2() }
         };
     }
 
     render() {
         const user = this.props.store.userInfo;
         let eventStatus = this.state.eventMain.eventStatus;
-        if (eventStatus === undefined) {eventStatus = "draft"}
+        if (eventStatus === undefined) { eventStatus = "draft" }
         //const pictures = this.state.formattedPicturesList;
         return (
             <div className='pages-wsm-wrapper ipw-800'>
                 <div className='second-nav-wrapper'>
                     <div className='ipw-600'>
-                        <div className = 'flex-nowrap align-center'>
+                        <div className='flex-nowrap align-center'>
                             {/*<Status eventStatus={eventStatus} className='mr-025' />
                             {eventStatus !== 'published' && eventStatus !== 'deleted' &&
                                 <button 
@@ -389,11 +395,11 @@ class Event extends Component {
                                 </button>
                             }*/}
                         </div>
-                        <div className = 'flex-nowrap align-center'>
-                            {eventStatus !== 'deleted' && 
-                                <button 
+                        <div className='flex-nowrap align-center'>
+                            {eventStatus !== 'deleted' &&
+                                <button
                                     className='round-button medium-round-button outline-on-hover hlo500'
-                                    onClick = {() => this.onDeleteEventButtonClick()}
+                                    onClick={() => this.onDeleteEventButtonClick()}
                                     hint="Delete"
                                 >
                                     <DeleteUpSVG />
@@ -401,7 +407,7 @@ class Event extends Component {
                                 </button>
                             }
                             <button
-                                className='round-button medium-round-button outline-on-hover hlo500' 
+                                className='round-button medium-round-button outline-on-hover hlo500'
                                 hint="Save"
                                 onClick={this.onSaveClick}
                             >
@@ -419,13 +425,13 @@ class Event extends Component {
                         </div>
                     </div>
                 </div>
-                {this.state.loading && <Loader/>}
+                {this.state.loading && <Loader />}
                 {this.renderHeader()}
-                <div className = 'flex-wrap flex-flow-column mb-3'>
-                    <TabComponent 
+                <div className='flex-wrap flex-flow-column mb-3'>
+                    <TabComponent
                         fixedHeight={true}
-                        tabList={['main', 'attendees', 'budget','emails', 'pictures']}
-                        wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index), () => this.setState({showError: true}) )}
+                        tabList={['main', 'attendees', 'budget', 'emails', 'pictures']}
+                        wasSelected={(index) => this.performIfValid(() => this.setActiveStep(index), () => this.setState({ showError: true }))}
                         activeTabIndex={this.state.activeTabIndex}
                     />
                 </div>
@@ -433,21 +439,21 @@ class Event extends Component {
                     <ul className='input-fields first-child-text-125 mt-1 pl-1 pr-1'>
                         <li>
                             <p>Event Title:</p>
-                            <div className={this.props.store.checkIfShowError('name', this.validators) ? 'error-input-wrapper' : '' }>
-                                <InputWithClearButton 
-                                    type='text' 
+                            <div className={this.props.store.checkIfShowError('name', this.validators) ? 'error-input-wrapper' : ''}>
+                                <InputWithClearButton
+                                    type='text'
                                     placeholder='Event Title'
-                                    value = {this.state.eventMain.name}
+                                    value={this.state.eventMain.name}
                                     onChange={e => {
                                         this.updateEventProperty("name", e.target.value)
                                         this.props.store.updateValidators("name", e.target.value, this.validators);
                                     }}
-                                    onClearValue = {() => {
-                                        this.updateEventProperty("name", ""); 
+                                    onClearValue={() => {
+                                        this.updateEventProperty("name", "");
                                         this.props.store.updateValidators("name", "", this.validators);
                                     }}
                                 />
-                                { this.props.store.displayValidationErrors('name', this.validators) }
+                                {this.props.store.displayValidationErrors('name', this.validators)}
                             </div>
                         </li>
                         <li>
@@ -465,34 +471,34 @@ class Event extends Component {
                                     expandedMultiSelect={false}
                                     defaultValue={this.state.eventMain.site}
                                     placeholder="Select chapter"
-                                    disabled={!(user && user.authType=="Admin")}
+                                    disabled={!(user && user.authType == "Admin")}
                                     onDropDownValueChange={value => {
                                         this.props.store.updateValidators("site", value, this.validators);
                                         this.updateEventProperty("site", value);
                                     }}
                                 />
-                                { this.props.store.displayValidationErrors('site', this.validators) }
+                                {this.props.store.displayValidationErrors('site', this.validators)}
                             </div>
                         </li>
                         <li
                             className={this.emptyStartDate ? 'mark-invalid' : ''}
                             error-text='Please enter the date'
                         >
-                        <p>Date:</p>
-                        <div className={this.props.store.checkIfShowError('date', this.validators) ? 'error-input-wrapper' : ""}>
-                            <DatePicker 
-                                value={this.state.eventMain.date}
-                                ref={el => this.dateStartDropDownRef = el}
-                                onSelect={value => {
-                                    this.emptyStartDate = false;
-                                    this.props.store.updateValidators("date", value, this.validators);
-                                    this.updateEventProperty("date", value);
-                                }}
-                            />
-                            { this.props.store.displayValidationErrors('date', this.validators) }
-                        </div>
+                            <p>Date:</p>
+                            <div className={this.props.store.checkIfShowError('date', this.validators) ? 'error-input-wrapper' : ""}>
+                                <DatePicker
+                                    value={this.state.eventMain.date}
+                                    ref={el => this.dateStartDropDownRef = el}
+                                    onSelect={value => {
+                                        this.emptyStartDate = false;
+                                        this.props.store.updateValidators("date", value, this.validators);
+                                        this.updateEventProperty("date", value);
+                                    }}
+                                />
+                                {this.props.store.displayValidationErrors('date', this.validators)}
+                            </div>
                         </li>
-                    {/*<li>
+                        {/*<li>
                             <p></p>
                             <div>
                             <div className='flex-nowrap mb-1'>
@@ -502,10 +508,10 @@ class Event extends Component {
                                             className='arrow-button' 
                                             onClick={() => {this.toggleRepeatedEvents();}}
                                         >*/}
-                                            {/*<CloseUpSVG svgClassName={this.state.repeatedEventsIsOpen ? 'flip90' : 'flip270'}/>*/}
-                            {/*</button>
+                        {/*<CloseUpSVG svgClassName={this.state.repeatedEventsIsOpen ? 'flip90' : 'flip270'}/>*/}
+                        {/*</button>
                                 </div>*/}
-                                {/*this.state.repeatedEventsIsOpen && 
+                        {/*this.state.repeatedEventsIsOpen && 
                                     <ul className='input-fields'>
                                         <li className='number-field'>
                                             <p>repeats every:</p>
@@ -565,22 +571,22 @@ class Event extends Component {
                         <li>
                             <p>From:</p>
                             <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
-                                <li 
+                                <li
                                     className={this.emptyTimeFrom ? 'mark-invalid' : ''}
                                     error-text='Please enter the time'
                                 >
                                     <div className={this.props.store.checkIfShowError('timeFrom', this.validators) ? 'error-input-wrapper' : ""}>
-                                        <TimePicker 
+                                        <TimePicker
                                             ref={el => this.timeFromDropDownRef = el}
                                             timePickerMode={true}
                                             value={this.state.eventMain.timeFrom}
                                             onChange={value => {
-                                                if (value.activated) {this.emptyTimeFrom = false;}
+                                                if (value.activated) { this.emptyTimeFrom = false; }
                                                 this.props.store.updateValidators("timeFrom", value, this.validators);
                                                 this.updateEventProperty("timeFrom", value);
                                             }}
                                         />
-                                        { this.props.store.displayValidationErrors('timeFrom', this.validators) }
+                                        {this.props.store.displayValidationErrors('timeFrom', this.validators)}
                                     </div>
                                 </li>
                                 <li><p>to:</p></li>
@@ -589,17 +595,17 @@ class Event extends Component {
                                     error-text='Please enter the time'
                                 >
                                     <div className={this.props.store.checkIfShowError('timeTo', this.validators) ? 'error-input-wrapper' : ""}>
-                                        <TimePicker 
+                                        <TimePicker
                                             ref={el => this.timeToDropDownRef = el}
                                             timePickerMode={true}
                                             value={this.state.eventMain.timeTo}
                                             onChange={value => {
-                                                if (value.activated) {this.emptyTimeTo = false;}
+                                                if (value.activated) { this.emptyTimeTo = false; }
                                                 this.props.store.updateValidators("timeTo", value, this.validators);
                                                 this.updateEventProperty("timeTo", value);
                                             }}
                                         />
-                                        { this.props.store.displayValidationErrors('timeTo', this.validators) }
+                                        {this.props.store.displayValidationErrors('timeTo', this.validators)}
                                     </div>
                                 </li>
                             </ul>
@@ -623,13 +629,75 @@ class Event extends Component {
                                         this.updateEventProperty("eventType", value)
                                     }}
                                 />
-                                { this.props.store.displayValidationErrors('eventType', this.validators) }
+                                {this.props.store.displayValidationErrors('eventType', this.validators)}
                             </div>
                         </li>
+                        {this.props.newEvent && (<React.Fragment> <li>
+                            <p>Repeat:</p>
+                            <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
+                                <li>
+                                    <CheckBox
+                                        className='mb-025'
+                                        onClick={() => this.updateEventProperty("isRepeatable", !this.state.eventMain.isRepeatable)}
+                                        checked={this.state.eventMain.isRepeatable}
+                                        labelClassName='uppercase-text bold-text'
+                                        labelText={this.state.eventMain.isRepeatable ? "Yes" : "No"}
+                                    />
+                                </li>
+                                {this.state.eventMain.isRepeatable && <React.Fragment>
+                                    <li><p>Until:</p></li>
+                                    <li>
+                                        <DatePicker
+                                            value={this.state.eventMain.endDate}
+                                            ref={el => this.endDateDropDownRef = el}
+                                            onSelect={value => {
+                                                this.emptyStartDate = false;
+                                                this.updateEventProperty("endDate", value);
+                                            }}
+                                        />
+                                    </li>
+                                </React.Fragment>}
+                            </ul>
+                        </li>
+                        {this.state.eventMain.isRepeatable && <li
+                            className={this.emptyType && this.state.eventMain.isRepeatable ? 'mark-invalid' : ''}
+                            error-text='Please select the Frequancy'
+                        >
+                            <p>Repeat every:</p>
+                            <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
+                                <li>
+                                    <input type='number' min={1} max={31}
+                                        placeholder='#'
+                                        value={this.state.eventMain.frequency ? this.state.eventMain.frequency : 1}
+                                        onClick={(event) => event.target.select()}
+                                        onChange={(e) => {
+                                            let frequency = Math.floor(e.target.value);
+                                            this.updateEventProperty('frequency', frequency)
+                                        }}
+                                    />
+                                </li>
+                                <li>
+                                    <MultiDropDown
+                                        ref={el => this.frequencyTypeDropDownRef = el}
+                                        list={[{ id: 1, title: 'Day(s)' }, { id: 2, title: 'Week(s)' }, { id: 3, title: 'Month(s)' }]}
+                                        keyProperty='id'
+                                        textProperty='title'
+                                        defaultValue={this.state.eventMain.frequencyType}
+                                        placeholder='Frequancy type'
+                                        onDropDownValueChange={value => {
+                                            this.emptyType = false;
+                                            this.updateEventProperty("frequencyType", value)
+                                        }}
+                                    />
+                                </li>
+                            </ul>
+                        </li>}
+                    </React.Fragment>)}
+
                         <li>
                             <p className='mark-optional'>Description:</p>
                             <div className='input-button-wrapper'>
-                                <textarea 
+                                <textarea
                                     ref={el => this.descriptionInputRef = el}
                                     placeholder='Description'
                                     value={this.state.eventMain.description}
@@ -644,60 +712,60 @@ class Event extends Component {
                         </li>
                     </ul>
                 }
-                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} chapterId={this.state.eventMain.site} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date<new Date()} />}
-                {this.state.activeTabIndex === 2 && 
-                    <EventBudget 
-                        eventId={this.state.eventId} 
-                        projectedCost={this.state.eventMain.projectedCost} 
+                {this.state.activeTabIndex === 1 && <EventAttendees eventId={this.state.eventId} attendees={this.state.members} chapterId={this.state.eventMain.site} showAttended={user && (user.authType == "Secretary" || user.authType == "Admin") && this.state.eventMain.date < new Date()} />}
+                {this.state.activeTabIndex === 2 &&
+                    <EventBudget
+                        eventId={this.state.eventId}
+                        projectedCost={this.state.eventMain.projectedCost}
                         onProjectedCostChange={value => this.updateEventProperty("projectedCost", value)}
                     />
                 }
                 {this.state.activeTabIndex === 3 && <EventNotifications eventId={this.state.eventId} chapterId={this.state.eventMain.site} />}
-                {this.state.activeTabIndex === 4 && <EventPictures eventId={this.state.eventId}/> }
+                {this.state.activeTabIndex === 4 && <EventPictures eventId={this.state.eventId} />}
                 <div className='flex-wrap mt-2'>
                     {this.state.activeTabIndex > 0 &&
-                        <button 
-                            className='medium-static-button static-button' 
-                            onClick={() => this.performIfValid(() => this.setActiveStep(this.state.activeTabIndex-1), () => this.setState({showError: true}) )}
+                        <button
+                            className='medium-static-button static-button'
+                            onClick={() => this.performIfValid(() => this.setActiveStep(this.state.activeTabIndex - 1), () => this.setState({ showError: true }))}
                         >Back</button>
                     }
                     {this.state.activeTabIndex < 4 &&
-                        <button 
-                            className='medium-static-button static-button default-button' 
-                            onClick={() => this.performIfValid(this.nextStep, () => this.setState({showError: true})) }
+                        <button
+                            className='medium-static-button static-button default-button'
+                            onClick={() => this.performIfValid(this.nextStep, () => this.setState({ showError: true }))}
                         >Next</button>
                     }
                 </div>
-                
-                {this.state.showError && this.alertNotValid }
 
-                {this.state.showDialog && 
-                    <Alert 
-                        headerText = {this.headerText}
-                        text = {this.dialogText}
-                        onClose = {() => this.setState({showDialog: false})}
-                        showOkCancelButtons = {true}
-                        onCancelButtonClick = {() => this.setState({showDialog: false})}
-                        onOkButtonClick = {() => this.onOkButtonClick()}
-                        cancelButtonText = "Cancel"
-                        okButtonText = "Ok"
-                        mode = 'warning'
+                {this.state.showError && this.alertNotValid}
+
+                {this.state.showDialog &&
+                    <Alert
+                        headerText={this.headerText}
+                        text={this.dialogText}
+                        onClose={() => this.setState({ showDialog: false })}
+                        showOkCancelButtons={true}
+                        onCancelButtonClick={() => this.setState({ showDialog: false })}
+                        onOkButtonClick={() => this.onOkButtonClick()}
+                        cancelButtonText="Cancel"
+                        okButtonText="Ok"
+                        mode='warning'
                     >
-                       {this.dialogContent}
+                        {this.dialogContent}
                     </Alert>
                 }
 
-                {this.state.showMessage && 
-                    <Alert 
-                        headerText = {this.headerText}
-                        text = {this.dialogText}
-                        onClose = {() => this.setState({showMessage: false})}
-                        showOkButton = {true}
-                        onOkButtonClick = {() => this.setState({showMessage: false})}
-                        okButtonText = "Ok"
-                        mode = {this.mode}
+                {this.state.showMessage &&
+                    <Alert
+                        headerText={this.headerText}
+                        text={this.dialogText}
+                        onClose={() => this.setState({ showMessage: false })}
+                        showOkButton={true}
+                        onOkButtonClick={() => this.setState({ showMessage: false })}
+                        okButtonText="Ok"
+                        mode={this.mode}
                     >
-                       {this.dialogContent}
+                        {this.dialogContent}
                     </Alert>
                 }
             </div>

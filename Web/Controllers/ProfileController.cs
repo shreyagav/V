@@ -242,7 +242,11 @@ namespace Web.Controllers
                     data.JoinDate = DateTime.Now;
                     user = new TRRUser();
                     data.Map(user);
-                    user.UserName = data.Email;
+                    if (string.IsNullOrWhiteSpace(user.Email))
+                    {
+                        user.Email = $"{user.Id}@trr.org";
+                    }
+                    user.UserName = user.Email;
                     user.Created = DateTime.Now;
                     user.OldType = TRRUserType.Civilian;
                     user.Active = true;

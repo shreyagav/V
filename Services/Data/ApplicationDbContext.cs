@@ -16,7 +16,7 @@ namespace Services.Data
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer("Server=tcp:mcdean-dev.database.windows.net,1433;Initial Catalog=test-teamriverrunner;Persist Security Info=False;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

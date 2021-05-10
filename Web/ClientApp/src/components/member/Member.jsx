@@ -96,8 +96,8 @@ class Member extends Component {
 
     }
 
-    componentWillMount(){
-        this.validators = memberValidators();
+    componentWillMount() {
+        this.validators = memberValidators(this.state.userId == "");
         this.alertNotValid = alertNotValid(() => this.setState({ showError: false }));
     }
 
@@ -344,17 +344,19 @@ class Member extends Component {
                             </div>
                         </li>
                         <li className='input-wrapper' >
-                            <p>Email:</p>
-                            <div className={this.props.store.checkIfShowError('email', this.validators) ? 'error-input-wrapper' : ""}>
+                            <p className={this.state.member.id == "" ?"mark-optional":"" }>Email:</p>
+                            <div className={this.state.member.id != "" && this.props.store.checkIfShowError('email', this.validators) ? 'error-input-wrapper' : ""}>
                                 <input type='text' 
                                     placeholder='Email'
                                     value = {this.state.member.email}
                                     onChange={e => {
-                                        this.props.store.updateValidators("email", e.target.value, this.validators);
+                                        if (this.state.member.id != "") {
+                                            this.props.store.updateValidators("email", e.target.value, this.validators);
+                                        }
                                         this.updateMemberProperty("email", e.target.value);
                                     }}
                                 />
-                                { this.props.store.displayValidationErrors('email', this.validators) }
+                                {this.state.member.id != "" && this.props.store.displayValidationErrors('email', this.validators) }
                             </div>
                         </li>
                         <li className='input-wrapper'>

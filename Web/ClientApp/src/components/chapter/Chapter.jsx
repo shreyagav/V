@@ -20,6 +20,7 @@ class Chapter extends Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
         props.store.refreshUserInfo();
         let chapterId = 0;
         if (props.match.params.id) {
@@ -45,7 +46,8 @@ class Chapter extends Component {
             regions: [],
             members: [],
             showError: false,
-            error:'',
+            error: '',
+            saveEnabled: true,
             showDeleteDialog: false,
             showSuccessfullySavedDialog: false,
         };
@@ -147,7 +149,8 @@ class Chapter extends Component {
     }
 
     saveChapter() {
-        Service.saveChapter(this.state.chapter).then(data => { this.setState({ showSuccessfullySavedDialog: true }); }).catch(data => alert(data));
+        this.setState({ saveEnabled: false });
+        Service.saveChapter(this.state.chapter).then(data => { this.setState({ showSuccessfullySavedDialog: true }); }).catch(data => { alert(data); this.setState({ saveEnabled: true }) });
     }
 
     deleteChapter() {
@@ -196,7 +199,7 @@ class Chapter extends Component {
                                 <DeleteUpSVG />
                                 <span>Delete</span>
                             </button>
-                            <button
+                            <button disabled={!this.state.saveEnabled}
                                 className='round-button medium-round-button outline-on-hover' 
                                 onClick={() => this.performIfValid(() => this.saveChapter())}
                             >
@@ -433,7 +436,7 @@ class Chapter extends Component {
                         headerText = 'Success'
                         onClose = {() => this.setState({showSuccessfullySavedDialog: false})}
                         showOkButton = {true}
-                        onOkButtonClick = {() => this.setState({showSuccessfullySavedDialog: false})}
+                        onOkButtonClick={() => { this.setState({ showSuccessfullySavedDialog: false }); this.props.history.push('/chapters'); }}
                         okButtonText = "Ok"
                         mode = 'success'
                     >

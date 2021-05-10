@@ -24,11 +24,11 @@ namespace Services
             _userManager = userManager;
             mailService = mail;
         }
-        
+
         public async Task AddEventAttendees(int id, ClaimsPrincipal user)
         {
             var appUser = await _userManager.GetUserAsync(user);
-            var evt = _context.CalendarEvents.Include(s=>s.Site).Include(s=>s.Site.Main).First(e => e.Id == id);
+            var evt = _context.CalendarEvents.Include(s => s.Site).Include(s => s.Site.Main).First(e => e.Id == id);
             if (evt.SiteId != appUser.SiteId && !evt.Site.AllowEverybody)
             {
                 throw new Exception("Only chapter members can participate in this event.");
@@ -59,7 +59,7 @@ namespace Services
         {
             var appUser = await _userManager.GetUserAsync(user);
             List<UserEvent> newAttendies = new List<UserEvent>();
-            foreach(string usrId in ids)
+            foreach (string usrId in ids)
             {
                 var temp = new UserEvent();
                 temp.Created = DateTime.Now;
@@ -103,39 +103,74 @@ namespace Services
 
         public async Task<EventMainDto> ChangeEvent(EventMainDto newEvent, ClaimsPrincipal user)
         {
-            CalendarEvent temp;
+
             var appUser = await _userManager.GetUserAsync(user);
-            if (newEvent.Id <= 0)
-            {
-                temp = new CalendarEvent(newEvent);
-                temp.Created = temp.Modified = DateTime.Now;
-                temp.CreatedById = appUser.Id;
-                temp.Status = EventStatus.Draft;
-                var added = _context.CalendarEvents.Add(temp);
-            }
-            else
-            {
-                temp = _context.CalendarEvents.First(e => e.Id == newEvent.Id);
-                temp.Map(newEvent);
-                temp.Modified = DateTime.Now;
-                _context.Entry(temp).State = EntityState.Modified;
-            }
-            temp.ModifiedById = appUser.Id;
-            var site = _context.EventSites.First(s => s.Id == temp.SiteId);
+            var site = _context.EventSites.First(s => s.Id == newEvent.Site);
             var isAdmin = await _userManager.IsInRoleAsync(appUser, "Admin");
-            if(site.AllowEverybody && isAdmin)
+            if (!site.AllowEverybody && !isAdmin)
             {
                 throw new Exception("Only Administrators can add events to this chapter.");
             }
-            _context.SaveChanges();
-            newEvent.Id = temp.Id;
+
+            if (newEvent.Id <= 0)
+            {
+                Func<DateTime, CalendarEvent> createEvent = (DateTime date) =>
+                {
+                    CalendarEvent evt = new CalendarEvent(newEvent);
+                    evt.Date = date;
+                    evt.Created = evt.Modified = DateTime.Now;
+                    evt.CreatedById = appUser.Id;
+                    evt.Status = EventStatus.Draft;
+                    return evt;
+                };
+                List<CalendarEvent> toAdd = new List<CalendarEvent>();
+                if (newEvent.IsRepeatable)
+                {
+                    Func<DateTime, int, DateTime> dateCalc = (date, itr) => date.AddDays(itr * newEvent.Frequency);
+                    switch (newEvent.FrequencyType)
+                    {
+                        case EventFrequency.Weeks:
+                            dateCalc = (date, itr) => date.AddDays(itr * newEvent.Frequency * 7);
+                            break;
+                        case EventFrequency.Month:
+                            dateCalc = (date, itr) => date.AddMonths(itr * newEvent.Frequency);
+                            break;
+                    }
+                    int itr = 0;
+                    DateTime date;
+                    do
+                    {
+                        date = dateCalc(newEvent.Date, itr++);
+                        toAdd.Add(createEvent(date));
+                    }
+                    while (date <= newEvent.EndDate);
+
+                }
+                else
+                {
+                    toAdd.Add(createEvent(newEvent.Date));
+                }
+                _context.AddRange(toAdd);
+                _context.SaveChanges();
+                newEvent.Id = toAdd[0].Id;
+            }
+            else
+            {
+                CalendarEvent temp;
+                temp = _context.CalendarEvents.First(e => e.Id == newEvent.Id);
+                temp.Map(newEvent);
+                temp.Modified = DateTime.Now;
+                temp.ModifiedById = appUser.Id;
+                _context.Entry(temp).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
             return newEvent;
 
         }
 
         public async Task<EventMainDto> GetEvent(int id, ClaimsPrincipal user)
         {
-            var evt = _context.CalendarEvents.Include(a=>a.EventType).First(e => e.Id == id);
+            var evt = _context.CalendarEvents.Include(a => a.EventType).First(e => e.Id == id);
             var appUser = await _userManager.GetUserAsync(user);
             var res = new EventMainDto(evt);
             if (appUser != null)
@@ -150,7 +185,8 @@ namespace Services
             return res;
         }
 
-        private int tempMemberType() {
+        private int tempMemberType()
+        {
             return new Random().Next(1, 3);
         }
 
@@ -192,7 +228,7 @@ namespace Services
         public EventAttendeeDto[] GetSiteMembers(int eventId)
         {
             int siteId = _context.CalendarEvents.First(a => a.Id == eventId).SiteId;
-            var ids = _context.UserEvents.Where(ue => ue.EventId == eventId).Select(a=>a.UserId);
+            var ids = _context.UserEvents.Where(ue => ue.EventId == eventId).Select(a => a.UserId);
             var res = _context.Users
                 .Where(ue => /*ue.SiteId == siteId &&*/ !ids.Contains(ue.Id))
                 .Select(u => new EventAttendeeDto()
@@ -205,7 +241,7 @@ namespace Services
                     Phone = u.PhoneNumber,
                     Active = u.Active,
                     SiteId = u.SiteId
-                }).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName)
+                }).OrderBy(a => a.FirstName).ThenBy(a => a.LastName)
                 .ToArray();
             return res;
         }
@@ -242,7 +278,8 @@ namespace Services
                 {
                     error = "Attendee not found at this event";
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 error = ex.Message;
             }
