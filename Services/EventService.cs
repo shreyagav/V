@@ -107,7 +107,7 @@ namespace Services
             var appUser = await _userManager.GetUserAsync(user);
             var site = _context.EventSites.First(s => s.Id == newEvent.Site);
             var isAdmin = await _userManager.IsInRoleAsync(appUser, "Admin");
-            if (site.AllowEverybody && isAdmin)
+            if (site.AllowEverybody && !isAdmin)
             {
                 throw new Exception("Only Administrators can add events to this chapter.");
             }
