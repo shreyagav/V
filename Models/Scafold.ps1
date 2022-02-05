@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext -connection "Data Source=localhost\sqlexpress;Initial Catalog=trr-ors;Integrated Security=True;Connection Timeout=120;TrustServerCertificate=true;" -provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Context -Project Models -StartupProject Models -force -NoOnConfiguring

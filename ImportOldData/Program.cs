@@ -19,6 +19,7 @@ namespace ImportOldData
     {
         static void Main(string[] args)
         {
+            return;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
