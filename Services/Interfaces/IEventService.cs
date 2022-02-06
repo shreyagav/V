@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using Models.Context;
 using Models.Dto;
 using System;
 using System.Collections.Generic;
@@ -16,11 +16,11 @@ namespace Services.Interfaces
         EventAttendeeDto[] GetSiteMembers(int eventId);
         EventAttendeeDto[] GetSiteMembersOnly(int siteId);
         Task<EventAttendeeDto[]> AddEventAttendees(int id, string[] ids, ClaimsPrincipal user);
-        BudgetLine[] GetEventBudget(int eventId);
-        BudgetLine[] AddBudgetLines(int eventId, BudgetLine[] lines);
+        EventBudget[] GetEventBudget(int eventId);
+        EventBudget[] AddBudgetLines(int eventId, EventBudget[] lines);
         void AddPhotos(Photo[] arr);
-        BudgetLine[] DeleteBudgetLine(int eventId, BudgetLine line);
-        BudgetLine[] UpdateBudgetLine(int eventId, BudgetLine line);
+        EventBudget[] DeleteBudgetLine(int eventId, EventBudget line);
+        EventBudget[] UpdateBudgetLine(int eventId, EventBudget line);
         Photo[] GetEventPhotos(int id);
         Photo GetPhotoById(int id);
         Task<EventMainDto> GetEvent(int id, ClaimsPrincipal user);

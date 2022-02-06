@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using Models.Context;
 using Services.Interfaces;
 
 namespace Web.Controllers
@@ -16,8 +16,8 @@ namespace Web.Controllers
     public class CommonController : ControllerBase
     {
         INotificationService _service;
-        UserManager<TRRUser> _userManager;
-        public CommonController(INotificationService service, UserManager<TRRUser> userManager)
+        UserManager<AspNetUser> _userManager;
+        public CommonController(INotificationService service, UserManager<AspNetUser> userManager)
         {
             _service = service;
             _userManager = userManager;
@@ -36,9 +36,9 @@ namespace Web.Controllers
             var user = await _userManager.GetUserAsync(User);
             n.CreatedById = user.Id;
             _service.CreateNotification(n);
-            if (n.EventId != 0)
+            if (n.EventId.HasValue)
             {
-                return _service.GetEventNotifications(n.EventId);
+                return _service.GetEventNotifications(n.EventId.Value);
             }
             else if(n.EventSiteId != null)
             {

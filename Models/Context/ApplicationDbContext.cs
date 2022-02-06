@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Models.Context
 {
-    public partial class trrorsContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
-        public trrorsContext()
+        public ApplicationDbContext()
         {
         }
 
-        public trrorsContext(DbContextOptions<trrorsContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }

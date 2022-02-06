@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Context;
 using Services.Data;
 using Services.Interfaces;
 using System;
@@ -14,12 +14,12 @@ namespace Services
 {
     public class UserService: IUserService
     {
-        private UserManager<TRRUser> _userManager;
-        private SignInManager<TRRUser> _signinManager;
+        private UserManager<AspNetUser> _userManager;
+        private SignInManager<AspNetUser> _signinManager;
         private RoleManager<IdentityRole> _roleManager;
         private ApplicationDbContext _ctx;
 
-        public UserService(UserManager<TRRUser> userManager, SignInManager<TRRUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext ctx)
+        public UserService(UserManager<AspNetUser> userManager, SignInManager<AspNetUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext ctx)
         {
             _userManager = userManager;
             _signinManager = signInManager;
@@ -38,14 +38,14 @@ namespace Services
             return _ctx.Options.Where(a => a.OptionCategoryId == 18).ToArray();
         }
 
-        public TRRUser[] GetUsersInRole(int id)
+        public AspNetUser[] GetUsersInRole(int id)
         {
             return _ctx.UserOptions.Where(a => a.OptionId == id).Include(a => a.User).Select(a=>a.User).ToArray();
         }
 
-        public async Task<Dictionary<TRRUser, IdentityResult>> AddUsersToRole(TRRUser[] users,  string role)
+        public async Task<Dictionary<AspNetUser, IdentityResult>> AddUsersToRole(AspNetUser[] users,  string role)
         {
-            Dictionary<TRRUser, IdentityResult> result = new Dictionary<TRRUser, IdentityResult>();
+            Dictionary<AspNetUser, IdentityResult> result = new Dictionary<AspNetUser, IdentityResult>();
             foreach(var user in users)
             {
                 var res = await _userManager.AddToRoleAsync(user, role);
@@ -59,9 +59,9 @@ namespace Services
             return await _roleManager.CreateAsync(role);
         }
 
-        public TRRUser FindBy(Expression<Func<TRRUser, bool>> predicate)
+        public AspNetUser FindBy(Expression<Func<AspNetUser, bool>> predicate)
         {
-            return _ctx.Users.FirstOrDefault(predicate);
+            return _ctx.AspNetUsers.FirstOrDefault(predicate);
         }
 
 
@@ -70,14 +70,5 @@ namespace Services
             return await _signinManager.PasswordSignInAsync(userName, password, true, true);
         }
 
-        public async Task<IdentityResult> AddLogin(TRRUser user)
-        {
-            var res = await _userManager.CreateAsync(user);
-            if (res.Succeeded)
-            {
-                res = await _userManager.AddLoginAsync(user, new UserLoginInfo("facebook", "test", "FB"));
-            }
-            return res;
-        }
     }
 }

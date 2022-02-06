@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using Models;
+using Models.Context;
 using Services;
 using Services.Data;
 using Services.Interfaces;
@@ -34,28 +35,35 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
+
+            services.AddTransient<IUserStore<AspNetUser>, TRRUserStore>();
+            services.AddTransient<IPasswordHasher<AspNetUser>, TRRPasswordHasher>();
             services.AddTransient<ICalendarEventService, CalendarEventService>();
             services.AddTransient<IListService, ListService>();
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<IChapterService, ChapterService>();
             services.AddTransient<IStorageService, StorageService>();
             services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, TRRClaimsPrincipalFactory>();
             services.AddTransient<INotificationService, NotificationService>();
-            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Web")));
-            services.AddIdentity<TRRUser, IdentityRole>()
+                    Configuration.GetConnectionString("DefaultConnection"), 
+                    b => b.MigrationsAssembly("Web"))
+                );
+            services.AddIdentity<AspNetUser, AspNetRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+
             //var secretes = Configuration.Get<Secretes>();
             //services.AddAuthentication().AddFacebook(fbOptions=> {
             //    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
             //    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             //});
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -86,7 +94,7 @@ namespace Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

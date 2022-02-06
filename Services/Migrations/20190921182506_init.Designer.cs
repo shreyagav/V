@@ -9,7 +9,7 @@ using Services.Data;
 
 namespace Services.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ApplicationDbContextOld))]
     [Migration("20190921182506_init")]
     partial class init
     {

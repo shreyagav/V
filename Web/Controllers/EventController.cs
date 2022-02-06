@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using Models.Context;
 using Models.Dto;
 using Services.Interfaces;
 
@@ -139,32 +139,32 @@ namespace Web.Controllers
             return _service.GetSiteMembersOnly(id);
         }
         [HttpGet("[action]/{id}")]
-        public BudgetLine[] GetBudget(int id)
+        public EventBudget[] GetBudget(int id)
         {
             return _service.GetEventBudget(id);
         }
         [HttpPost("[action]/{id}")]
-        public BudgetLine[] AddBudgetLines(int id, BudgetLine[] lines)
+        public EventBudget[] AddBudgetLines(int id, EventBudget[] lines)
         {
             return _service.AddBudgetLines(id, lines);
         }
 
         [HttpPost("[action]/{id}")]
-        public BudgetLine[] AddBudgetLine(int id, BudgetLine line)
+        public EventBudget[] AddBudgetLine(int id, EventBudget line)
         {
-            BudgetLine[] arr = new BudgetLine[] { line };
+            EventBudget[] arr = new EventBudget[] { line };
             return _service.AddBudgetLines(id, arr);
         }
 
         [HttpPost("[action]/{id}")]
-        public BudgetLine[] UpdateBudgetLine(int id, BudgetLine line)
+        public EventBudget[] UpdateBudgetLine(int id, EventBudget line)
         {
             
             return _service.UpdateBudgetLine(id, line);
         }
 
         [HttpPost("[action]/{id}")]
-        public BudgetLine[] DeleteBudgetLine(int id, BudgetLine line)
+        public EventBudget[] DeleteBudgetLine(int id, EventBudget line)
         {
             return _service.DeleteBudgetLine(id, line);
         }

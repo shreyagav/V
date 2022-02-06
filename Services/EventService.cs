@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Context;
 using Models.Dto;
 using Services.Data;
 using Services.Interfaces;
@@ -16,9 +17,9 @@ namespace Services
     public class EventService : IEventService
     {
         private ApplicationDbContext _context;
-        private readonly UserManager<TRRUser> _userManager;
+        private readonly UserManager<AspNetUser> _userManager;
         private IMailService mailService;
-        public EventService(ApplicationDbContext context, UserManager<TRRUser> userManager, IMailService mail)
+        public EventService(ApplicationDbContext context, UserManager<AspNetUser> userManager, IMailService mail)
         {
             _context = context;
             _userManager = userManager;
@@ -74,21 +75,21 @@ namespace Services
 
         }
 
-        public BudgetLine[] DeleteBudgetLine(int eventId, BudgetLine line)
+        public EventBudget[] DeleteBudgetLine(int eventId, EventBudget line)
         {
             _context.EventBudgets.Remove(line);
             _context.SaveChanges();
             return GetEventBudget(eventId);
         }
 
-        public BudgetLine[] AddBudgetLines(int eventId, BudgetLine[] lines)
+        public EventBudget[] AddBudgetLines(int eventId, EventBudget[] lines)
         {
             _context.EventBudgets.AddRange(lines);
             _context.SaveChanges();
             return GetEventBudget(eventId);
         }
 
-        public BudgetLine[] UpdateBudgetLine(int eventId, BudgetLine line)
+        public EventBudget[] UpdateBudgetLine(int eventId, EventBudget line)
         {
             _context.Entry(line).State = EntityState.Modified;
             _context.SaveChanges();
@@ -96,7 +97,7 @@ namespace Services
         }
 
 
-        public BudgetLine[] GetEventBudget(int eventId)
+        public EventBudget[] GetEventBudget(int eventId)
         {
             return _context.EventBudgets.Where(a => a.EventId == eventId).ToArray();
         }
@@ -120,7 +121,7 @@ namespace Services
                     evt.Date = date;
                     evt.Created = evt.Modified = DateTime.Now;
                     evt.CreatedById = appUser.Id;
-                    evt.Status = EventStatus.Draft;
+                    evt.Status = (int)EventStatus.Draft;
                     return evt;
                 };
                 List<CalendarEvent> toAdd = new List<CalendarEvent>();
@@ -229,7 +230,7 @@ namespace Services
         {
             int siteId = _context.CalendarEvents.First(a => a.Id == eventId).SiteId;
             var ids = _context.UserEvents.Where(ue => ue.EventId == eventId).Select(a => a.UserId);
-            var res = _context.Users
+            var res = _context.AspNetUsers
                 .Where(ue => /*ue.SiteId == siteId &&*/ !ids.Contains(ue.Id))
                 .Select(u => new EventAttendeeDto()
                 {
@@ -289,7 +290,7 @@ namespace Services
 
         public EventAttendeeDto[] GetSiteMembersOnly(int siteId)
         {
-            var res = _context.Users
+            var res = _context.AspNetUsers
                 .Where(ue => ue.SiteId == siteId)
                 .Select(u => new EventAttendeeDto()
                 {
@@ -305,5 +306,7 @@ namespace Services
                 .ToArray();
             return res;
         }
+
+
     }
 }
