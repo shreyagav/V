@@ -18,6 +18,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Query;
+using Models.Context;
 
 namespace UnitTests
 {
@@ -52,27 +53,31 @@ namespace UnitTests
         private readonly IUserService userService;
         private readonly IImportService importService;
         private readonly ICalendarEventService eventService;
+        private readonly ApplicationDbContext ctx;
+        private readonly IPasswordHasher<AspNetUser> pass;
         //private readonly RoleManager<IdentityRole> _roleManager;
         public UserServiceTest()
         {
             var services = new ServiceCollection();
             //services.AddTransient<IUserClaimsPrincipalFactory<TRRUser>, TRRClaimsPrincipalFactory<TRRUser>>();
-            services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
+            services.AddTransient<IPasswordHasher<AspNetUser>, TRRPasswordHasher>();
             services.AddTransient<ICalendarEventService, CalendarEventService>();
             services.AddTransient<IImportService, ImportService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                             options.UseSqlServer(
                                 "Server=tcp:trr.database.windows.net,1433;Initial Catalog=trr-ors;Persist Security Info=False;User ID=trr_admin;Password=Pa$$w0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
-            services.AddIdentity<TRRUser, IdentityRole>()
+            services.AddIdentity<AspNetUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserService, UserService>();
             /*services.Configure<IdentityOptions>(options => {
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             });*/
             var serviceProvider = services.BuildServiceProvider();
-            userService = serviceProvider.GetService<IUserService>();
-            importService = serviceProvider.GetService<IImportService>();
-            eventService = serviceProvider.GetService<ICalendarEventService>();
+            //userService = serviceProvider.GetService<IUserService>();
+            //importService = serviceProvider.GetService<IImportService>();
+            //eventService = serviceProvider.GetService<ICalendarEventService>();
+            pass = serviceProvider.GetService<IPasswordHasher<AspNetUser>>();
+            ctx = serviceProvider.GetRequiredService<ApplicationDbContext>();
         }
 
         private static string SanitizeUserName(string name)
@@ -80,25 +85,43 @@ namespace UnitTests
             return Regex.Replace(name, "[^a-zA-Z\\d-\\.@\\+]", "");
         }
 
+        //[TestMethod]
+        //public void QueryTest() 
+        //{
+        //    Console.WriteLine("test");
+        //    //var _ctx = importService.GetContext();
+
+
+
+        //}
+
         [TestMethod]
-        public void QueryTest() 
+        public async Task SendEmail()
         {
-            Console.WriteLine("test");
-            var _ctx = importService.GetContext();
 
-
-
+            var service = new SMTPMailService();
+            await service.Send("test", "test", null, ("dozcent@gmail.com", "dozcent"),new []{ ("dozcent@gmail.com", "dozcent")});
         }
 
         [TestMethod]
-        public async Task ImportAll()
+        public async Task UpdatePassword()
         {
-            var failed = new List<XmlNode>();
-            XmlDocument doc = new XmlDocument();
-            Console.WriteLine($"{DateTime.Now} ImportSites");
-            doc.Load(@"E:\Alla\2019\Team River Runner\UnitTests\failed_without_options_and_diagnosis.xml");
-            //doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin.xml");
-            var nodes = doc.SelectNodes("//table[@name='site']");
+
+            var user = await ctx.AspNetUsers.FirstOrDefaultAsync(a => a.Email == "dozcent@teamriverrunner.org");
+            var password = pass.HashPassword(user, "Pa$$w0rd");
+            user.PasswordHash = password;
+            await ctx.SaveChangesAsync();
+        }
+
+        //[TestMethod]
+        //public async Task ImportAll()
+        //{
+        //    var failed = new List<XmlNode>();
+        //    XmlDocument doc = new XmlDocument();
+        //    Console.WriteLine($"{DateTime.Now} ImportSites");
+        //    doc.Load(@"E:\Alla\2019\Team River Runner\UnitTests\failed_without_options_and_diagnosis.xml");
+        //    //doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin.xml");
+        //    var nodes = doc.SelectNodes("//table[@name='site']");
 
             //            var failedSites = ImportSites(nodes, eventService);
             //            failed.AddRange(failedSites);
@@ -148,11 +171,11 @@ namespace UnitTests
             //            var failedOptions = ImportUserOptions(nodes, importService);
             //            failed.AddRange(failedOptions);
 
-            nodes = doc.SelectNodes("//table[@name='user_event']");
-            var failedUserEvents = ImportUserEvents(nodes, importService);
-            failed.AddRange(failedUserEvents);
-            var count = importService.GetContext().UserEvents.Count();
-            Console.WriteLine($"{DateTime.Now} ImportUserEvents imported {count} out of {nodes.Count}");
+            //nodes = doc.SelectNodes("//table[@name='user_event']");
+            //var failedUserEvents = ImportUserEvents(nodes, importService);
+            //failed.AddRange(failedUserEvents);
+            //var count = importService.GetContext().UserEvents.Count();
+            //Console.WriteLine($"{DateTime.Now} ImportUserEvents imported {count} out of {nodes.Count}");
 
             //            importService.GetContext().Database.ExecuteSqlCommand(@"  DECLARE @cat INT;
             //  UPDATE dbo.UserOptions SET OptionId=37 WHERE OptionId=32 AND UserId NOT IN (SELECT UserId from dbo.UserOptions WHERE OptionId=37);
@@ -168,21 +191,11 @@ namespace UnitTests
             //  DELETE FROM dbo.CalendarEventTypes WHERE OldId=100;");
 
 
-            String result = "<?xml version=\"1.0\" encoding=\"utf-8\"?><pma_xml_export>";
-            result += string.Join("\n", failed.Select(a => a.OuterXml).ToArray());
-            result += "</pma_xml_export>";
-            File.WriteAllText(@"E:\Alla\2019\Team River Runner\UnitTests\failed_user_events.xml", result);
-        }
+        //    String result = "<?xml version=\"1.0\" encoding=\"utf-8\"?><pma_xml_export>";
+        //    result += string.Join("\n", failed.Select(a => a.OuterXml).ToArray());
+        //    result += "</pma_xml_export>";
+        //    File.WriteAllText(@"E:\Alla\2019\Team River Runner\UnitTests\failed_user_events.xml", result);
+        //}
 
-
-        [TestMethod]
-        public async Task AddLoginTestMethod()
-        {
-            TRRUser user = new TRRUser();
-            user.Email = "dozcent2@mcdean.com";
-            user.UserName = "dmytro2";
-            var res = await userService.AddLogin(user);
-            Assert.AreEqual(false, res.Succeeded);
-        }
     }
 }

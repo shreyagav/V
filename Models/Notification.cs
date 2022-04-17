@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models
+namespace Models.Old
 {
     public class Notification
     {
@@ -15,7 +15,7 @@ namespace Models
         public int? EventSiteId { get; set; }
         public EventSite EventSite { get; set; }
         public int EventId { get; set; }
-        public CalendarEvent Event { get; set; }
+        public Models.Context.CalendarEvent Event { get; set; }
         public ICollection<NotificationAttachment> NotificationAttachments { get; set; }
         public ICollection<NotificationRecepient> Recepients { get; set; }
 

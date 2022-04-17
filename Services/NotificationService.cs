@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Context;
 using Services.Data;
 using Services.Interfaces;
 using System;
@@ -22,7 +22,7 @@ namespace Services
         {
             notification.NotificationId = Guid.NewGuid();
             notification.Created = DateTime.Now;
-            foreach(var r in notification.Recepients)
+            foreach(var r in notification.NotificationRecepients)
             {
                 r.NotificationId = notification.NotificationId;
                 r.NotificationRecepientId = Guid.NewGuid();
@@ -63,7 +63,7 @@ namespace Services
 
         public Notification[] GetEventNotifications(int eventId)
         {
-            return _ctx.Notifications.Include(a=>a.CreatedBy).Include(a=>a.Recepients).Where(a => a.EventId == eventId).ToArray();
+            return _ctx.Notifications.Include(a=>a.CreatedBy).Include(a=>a.NotificationRecepients).Where(a => a.EventId == eventId).ToArray();
         }
 
         public Notification[] GetSiteNotifications(int? eventSiteId)

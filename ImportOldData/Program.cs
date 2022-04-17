@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models;
+using Models.Context;
 using Services;
 using Services.Data;
 using Services.Interfaces;
@@ -28,37 +29,36 @@ namespace ImportOldData
 
             var services = new ServiceCollection();
             //services.AddTransient<IUserClaimsPrincipalFactory<TRRUser>, TRRClaimsPrincipalFactory<TRRUser>>();
-            services.AddTransient<IPasswordHasher<TRRUser>, TRRPasswordHasher>();
+            services.AddTransient<IPasswordHasher<AspNetUser>, TRRPasswordHasher>();
             services.AddTransient<ICalendarEventService, CalendarEventService>();
             services.AddTransient<IImportService, ImportService>();
             services.AddDbContext<ApplicationDbContext>(options =>
-                            options.UseSqlServer(
-                                "Data Source=912-4801\\sql2016std;Initial Catalog=test-teamriverrunner;User ID=sql_dmytrod;Password=Pa$$w0rd;MultipleActiveResultSets=False;Connection Timeout=30;", b => b.MigrationsAssembly("Services")));
-            services.AddIdentity<TRRUser,TRRRole>()
+                            options.UseSqlServer("Data Source=localhost\\sqlexpress;Initial Catalog=trr;"));
+            services.AddIdentity<AspNetUser, TRRRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddScoped<IUserService, UserService>();
             var serviceProvider = services.BuildServiceProvider();
             var userService = serviceProvider.GetService<IUserService>();
             var importService = serviceProvider.GetService<IImportService>();
-            ICalendarEventService service = serviceProvider.GetService<ICalendarEventService>();
-            /*DbContextOptionsBuilder<ApplicationDbContext> optBulder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optBulder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-            ApplicationDbContext context = new ApplicationDbContext(optBulder.Options);
-            CalendarEventService service = new CalendarEventService(context);
-            Console.WriteLine("Hello World!");*/
-            var failed = new List<XmlNode>();
-            XmlDocument doc = new XmlDocument();
-            doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin.xml");
-            var nodes = doc.SelectNodes("//table[@name='site']");
+            //ICalendarEventService service = serviceProvider.GetService<ICalendarEventService>();
+            ///*DbContextOptionsBuilder<ApplicationDbContext> optBulder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            //optBulder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            //ApplicationDbContext context = new ApplicationDbContext(optBulder.Options);
+            //CalendarEventService service = new CalendarEventService(context);
+            //Console.WriteLine("Hello World!");*/
+            //var failed = new List<XmlNode>();
+            //XmlDocument doc = new XmlDocument();
+            //doc.Load("C:\\Work\\TeamRiverRunnerOld\\teamriv_admin.xml");
+            //var nodes = doc.SelectNodes("//table[@name='site']");
 
-            var failedSites = ImportSites(nodes, service);
-            failed.AddRange(failedSites);
-            nodes = doc.SelectNodes("//table[@name='syscode' and ./column='E']");
-            var failedEventTypes = ImportEventTypes(nodes, service);
-            failed.AddRange(failedEventTypes);
-            nodes = doc.SelectNodes("//table[@name='calendar_events']");
-            var failedEvents = ImportEvents(nodes, service, importService);
-            failed.AddRange(failedEvents);
+            //var failedSites = ImportSites(nodes, service);
+            //failed.AddRange(failedSites);
+            //nodes = doc.SelectNodes("//table[@name='syscode' and ./column='E']");
+            //var failedEventTypes = ImportEventTypes(nodes, service);
+            //failed.AddRange(failedEventTypes);
+            //nodes = doc.SelectNodes("//table[@name='calendar_events']");
+            //var failedEvents = ImportEvents(nodes, service, importService);
+            //failed.AddRange(failedEvents);
             //nodes = doc.SelectNodes("//table[@name='user']");
             //ImportUsers(nodes, userService);
             //ImportExceptionalEvents(doc,service);
@@ -84,7 +84,7 @@ namespace ImportOldData
             foreach (XmlNode ue in nodes)
             {
                 var cat = new UserDiagnosis();
-                TRRUser user = null;
+                AspNetUser user = null;
                 Diagnosis diag = null;
                 foreach (XmlNode node in ue.ChildNodes)
                 {
@@ -102,7 +102,7 @@ namespace ImportOldData
                             break;
                     }
                 }
-                if(user!=null && diag != null)
+                if (user != null && diag != null)
                 {
                     var exists = list.FirstOrDefault(u => u.DiagnosisId == diag.Id && u.UserId == user.Id) != null;
                     if (!exists)
@@ -121,10 +121,10 @@ namespace ImportOldData
         private static void ImportSystemCodes(XmlNodeList nodes, IImportService service)
         {
 
-            List<SystemCode> list = new List<SystemCode>();
+            List<Models.Context.SystemCode> list = new List<Models.Context.SystemCode>();
             foreach (XmlNode ue in nodes)
             {
-                var cat = new SystemCode();
+                var cat = new Models.Context.SystemCode();
                 foreach (XmlNode node in ue.ChildNodes)
                 {
                     var name = node.Attributes["name"].Value;
@@ -149,7 +149,7 @@ namespace ImportOldData
         private static void ImportUserOptions(XmlNodeList nodes, IImportService service) {
 
             Option[] all = service.GetAllOptions();
-            TRRUser[] allUsers = service.GetAllUsers();
+            AspNetUser[] allUsers = service.GetAllUsers();
             List<UserOption> wholeList = new List<UserOption>();
             List<UserOption> list = new List<UserOption>();
             foreach (XmlNode ue in nodes)
@@ -167,7 +167,8 @@ namespace ImportOldData
                                 uOpt.UserId = usr.Id;
                                 uOpt.User = usr;
                             }
-                            else {
+                            else
+                            {
                                 continue;
                             }
                             break;
@@ -189,14 +190,14 @@ namespace ImportOldData
                     }
                 }
                 var exists = wholeList.FirstOrDefault(a => a.UserId == uOpt.UserId && a.OptionId == uOpt.OptionId);
-                if (exists == null && uOpt.Option!=null && uOpt.User != null)
+                if (exists == null && uOpt.Option != null && uOpt.User != null)
                 {
                     list.Add(uOpt);
                     wholeList.Add(uOpt);
                 }
                 else
                     Console.WriteLine($"{uOpt.UserId}::{uOpt.OptionId}");
-                if(list.Count == 1000)
+                if (list.Count == 1000)
                 {
                     service.ImportUserOptions(list.ToArray());
                     list = new List<UserOption>();
@@ -248,7 +249,7 @@ namespace ImportOldData
                         case "category_id":
                             var cat = cats.First(a => a.OldId == int.Parse(node.InnerText));
                             opt.OptionCategoryId = cat.Id;
-                            opt.Category = cat;
+                            opt.OptionCategory = cat;
                             break;
                         case "option_title":
                             opt.Title = node.InnerText;
@@ -358,7 +359,7 @@ namespace ImportOldData
         }
         private static CalendarEvent ImportEvent(XmlNode t, ICalendarEventService service, CalendarEventType[] eventTypes)
         {
-            Models.CalendarEvent evt = new Models.CalendarEvent();
+            CalendarEvent evt = new CalendarEvent();
             string name = string.Empty;
                 int month = 0, year = 0, day = 0, createdById = 0, modifiedById = 0, eventType = 0, eventSiteId = 0;
                 string modifiedStr = "";
@@ -428,7 +429,7 @@ namespace ImportOldData
                             modifiedStr = node.InnerText;
                             break;
                         case "event_visibility":
-                            evt.OldEventVisibility = node.InnerText[0];
+                            evt.OldEventVisibility = node.InnerText;
                             break;
                         case "event_date_deleted":
                             evt.Deleted = node.InnerText == "0000-00-00" ? null : (DateTime?)DateTime.Parse(node.InnerText);
@@ -454,7 +455,7 @@ namespace ImportOldData
             List<XmlNode> failed = new List<XmlNode>();
             foreach (XmlNode t in nodes)
             {
-                Models.CalendarEventType newType = new Models.CalendarEventType();
+                CalendarEventType newType = new CalendarEventType();
                 try
                 {
                     foreach (XmlNode node in t.ChildNodes)
@@ -485,12 +486,12 @@ namespace ImportOldData
             List<XmlNode> failed = new List<XmlNode>();
             foreach (XmlNode site in sites)
             {
-                Models.EventSite evtSite = new Models.EventSite();
-                Models.Contact main = new Models.Contact();
-                Models.Contact govt = new Models.Contact();
-                Models.Contact vol = new Models.Contact();
-                Models.Contact outreach = new Models.Contact();
-                Models.Contact national = new Models.Contact();
+                EventSite evtSite = new EventSite();
+                Contact main = new Contact();
+                Contact govt = new Contact();
+                Contact vol = new Contact();
+                Contact outreach = new Contact();
+                Contact national = new Contact();
                 try
                 {
                     foreach (XmlNode node in site.ChildNodes)
@@ -613,12 +614,12 @@ namespace ImportOldData
                         var temp = service.GetContactByEmail(govt.Email);
                         if (temp != null)
                         {
-                            evtSite.GOVT = temp;
+                            evtSite.Govt = temp;
                         }
                         else
                         {
                             service.AddContact(govt);
-                            evtSite.GOVT = govt;
+                            evtSite.Govt = govt;
                         }
                     }
                     if (!string.IsNullOrEmpty(national.Email))

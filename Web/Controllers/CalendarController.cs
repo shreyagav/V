@@ -26,9 +26,9 @@ namespace Web.Controllers
             return _service.GetMonthEvents(filter);
         }
         [HttpPost("[action]")]
-        public EventListRow[] GetFilteredList(EventListFilter filter)
+        public async Task<EventListRow[]> GetFilteredList(EventListFilter filter)
         {
-            return _service.GetFilteredEvents(filter);
+            return await _service.GetFilteredEvents(filter);
         }
 
     }

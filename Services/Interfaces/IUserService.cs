@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Models;
+using Models.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -10,12 +10,11 @@ namespace Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IdentityResult> AddLogin(TRRUser user);
-        TRRUser FindBy(Expression<Func<TRRUser, bool>> predicate);
+        AspNetUser FindBy(Expression<Func<AspNetUser, bool>> predicate);
         Task<IdentityResult> AddRole(IdentityRole role);
-        Task<Dictionary<TRRUser, IdentityResult>> AddUsersToRole(TRRUser[] users, string role);
+        Task<Dictionary<AspNetUser, IdentityResult>> AddUsersToRole(AspNetUser[] users, string role);
         Option[] GetRolesFromOptions();
-        TRRUser[] GetUsersInRole(int id);
+        AspNetUser[] GetUsersInRole(int id);
         Task CreateRoles(string[] names);
     }
 }

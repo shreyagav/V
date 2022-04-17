@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Context;
 using Models.Dto;
 using Services.Data;
 using Services.Interfaces;
@@ -20,9 +20,9 @@ namespace Services
 
         public EventSite Get(int id)
         {
-            var temp = _ctx.EventSites.Include(a => a.GOVT).Include(a => a.Main).Include(a => a.National).Include(a => a.Outreach).Include(a => a.Coordinator).Include(a=>a.Region).FirstOrDefault(a => a.Id == id);
-            if (temp.GOVT == null)
-                temp.GOVT = new Contact();
+            var temp = _ctx.EventSites.Include(a => a.Govt).Include(a => a.Main).Include(a => a.National).Include(a => a.Outreach).Include(a => a.Coordinator).Include(a=>a.Region).FirstOrDefault(a => a.Id == id);
+            if (temp.Govt == null)
+                temp.Govt = new Contact();
             if (temp.Coordinator == null)
                 temp.Coordinator = new Contact();
             if (temp.Main == null)
@@ -59,7 +59,7 @@ namespace Services
                 _ctx.SaveChanges();
             }
 
-            site.GOVTId = UpdateContact(eventSite.GOVT);
+            site.Govtid = UpdateContact(eventSite.Govt);
             site.NationalId = UpdateContact(eventSite.National);
             site.CoordinatorId = UpdateContact(eventSite.Coordinator);
             site.MainId = UpdateContact(eventSite.Main);

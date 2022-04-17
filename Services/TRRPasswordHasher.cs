@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Models;
+using Models.Context;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services
 {
-
-    public class TRRPasswordHasher : IPasswordHasher<TRRUser>
+    public class TRRPasswordHasher : IPasswordHasher<AspNetUser>
     {
-        public string HashPassword(TRRUser user, string password)
+        public string HashPassword(AspNetUser user, string password)
         {
             return getHash(password);
         }
@@ -20,7 +20,7 @@ namespace Services
             return BitConverter.ToString(hash).Replace("-", "");
         }
 
-        public PasswordVerificationResult VerifyHashedPassword(TRRUser user, string hashedPassword, string providedPassword)
+        public PasswordVerificationResult VerifyHashedPassword(AspNetUser user, string hashedPassword, string providedPassword)
         {
             if(hashedPassword == getHash(providedPassword))
             {

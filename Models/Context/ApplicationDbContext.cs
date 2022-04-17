@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Models.Context
 {
-    public partial class trrorsContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
-        public trrorsContext()
+        public ApplicationDbContext()
         {
         }
 
-        public trrorsContext(DbContextOptions<trrorsContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
@@ -158,9 +158,7 @@ namespace Models.Context
 
                 entity.Property(e => e.ModifiedById).HasMaxLength(450);
 
-                entity.Property(e => e.OldEventVisibility)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.OldEventVisibility).HasMaxLength(1);
 
                 entity.Property(e => e.ProjectedCost).HasColumnType("decimal(18, 2)");
 

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Context;
 using Models.Dto;
 using Services.Data;
 using Services.Interfaces;
@@ -35,22 +36,24 @@ namespace Web.Controllers
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
-        private readonly SignInManager<TRRUser> _signInManager;
-        private readonly UserManager<TRRUser> _userManager;
+        private readonly SignInManager<AspNetUser> _signInManager;
+        private readonly UserManager<AspNetUser> _userManager;
         private readonly ApplicationDbContext _ctx;
         private readonly IMailService _mailService;
-        public AccountController(SignInManager<TRRUser> signInManager,
-            UserManager<TRRUser> userManager, ApplicationDbContext ctx, IMailService mailService)
+        private readonly IPasswordHasher<AspNetUser> _passwordHasher;
+        public AccountController(SignInManager<AspNetUser> signInManager,
+            UserManager<AspNetUser> userManager, ApplicationDbContext ctx, IMailService mailService, IPasswordHasher<AspNetUser> passwordHasher)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _ctx = ctx;
             _mailService = mailService;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpGet("[action]")]
         public async Task<dynamic> SignOut()
-        {
+        { 
             await _signInManager.SignOutAsync();
             return new { result="ok" };
         }
@@ -73,7 +76,7 @@ namespace Web.Controllers
         public async Task<ActionResult> SendResetPasswordToken(ChangePasswordEmailDto model)
         {
             var normalized = model.UserName.ToUpper();
-            var users = _ctx.Users.Include(a=>a.Site).Include(a=>a.Site.Main).Where(a => (a.NormalizedUserName == normalized || a.NormalizedEmail == normalized) && !a.Deleted).ToArray();
+            var users = _ctx.AspNetUsers.Include(a=>a.Site).Include(a=>a.Site.Main).Where(a => (a.NormalizedUserName == normalized || a.NormalizedEmail == normalized) && !a.Deleted).ToArray();
             if (users.Length == 1)
             {
                 var trrUser = users[0];
@@ -106,7 +109,7 @@ namespace Web.Controllers
         public async Task<ActionResult> ResetPassword(ChangePasswordDto model)
         {
             var normalized = model.Email.ToUpper();
-            var users = _ctx.Users.Where(a => (a.NormalizedUserName == normalized || a.NormalizedEmail == normalized) && !a.Deleted).ToArray();
+            var users = _ctx.AspNetUsers.Where(a => (a.NormalizedUserName == normalized || a.NormalizedEmail == normalized) && !a.Deleted).ToArray();
             if (users.Length == 1)
             {
                 if(model.NewPassword != model.NewPasswordRepeat)
@@ -121,7 +124,7 @@ namespace Web.Controllers
         }
 
 
-        private async Task FillSignInResponse(TRRUser user, SignInResponse resp)
+        private async Task FillSignInResponse(AspNetUser user, SignInResponse resp)
         {
             resp.UserName = user.UserName;
             resp.UserType = user.OldType.ToString();
@@ -147,12 +150,12 @@ namespace Web.Controllers
             var resp = new SignInResponse() { Error = null };
             try
             {
-                var user = _ctx.Users.FirstOrDefault(u => u.UserName == info.Email);
+                var user = _ctx.AspNetUsers.FirstOrDefault(u => u.UserName == info.Email);
                 if(user != null)
                 {
                     throw new Exception("User with provided email already exists. Use 'Forgot Password' to regain access.");
                 }
-                user = new TRRUser();
+                user = new AspNetUser();
                 user.Active = true;
                 user.Email = info.Email;
                 user.Zip = info.Zip;
@@ -162,7 +165,7 @@ namespace Web.Controllers
                 user.LastName = info.LastName;
                 user.JoinDate = DateTime.Now;
                 user.Created = DateTime.Now;
-                user.OldType = TRRUserType.Civilian;
+                user.OldType = (int)TRRUserType.Civilian;
                 var add_res = await _userManager.CreateAsync(user, info.Password);
                 if (add_res.Succeeded)
                 {
@@ -194,21 +197,27 @@ namespace Web.Controllers
         public async Task<SignInResponse> SignIn(SignInInfo info)
         {
             var resp = new SignInResponse() { Error = null };
+            Microsoft.AspNetCore.Identity.SignInResult res = Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            var user = _ctx.AspNetUsers.FirstOrDefault(u => (u.UserName == info.UserName || u.OldLogin == info.UserName || u.Email == info.UserName) && !u.Deleted && u.Active);
             try {
-                var user = _ctx.Users.FirstOrDefault(u => (u.UserName == info.UserName || u.OldLogin == info.UserName || u.Email == info.UserName) && !u.Deleted && u.Active);
-                var res = await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
-                if (res.Succeeded)
+                if(user != null)
                 {
-                    await FillSignInResponse(user, resp);
+                    res = await _signInManager.PasswordSignInAsync(user, info.Password, info.IsPersistant, false);
                 }
-                else
-                {
-                    resp.Error = "Wrong user name or password.";
-                }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 resp.Error = ex.Message;
             }
+            if (res.Succeeded)
+            {
+                await FillSignInResponse(user, resp);
+            }
+            else
+            {
+                resp.Error = "Wrong user name or password";
+            }
+
             return resp;
         }
 
@@ -270,7 +279,7 @@ namespace Web.Controllers
             }
             if (Regex.IsMatch(Email, @"^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$"))
             {
-                var user = new TRRUser { UserName = Email, Email = Email };
+                var user = new AspNetUser { UserName = Email, Email = Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

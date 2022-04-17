@@ -1,8 +1,9 @@
-﻿using Models;
+﻿using Models.Context;
 using Models.Dto;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
@@ -15,8 +16,8 @@ namespace Services.Interfaces
         CalendarEvent AddEvent(CalendarEvent newType);
         EventSite GetEventSite(int id);
         CalendarEventType[] AllEventTypes();
-        TRRUser GetUserByOldId(int id);
+        AspNetUser GetUserByOldId(int id);
         CalendarView[] GetMonthEvents(CalendarViewFilter filter);
-        EventListRow[] GetFilteredEvents(EventListFilter filter);
+        Task<EventListRow[]> GetFilteredEvents(EventListFilter filter);
     }
 }
