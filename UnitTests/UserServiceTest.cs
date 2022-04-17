@@ -96,6 +96,14 @@ namespace UnitTests
         //}
 
         [TestMethod]
+        public async Task SendEmail()
+        {
+
+            var service = new SMTPMailService();
+            await service.Send("test", "test", null, ("dozcent@gmail.com", "dozcent"),new []{ ("dozcent@gmail.com", "dozcent")});
+        }
+
+        [TestMethod]
         public async Task UpdatePassword()
         {
 

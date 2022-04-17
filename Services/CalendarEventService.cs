@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services
 {
@@ -25,22 +26,22 @@ namespace Services
             return 0;
         }
 
-        public EventListRow[] GetFilteredEvents(EventListFilter filter)
+        public async Task<EventListRow[]> GetFilteredEvents(EventListFilter filter)
         {
-            var events = _context.CalendarEvents.Where(evt =>
+            var query = _context.CalendarEvents.Where(evt =>
                  (filter.DateFrom.HasValue && evt.Date > filter.DateFrom.Value)
                  && (filter.DateTo.HasValue && evt.Date < filter.DateTo.Value)
-                 && (string.IsNullOrEmpty(filter.Title) || evt.Name.Contains(filter.Title, StringComparison.OrdinalIgnoreCase))
+                 && (string.IsNullOrEmpty(filter.Title) || evt.Name.Contains(filter.Title))
                  && (filter.TimeFrom == null || evt.StartTime > filter.TimeFrom.ToInt())
                  && (filter.TimeTo == null || evt.EndTime > filter.TimeTo.ToInt())
                  && (filter.Chapters == null || filter.Chapters.Length == 0 || filter.Chapters.Contains(evt.Site.Id))
                  && (!filter.Status.HasValue || (int)filter.Status.Value == evt.Status)
                  && (!filter.Status.HasValue || (int)filter.Status.Value == evt.Status)
                  && (!filter.TypeOfEvent.HasValue || filter.TypeOfEvent.Value == evt.EventTypeId)
-                 && evt.Status!= (int)EventStatus.Deleted
-            ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt=>new EventListRow() {Name = evt.Name,Chapter=evt.Site.Name,Color=evt.EventType.Color,Date=evt.Date.ToString("d"),Id=evt.Id,Status=(EventStatus)evt.Status,Time=$"{Converters.IntTimeToStr(evt.StartTime)} - {Converters.IntTimeToStr(evt.EndTime)}", Type=evt.EventType.Title }) 
-            .ToArray();
-            return events;
+                 && evt.Status != (int)EventStatus.Deleted
+            ).Include(evt => evt.Site).Include(evt => evt.EventType).Take(1000).Select(evt => new EventListRow() { Name = evt.Name, Chapter = evt.Site.Name, Color = evt.EventType.Color, Date = evt.Date.ToString("d"), Id = evt.Id, Status = (EventStatus)evt.Status, Time = $"{Converters.IntTimeToStr(evt.StartTime)} - {Converters.IntTimeToStr(evt.EndTime)}", Type = evt.EventType.Title });
+            
+            return await query.ToArrayAsync();
         }
 
         public Contact AddContact(Contact contact)

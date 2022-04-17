@@ -3,6 +3,7 @@ using Models.Dto;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
@@ -17,6 +18,6 @@ namespace Services.Interfaces
         CalendarEventType[] AllEventTypes();
         AspNetUser GetUserByOldId(int id);
         CalendarView[] GetMonthEvents(CalendarViewFilter filter);
-        EventListRow[] GetFilteredEvents(EventListFilter filter);
+        Task<EventListRow[]> GetFilteredEvents(EventListFilter filter);
     }
 }

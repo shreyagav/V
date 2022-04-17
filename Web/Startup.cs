@@ -17,6 +17,7 @@ using Models;
 using Models.Context;
 using Services;
 using Services.Data;
+using Services.Helpers;
 using Services.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -43,13 +44,18 @@ namespace Web
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<IChapterService, ChapterService>();
             services.AddTransient<IStorageService, StorageService>();
-            services.AddTransient<IMailService, MailService>();
+            //services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IMailService, SMTPMailService>();
             services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, TRRClaimsPrincipalFactory>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"), 
-                    b => b.MigrationsAssembly("Web"))
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.EnableDetailedErrors(true);
+#if !DEBUG
+                options.AddInterceptors(new[] { new TrrDbConnectionInterceptor() });
+#endif
+            }
                 );
             services.AddIdentity<AspNetUser, AspNetRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -126,13 +132,10 @@ namespace Web
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
-                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions()
-                {
-                    OnPrepareResponse = this.onPrepResp
-                };
+
                 if (env.IsDevelopment())
                 {
-                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(120);
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });

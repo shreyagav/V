@@ -68,7 +68,7 @@ namespace Services
 
         public async Task<IList<string>> GetRolesAsync(AspNetUser user, CancellationToken cancellationToken)
         {
-            return await _context.AspNetRoles.Select(a => a.Name).ToListAsync();
+            return await _context.AspNetRoles.Where(a=>a.Users.Any(b => b.Id == user.Id)).Select(a => a.Name).ToListAsync();
         }
 
         public Task<string> GetUserIdAsync(AspNetUser user, CancellationToken cancellationToken)
@@ -96,30 +96,40 @@ namespace Services
             return await _context.AspNetRoles.AnyAsync(a=>a.Name==roleName && a.Users.Any(b=>b.Id==user.Id), cancellationToken);
         }
 
-        public Task RemoveFromRoleAsync(AspNetUser user, string roleName, CancellationToken cancellationToken)
+        public async Task RemoveFromRoleAsync(AspNetUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var role = await _context.AspNetRoles.Include(a => a.Users).FirstOrDefaultAsync(a => a.Name == roleName);
+            role.Users.Remove(user);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task SetNormalizedUserNameAsync(AspNetUser user, string normalizedName, CancellationToken cancellationToken)
         {
             user.NormalizedUserName = normalizedName;
-            _context.Attach(user);
-            await _context.SaveChangesAsync(cancellationToken);
+            var res = await UpdateAsync(user, cancellationToken);
+            CheckUpdateResult(res);
         }
 
         public async Task SetPasswordHashAsync(AspNetUser user, string passwordHash, CancellationToken cancellationToken)
         {
             user.PasswordHash = passwordHash;
-            _context.Attach(user);
-            await _context.SaveChangesAsync(cancellationToken);
+            var res = await UpdateAsync(user, cancellationToken);
+            CheckUpdateResult(res);
+        }
+
+        private void CheckUpdateResult(IdentityResult res)
+        {
+            if (!res.Succeeded)
+            {
+                throw new Exception(String.Join(Environment.NewLine,res.Errors.Select(a=>a.Description)));
+            }
         }
 
         public async Task SetUserNameAsync(AspNetUser user, string userName, CancellationToken cancellationToken)
         {
             user.UserName = userName;
-            _context.Attach(user);
-            await _context.SaveChangesAsync(cancellationToken);
+            var res = await UpdateAsync(user, cancellationToken);
+            CheckUpdateResult(res);
         }
 
         public async Task<IdentityResult> UpdateAsync(AspNetUser user, CancellationToken cancellationToken)

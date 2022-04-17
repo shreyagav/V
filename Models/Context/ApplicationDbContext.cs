@@ -158,9 +158,7 @@ namespace Models.Context
 
                 entity.Property(e => e.ModifiedById).HasMaxLength(450);
 
-                entity.Property(e => e.OldEventVisibility)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.OldEventVisibility).HasMaxLength(1);
 
                 entity.Property(e => e.ProjectedCost).HasColumnType("decimal(18, 2)");
 
