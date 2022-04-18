@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Context;
 using Services;
 using Services.Data;
 
@@ -65,7 +66,7 @@ namespace Web.Controllers
         }
         [HttpGet("[action]/{search}")]
         public MemeberReportLine[] MembersWithSearch(string search) {
-            return _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include("Options.Option").Include("Options.Option.Category")
+            return _ctx.AspNetUsers.Include(a => a.Site).Include(a => a.UserOptions).Include("Options.Option").Include("Options.Option.Category")
                 .Where(a=>a.FirstName.Contains(search) || a.LastName.Contains(search) || a.Email.Contains(search))
                 .Select(a => new MemeberReportLine()
                 {
@@ -75,13 +76,13 @@ namespace Web.Controllers
                     Email = a.Email,
                     DateOfBirth = a.DateOfBirth,
                     Joined = a.JoinDate,
-                    Options = a.Options.Select(b => $"{b.Option.Category.Name}-{b.Option.Title}").ToArray(),
+                    Options = a.UserOptions.Select(b => $"{b.Option.OptionCategory.Name}-{b.Option.Title}").ToArray(),
                     Chapter = a.Site.Name,
                     Phone = a.PhoneNumber,
                     Comments = a.Comments,
                     Address = a.Address,
                     UserName = a.UserName,
-                    Gender = a.Gender == 'F' ? "Female" : "Male",
+                    Gender = a.Gender == "F" ? "Female" : "Male",
                     Type = a.OldType.ToString()
                 }).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName)
                 .ToArray();
@@ -90,7 +91,7 @@ namespace Web.Controllers
         [HttpGet("[action]")]
         public MemeberReportLine[] Members()
         {
-            var res = _ctx.Users.Include(a => a.Site).Include(a => a.Options).Include(a=>a.EmergencyContact).Include("Options.Option").Include("Options.Option.Category").Where(a=>a.Active && !a.Deleted)
+            var res = _ctx.AspNetUsers.Include(a => a.Site).Include(a => a.UserOptions).Include(a=>a.EmergencyContact).Include("Options.Option").Include("Options.Option.Category").Where(a=>a.Active && !a.Deleted)
                 .Select(a=>new MemeberReportLine() {
                     Id = a.Id,
                     FirstName = a.FirstName,
@@ -98,13 +99,13 @@ namespace Web.Controllers
                     Email = a.Email,
                     DateOfBirth = a.DateOfBirth,
                     Joined=a.JoinDate,
-                    Options = a.Options.Select(b=>$"{b.Option.Category.Name}-{b.Option.Title}").ToArray(),
+                    Options = a.UserOptions.Select(b=>$"{b.Option.OptionCategory.Name}-{b.Option.Title}").ToArray(),
                     Chapter = a.Site.Name,
                     Phone = a.PhoneNumber,
                     Comments = a.Comments,
                     Address = a.Address,
                     UserName = a.UserName,
-                    Gender = a.Gender == 'F' ? "Female" : "Male",
+                    Gender = a.Gender == "F" ? "Female" : "Male",
                     Type = a.OldType.ToString(),
                     EmergencyContactName=a.EmergencyContact.Name,
                     EmergencyContactEmail = a.EmergencyContact.Email,
@@ -126,7 +127,7 @@ namespace Web.Controllers
             var columns = _ctx.CalendarEventTypes.Select(a=> new KeyValuePair<string, string>(a.Id.ToString(), a.Title)).ToList();
             columns.Insert(0, new KeyValuePair<string, string>("name", "Site Name"));
             columns.Insert(1, new KeyValuePair<string, string>("total", "All"));
-            var data = ToPivotTable(_ctx.CalendarEvents.Include(a => a.Site).Where(a=>a.Date>=range.Start && a.Date<=range.End && a.Status != EventStatus.Deleted).ToArray(), item => item.EventTypeId, item => item.Site.Name, items => items.Any() ? items.Count() : 0);
+            var data = ToPivotTable(_ctx.CalendarEvents.Include(a => a.Site).Where(a=>a.Date>=range.Start && a.Date<=range.End && a.Status != (int)EventStatus.Deleted).ToArray(), item => item.EventTypeId, item => item.Site.Name, items => items.Any() ? items.Count() : 0);
             var result = new PivotResult() { Columns = columns, Data = data };
             return result;
         }
@@ -154,7 +155,7 @@ namespace Web.Controllers
                                       join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                       join c in _ctx.UserEvents on b.Id equals c.EventId
                                       join d in veterans on c.UserId equals d.Id
-                                      where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                      where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != (int)EventStatus.Deleted
                                       orderby d.FirstName,d.LastName
                                       select new { d.Id, Name = d.FirstName + " " + d.LastName, b.EventTypeId, Duration = ((double)(60 * b.EndTime / 100 + b.EndTime % 100 - 60 * b.StartTime / 100 + b.StartTime % 100)) / 60 }).ToArray();
 
@@ -179,7 +180,7 @@ namespace Web.Controllers
                                   join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                   join c in _ctx.UserEvents on b.Id equals c.EventId
                                   join d in veterans on c.UserId equals d.Id
-                                  where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                  where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != (int)EventStatus.Deleted
                                   group c by a.Id into newGroup
                                   select new { SiteId = newGroup.Key, Count = newGroup.Count() }).ToArray();
 
@@ -187,7 +188,7 @@ namespace Web.Controllers
                                             join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                                             join c in _ctx.UserEvents on b.Id equals c.EventId
                                             join d in veterans.Distinct() on c.UserId equals d.Id
-                                            where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                                            where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != (int)EventStatus.Deleted
                                             select new { SiteId = a.Id, UserId = c.UserId }).Distinct().OrderBy(a=>a.SiteId).ToArray();
             var uniqueVeteransBySite = from a in uniqueVeteransBySiteFlat
                                        group a by a.SiteId into newGroup
@@ -212,7 +213,7 @@ namespace Web.Controllers
                         join b in _ctx.CalendarEvents on a.Id equals b.SiteId
                         join c in _ctx.UserEvents on b.Id equals c.EventId
                         join d in veterans on c.UserId equals d.Id
-                        where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != EventStatus.Deleted
+                        where b.Date >= range.Start && b.Date <= range.End && !a.Deleted && b.Status != (int)EventStatus.Deleted
                         select new { User = d, a.Id}).ToArray().GroupBy(a => a.User).Select(a => new { User = a.Key, Count = a.Count() });
             var events = _ctx.EventSites.ToArray();
 

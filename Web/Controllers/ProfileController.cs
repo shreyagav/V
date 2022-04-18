@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Models;
+using Models.Context;
 using Models.Dto;
 using Services.Data;
 using Services.Helpers;
@@ -24,7 +25,7 @@ namespace Web.Controllers
     public class TRRInfoListsDto
     {
         public SponsorDto[] Sponsors { get; set; }
-        public IdentityRole[] Roles { get; set; }
+        public AspNetRole[] Roles { get; set; }
     }
 
     public class UserDiagnoseDto
@@ -38,11 +39,11 @@ namespace Web.Controllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private readonly UserManager<TRRUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<AspNetUser> _userManager;
+        private readonly RoleManager<AspNetRole> _roleManager;
         private readonly ApplicationDbContext _ctx;
-        private IdentityRole[] roles;
-        public ProfileController(UserManager<TRRUser> userManager, ApplicationDbContext ctx, RoleManager<IdentityRole> roleManager)
+        private AspNetRole[] roles;
+        public ProfileController(UserManager<AspNetUser> userManager, ApplicationDbContext ctx, RoleManager<AspNetRole> roleManager)
         {
             _userManager = userManager;
             _ctx = ctx;
@@ -53,8 +54,8 @@ namespace Web.Controllers
         [HttpGet("[action]")]
         public TRRInfoListsDto TRRInfoLists() {
             var result = new TRRInfoListsDto();
-            result.Roles = _ctx.Roles.ToArray();
-            result.Sponsors = _ctx.Users.Include(a => a.Site).Select(a => new SponsorDto() { Id = a.Id, Chapter = a.Site.Name, Name = $"{a.FirstName} {a.LastName}" }).ToArray();
+            result.Roles = _ctx.AspNetRoles.ToArray();
+            result.Sponsors = _ctx.AspNetUsers.Include(a => a.Site).Select(a => new SponsorDto() { Id = a.Id, Chapter = a.Site.Name, Name = $"{a.FirstName} {a.LastName}" }).ToArray();
             return result;
         }
         [HttpGet("[action]/{id}")]
@@ -161,7 +162,7 @@ namespace Web.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await get(user);
-            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a => a.Event.Site).Where(a => a.UserId == user.Id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.EventType.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
+            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a => a.Event.Site).Where(a => a.UserId == user.Id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.EventType.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = (EventStatus)a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
         [HttpGet("[action]/{id}")]
@@ -169,11 +170,11 @@ namespace Web.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             var result = await get(user);
-            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a=>a.Event.Site).Where(a => a.UserId == id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.EventType.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
+            result.Events = _ctx.UserEvents.Include(a => a.Event).Include(a=>a.Event.Site).Where(a => a.UserId == id).Select(a => new EventListRow() { Name = a.Event.Name, Chapter = a.Event.Site.Name, Color = a.Event.EventType.Color, Date = a.Event.Date.ToString("d"), Id = a.Event.Id, Status = (EventStatus)a.Event.Status, Time = $"{Converters.IntTimeToStr(a.Event.StartTime)} - {Converters.IntTimeToStr(a.Event.EndTime)}", Type = a.Event.EventType.Title }).ToArray();
             return result;
         }
 
-        private async Task<UserProfileDto> get(TRRUser user)
+        private async Task<UserProfileDto> get(AspNetUser user)
         {
             var result = new UserProfileDto(user);
             if (user.EmergencyContactId != null)
@@ -192,7 +193,7 @@ namespace Web.Controllers
             if (!string.IsNullOrEmpty(filter.Zip))
                 filter.Zip = $"%{filter.Zip}%";
 
-            var res = _ctx.Users.Include(a=>a.Site).Include(a=>a.Site.Region).Where(a =>
+            var res = _ctx.AspNetUsers.Include(a=>a.Site).Include(a=>a.Site.Region).Where(a =>
                 (string.IsNullOrEmpty(filter.Name) || (EF.Functions.Like(a.FirstName,filter.Name)
                 || EF.Functions.Like(a.LastName, filter.Name)
                 || EF.Functions.Like(a.Email, filter.Name)
@@ -200,7 +201,7 @@ namespace Web.Controllers
                 ))
                 && (!filter.DateFrom.HasValue ||(a.DateOfBirth.HasValue && a.DateOfBirth.Value > filter.DateFrom.Value))
                 && (!filter.DateTo.HasValue || (a.DateOfBirth.HasValue && a.DateOfBirth.Value < filter.DateTo.Value))
-                && (!filter.Role.HasValue || a.OldType == filter.Role.Value)
+                && (!filter.Role.HasValue || a.OldType == (int)filter.Role.Value)
                 && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && EF.Functions.Like(a.Zip, filter.Zip)))
                 && ((filter.Chapters == null || filter.Chapters.Length == 0) || filter.Chapters.Contains(a.SiteId.Value))
                 && !a.Deleted
@@ -240,7 +241,7 @@ namespace Web.Controllers
                 {
                     data.Id = Guid.NewGuid().ToString();
                     data.JoinDate = DateTime.Now;
-                    user = new TRRUser();
+                    user = new AspNetUser();
                     data.Map(user);
                     if (string.IsNullOrWhiteSpace(user.Email))
                     {
@@ -248,7 +249,7 @@ namespace Web.Controllers
                     }
                     user.UserName = user.Email;
                     user.Created = DateTime.Now;
-                    user.OldType = TRRUserType.Civilian;
+                    user.OldType = (int)TRRUserType.Civilian;
                     user.Active = true;
                     updateRes = await _userManager.CreateAsync(user);
                     if (updateRes.Succeeded)
@@ -260,7 +261,7 @@ namespace Web.Controllers
                 else
                 {
                     var normalizedEmail = data.Email.ToUpper();
-                    if (_ctx.Users.Where(a => a.NormalizedEmail == normalizedEmail && !a.Id.Equals(data.Id)).Any())
+                    if (_ctx.AspNetUsers.Where(a => a.NormalizedEmail == normalizedEmail && !a.Id.Equals(data.Id)).Any())
                         throw new Exception("User with such email already exists.");
                     if (user.Email.Equals(user.UserName, StringComparison.OrdinalIgnoreCase) && !user.Email.Equals(data.Email, StringComparison.OrdinalIgnoreCase))
                     {

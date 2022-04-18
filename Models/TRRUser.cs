@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Models
+namespace Models.Old
 {
-    public enum TRRUserType { Veteran = 53, Civilian = 54, VeteranFamily = 55};
-    public enum Medical { Inpatient = 42, Outpatient = 43, VetCenter = 44, Other = 45, None = 46, Unknown = 94 };
+
     public class TRRUser : IdentityUser
     {
         public int OldId { get; set; }

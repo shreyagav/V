@@ -1,4 +1,4 @@
-﻿namespace Models
+﻿namespace Models.Old
 {
     public class CalendarEventType
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Context;
 using Services.Data;
 using Services.Interfaces;
 using System;
@@ -21,7 +21,7 @@ namespace Services
 
         public OptionCategory[] GetAllCategories() => _context.OptionCategories.ToArray();
         public Diagnosis[] GetAllDiagnoses() => _context.Diagnoses.ToArray();
-        public void AddRole(TRRRole role)
+        public void AddRole(AspNetRole role)
         {
             
         }
@@ -56,7 +56,7 @@ namespace Services
 
         public Option[] GetAllOptions() => _context.Options.ToArray();
 
-        public TRRUser[] GetAllUsers() => _context.Users.Where(a=>!a.Deleted).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName).ToArray();
+        public AspNetUser[] GetAllUsers() => _context.AspNetUsers.Where(a=>!a.Deleted).OrderBy(a=>a.FirstName).ThenBy(a=>a.LastName).ToArray();
 
         public void ImportEvent(CalendarEvent newEvent)
         {
@@ -69,54 +69,54 @@ namespace Services
              _context.SaveChanges();
         }
 
-        public string[] ImportUserEvents(IEnumerable<ImportUserEvent> list)
-        {
-            List<string> errors = new List<string>();
-            List<UserEvent> userEvents = new List<UserEvent>();
-            foreach (var usr in list)
-            {
-                try
-                {
-                    var user = _context.Users.FirstOrDefault(u => u.OldId == usr.UserId);
-                    if (user == null) throw new Exception($"Event attendee couldn't be found userId={usr.UserId}");
-                    var createdBy = _context.Users.FirstOrDefault(u => u.OldId == usr.CreatedById);
-                    //if (createdBy == null) throw new Exception($"Author couldn't be found authorId={usr.CreatedById}");
-                    var evt = _context.CalendarEvents.FirstOrDefault(e => e.OldId == usr.EventId);
-                    if (evt == null) throw new Exception($"Event couldn't be found eventId={usr.EventId}");
-                    var temp = new UserEvent()
-                    {
-                        UserId = user.Id,
-                        EventId = evt.Id,
-                        Attended = usr.UserAttended,
-                        CreatedById = createdBy?.Id,
-                        Comment = usr.Comment,
-                        Created = usr.Created,
-                        OldEventId = usr.EventId,
-                        OldUserId = usr.UserId
-                    };
-                    //userEvents.Add(temp);
-                    _context.UserEvents.Add(temp);
-                    _context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    if (ex.InnerException != null)
-                        Console.WriteLine(ex.InnerException.Message);
-                    errors.Add(ex.Message);
-                }
-            }
-            //_context.UserEvents.AddRange(userEvents.ToArray());
-            //_context.SaveChanges();
-            return errors.ToArray();
-            //if(withUpdate)
-        }
+        //public string[] ImportUserEvents(IEnumerable<ImportUserEvent> list)
+        //{
+        //    List<string> errors = new List<string>();
+        //    List<UserEvent> userEvents = new List<UserEvent>();
+        //    foreach (var usr in list)
+        //    {
+        //        try
+        //        {
+        //            var user = _context.AspNetUsers.FirstOrDefault(u => u.OldId == usr.UserId);
+        //            if (user == null) throw new Exception($"Event attendee couldn't be found userId={usr.UserId}");
+        //            var createdBy = _context.AspNetUsers.FirstOrDefault(u => u.OldId == usr.CreatedById);
+        //            //if (createdBy == null) throw new Exception($"Author couldn't be found authorId={usr.CreatedById}");
+        //            var evt = _context.CalendarEvents.FirstOrDefault(e => e.OldId == usr.EventId);
+        //            if (evt == null) throw new Exception($"Event couldn't be found eventId={usr.EventId}");
+        //            var temp = new UserEvent()
+        //            {
+        //                UserId = user.Id,
+        //                EventId = evt.Id,
+        //                Attended = usr.UserAttended,
+        //                CreatedById = createdBy?.Id,
+        //                Comment = usr.Comment,
+        //                Created = usr.Created,
+        //                OldEventId = usr.EventId,
+        //                OldUserId = usr.UserId
+        //            };
+        //            //userEvents.Add(temp);
+        //            _context.UserEvents.Add(temp);
+        //            _context.SaveChanges();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine(ex.Message);
+        //            if (ex.InnerException != null)
+        //                Console.WriteLine(ex.InnerException.Message);
+        //            errors.Add(ex.Message);
+        //        }
+        //    }
+        //    //_context.UserEvents.AddRange(userEvents.ToArray());
+        //    //_context.SaveChanges();
+        //    return errors.ToArray();
+        //    //if(withUpdate)
+        //}
 
-        public async Task ImportUsers(IEnumerable<TRRUser> newUsers)
+        public async Task ImportUsers(IEnumerable<AspNetUser> newUsers)
         {
             try
             {
-                _context.Users.AddRange(newUsers);
+                _context.AspNetUsers.AddRange(newUsers);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

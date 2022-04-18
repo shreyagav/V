@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Context;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace Models.Dto
         public UserProfileDto() {
 
         }
-        public UserProfileDto(TRRUser user)
+        public UserProfileDto(AspNetUser user)
         {
             Id = user.Id;
             FirstName = user.FirstName;
@@ -20,12 +21,12 @@ namespace Models.Dto
             Phone = user.PhoneNumber;
             Email = user.Email;
             DateOfBirth = user.DateOfBirth;
-            Gender = user.Gender;
+            Gender = user.Gender[0];
             StreetAddress = user.Address;
             City = user.City;
             State = user.State;
             Zip = user.Zip;
-            Medical = user.Medical;
+            Medical = (Medical)user.Medical;
             InjuryDate = user.DateInjured;
             ReleaseSigned = user.ReleaseSigned;
             LiabilitySigned = user.LiabilitySigned;
@@ -38,7 +39,7 @@ namespace Models.Dto
             Status = user.OldStatus;
             SponsoredById = user.SponsoredById;
             CodeOfConductTraining = user.CodeOfConductTraining;
-            TRRBackgroundCheck = user.TRRBackgroundCheck;
+            TRRBackgroundCheck = user.TrrbackgroundCheck;
             OtherBackgroundCheck = user.OtherBackgroundCheck;
             OtherBackgroundCheckComment = user.OtherBackgroundCheckComment;
 
@@ -49,7 +50,7 @@ namespace Models.Dto
             }
         }
 
-        public void Map(TRRUser user)
+        public void Map(AspNetUser user)
         {
 
             user.Id = Id;
@@ -59,7 +60,7 @@ namespace Models.Dto
             user.PhoneNumber = Phone;
             user.Email = Email;
             user.DateOfBirth = DateOfBirth;
-            user.Gender = Gender;
+            user.Gender = Gender.ToString();
             user.Address = StreetAddress;
             user.City = City;
             user.State = State;
@@ -73,11 +74,11 @@ namespace Models.Dto
             user.DeactiveCause = DeactiveCause;
             user.JoinDate = JoinDate;
             //user.TravelTime = TravelTime;
-            user.OldType = (TRRUserType)UserType;
+            user.OldType = UserType;
             user.Comments = Comments;
             user.OldStatus = Status;
             user.CodeOfConductTraining = CodeOfConductTraining;
-            user.TRRBackgroundCheck = TRRBackgroundCheck;
+            user.TrrbackgroundCheck = TRRBackgroundCheck;
             user.OtherBackgroundCheck = OtherBackgroundCheck;
             user.OtherBackgroundCheckComment = OtherBackgroundCheckComment;
             //user.SponsoredById = SponsoredById;
