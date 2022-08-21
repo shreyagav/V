@@ -22,19 +22,19 @@ namespace Web.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "Admin")]
+        [AuthorizedRoles("Admin")]
         [HttpGet("[action]/{id:int}")]
         public EventSite GetById(int id)
         {
             return _service.Get(id);
         }
-        [Authorize(Roles = "Admin")]
+        [AuthorizedRoles("Admin")]
         [HttpPost("[action]")]
         public EventSite Save(EventSite site)
         {
             return _service.Set(site);
         }
-        [Authorize(Roles = "Admin")]
+        [AuthorizedRoles("Admin")]
         [HttpPost("[action]")]
         public dynamic Delete(EventSite site)
         {

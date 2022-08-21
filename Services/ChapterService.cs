@@ -111,7 +111,7 @@ namespace Services
 
         public Region[] AllRegions()
         {
-            return _ctx.Regions.Where(a=>!a.Deleted).ToArray();
+            return _ctx.Regions.Where(a=>!a.Deleted).OrderBy(a=>a.ShortName).ToArray();
         }
 
         public Region GetRegion(int id)
