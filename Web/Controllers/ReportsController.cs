@@ -91,7 +91,12 @@ namespace Web.Controllers
         [HttpGet("[action]")]
         public MemeberReportLine[] Members()
         {
-            var res = _ctx.AspNetUsers.Include(a => a.Site).Include(a => a.UserOptions).Include(a=>a.EmergencyContact).Include("Options.Option").Include("Options.Option.Category").Where(a=>a.Active && !a.Deleted)
+            var res = _ctx.AspNetUsers.Include(a => a.Site)
+                .Include(a => a.UserOptions)
+                .ThenInclude(a=>a.Option)
+                .ThenInclude(a=>a.OptionCategory)
+                .Include(a=>a.EmergencyContact)
+                .Where(a=>a.Active && !a.Deleted)
                 .Select(a=>new MemeberReportLine() {
                     Id = a.Id,
                     FirstName = a.FirstName,

@@ -21,7 +21,7 @@ namespace Models.Dto
             Phone = user.PhoneNumber;
             Email = user.Email;
             DateOfBirth = user.DateOfBirth;
-            Gender = user.Gender[0];
+            Gender = user.Gender.Length>0 ? user.Gender[0] : ' ';
             StreetAddress = user.Address;
             City = user.City;
             State = user.State;
@@ -67,7 +67,7 @@ namespace Models.Dto
             user.Zip = Zip;
             //user.Medical = Medical;
             //user.DateInjured = InjuryDate;
-
+            user.NormalizedEmail = Email.ToUpper();
             user.ReleaseSigned = ReleaseSigned;
             user.LiabilitySigned = LiabilitySigned;
             user.Active = ActiveMember;
