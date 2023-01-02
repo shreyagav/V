@@ -249,7 +249,6 @@ namespace Web.Controllers
                     }
                     user.UserName = user.Email;
                     user.Created = DateTime.Now;
-                    user.OldType = (int)TRRUserType.Civilian;
                     user.Active = true;
                     updateRes = await _userManager.CreateAsync(user);
                     if (updateRes.Succeeded)
