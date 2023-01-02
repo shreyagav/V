@@ -50,11 +50,9 @@ namespace Web
             services.AddTransient<INotificationService, NotificationService>();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                var connectionString = Configuration.GetConnectionString("DefaultConnection");
+                options.UseSqlServer(connectionString);
                 options.EnableDetailedErrors(true);
-#if !DEBUG
-                options.AddInterceptors(new[] { new TrrDbConnectionInterceptor() });
-#endif
             }
                 );
             services.AddIdentity<AspNetUser, AspNetRole>()
