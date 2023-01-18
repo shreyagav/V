@@ -139,6 +139,7 @@ class Member extends Component {
     close() { this.props.history.goBack(); }
 
     saveMemberInfo() {
+
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
             if(data === undefined) {this.setState({ loading: false, showErrorSaveDialog: true })}
@@ -257,7 +258,7 @@ class Member extends Component {
                             </button>
                             <button
                                 className='round-button medium-round-button outline-on-hover' 
-                                onClick={this.saveMemberInfo}
+                                onClick={() =>this.performIfValid(this.saveMemberInfo)}
                             >
                                 <SaveUpSVG />
                                 <span>Save</span>
@@ -461,14 +462,19 @@ class Member extends Component {
                             </li>
                             <li className='input-wrapper' style={{"flex":"0 0 100px"}}>
                                 <input 
-                                    type='text' 
-                                    placeholder='Zip' 
-                                    maxLength={5} 
-                                    value = {this.state.member.zip}
-                                    onChange={e => this.updateMemberProperty("zip", e.target.value)}
-                                />
+                                            type='text'
+                                            placeholder='Zip'
+                                            maxLength={5}
+                                            value={this.state.member.zip}
+                                            onChange={e => {
+                                                this.updateMemberProperty("zip", e.target.value);
+                                                this.props.store.updateValidators("zip", e.target.value, this.validators);
+                                            }}
+                                        />
                             </li>
-                        </ul>
+                                </ul>
+                                <span>{this.props.store.displayValidationErrors('zip', this.validators)}</span>
+                                
                     </li>
                     {/*<li className='input-wrapper'>
                         <p className='mark-optional'>Travel Time:</p>
