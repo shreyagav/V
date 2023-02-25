@@ -1,5 +1,7 @@
 /* clearing default settings */
-
+.red {
+    background-color:red;
+}
 * { 
     box-sizing: border-box;
     padding: 0px;
