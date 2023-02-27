@@ -72,6 +72,15 @@ class SignIn extends Component {
         user.UserName = event.target.value;
         this.setState({ signInData: user });
     }*/
+    handleSubmitOnEnter = (event) => {
+        console.log("HEREE");
+
+        console.log(event.keyCode);
+
+        if (event.keyCode === 13) {
+            this.submitSignInInfo();
+        }
+    }
 
     changePassword(event) {
         var user = this.state.signInData;
@@ -104,7 +113,9 @@ class SignIn extends Component {
     goToRegister() {
         this.props.history.push('/SignUp');
     }
+    
     render() {
+       
         return (
             <div className='abs-wrapper'>
                 <div>
@@ -139,7 +150,8 @@ class SignIn extends Component {
                                 placeholder = 'Password'
                                 value = {this.state.signInData.Password}
                                 onChange = {(e, name) => this.onChange(e, name)}
-                                onBlur = {(name) => this.checkIfFieldValid(name)}
+                                onBlur={(name) => this.checkIfFieldValid(name)}
+                                onKeyDown={this.handleSubmitOnEnter}
                                 displayValidationErrors = {(name, validators) => this.props.store.displayValidationErrors(name, validators)} 
                             />
                             <div className='flex-wrap justify-space-between align-center mt-1'>
@@ -160,8 +172,8 @@ class SignIn extends Component {
                                     <p className='pl-05' style={{"marginTop":"0px"}}>Remember me</p>
                                 </span>*/}
                                 <button 
-                                    type="button" 
-                                    className='medium-static-button static-button default-button' 
+                                    type="button"      
+                                        className='medium-static-button static-button default-button' 
                                     onClick={() => this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError)}
                                 >Sign In</button>
                                 <a className = 'a' href="/ForgotPassword">Forgot Password?</a>

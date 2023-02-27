@@ -539,10 +539,10 @@ button.default-button {
     color: #ffffff !important;
 }
 
-button.default-button:hover, button.default-button:focus {
-    background-color: #0099cc !important;
-    color: #ffffff !important;
-}
+    button.default-button:hover, button.default-button:focus {
+        background-color: #FF0000 !important;
+        color: #ffffff !important;
+    }
 
 .no-outline-button, .no-outline-button:hover, .no-outline-button:focus, .no-outline-button::after {border: 0px solid !important;}
 .no-outline-button:not(:disabled):hover, .no-outline-button:focus {color: #0099cc !important;}
