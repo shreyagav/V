@@ -7,6 +7,7 @@ import LogoSVG from '../../svg/LogoSVG';
 import { signInValidators } from './signUpValidators'
 import PasswordComponent from '../PasswordComponent'
 import CheckBox from '../CheckBox';
+import './SignIn.css'
 
 class SignIn extends Component {
     static displayName = SignIn.name;
@@ -104,6 +105,13 @@ class SignIn extends Component {
     goToRegister() {
         this.props.history.push('/SignUp');
     }
+    handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            console.log("hi")
+            event.preventDefault();
+            this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError);
+        }
+    }
     render() {
         return (
             <div className='abs-wrapper'>
@@ -123,7 +131,8 @@ class SignIn extends Component {
                                 name="UserName" type='text' placeholder='Email or Username'
                                 value={this.state.signInData.UserName}
                                 onChange={(e) => this.onChange(e, "UserName")}
-                                onBlur={() => this.checkIfFieldValid('UserName')} 
+                                onBlur={() => this.checkIfFieldValid('UserName')}
+                                onKeyDown={this.handleKeyDown}
                             />
                         { this.props.store.displayValidationErrors('UserName', this.validators) }
                         </div>
@@ -141,6 +150,7 @@ class SignIn extends Component {
                                 onChange = {(e, name) => this.onChange(e, name)}
                                 onBlur = {(name) => this.checkIfFieldValid(name)}
                                 displayValidationErrors = {(name, validators) => this.props.store.displayValidationErrors(name, validators)} 
+                                onKeyDown={this.handleKeyDown}
                             />
                             <div className='flex-wrap justify-space-between align-center mt-1'>
                                 <CheckBox 
@@ -161,7 +171,8 @@ class SignIn extends Component {
                                 </span>*/}
                                 <button 
                                     type="button" 
-                                    className='medium-static-button static-button default-button' 
+                                        className='sign-in-button medium-static-button static-button default-button' 
+
                                     onClick={() => this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError)}
                                 >Sign In</button>
                                 <a className = 'a' href="/ForgotPassword">Forgot Password?</a>
