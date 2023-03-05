@@ -36,12 +36,13 @@ const PasswordComponent = (props) => {
             <div className='input-button-wrapper'>
                 <input 
                     ref={el => passwordInputRef = el}
-                    name={props.name} 
-                    type='password' 
+                    name={props.name}
+                    type='password'
                     placeholder={props.placeholder}
                     value={props.value}
                     onChange={(e) => props.onChange(e, props.name)}
-                    onBlur={() => props.onBlur(props.name)} 
+                    onBlur={() => props.onBlur(props.name)}
+                    onKeyDown={props.onKeyDown}
                 />
                 {props.value.length > 0 &&
                     <button onClick={() => inputTypeToggler(passwordInputRef)}>

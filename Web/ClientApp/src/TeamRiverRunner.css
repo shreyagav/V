@@ -25,10 +25,13 @@ label {margin: 0rem;}
 ul {list-style: none; margin: 0px !important;}
 li {list-style-type:none; }
 a {text-decoration: none;}
-a:hover {cursor: pointer; color:#0099cc;}
+a:hover {cursor: pointer; color:#999999;}
 .a:focus {color: #0099cc;}
 :focus {outline: none;}
 input::-ms-clear {display: none;} /* no clear cross in browsers */
+.btn:hover{
+    background-color: crimson;
+}
 
 .description-text {
     font-style: italic !important;
@@ -540,7 +543,7 @@ button.default-button {
 }
 
 button.default-button:hover, button.default-button:focus {
-    background-color: #0099cc !important;
+    background-color: #FF0000 !important;
     color: #ffffff !important;
 }
 
