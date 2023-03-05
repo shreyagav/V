@@ -30,18 +30,20 @@ const PasswordComponent = (props) => {
     if(typeof(props.checkIfShowError) === 'function' && props.checkIfShowError(props.name, props.validators)){
             mainDivClassName = mainDivClassName + ' error-input-wrapper';
     }
-
+    
     return (
         <div className={mainDivClassName}>
             <div className='input-button-wrapper'>
                 <input 
                     ref={el => passwordInputRef = el}
-                    name={props.name} 
-                    type='password' 
+                    name={props.name}
+                    type='password'
                     placeholder={props.placeholder}
                     value={props.value}
                     onChange={(e) => props.onChange(e, props.name)}
-                    onBlur={() => props.onBlur(props.name)} 
+                    onBlur={() => props.onBlur(props.name)}
+                    onKeyDown={props.onKeyDown}
+
                 />
                 {props.value.length > 0 &&
                     <button onClick={() => inputTypeToggler(passwordInputRef)}>

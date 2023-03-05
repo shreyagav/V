@@ -72,15 +72,7 @@ class SignIn extends Component {
         user.UserName = event.target.value;
         this.setState({ signInData: user });
     }*/
-    handleSubmitOnEnter = (event) => {
-        console.log("HEREE");
-
-        console.log(event.keyCode);
-
-        if (event.keyCode === 13) {
-            this.submitSignInInfo();
-        }
-    }
+    
 
     changePassword(event) {
         var user = this.state.signInData;
@@ -113,6 +105,16 @@ class SignIn extends Component {
     goToRegister() {
         this.props.history.push('/SignUp');
     }
+    handleSubmitOnEnter = (event) => {
+
+       
+
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError);
+        }
+        
+    }
     
     render() {
        
@@ -134,7 +136,9 @@ class SignIn extends Component {
                                 name="UserName" type='text' placeholder='Email or Username'
                                 value={this.state.signInData.UserName}
                                 onChange={(e) => this.onChange(e, "UserName")}
-                                onBlur={() => this.checkIfFieldValid('UserName')} 
+                                    onBlur={() => this.checkIfFieldValid('UserName')} 
+                                    onKeyDown={this.handleSubmitOnEnter}
+
                             />
                         { this.props.store.displayValidationErrors('UserName', this.validators) }
                         </div>
@@ -151,8 +155,10 @@ class SignIn extends Component {
                                 value = {this.state.signInData.Password}
                                 onChange = {(e, name) => this.onChange(e, name)}
                                 onBlur={(name) => this.checkIfFieldValid(name)}
+                                displayValidationErrors={(name, validators) => this.props.store.displayValidationErrors(name, validators)} 
+                                tabIndex={0}
                                 onKeyDown={this.handleSubmitOnEnter}
-                                displayValidationErrors = {(name, validators) => this.props.store.displayValidationErrors(name, validators)} 
+                                
                             />
                             <div className='flex-wrap justify-space-between align-center mt-1'>
                                 <CheckBox 
