@@ -163,6 +163,7 @@ namespace Web.Controllers
                 user.PhoneNumber = info.Phone;
                 user.FirstName = info.FirstName;
                 user.LastName = info.LastName;
+                user.Gender = "F";
                 user.JoinDate = DateTime.Now;
                 user.Created = DateTime.Now;
                 user.OldType = (int)TRRUserType.Civilian;
