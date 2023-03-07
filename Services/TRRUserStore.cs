@@ -21,14 +21,15 @@ namespace Services
         public async Task AddToRoleAsync(AspNetUser user, string roleName, CancellationToken cancellationToken)
         {
             _context.Attach(user);
-            var role = await _context.AspNetRoles.FirstOrDefaultAsync(a=>a.Name== roleName,cancellationToken);
+            var role = await _context.AspNetRoles.FirstOrDefaultAsync(a => a.Name == roleName, cancellationToken);
             user.Roles.Add(role);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IdentityResult> CreateAsync(AspNetUser user, CancellationToken cancellationToken)
         {
-            await _context.AspNetUsers.AddAsync(user,cancellationToken);
+            user.Id= Guid.NewGuid().ToString();
+            await _context.AspNetUsers.AddAsync(user, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return IdentityResult.Success;
         }
@@ -48,12 +49,12 @@ namespace Services
 
         public async Task<AspNetUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return await _context.AspNetUsers.FirstOrDefaultAsync(a=>a.Id == userId, cancellationToken);
+            return await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Id == userId, cancellationToken);
         }
 
         public async Task<AspNetUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return await _context.AspNetUsers.FirstOrDefaultAsync(a=>a.NormalizedUserName == normalizedUserName,cancellationToken); 
+            return await _context.AspNetUsers.FirstOrDefaultAsync(a => a.NormalizedUserName == normalizedUserName, cancellationToken);
         }
 
         public Task<string> GetNormalizedUserNameAsync(AspNetUser user, CancellationToken cancellationToken)
@@ -68,7 +69,7 @@ namespace Services
 
         public async Task<IList<string>> GetRolesAsync(AspNetUser user, CancellationToken cancellationToken)
         {
-            return await _context.AspNetRoles.Where(a=>a.Users.Any(b => b.Id == user.Id)).Select(a => a.Name).ToListAsync();
+            return await _context.AspNetRoles.Where(a => a.Users.Any(b => b.Id == user.Id)).Select(a => a.Name).ToListAsync();
         }
 
         public Task<string> GetUserIdAsync(AspNetUser user, CancellationToken cancellationToken)
@@ -83,7 +84,7 @@ namespace Services
 
         public async Task<IList<AspNetUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            return await _context.AspNetRoles.Where(a=>a.Name==roleName).SelectMany(a=>a.Users).ToListAsync(cancellationToken);
+            return await _context.AspNetRoles.Where(a => a.Name == roleName).SelectMany(a => a.Users).ToListAsync(cancellationToken);
         }
 
         public Task<bool> HasPasswordAsync(AspNetUser user, CancellationToken cancellationToken)
@@ -93,7 +94,7 @@ namespace Services
 
         public async Task<bool> IsInRoleAsync(AspNetUser user, string roleName, CancellationToken cancellationToken)
         {
-            return await _context.AspNetRoles.AnyAsync(a=>a.Name==roleName && a.Users.Any(b=>b.Id==user.Id), cancellationToken);
+            return await _context.AspNetRoles.AnyAsync(a => a.Name == roleName && a.Users.Any(b => b.Id == user.Id), cancellationToken);
         }
 
         public async Task RemoveFromRoleAsync(AspNetUser user, string roleName, CancellationToken cancellationToken)
@@ -121,7 +122,7 @@ namespace Services
         {
             if (!res.Succeeded)
             {
-                throw new Exception(String.Join(Environment.NewLine,res.Errors.Select(a=>a.Description)));
+                throw new Exception(String.Join(Environment.NewLine, res.Errors.Select(a => a.Description)));
             }
         }
 
@@ -134,8 +135,11 @@ namespace Services
 
         public async Task<IdentityResult> UpdateAsync(AspNetUser user, CancellationToken cancellationToken)
         {
-            _context.Attach(user);
-            await _context.SaveChangesAsync(cancellationToken);
+            if (!string.IsNullOrWhiteSpace(user.Id))
+            {
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync(cancellationToken);
+            }
             return IdentityResult.Success;
         }
     }

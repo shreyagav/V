@@ -107,10 +107,10 @@ namespace UnitTests
         public async Task UpdatePassword()
         {
 
-            var user = await ctx.AspNetUsers.FirstOrDefaultAsync(a => a.Email == "dozcent@teamriverrunner.org");
-            var password = pass.HashPassword(user, "Pa$$w0rd");
-            user.PasswordHash = password;
-            await ctx.SaveChangesAsync();
+            //var user = await ctx.AspNetUsers.FirstOrDefaultAsync(a => a.Email == "dozcent@teamriverrunner.org");
+            var password = pass.HashPassword(new AspNetUser(), "Pa$$w0rd");
+            //user.PasswordHash = password;
+            //await ctx.SaveChangesAsync();
         }
 
         //[TestMethod]

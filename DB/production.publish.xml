@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>trr-ors</TargetDatabaseName>
+    <TargetDatabaseName>trr-dev</TargetDatabaseName>
     <DeployScriptFileName>DB.sql</DeployScriptFileName>
     <TargetConnectionString>Data Source=trr.database.windows.net,1433;Persist Security Info=False;User ID=trr_admin;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
