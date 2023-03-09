@@ -66,6 +66,17 @@ class SignIn extends Component {
         user.IsPersistant = !user.IsPersistant;
         this.setState({ signInData: user });
     }
+
+    handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError)
+        }
+    }
+
+    handleHover = (event) => { 
+        event.target.style.background = 'red';
+    }
     
     /*changeUserName(event) {
         var user = this.state.signInData;
@@ -107,6 +118,7 @@ class SignIn extends Component {
     render() {
         return (
             <div className='abs-wrapper'>
+
                 <div>
                 <div className='flex-nowrap align-center justify-space-between mt-2 mb-1'>
                     <h1 className="uppercase-text mb-05">Sign<strong> In</strong></h1>
@@ -161,9 +173,10 @@ class SignIn extends Component {
                                     </label>
                                     <p className='pl-05' style={{"marginTop":"0px"}}>Remember me</p>
                                 </span>*/}
-                                <button 
+                                <button
                                     type="button" 
                                     className='medium-static-button static-button default-button' 
+                                    onMouseOver={handleHover}
                                     onClick={() => this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInInfo, this.showError)}
                                 >Sign In</button>
                                 <a className = 'a' href="/ForgotPassword">Forgot Password?</a>
