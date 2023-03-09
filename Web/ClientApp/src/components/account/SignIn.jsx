@@ -123,7 +123,8 @@ class SignIn extends Component {
                                 name="UserName" type='text' placeholder='Email or Username'
                                 value={this.state.signInData.UserName}
                                 onChange={(e) => this.onChange(e, "UserName")}
-                                onBlur={() => this.checkIfFieldValid('UserName')} 
+                                onBlur={() => this.checkIfFieldValid('UserName')}
+                                onKeyDown={this.handleKeyDown}
                             />
                         { this.props.store.displayValidationErrors('UserName', this.validators) }
                         </div>
@@ -141,6 +142,7 @@ class SignIn extends Component {
                                 onChange = {(e, name) => this.onChange(e, name)}
                                 onBlur = {(name) => this.checkIfFieldValid(name)}
                                 displayValidationErrors = {(name, validators) => this.props.store.displayValidationErrors(name, validators)} 
+                                onKeyDown = {this.handleKeyDown}
                             />
                             <div className='flex-wrap justify-space-between align-center mt-1'>
                                 <CheckBox 
