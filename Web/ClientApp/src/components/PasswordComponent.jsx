@@ -42,6 +42,7 @@ const PasswordComponent = (props) => {
                     value={props.value}
                     onChange={(e) => props.onChange(e, props.name)}
                     onBlur={() => props.onBlur(props.name)} 
+                    onKeyDown={props.onKeyDown}
                 />
                 {props.value.length > 0 &&
                     <button onClick={() => inputTypeToggler(passwordInputRef)}>
