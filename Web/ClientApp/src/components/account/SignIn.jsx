@@ -104,6 +104,13 @@ class SignIn extends Component {
     goToRegister() {
         this.props.history.push('/SignUp');
     }
+    handleKeyDown = (event) => {
+        if(event.key == 'Enter') {
+            console.log("hi")
+            event.preventDefault();
+            this.props.store.performIfValid(this.state.signInData, this.validators, this.submitSignInfor, this.showError);
+        }
+    }
     render() {
         return (
             <div className='abs-wrapper'>
