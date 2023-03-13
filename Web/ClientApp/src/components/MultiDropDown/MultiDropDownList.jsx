@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './MultiDropDown.css'
-import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
-import { combineReducers } from 'redux';
 import VirtualList from 'react-tiny-virtual-list';
 import CheckBoxSquareSVG from '../../svg/CheckBoxSquareSVG';
 import CheckBoxSVG from '../../svg/CheckBoxSVG';
