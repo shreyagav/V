@@ -239,7 +239,7 @@ namespace Web.Controllers
             {
                 if (user == null)
                 {
-                    data.Id = Guid.NewGuid().ToString();
+                    //data.Id = Guid.NewGuid().ToString();
                     data.JoinDate = DateTime.Now;
                     user = new AspNetUser();
                     data.Map(user);
@@ -296,7 +296,7 @@ namespace Web.Controllers
                 var res = await _userManager.RemoveFromRolesAsync(user, names);
                 var toAdd = roles.Where(a => data.Roles.Contains(a.Id)).Select(a => a.Name).Except(currentRoles);
                 res = await _userManager.AddToRolesAsync(user, toAdd);
-                return Ok(await GetById(data.Id));
+                return Ok(await GetById(user.Id));
             }
             catch (Exception ex) {
                 return BadRequest(new dynamic[] { new { Description = ex.Message } });
