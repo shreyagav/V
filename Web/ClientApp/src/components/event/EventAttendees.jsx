@@ -7,6 +7,7 @@ import EditUpSVG from '../../svg/EditUpSVG'
 import Table from '../Table'
 import VolunteerUpSVG from '../../svg/VolunteerUpSVG'
 import VeteranUpSVG from '../../svg/VeteranUpSVG'
+//import CaregiverUpSVG from '../../svg/CaregiverUpSVG'
 import Loader from '../Loader'
 import { Service } from '../ApiService'
 import FixedWrapper from '../FixedWrapper'
@@ -15,6 +16,7 @@ import CheckBox from '../CheckBox'
 import SearchInput from '../SearchInput'
 import Alert from '../Alert'
 import TabComponent from '../TabComponent';
+import CaregiverUpSVG from '../../svg/CaregiverUpSVG'
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
