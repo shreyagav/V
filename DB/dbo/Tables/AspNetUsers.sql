@@ -3,6 +3,7 @@
     [UserName]                    NVARCHAR (256)     NULL,
     [NormalizedUserName]          NVARCHAR (256)     NULL,
     [Email]                       NVARCHAR (256)     NULL,
+    [EmailKey]                    INT                IDENTITY(1,1) NOT NULL, -- New column for email incremental key
     [NormalizedEmail]             NVARCHAR (256)     NULL,
     [EmailConfirmed]              BIT                NOT NULL,
     [PasswordHash]                NVARCHAR (MAX)     NULL,
