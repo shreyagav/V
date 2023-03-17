@@ -7,7 +7,7 @@ import EditUpSVG from '../../svg/EditUpSVG'
 import Table from '../Table'
 import VolunteerUpSVG from '../../svg/VolunteerUpSVG'
 import VeteranUpSVG from '../../svg/VeteranUpSVG'
-//import CaregiverUpSVG from '../../svg/CaregiverUpSVG'
+import PaddlerUpSVG from '../../svg/PaddlerUpSVG'
 import Loader from '../Loader'
 import { Service } from '../ApiService'
 import FixedWrapper from '../FixedWrapper'
@@ -123,10 +123,10 @@ class EventAttendees extends Component {
     } 
 
     renderFullNameColumn(value, row, index, col) {
-        return (
+        return ( // a ? b : (c ? d : e) 
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
-                <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
-                    {row['memberTypeId'] === '1' ? <VeteranUpSVG /> : <VolunteerUpSVG />}
+                <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
+                    {row['memberTypeId'] === 53 ? <VolunteerUpSVG /> : (row['memberTypeId'] === 55 ? <CaregiverUpSVG /> : <PaddlerUpSVG />)}
                 </span>
                 <span style={{"flex":"1 1 auto"}} className="big-bold">{row['firstName'] + ' ' + row['lastName']}</span>
                 {this.props.editsPermitted !== false &&
