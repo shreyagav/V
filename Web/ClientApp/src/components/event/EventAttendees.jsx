@@ -119,6 +119,16 @@ class EventAttendees extends Component {
         })
         this.setState({filteredList: filteredList})
     } 
+    renderZipCodeColumn(value, row, index, col) {
+        return (
+            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
+                <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
+                    {row.zipCode || "00000"}
+
+                </span>
+            </li>
+            )
+    }
 
     renderFullNameColumn(value, row, index, col) {
         return (
@@ -200,7 +210,8 @@ class EventAttendees extends Component {
         console.log(members);
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
-            {title:"Phone", accesor:"phone"},
+            { title: "Phone", accesor: "phone" },
+            { title: "Zip Code", className: "borders-when-display-block, word-break", render: this.renderZipCodeColumn }, //(row) => "00000"
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {
