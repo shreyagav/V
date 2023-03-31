@@ -83,6 +83,10 @@ class EventAttendees extends Component {
             });
     }
 
+    handleOnClick() {
+        alert("Export/Import Data Button Clicked");
+    }
+
     createFilteredListWithTimeOut(){
         this.timeoutVar = setTimeout(() => {this.filterMemberList()}, 150);
     }
@@ -330,6 +334,11 @@ class EventAttendees extends Component {
                        {this.dialogContent}
                     </Alert>
                 }
+
+                <div>
+                    <button onClick={this.handleOnClick()}/>
+                    <button onClick={this.handleOnClick()}/>
+                </div>
             </div>
         );
     }
