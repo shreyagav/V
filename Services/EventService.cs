@@ -206,11 +206,7 @@ namespace Services
                     Phone = u.User.PhoneNumber,
                     SiteId = u.User.SiteId,
                     Attended = u.Attended.HasValue ? u.Attended.Value : false
-                }).ToArray(); 
-            /*var see = _context.UserEvents
-                .Where(ue => ue.EventId == eventId)
-                .Include(e => e.User)
-                .Select(u => u).ToArray();*/
+                }).ToArray();             
             return res;
         }
 

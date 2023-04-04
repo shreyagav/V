@@ -86,9 +86,7 @@ class Members extends Component {
         }
         const getIcon = () => {
             //debugger
-            let icon;
-            console.log("hello");
-            console.log(row);
+            let icon;           
             switch (row['userType']) {
                 case 53: 
                     icon = <VolunteerUpSVG svgClassName='fill-white' />

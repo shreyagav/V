@@ -123,7 +123,7 @@ class EventAttendees extends Component {
     } 
 
     renderFullNameColumn(value, row, index, col) {
-        return ( // a ? b : (c ? d : e) 
+        return ( 
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
                 <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
                     {row['memberTypeId'] === 53 ? <VolunteerUpSVG /> : (row['memberTypeId'] === 55 ? <CaregiverUpSVG /> : <PaddlerUpSVG />)}
@@ -209,7 +209,7 @@ class EventAttendees extends Component {
             //columns.push({ title: "Attended", accessor: "attended", render: this.renderToggler });
         }
         return (
-            <div className='w-100 prpl-0'>
+            <div className='w-100 prpl-0'>         
                 {this.state.loading && <Loader />}
                 {this.state.addingExistingMembers &&
                     <FixedWrapper maxWidth={"600px"} noPadding={true}>
@@ -331,7 +331,7 @@ class EventAttendees extends Component {
                     >
                        {this.dialogContent}
                     </Alert>
-                }
+                }      
             </div>
         );
     }
