@@ -287,7 +287,7 @@ class Member extends Component {
                     <div>
                     <ul className='input-fields first-child-text-125 pl-1 pr-1'>
                         <li>
-                            <p>First Name:</p>
+                            <p>* First Name:</p>
                             <div className={this.props.store.checkIfShowError('firstName', this.validators) ? 'error-input-wrapper' : '' }>
                                 <InputWithClearButton 
                                     type='text' 
@@ -306,7 +306,7 @@ class Member extends Component {
                             </div>
                         </li>
                         <li className='input-wrapper'>
-                            <p>Last Name:</p>
+                            <p>* Last Name:</p>
                             <div className={this.props.store.checkIfShowError('lastName', this.validators) ? 'input-wrapper error-input-wrapper' : 'input-wrapper'}>
                                 <InputWithClearButton 
                                     type='text' 
@@ -325,7 +325,7 @@ class Member extends Component {
                             </div>
                         </li>
                         <li>
-                            <p>Chapter:</p>
+                            <p>* Chapter:</p>
                             <div className={this.props.store.checkIfShowError('siteId', this.validators) ? 'error-input-wrapper' : ""}>
                                 <MultiDropDown
                                     ref={el => this.chaptersDropDownRef = el}
@@ -375,7 +375,7 @@ class Member extends Component {
                             />
                         </li>
                         <li>
-                            <p>Gender:</p>
+                            <p>* Gender:</p>
                             <div>
                                 <div className={'flex-wrap justify-left radio-inline-wrapper' + (this.props.store.checkIfShowError('gender', this.validators) ? ' error-input-wrapper' : "")}>
                                     <RadioButton
@@ -402,9 +402,32 @@ class Member extends Component {
                                 </div>
                                 { this.props.store.displayValidationErrors('gender', this.validators) }
                             </div>
-                        </li>
+                            </li>
+                            <li>
+                                <p>* Ethnicity:</p>
+                                <div className={this.props.store.checkIfShowError('siteId', this.validators) ? 'error-input-wrapper' : ""}>
+                                    <MultiDropDown
+                                        ref={el => this.chaptersDropDownRef = el}
+                                        list={this.props.store.chapterList}
+                                        multiSelect={false}
+                                        keyProperty='id'
+                                        textProperty='state'
+                                        expandBy='chapters'
+                                        expandedTextProperty='name'
+                                        expandedKeyProperty='id'
+                                        expandedMultiSelect={false}
+                                        defaultValue={this.state.member.siteId}
+                                        placeholder="Select chapter"
+                                        onDropDownValueChange={value => {
+                                            this.props.store.updateValidators("siteId", value, this.validators);
+                                            this.updateMemberProperty("siteId", value);
+                                        }}
+                                    />
+                                    {this.props.store.displayValidationErrors('siteId', this.validators)}
+                                </div>
+                            </li>
                         <li>
-                            <p className='mark-optional'>Date of Birth:</p>
+                            <p>* Date of Birth:</p>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
                                 value={this.state.member.dateOfBirth}
