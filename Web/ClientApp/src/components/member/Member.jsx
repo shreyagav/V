@@ -348,7 +348,7 @@ class Member extends Component {
                             </div>
                         </li>
                         <li className='input-wrapper' >
-                            <p className={this.state.member.id == "" ?"mark-optional":"" }>Email:</p>
+                            <p className='mark-optional'>Email:</p>
                             <div className={this.state.member.id != "" && this.props.store.checkIfShowError('email', this.validators) ? 'error-input-wrapper' : ""}>
                                 <input type='text' 
                                     placeholder='Email'
@@ -484,7 +484,8 @@ class Member extends Component {
                                 />
                             </li>
                             <li className='input-wrapper' style={{"flex":"0 0 100px"}}>
-                                <input 
+                                <p>*</p>
+                                        <input 
                                             type='text'
                                             placeholder='Zip'
                                             maxLength={5}
