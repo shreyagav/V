@@ -213,8 +213,7 @@ class EventDemo extends Component {
                         </div>
                     </div>
                 </div>
-                <h2 className='flex-nowrap align-center mb-2'>{this.state.eventMain.name}</h2>                             
-                </div>
+                <h2 className='flex-nowrap align-center mb-2'>{this.state.eventMain.name}</h2>                                     
                 {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&                                             
                      <div className='flex-wrap flex-flow-column mb-3'>
                     <TabComponent
