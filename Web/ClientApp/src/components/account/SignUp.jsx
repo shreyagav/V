@@ -7,6 +7,8 @@ import { alertNotValid } from '../alerts'
 import Alert from '../Alert'
 import PasswordShowUpSVG from '../../svg/PasswordShowUpSVG'
 import PasswordHideUpSVG from '../../svg/PasswordHideUpSVG'
+import { Service } from '../ApiService'
+import DatePicker from '../DatePicker'
 
 class SignUp extends Component {
     static displayName = SignUp.name;
@@ -22,7 +24,8 @@ class SignUp extends Component {
                 FirstName: "",
                 LastName: "",
                 Phone: "",
-                Zip:""
+                Zip: "",
+                DateOfBirth: null
             },
             showError: false,
             error: null,
@@ -40,6 +43,13 @@ class SignUp extends Component {
         this.checkIfFieldValid = this.checkIfFieldValid.bind(this);
         this.showError = this.showError.bind(this);
         this.onSuccessOkButton = this.onSuccessOkButton.bind(this);
+        this.dateOfBirthDropDownRef = null;
+    }
+
+    updateDOB(value) {
+        let signUpInfo = this.state.signUpInfo;
+        signUpInfo["DateOfBirth"] = value;
+        this.setState({ signUpInfo, signUpInfo });
     }
 
     onSuccessOkButton = () => {
@@ -56,9 +66,61 @@ class SignUp extends Component {
         let tmp = this.state.signUpInfo;
         tmp[evt.target.name] = evt.target.value;
         this.setState({ signUpInfo: tmp });
+
     }
 
-    submitSignUp() {
+    async submitSignUp() {
+        if (this.state.signUpInfo.DateOfBirth) { //If DOB exists, we check it. If it doesn't we just move on.
+            let matchedMembers = [];
+            console.log(this.state.signUpInfo);
+
+            let lastName = this.state.signUpInfo.LastName;
+            let actualFilters = {};
+            actualFilters["name"] = this.state.signUpInfo.LastName;
+
+            const today = this.state.signUpInfo.DateOfBirth
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            console.log(today);
+            console.log(yesterday);
+            console.log(tomorrow);
+            actualFilters["dateFrom"] = yesterday;
+            actualFilters["dateTo"] = tomorrow;
+
+            let matches1 = await Service.getFilteredMembers(actualFilters);//check both active and non-active accounts
+            matchedMembers = [...matchedMembers, ...matches1];
+
+            actualFilters["active"] = true;
+            let matches2 = await Service.getFilteredMembers(actualFilters);
+            matchedMembers = [...matchedMembers, ...matches2];
+
+            console.log(matchedMembers);
+
+            matchFlag = false;
+
+            matchedMembers.forEach(function (member) {//see if there's any matches
+                let otherDate = new Date(member["dateOfBirth"]);
+                if (member["lastName"].toLowerCase() == lastName.toLowerCase() &&
+                    today.getFullYear() === otherDate.getFullYear() &&
+                    today.getMonth() === otherDate.getMonth() &&
+                    today.getDate() === otherDate.getDate()) {
+
+                    matchFlag = true;
+                    console.log("Same Last Name and DOB");
+
+                }
+            })
+
+            if (matchFlag) {
+                //Show Error Popup Warning
+            }
+
+        }
+        
+        /*
         this.setState({ loading: true });
         fetch('/api/account/signup', {
             headers: {
@@ -76,7 +138,7 @@ class SignUp extends Component {
                     this.setState({ success: true });
                 }
             })
-            .catch(err => this.setState({ loading: false, error: err }));
+            .catch(err => this.setState({ loading: false, error: err }));*/
     }
 
     checkIfFieldValid = (field) => {
@@ -249,6 +311,16 @@ class SignUp extends Component {
                                 />
                                 { this.props.store.displayValidationErrors('Zip', this.validators) }
                             </div>
+                        </li>
+                        <li>
+                            <p className='mark-optional'>Date of Birth:</p>
+                            <DatePicker
+                                ref={el => this.dateOfBirthDropDownRef = el}
+                                value={this.state.signUpInfo.DateOfBirth}
+                                onSelect={value => {
+                                    this.updateDOB(value);
+                                }}
+                            />
                         </li>
                     </ul>
                     <div className='flex-wrap justify-center mt-1 mb-2'>
