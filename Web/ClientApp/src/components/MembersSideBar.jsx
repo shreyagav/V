@@ -22,7 +22,7 @@ class EventsSideBar extends Component {
             dateTo: null,
             role: '',
             zip: '',
-            active: true
+            active: true,
         };
         this.simpleBarWrapperRef = null;
         this.dateStartDropDownRef = null;
@@ -39,37 +39,45 @@ class EventsSideBar extends Component {
     }
 
     componentDidMount(){
-        let today = new Date();
-        let state = this.state;
-        state.dateFrom = new Date(today.getFullYear()-60, today.getMonth());
-        state.dateTo = new Date(today.getFullYear()-20, today.getMonth());
-        this.setState({state});
+        //let today = new Date();
+        //let state = this.state;
+        //state.dateFrom = new Date(today.getFullYear()-60, today.getMonth());
+        //state.dateTo = new Date(today.getFullYear()-20, today.getMonth());
+        //this.setState({state});
     }
 
-    setFilters() {
+    setFilters(clear = false) {
+        let today = new Date();
         let filters = this.props.filters;
-        let initialName = '';
-        let initialRole = 0;
-        let initialDateFrom = null;
-        let initialDateTo = null;
-        let initialZip = '';
+        let initialName = clear ? '' : this.props.memberFilter.name;
+        let initialRole = clear ? '' : this.props.memberFilter.role;
+        let initialDateFrom = clear ? new Date(today.getFullYear() - 60, today.getMonth()) : this.props.memberFilter.dateFrom;
+        let initialDateTo = clear ? new Date(today.getFullYear() - 20, today.getMonth()) : this.props.memberFilter.dateTo;
+        let initialZip = clear ? '' : this.props.memberFilter.zip;
+        let initialActive = clear ? true : this.props.memberFilter.active;
+
         filters.splice(0, filters.length);
         filters.push({name: "name", value: initialName});
         filters.push({name: "role", value: initialRole});
         filters.push({name: "dateFrom", value: initialDateFrom});
         filters.push({name: "dateTo", value: initialDateTo});
         filters.push({name: "zip", value: initialZip});
-        filters.push({ name: "active", value: true });
+        filters.push({ name: "active", value: initialActive });
+        
         let initialState = {
             name: initialName, 
             role: initialRole,
             dateFrom: initialDateFrom, 
             dateTo: initialDateTo,
             zip: initialZip,
-            active: true
+            active: initialActive,
         };
         this.setState(initialState);
         this.props.updateFilters(filters);
+
+        if (clear) {
+            this.props.clearMemberFilter();
+        }
     }
 
     updateFilter(filterName, value) {
@@ -77,6 +85,20 @@ class EventsSideBar extends Component {
         let element = filters.find(element => element.name === filterName); 
         element.value = value;
         this.props.updateFilters(filters);
+
+        let clean = {
+            name: filters[0].value,
+            role: filters[1].value,
+            dateFrom: filters[2].value,
+            dateTo: filters[3].value,
+            zip: filters[4].value,
+            active: filters[5].value,
+            chapter: this.props.memberFilter.chapter,
+        };
+        if (filterName == 'chapters') {
+            clean.chapter = value
+        }
+        this.props.onMemberChange(clean);
     }
 
     onTextFilterChange(filter, value){
@@ -89,9 +111,6 @@ class EventsSideBar extends Component {
     }
 
     render() {
-        const chapterFilter = this.props.filters.find(element => {
-            if (element.name === 'chapters'){return element}
-        })
         return (
             <div style={{"height": "100%"}} data-simplebar >
             <div className = 'mt-1 pl-1 pr-1 filters'>
@@ -99,7 +118,7 @@ class EventsSideBar extends Component {
                     <h3>Filters</h3>
                     <button 
                         className='round-button medium-round-button grey-outline-button pr-05 pl-05'
-                        onClick={() => this.setFilters()} 
+                        onClick={() => this.setFilters(true)} 
                     >Clear Filters</button>
                 </div>
 
@@ -122,7 +141,7 @@ class EventsSideBar extends Component {
                 <p>Chapters:</p>
                 <MultiDropDown 
                     ref={el => this.chaptersDropDownRef = el}
-                        list={this.props.store.chapterList}
+                    list={this.props.store.chapterList}
                     multiSelect={true}
                     keyProperty='id'
                     textProperty='state'
@@ -130,9 +149,9 @@ class EventsSideBar extends Component {
                     expandedTextProperty='name'
                     expandedKeyProperty='id'
                     expandedMultiSelect={true}
-                    defaultValue={chapterFilter ? chapterFilter.value : [] }
+                    defaultValue={this.props.memberFilter.chapter ? this.props.memberFilter.chapter : []}
                     placeholder='National'
-                    onDropDownValueChange = {value => this.updateFilter("chapters", value)}
+                    onDropDownValueChange={value => this.updateFilter("chapters", value)}
                 />
                 
                 <p>Type:</p>

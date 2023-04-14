@@ -94,7 +94,6 @@ class Member extends Component {
             { 'name': 'phone', 'typeFunction': 'nameOTG', 'text': 'Phone' },
             { 'name': 'email', 'typeFunction': 'nameOTG', 'text': 'Email' },
         ]);
-
     }
 
     componentWillMount() {
@@ -573,7 +572,10 @@ class Member extends Component {
                         headerText='Success'
                         onClose={() => this.setState({showSuccessfullySavedDialog: false})}
                         showOkButton={true}
-                        onOkButtonClick={() => this.setState({showSuccessfullySavedDialog: false})}
+                        onOkButtonClick={() => {
+                            this.setState({ showSuccessfullySavedDialog: false });
+                            this.props.history.push('/members');
+                        }}
                         okButtonText="Ok"
                         mode='success'
                     >
