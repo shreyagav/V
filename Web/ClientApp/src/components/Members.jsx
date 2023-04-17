@@ -55,13 +55,13 @@ class Members extends Component {
         }
     }
 
-    componentWillMount() {
+    componentWillMount(){
         let filters = this.props.filters;
-        filters.push({ name: "chapters", value: [] });
+        filters.push({name: "chapters", value: []});
         this.props.updateFilters(filters);
     }
 
-    componentDidMount() {
+    componentDidMount(){
         this.filtersStr = JSON.stringify(this.props.filters);
         this.updateList(this.props);
     }
@@ -71,50 +71,50 @@ class Members extends Component {
             //debugger
             let backgroundColor = {};
             switch (row['userType']) {
-                case 53:
-                    backgroundColor = { "backgroundColor": "#8bba19" };
+                case 53: 
+                    backgroundColor = {"backgroundColor":"#8bba19"}; 
                     break;
-                case 54:
-                    backgroundColor = { "backgroundColor": "#fe7b22" };
+                case 54: 
+                    backgroundColor = {"backgroundColor":"#fe7b22"}; 
                     break;
-                case 55:
-                    backgroundColor = { "backgroundColor": "#339999" };
+                case 55: 
+                    backgroundColor = {"backgroundColor":"#339999"}; 
                     break;
-                default: backgroundColor = { "backgroundColor": "#ffffff" };
-            }
+                default: backgroundColor = {"backgroundColor":"#ffffff"};
+            } 
             return backgroundColor;
         }
         const getIcon = () => {
             //debugger
             let icon;
             switch (row['userType']) {
-                case 53:
+                case 53: 
                     icon = <VolunteerUpSVG svgClassName='fill-white' />
                     break;
-                case 54:
+                case 54: 
                     icon = <PaddlerUpSVG svgClassName='fill-white' />;
                     break;
-                case 55:
-                    icon = <CaregiverUpSVG svgClassName='fill-white' />;
+                case 55: 
+                    icon = <CaregiverUpSVG svgClassName='fill-white' />; 
                     break;
                 default: icon = <div></div>
-            }
+            } 
             return icon;
         }
         const backgroundColor = getIconBackgroundColor();
         const icon = getIcon();
         return (
-            <li
-                key={index}
-                className={col.className ? "table-content " + col.className : "table-content"}
-                style={{ "display": "flex", "alignItems": "center" }}
+            <li 
+                key={index} 
+                className={col.className ? "table-content " + col.className : "table-content"} 
+                style={{"display":"flex", "alignItems":"center"}}
             >
                 <div className='flex-nowrap align-self-stretch align-center pr-05 pl-05' style={backgroundColor}>
-                    <span style={{ "flex": "0 0 auto", "height": "1.5rem" }}> {icon} </span>
+                    <span style={{"flex":"0 0 auto","height":"1.5rem"}}> {icon} </span>
                 </div>
                 <Link to={"/member/" + row["id"]}>
                     <span style={{ "display": "flex", "flexFlow": "column", "flexWrap": "nowrap", "flex": "1 1 auto" }} className="blue-link link">
-                        <span style={{ "fontSize": "1.1em", "flex": "1 1 auto" }}>{row['firstName'] + ' ' + row['lastName']}</span>
+                        <span style={{"fontSize":"1.1em", "flex":"1 1 auto"}}>{row['firstName'] + ' ' + row['lastName']}</span>
                         <span style={{ "flex": "1 1 auto" }} className='chapter'>{row['siteName']}</span>
                     </span>
                 </Link>
@@ -124,27 +124,27 @@ class Members extends Component {
 
     renderDOBColumn(value, row, index, col) {
         const getNewValue = (value) => {
-            if (value === null) { return null }
+            if(value === null){ return null }
             else {
                 let dob = new Date(value);
                 return ('0' + (dob.getMonth() + 1).toString()).slice(-2) + '/' + ('0' + dob.getDate().toString()).slice(-2) + '/' + dob.getFullYear()
             }
         }
         return (
-            <li
-                key={index}
-                className={col.className ? "table-content " + col.className : "table-content"}
-                style={{ "display": "flex", "alignItems": "center" }}
+            <li 
+                key={index} 
+                className={col.className ? "table-content " + col.className : "table-content"} 
+                style={{"display":"flex", "alignItems":"center"}}
             >
                 <span className='table-mini-header'>{col.title + ": "}</span>
-                {value !== null && <span> {getNewValue(value)} </span>}
+                {value !== null && <span> { getNewValue(value) } </span> }
             </li>
         );
     }
 
-    updateFilter(filterName, value) {
+    updateFilter(filterName, value){
         let filters = this.props.filters;
-        let element = filters.find(element => element.name === filterName);
+        let element = filters.find(element => element.name === filterName); 
         element.value = value;
         this.props.updateFilters(filters);
     }
@@ -154,12 +154,12 @@ class Members extends Component {
             if (element.name === 'chapters'){return element}
         })*/
         const members = this.state.members;
-        const columns = [
-            { title: "Member", accesor: "name", className: "borders-when-display-block", render: this.renderFullNameColumn },
-            { title: "Phone", accesor: "phone" },
-            { title: "Email", accesor: "email", columnMinWidth: '6em', className: 'word-break' },
-            { title: "Zip", accesor: "zip" },
-            { title: "DOB", accesor: "dateOfBirth", render: this.renderDOBColumn }
+        const columns=[
+            {title:"Member", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
+            {title:"Phone", accesor:"phone"},
+            {title:"Email", accesor:"email", columnMinWidth:'6em', className:'word-break'},
+            {title:"Zip", accesor:"zip"},
+            {title:"DOB", accesor:"dateOfBirth", render: this.renderDOBColumn}
         ];
         return (
             <div className="inner-pages-wrapper ipw-1000">
@@ -185,13 +185,13 @@ class Members extends Component {
                             onDropDownValueChange = {value => this.updateFilter("chapters", value)}
                     />
                 </div>*/}
-                {members.length === 1000 &&
+                {members.length === 1000 && 
                     <Message mode='warning' propsClass='mt-1 mb-1'>
                         <div className='flex-wrap align-center justify-left'>
                             <span className='mr-05'>There are more then</span>
                             <div className='flex-nowrap align-center justify-left mr-05'>
                                 <UserSVG />
-                                <strong>1,000</strong>
+                               <strong>1,000</strong>
                             </div>
                             <span className='mr-05'>members.</span>
                             <span>Use filters to refine your search.</span>
@@ -199,9 +199,9 @@ class Members extends Component {
                     </Message>
                 }
                 {members.length > 0 &&
-                    <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true} />
+                    <Table columns={columns} data={members} className={"break-at-700"} addHeadersForNarrowScreen={true}/>
                 }
-                {members.length === 0 && !this.state.loadData &&
+                {members.length === 0 && !this.state.loadData && 
                     <p className='message-block mt-2'>There are no members for selected chapters.</p>
                 }
             </div>
