@@ -40,11 +40,11 @@ class Members extends Component {
                 }
             } else if (typeof (a.value) == "number" && a.value != 0) {
                 actualFilters[a.name] = a.value;
-            } else if (typeof (a.value) == "boolean") {
+            } else if (typeof (a.value) == "boolean"){
                 actualFilters[a.name] = a.value;
             }
         });
-        Service.getFilteredMembers(actualFilters).then(json => { this.setState({ members: json, loadData: false }); });
+        Service.getFilteredMembers(actualFilters).then(json => { this.setState({ members: json, loadData:false }); });
     }
 
     componentWillReceiveProps(props) {
