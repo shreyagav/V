@@ -75,20 +75,20 @@ class EventsSideBar extends Component {
         }
     }*/
 
-    setFilters() {
+    setFilters(clear = false) {
         let filters = this.props.filters;
         let datefrom = new Date();
         datefrom.setDate(1);
         let dateto = new Date();
         dateto.setMonth(dateto.getMonth() + 1);
         dateto.setDate(1);
-        let initialTitle = '';
-        let initialDateFrom = datefrom;
-        let initialDateTo = dateto;
-        let initialTimeFrom = {activated: false, hours: 8, minutes: 0, am: true};
-        let initialTimeTo = {activated: false, hours: 8, minutes: 0, am: true};
-        let initialTypeOfEvent = '';
-        let initialStatus = '';
+        let initialTitle = clear ? '' : this.props.eventFilter.title;
+        let initialDateFrom = clear ? datefrom : this.props.eventFilter.dateFrom;
+        let initialDateTo = clear ? dateto : this.props.eventFilter.dateTo;
+        let initialTimeFrom = clear ? { activated: false, hours: 8, minutes: 0, am: true } : this.props.eventFilter.timeFrom;
+        let initialTimeTo = clear ? { activated: false, hours: 8, minutes: 0, am: true } : this.props.eventFilter.timeTo;
+        let initialTypeOfEvent = clear ? '' : this.props.eventFilter.typeOfEvent;
+        let initialStatus = clear ? '' : this.props.eventFilter.status;
         let initialColor = '';
         filters.splice(0, filters.length);
         filters.push({name: "title", value: initialTitle});
@@ -112,13 +112,33 @@ class EventsSideBar extends Component {
         };
         this.setState(initialState);
         this.props.updateFilters(filters);
+
+        if (clear) {
+            this.props.clearEventFilter();
+        }
     }
 
-    updateFilter(filterName, value){
+    updateFilter(filterName, value) {
         let filters = this.props.filters;
         let element = filters.find(element => element.name === filterName); 
         element.value = value;
         this.props.updateFilters(filters);
+
+        let clean = {
+            title: filters[0].value,
+            dateFrom: filters[1].value,
+            dateTo: filters[2].value,
+            timeFrom: filters[3].value,
+            timeTo: filters[4].value,
+            typeOfEvent: filters[5].value,
+            status: filters[6].value,
+            color: filters[7].value,
+            chapter: this.props.eventFilter.chapter,
+        };
+        if (filterName == 'chapters') {
+            clean.chapter = value
+        }
+        this.props.onEventChange(clean);
     }
 
     onTextFilterChange(filter, value){
@@ -131,9 +151,6 @@ class EventsSideBar extends Component {
     }
 
     render() {
-        const chapterFilter = this.props.filters.find(element => {
-            if (element.name === 'chapters') { return element }
-        })
         return (
             <div style={{"height": "100%"}} data-simplebar >
                 <div className = 'mt-1 pl-1 pr-1 filters'>
@@ -141,7 +158,7 @@ class EventsSideBar extends Component {
                         <h3>Filters</h3>
                         <button 
                             className='round-button medium-round-button grey-outline-button pr-05 pl-05'
-                            onClick={() => this.setFilters()} 
+                            onClick={() => { this.setFilters(true) }} 
                         >Clear Filters</button>
                     </div>
 
@@ -165,7 +182,7 @@ class EventsSideBar extends Component {
                         expandedTextProperty='name'
                         expandedKeyProperty='id'
                         expandedMultiSelect={true}
-                        defaultValue={chapterFilter ? chapterFilter.value : []}
+                        defaultValue={this.props.eventFilter.chapter ? this.props.eventFilter.chapter : []}
                         placeholder='National'
                         onDropDownValueChange={value => this.updateFilter("chapters", value)}
                     />

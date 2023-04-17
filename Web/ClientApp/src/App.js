@@ -36,13 +36,38 @@ class App extends Component {
   static displayName = App.name;
 
   constructor(props) {
-    super(props);
+      super(props);
+      this.datefrom = new Date();
+      this.datefrom.setDate(1);
+      this.dateto = new Date();
+      this.dateto.setMonth(this.dateto.getMonth() + 1);
+      this.dateto.setDate(1);
     this.state = {
-      chapterFilter: [],
+        chapterFilter: [],
+        eventFilter: {
+            title: [],
+            dateFrom: this.datefrom,
+            dateTo: this.dateto,
+            timeFrom: { activated: false, hours: 8, minutes: 0, am: true },
+            timeTo: { activated: false, hours: 8, minutes: 0, am: true },
+            typeOfEvent: '',
+            status: '',
+            color: '',
+            chapter: undefined,
+        },
+        memberFilter: {
+            name: [],
+            role: 0,
+            dateFrom: new Date(this.datefrom.getFullYear() - 60, this.datefrom.getMonth()),
+            dateTo: new Date(this.datefrom.getFullYear() - 20, this.datefrom.getMonth()),
+            zip: '',
+            active: true,
+            chapter: undefined,
+        }
     };
   }
 
-  render () {
+    render() {
       return (
           <BrowserRouter>
               <Switch>
@@ -56,8 +81,45 @@ class App extends Component {
                       clearChapterFilter = {() => this.setState({chapterFilter: []})}
                     />
                   </div>}/>
-                  <Route path='/events' render={(match) => <div><NavMenu {...match} /><SideBarLayout {...match} sideBarContent={EventsSideBar} bodyContent={Events}/></div>}/>
-                  <Route path='/members' render={(match) => <div><NavMenu {...match} /><SideBarLayout {...match} sideBarContent={MembersSideBar} bodyContent={Members}/></div>} />
+                  <Route path='/events' render={(match) => <div><NavMenu {...match} />
+                      <SideBarLayout {...match}
+                          sideBarContent={EventsSideBar}
+                          bodyContent={Events}
+                          onEventChange={value => { this.setState({ eventFilter: value }) }}
+                          eventFilter={this.state.eventFilter}
+                          clearEventFilter={() => this.setState({
+                              eventFilter: {
+                                  title: [],
+                                  dateFrom: this.datefrom,
+                                  dateTo: this.dateto,
+                                  timeFrom: { activated: false, hours: 8, minutes: 0, am: true },
+                                  timeTo: { activated: false, hours: 8, minutes: 0, am: true },
+                                  typeOfEvent: '',
+                                  status: '',
+                                  color: '',
+                                  chapter: undefined,
+                              } })}
+                      />
+                  </div>} />
+                  <Route path='/members' render={(match) => <div><NavMenu {...match} />
+                      <SideBarLayout {...match}
+                          sideBarContent={MembersSideBar}
+                          bodyContent={Members}
+                          onMemberChange={value => { this.setState({ memberFilter: value }) }}
+                          memberFilter={this.state.memberFilter}
+                          clearMemberFilter={() => this.setState({
+                              memberFilter: {
+                                  name: [],
+                                  role: 0,
+                                  dateFrom: new Date(this.datefrom.getFullYear() - 60, this.datefrom.getMonth()),
+                                  dateTo: new Date(this.datefrom.getFullYear() - 20, this.datefrom.getMonth()),
+                                  zip: '',
+                                  active: true,
+                                  chapter: undefined,
+                              }
+                          })}
+                      />
+                  </div>} />
                   <Route path='/event-edit/:id' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Event {...match} newEvent={false} /></SimpleLayout></div>} />
                   <Route path='/new-event' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Event {...match} newEvent={ true } /></SimpleLayout></div>} />
                   <Route path='/chapters' render={(match) => <div><NavMenu {...match} /><SimpleLayout><Chapters {...match} /></SimpleLayout></div>} />
