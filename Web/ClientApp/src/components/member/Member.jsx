@@ -43,6 +43,7 @@ class Member extends Component {
                 email: '',
                 dateOfBirth: null,
                 gender: '',
+                ethnicity: '',
 
                 streetAddress: '',
                 city: '',
@@ -169,6 +170,12 @@ class Member extends Component {
         </span>
     }
 
+    stateEthnicityRender(element, textProperty) {
+        return <span className='text-transform-none'>
+            {element.group}
+        </span>
+    }
+
     deleteMember() {
         Service.deleteProfile(this.state.member).then(this.close);
     }
@@ -243,6 +250,7 @@ class Member extends Component {
         console.log(this.validators, this.si);
         //const pictures = this.state.formattedPicturesList;
         const stateList = [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }];
+        const ethnicityList = [{ "group": "American Indian or Alaska Native" }, { "group": "Asian" }, { "group": "African American or Black" }, { "group": "Hispanic or Latino" }, { "group": "Native Hawaiian or Other Pacific Islander" }, { "group": "White" },]
         return (
             <div className='pages-wsm-wrapper ipw-800'>
                 <div className='second-nav-wrapper'>
@@ -337,7 +345,7 @@ class Member extends Component {
                                     expandedTextProperty='name'
                                     expandedKeyProperty='id'
                                     expandedMultiSelect={false}
-                                    defaultValue={this.state.member.siteId}
+                                    defaultValue={this.state.member.ethnicity}
                                     placeholder="Select chapter"
                                     onDropDownValueChange={value => {
                                         this.props.store.updateValidators("siteId", value, this.validators);
@@ -407,21 +415,18 @@ class Member extends Component {
                                 <p>* Ethnicity:</p>
                                 <div className={this.props.store.checkIfShowError('siteId', this.validators) ? 'error-input-wrapper' : ""}>
                                     <MultiDropDown
-                                        ref={el => this.chaptersDropDownRef = el}
-                                        list={this.props.store.chapterList}
+                                        ref={el => this.stateDropDownRef = el}
+                                        list={ethnicityList}
                                         multiSelect={false}
-                                        keyProperty='id'
-                                        textProperty='state'
-                                        expandBy='chapters'
-                                        expandedTextProperty='name'
-                                        expandedKeyProperty='id'
-                                        expandedMultiSelect={false}
-                                        defaultValue={this.state.member.siteId}
-                                        placeholder="Select chapter"
-                                        onDropDownValueChange={value => {
-                                            this.props.store.updateValidators("siteId", value, this.validators);
-                                            this.updateMemberProperty("siteId", value);
-                                        }}
+                                        keyProperty='group'
+                                        textProperty='group'
+                                        defaultValue={this.state.member.ethnicity}
+                                        placeholder="Ethnicity"
+                                        textPropertyRender={(element, textProperty) => this.stateEthnicityRender(element, textProperty)}
+                                        onDropDownValueChange={value => this.updateMemberProperty("ethnicity", value)}
+                                        search={this.filterList}
+                                        searchParams={['group']}
+                                    //searchMinCharacterCount = {5}
                                     />
                                     {this.props.store.displayValidationErrors('siteId', this.validators)}
                                 </div>
