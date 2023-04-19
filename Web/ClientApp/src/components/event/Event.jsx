@@ -60,7 +60,7 @@ class Event extends Component {
                 },
                 isRepeatable: false,
                 frequency: 1,
-                frequencyType:1,
+                frequencyType: 1,
                 type: null,
                 groupId: 0,
                 date: new Date(),
@@ -659,40 +659,40 @@ class Event extends Component {
                                 </React.Fragment>}
                             </ul>
                         </li>
-                        {this.state.eventMain.isRepeatable && <li
-                            className={this.emptyType && this.state.eventMain.isRepeatable ? 'mark-invalid' : ''}
-                            error-text='Please select the Frequancy'
-                        >
-                            <p>Repeat every:</p>
-                            <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
-                                <li>
-                                    <input type='number' min={1} max={31}
-                                        placeholder='#'
-                                        value={this.state.eventMain.frequency ? this.state.eventMain.frequency : 1}
-                                        onClick={(event) => event.target.select()}
-                                        onChange={(e) => {
-                                            let frequency = Math.floor(e.target.value);
-                                            this.updateEventProperty('frequency', frequency)
-                                        }}
-                                    />
-                                </li>
-                                <li>
-                                    <MultiDropDown
-                                        ref={el => this.frequencyTypeDropDownRef = el}
-                                        list={[{ id: 1, title: 'Day(s)' }, { id: 2, title: 'Week(s)' }, { id: 3, title: 'Month(s)' }]}
-                                        keyProperty='id'
-                                        textProperty='title'
-                                        defaultValue={this.state.eventMain.frequencyType}
-                                        placeholder='Frequancy type'
-                                        onDropDownValueChange={value => {
-                                            this.emptyType = false;
-                                            this.updateEventProperty("frequencyType", value)
-                                        }}
-                                    />
-                                </li>
-                            </ul>
-                        </li>}
-                    </React.Fragment>)}
+                            {this.state.eventMain.isRepeatable && <li
+                                className={this.emptyType && this.state.eventMain.isRepeatable ? 'mark-invalid' : ''}
+                                error-text='Please select the Frequancy'
+                            >
+                                <p>Repeat every:</p>
+                                <ul className='input-fields flex-nowrap break-at-560 line-of-inputs-wrapper'>
+                                    <li>
+                                        <input type='number' min={1} max={31}
+                                            placeholder='#'
+                                            value={this.state.eventMain.frequency ? this.state.eventMain.frequency : 1}
+                                            onClick={(event) => event.target.select()}
+                                            onChange={(e) => {
+                                                let frequency = Math.floor(e.target.value);
+                                                this.updateEventProperty('frequency', frequency)
+                                            }}
+                                        />
+                                    </li>
+                                    <li>
+                                        <MultiDropDown
+                                            ref={el => this.frequencyTypeDropDownRef = el}
+                                            list={[{ id: 1, title: 'Day(s)' }, { id: 2, title: 'Week(s)' }, { id: 3, title: 'Month(s)' }]}
+                                            keyProperty='id'
+                                            textProperty='title'
+                                            defaultValue={this.state.eventMain.frequencyType}
+                                            placeholder='Frequancy type'
+                                            onDropDownValueChange={value => {
+                                                this.emptyType = false;
+                                                this.updateEventProperty("frequencyType", value)
+                                            }}
+                                        />
+                                    </li>
+                                </ul>
+                            </li>}
+                        </React.Fragment>)}
 
                         <li>
                             <p className='mark-optional'>Description:</p>
@@ -761,7 +761,10 @@ class Event extends Component {
                         text={this.dialogText}
                         onClose={() => this.setState({ showMessage: false })}
                         showOkButton={true}
-                        onOkButtonClick={() => this.setState({ showMessage: false })}
+                        onOkButtonClick={() => {
+                            this.setState({ showMessage: false });
+                            this.props.history.push('/events');
+                        }}
                         okButtonText="Ok"
                         mode={this.mode}
                     >

@@ -255,7 +255,7 @@ namespace Web.Controllers
                     {
                         //TODO: send password email
                     }
-                    data.Roles = new string[] { roles.First(a => a.Name == "Member").Id };
+                    //data.Roles = new string[] { roles.First(a => a.Name == "Member").Id };
                 }
                 else
                 {
