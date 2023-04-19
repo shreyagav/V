@@ -345,7 +345,7 @@ class Member extends Component {
                                     expandedTextProperty='name'
                                     expandedKeyProperty='id'
                                     expandedMultiSelect={false}
-                                    defaultValue={this.state.member.ethnicity}
+                                    defaultValue={this.state.member.siteId}
                                     placeholder="Select chapter"
                                     onDropDownValueChange={value => {
                                         this.props.store.updateValidators("siteId", value, this.validators);
