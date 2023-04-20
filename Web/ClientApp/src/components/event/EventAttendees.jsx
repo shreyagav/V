@@ -16,6 +16,8 @@ import SearchInput from '../SearchInput'
 import Alert from '../Alert'
 import TabComponent from '../TabComponent';
 
+
+
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
 
@@ -35,6 +37,8 @@ class EventAttendees extends Component {
             attendeeFilter: '',
             chapterOnlyMembers: true
         };
+        console.log(this.state.eventId)
+
         this.substractHeightElRef = null;
         this.modalWindowRef = null;
         this.membersDropDownRef = null;
@@ -46,6 +50,7 @@ class EventAttendees extends Component {
         this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
         this.filterMemberList = this.filterMemberList.bind(this);
         this.renderToggler = this.renderToggler.bind(this);
+
     }
 
     submitMembersToEvent() {
@@ -119,6 +124,75 @@ class EventAttendees extends Component {
         })
         this.setState({filteredList: filteredList})
     } 
+    
+
+    renderZipCodeColumn(value, row, index, col) {
+        let actualFilters = {};
+        let matchedMembers = [];
+       
+        console.log("getting site member here")
+        const member_firstName = row['firstName']
+        const member_id = row['id']
+        console.log(member_id)
+        actualFilters["name"] = member_firstName
+        let zipcode = "00000"
+        console.log(actualFilters)
+        Service.getFilteredMembers(actualFilters)
+            .then(matches2 => {
+                console.log(matches2);
+                
+                
+                actualFilters["active"] = true
+                console.log(actualFilters)
+                 
+                Service.getFilteredMembers(actualFilters)
+                    .then(matches3 => {
+                        console.log(matches3);
+                        let matches4 = [...matches2, ...matches3]
+                        console.log(matches4);
+
+                        let filtered = matches4.filter(member => member.id === member_id);
+                        console.log("after filtering")
+                        console.log(filtered);
+                        if (filtered.length > 0) {
+                            console.log(filtered[0]['zip'])
+                            zipcode = filtered[0]['zip']
+                        }
+
+                    }).then(zipcodeElement => {
+                        console.log("zip code element")
+                        console.log(zipcodeElement)
+                        console.log("row zip code element")
+
+                        console.log(row.zipCode)
+                        console.log("zip code ")
+
+                        console.log(zipcode)
+                        // render the element
+                        return (
+                            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
+                                <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
+                                    
+                                    {row.zipCode || zipcode}
+                                </span>
+                            </li>
+                        )
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    }); 
+
+            })
+            .catch(error => {
+                console.log(error)
+            });
+        
+
+
+        
+    } 
+
+
 
     renderFullNameColumn(value, row, index, col) {
         return (
@@ -197,10 +271,15 @@ class EventAttendees extends Component {
 
     render() {
         const members = this.state.members;
+
         console.log(members);
+       
+
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
-            {title:"Phone", accesor:"phone"},
+            { title: "Phone", accesor: "phone" },
+            { title: "Zip Code", className: "borders-when-display-block, word-break", render: this.renderZipCodeColumn }, 
+
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {
