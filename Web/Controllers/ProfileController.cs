@@ -188,18 +188,41 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public UserProfileDto[] GetFiltered(ProfileFilterDto filter)
         {
-            if(!string.IsNullOrEmpty(filter.Name))
-                filter.Name = $"%{filter.Name}%";
+            string firstNameFilter = null;
+            string lastNameFilter = null;
+            bool bothNamesProvided = false;
+
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                var nameParts = filter.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (nameParts.Length > 0)
+                {
+                    firstNameFilter = $"%{nameParts[0]}%";
+                    lastNameFilter = $"%{nameParts[0]}%";
+                }
+                if (nameParts.Length > 1)
+                {
+                    lastNameFilter = $"%{nameParts[1]}%";
+                    bothNamesProvided = true;
+                }
+            }
+
             if (!string.IsNullOrEmpty(filter.Zip))
                 filter.Zip = $"%{filter.Zip}%";
 
-            var res = _ctx.AspNetUsers.Include(a=>a.Site).Include(a=>a.Site.Region).Where(a =>
-                (string.IsNullOrEmpty(filter.Name) || (EF.Functions.Like(a.FirstName,filter.Name)
-                || EF.Functions.Like(a.LastName, filter.Name)
-                || EF.Functions.Like(a.Email, filter.Name)
-                || EF.Functions.Like(a.UserName, filter.Name)
-                ))
-                && (!filter.DateFrom.HasValue ||(a.DateOfBirth.HasValue && a.DateOfBirth.Value > filter.DateFrom.Value))
+            var res = _ctx.AspNetUsers.Include(a => a.Site).Include(a => a.Site.Region).Where(a =>
+                (
+                    (bothNamesProvided &&
+                     ((string.IsNullOrEmpty(firstNameFilter) || EF.Functions.Like(a.FirstName, firstNameFilter))
+                     && (string.IsNullOrEmpty(lastNameFilter) || EF.Functions.Like(a.LastName, lastNameFilter))))
+                    ||
+                    (!bothNamesProvided &&
+                     ((string.IsNullOrEmpty(firstNameFilter) || EF.Functions.Like(a.FirstName, firstNameFilter))
+                     || (string.IsNullOrEmpty(lastNameFilter) || EF.Functions.Like(a.LastName, lastNameFilter))))
+                )
+                || (string.IsNullOrEmpty(filter.Name) || (EF.Functions.Like(a.Email, filter.Name)
+                || EF.Functions.Like(a.UserName, filter.Name)))
+                && (!filter.DateFrom.HasValue || (a.DateOfBirth.HasValue && a.DateOfBirth.Value > filter.DateFrom.Value))
                 && (!filter.DateTo.HasValue || (a.DateOfBirth.HasValue && a.DateOfBirth.Value < filter.DateTo.Value))
                 && (!filter.Role.HasValue || a.OldType == (int)filter.Role.Value)
                 && (string.IsNullOrEmpty(filter.Zip) || (!string.IsNullOrEmpty(a.Zip) && EF.Functions.Like(a.Zip, filter.Zip)))
