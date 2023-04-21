@@ -398,6 +398,7 @@ class Member extends Component {
                                         labelText = 'Male'
                                     />
                                     <RadioButton
+                                        style={{ "marginRight": "0.75rem" }}
                                         radioGroupElement = {this.state.member.gender}
                                         radioButtonValue = 'F'
                                         onClick = {(value) => {
@@ -406,6 +407,16 @@ class Member extends Component {
                                         }}
                                         labelClassName = "checkbox-text"
                                         labelText = 'Female'
+                                    />
+                                    <RadioButton
+                                        radioGroupElement={this.state.member.gender}
+                                        radioButtonValue='Other'
+                                        onClick={(value) => {
+                                            this.props.store.updateValidators("gender", value, this.validators);
+                                            this.updateMemberProperty("gender", value);
+                                        }}
+                                        labelClassName="checkbox-text"
+                                        labelText='Other'
                                     />
                                 </div>
                                 { this.props.store.displayValidationErrors('gender', this.validators) }
@@ -432,7 +443,7 @@ class Member extends Component {
                                 </div>
                             </li>
                         <li>
-                            <p>* Date of Birth:</p>
+                            <p className='mark-optional'>Date of Birth:</p>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
                                 value={this.state.member.dateOfBirth}

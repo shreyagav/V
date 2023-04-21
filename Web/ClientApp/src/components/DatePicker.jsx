@@ -594,7 +594,7 @@ class DatePicker extends Component {
                     <input 
                         readOnly 
                         tabIndex='-1'
-                        placeholder='mm/dd/yy' 
+                        placeholder='12/31/9999' 
                         value={(this.props.value === null || this.props.value === undefined) ? "" : (("0"+(this.props.value.getMonth()+1)).slice(-2)+"/"+("0" + this.props.value.getDate()).slice(-2)+"/"+this.props.value.getFullYear())}
                     />
                     {!(this.state.isOpen || this.props.noClearButton || this.props.value === null || this.props.value === undefined)

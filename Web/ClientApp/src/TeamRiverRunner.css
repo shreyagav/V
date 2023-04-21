@@ -1403,7 +1403,7 @@ button.login-with-button:not(:last-child) {margin-right: 1em;}
     position: absolute;
     top: 2em;
     right: 0em;
-    content: 'optional';
+    content: '';
     color: #999999;
     font-size: 0.6em;
     text-transform: uppercase;
