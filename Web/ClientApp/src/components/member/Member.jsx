@@ -64,7 +64,8 @@ class Member extends Component {
                 events:[],
                 options: [],
                 status: 0,
-                emergencyContact: {}
+                emergencyContact: {},
+                dupe: null
             },
             activeTabIndex: 0,
             showError: false,
@@ -73,7 +74,7 @@ class Member extends Component {
             showErrorSaveDialog: false,
             userId: userId,
             sponsors: [],
-            authLevels:[]
+            authLevels: []
         };
         this.stateDropDownRef = null;
         this.dateOfBirthDropDownRef = null;
@@ -86,6 +87,7 @@ class Member extends Component {
         this.authLevelDropDownRef = null;
         this.userTypeDropDownRef = null;
 
+        this.saveMemberDuplicationCheck = this.saveMemberDuplicationCheck.bind(this);
         this.saveMemberInfo = this.saveMemberInfo.bind(this);
         this.onContactInputValueChange = this.onContactInputValueChange.bind(this);
         this.close = this.close.bind(this);
@@ -138,8 +140,63 @@ class Member extends Component {
 
     close() { this.props.history.goBack(); }
 
-    saveMemberInfo() {
+    async saveMemberDuplicationCheck() { 
+        if (this.props.match.path == '/new-member' && this.state.member.dateOfBirth) {
+            let matchedMembers = [];
+            //console.log(this.state.member);
 
+            let lastName = this.state.member.lastName;
+            let actualFilters = {};
+            actualFilters["name"] = this.state.member.lastName;
+
+            const today = this.state.member.dateOfBirth
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            //console.log(today);
+            //console.log(yesterday);
+            //console.log(tomorrow);
+            actualFilters["dateFrom"] = yesterday;
+            actualFilters["dateTo"] = tomorrow;
+
+            let matches1 = await Service.getFilteredMembers(actualFilters);//check both active and non-active accounts
+            matchedMembers = [...matchedMembers, ...matches1];
+
+            actualFilters["active"] = true;
+            let matches2 = await Service.getFilteredMembers(actualFilters);
+            matchedMembers = [...matchedMembers, ...matches2];
+
+            //console.log(matchedMembers);
+
+            let matchFlag = false;
+
+            matchedMembers.forEach(function (member) {//see if there's any matches
+                let otherDate = new Date(member["dateOfBirth"]);
+                if (member["lastName"].toLowerCase() == lastName.toLowerCase() &&
+                    today.getFullYear() === otherDate.getFullYear() &&
+                    today.getMonth() === otherDate.getMonth() &&
+                    today.getDate() === otherDate.getDate()) {
+
+                    matchFlag = true;
+                    console.log("Same Last Name and DOB");
+
+                }
+            })
+
+            if (matchFlag) {
+                this.setState({ dupe: true });
+                //Show Error Popup Warning
+            }
+        }
+        else {
+            this.saveMemberInfo();
+        }
+    }
+
+    saveMemberInfo() {
+        this.setState({ dupe: null })
         this.setState({ loading: true });
         Service.setProfile(this.state.member).then(data => {
             if(data === undefined) {this.setState({ loading: false, showErrorSaveDialog: true })}
@@ -234,7 +291,7 @@ class Member extends Component {
         }
     } 
 
-    performIfValid(callback){
+    performIfValid(callback) {
         if (this.props.store.isFormValid(this.validators, this.state.member)) { callback(); } 
         else { this.setState({showError: true}) };
     }
@@ -257,8 +314,8 @@ class Member extends Component {
                                 <span>Delete</span>
                             </button>
                             <button
-                                className='round-button medium-round-button outline-on-hover' 
-                                onClick={() =>this.performIfValid(this.saveMemberInfo)}
+                                className='round-button medium-round-button outline-on-hover'
+                                onClick={() => this.performIfValid(this.saveMemberInfo)}
                             >
                                 <SaveUpSVG />
                                 <span>Save</span>
@@ -595,6 +652,20 @@ class Member extends Component {
                         <h4 className='mb-05'>{this.state.member.firstName+' '+this.state.member.lastName}</h4>
                         <p style={{"textAlign":"center"}}> was not saved </p>
                     </Alert>
+                }
+
+                {this.state.dupe &&
+                    <Alert
+                        text={"An existing account already holds the same LAST NAME and DOB."}
+                        children={"Would you like to create another account with the same LAST NAME and DOB?"}
+                        mode="warning"
+                        onClose={() => this.setState({ dupe: null })}
+                        onOkButtonClick={this.saveMemberInfo}
+                        onCancelButtonClick={() => this.setState({ dupe: null })}
+                        showOkCancelButtons={true}
+                        okButtonText={"Yes"}
+                        cancelButtonText={"No"}
+                    />
                 }
 
             </div>

@@ -25,15 +25,17 @@ class SignUp extends Component {
                 LastName: "",
                 Phone: "",
                 Zip: "",
-                DateOfBirth: null
+                dateOfBirth: null
             },
             showError: false,
             error: null,
             success: null,
+            dupe: null
         };
         this.passwordInputRef = null;
 
         this.handleTextChange = this.handleTextChange.bind(this);
+        this.submitSignUpConfirmation = this.submitSignUpConfirmation.bind(this);
         this.submitSignUp = this.submitSignUp.bind(this);
         this.onChange = this.onChange.bind(this);
         this.checkIfMatches = this.checkIfMatches.bind(this);
@@ -48,7 +50,7 @@ class SignUp extends Component {
 
     updateDOB(value) {
         let signUpInfo = this.state.signUpInfo;
-        signUpInfo["DateOfBirth"] = value;
+        signUpInfo["dateOfBirth"] = value;
         this.setState({ signUpInfo, signUpInfo });
     }
 
@@ -69,58 +71,7 @@ class SignUp extends Component {
 
     }
 
-    async submitSignUp() {
-        if (this.state.signUpInfo.DateOfBirth) { //If DOB exists, we check it. If it doesn't we just move on.
-            let matchedMembers = [];
-            console.log(this.state.signUpInfo);
-
-            let lastName = this.state.signUpInfo.LastName;
-            let actualFilters = {};
-            actualFilters["name"] = this.state.signUpInfo.LastName;
-
-            const today = this.state.signUpInfo.DateOfBirth
-            const yesterday = new Date(today);
-            yesterday.setDate(today.getDate() - 1);
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-
-            console.log(today);
-            console.log(yesterday);
-            console.log(tomorrow);
-            actualFilters["dateFrom"] = yesterday;
-            actualFilters["dateTo"] = tomorrow;
-
-            let matches1 = await Service.getFilteredMembers(actualFilters);//check both active and non-active accounts
-            matchedMembers = [...matchedMembers, ...matches1];
-
-            actualFilters["active"] = true;
-            let matches2 = await Service.getFilteredMembers(actualFilters);
-            matchedMembers = [...matchedMembers, ...matches2];
-
-            console.log(matchedMembers);
-
-            matchFlag = false;
-
-            matchedMembers.forEach(function (member) {//see if there's any matches
-                let otherDate = new Date(member["dateOfBirth"]);
-                if (member["lastName"].toLowerCase() == lastName.toLowerCase() &&
-                    today.getFullYear() === otherDate.getFullYear() &&
-                    today.getMonth() === otherDate.getMonth() &&
-                    today.getDate() === otherDate.getDate()) {
-
-                    matchFlag = true;
-                    console.log("Same Last Name and DOB");
-
-                }
-            })
-
-            if (matchFlag) {
-                //Show Error Popup Warning
-            }
-
-        }
-        
-        /*
+    submitSignUpConfirmation() {
         this.setState({ loading: true });
         fetch('/api/account/signup', {
             headers: {
@@ -138,7 +89,65 @@ class SignUp extends Component {
                     this.setState({ success: true });
                 }
             })
-            .catch(err => this.setState({ loading: false, error: err }));*/
+            .catch(err => this.setState({ loading: false, error: err }));
+    }
+
+    async submitSignUp() {
+        if (this.state.signUpInfo.dateOfBirth) { //If DOB exists, we check it. If it doesn't we just move on.
+            let matchedMembers = [];
+            //console.log(this.state.signUpInfo);
+
+            let lastName = this.state.signUpInfo.LastName;
+            let actualFilters = {};
+            actualFilters["name"] = this.state.signUpInfo.LastName;
+
+            const today = this.state.signUpInfo.dateOfBirth
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            //console.log(today);
+            //console.log(yesterday);
+            //console.log(tomorrow);
+            actualFilters["dateFrom"] = yesterday;
+            actualFilters["dateTo"] = tomorrow;
+
+            let matches1 = await Service.getFilteredMembers(actualFilters);//check both active and non-active accounts
+            matchedMembers = [...matchedMembers, ...matches1];
+
+            actualFilters["active"] = true;
+            let matches2 = await Service.getFilteredMembers(actualFilters);
+            matchedMembers = [...matchedMembers, ...matches2];
+
+            //console.log(matchedMembers);
+
+            let matchFlag = false;
+
+            matchedMembers.forEach(function (member) {//see if there's any matches
+                let otherDate = new Date(member["dateOfBirth"]);
+                if (member["lastName"].toLowerCase() == lastName.toLowerCase() &&
+                    today.getFullYear() === otherDate.getFullYear() &&
+                    today.getMonth() === otherDate.getMonth() &&
+                    today.getDate() === otherDate.getDate()) {
+
+                    matchFlag = true;
+                    console.log("Same Last Name and DOB");
+
+                }
+            })
+
+            if (matchFlag) {
+                this.setState({ dupe: true });
+                //Show Error Popup Warning
+            }
+
+        }
+        else {
+            this.submitSignUpConfirmation();
+        }
+        
+        
     }
 
     checkIfFieldValid = (field) => {
@@ -316,7 +325,7 @@ class SignUp extends Component {
                             <p className='mark-optional'>Date of Birth:</p>
                             <DatePicker
                                 ref={el => this.dateOfBirthDropDownRef = el}
-                                value={this.state.signUpInfo.DateOfBirth}
+                                value={this.state.signUpInfo.dateOfBirth}
                                 onSelect={value => {
                                     this.updateDOB(value);
                                 }}
@@ -340,6 +349,19 @@ class SignUp extends Component {
                             onClose={() => this.setState({ error: null })}
                             showOkButton={true}
                             onOkButtonClick={() => this.setState({ error: null })}
+                        />
+                    }
+                    {this.state.dupe &&
+                        <Alert
+                        text={"An existing account already holds the same LAST NAME and DOB."}
+                        children={"Would you like to create another account with the same LAST NAME and DOB?"}
+                        mode="warning"
+                        onClose={() => this.setState({ dupe: null })}
+                        onOkButtonClick={this.submitSignUpConfirmation}
+                        onCancelButtonClick={() => this.setState({ dupe: null })}
+                        showOkCancelButtons={true}
+                        okButtonText={"Yes"}
+                        cancelButtonText={"No"}
                         />
                     }
                     {this.state.success &&
