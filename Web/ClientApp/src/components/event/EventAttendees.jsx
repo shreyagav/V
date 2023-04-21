@@ -126,7 +126,7 @@ class EventAttendees extends Component {
     } 
     
 
-    renderZipCodeColumn(value, row, index, col) {
+    renderZipCodeColumn(row, index, col) {
         let actualFilters = {};
         let matchedMembers = [];
        
@@ -137,43 +137,28 @@ class EventAttendees extends Component {
         actualFilters["name"] = member_firstName
         let zipcode = "00000"
         console.log(actualFilters)
+
         Service.getFilteredMembers(actualFilters)
             .then(matches2 => {
-                console.log(matches2);
-                
-                
                 actualFilters["active"] = true
-                console.log(actualFilters)
                  
                 Service.getFilteredMembers(actualFilters)
                     .then(matches3 => {
-                        console.log(matches3);
                         let matches4 = [...matches2, ...matches3]
-                        console.log(matches4);
 
                         let filtered = matches4.filter(member => member.id === member_id);
-                        console.log("after filtering")
-                        console.log(filtered);
                         if (filtered.length > 0) {
-                            console.log(filtered[0]['zip'])
                             zipcode = filtered[0]['zip']
                         }
 
                     }).then(zipcodeElement => {
-                        console.log("zip code element")
-                        console.log(zipcodeElement)
-                        console.log("row zip code element")
-
-                        console.log(row.zipCode)
-                        console.log("zip code ")
-
-                        console.log(zipcode)
+                        zipcode = row.zipCode || zipcode;
                         // render the element
                         return (
                             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
                                 <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
                                     
-                                    {row.zipCode || zipcode}
+                                    {zipcode}
                                 </span>
                             </li>
                         )
@@ -186,12 +171,18 @@ class EventAttendees extends Component {
             .catch(error => {
                 console.log(error)
             });
-        
 
-
+        /*return (
+            <li
+                key={index}
+                className={col.className ? "table-content " + col.className : "table-content"}
+                style={{ "display": "flex", "alignItems": "center" }}
+            >
+                <span style={{ "flex": "0 0 auto", "height": "1.5rem" }}> {zipcode} </span>
+            </li>
+        );*/
         
     } 
-
 
 
     renderFullNameColumn(value, row, index, col) {
@@ -271,15 +262,10 @@ class EventAttendees extends Component {
 
     render() {
         const members = this.state.members;
-
-        console.log(members);
-       
-
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
             { title: "Phone", accesor: "phone" },
-            { title: "Zip Code", className: "borders-when-display-block, word-break", render: this.renderZipCodeColumn }, 
-
+            { title: "Zip", accesor: "zip", render: this.renderZipCodeColumn }, 
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {
