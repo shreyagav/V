@@ -213,15 +213,15 @@ class EventDemo extends Component {
                         </div>
                     </div>
                 </div>
-                <h2 className='flex-nowrap align-center mb-2'>{this.state.eventMain.name}</h2>
-                {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&
-                <div className='flex-wrap flex-flow-column mb-3'>
+                <h2 className='flex-nowrap align-center mb-2'>{this.state.eventMain.name}</h2>                                     
+                {user && (user.authType == "Admin" || (user.authType == "Secretary" && user.chapterId == this.state.eventMain.site)) &&                                             
+                     <div className='flex-wrap flex-flow-column mb-3'>
                     <TabComponent
-                        fixedHeight={true}
+                            fixedHeight={true}               
                         tabList={['main', 'attendees', 'emails', 'budget', 'pictures']}
                         wasSelected={(index) => this.setActiveStep(index)}
                         activeTabIndex={this.state.activeTabIndex}
-                    />
+                     />                     
                 </div>}
                 {this.state.activeTabIndex === 0 && 
                     <div className='flex-wrap flex-flow-column justify-center align-center'>
