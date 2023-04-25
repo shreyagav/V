@@ -55,6 +55,7 @@ class EventsSideBar extends Component {
         let initialDateTo = clear ? new Date(today.getFullYear() - 20, today.getMonth()) : this.props.memberFilter.dateTo;
         let initialZip = clear ? '' : this.props.memberFilter.zip;
         let initialActive = clear ? true : this.props.memberFilter.active;
+        let initialChapters = clear ? [] : this.props.memberFilter.chapter;
 
         filters.splice(0, filters.length);
         filters.push({name: "name", value: initialName});
@@ -63,7 +64,8 @@ class EventsSideBar extends Component {
         filters.push({name: "dateTo", value: initialDateTo});
         filters.push({name: "zip", value: initialZip});
         filters.push({ name: "active", value: initialActive });
-        
+        filters.push({ name: "chapters", value: initialChapters });
+
         let initialState = {
             name: initialName, 
             role: initialRole,

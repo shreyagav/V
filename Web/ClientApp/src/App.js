@@ -53,7 +53,7 @@ class App extends Component {
             typeOfEvent: '',
             status: '',
             color: '',
-            chapter: undefined,
+            chapter: [],
         },
         memberFilter: {
             name: [],
@@ -62,7 +62,7 @@ class App extends Component {
             dateTo: new Date(this.datefrom.getFullYear() - 20, this.datefrom.getMonth()),
             zip: '',
             active: true,
-            chapter: undefined,
+            chapter: [],
         }
     };
   }
@@ -97,7 +97,7 @@ class App extends Component {
                                   typeOfEvent: '',
                                   status: '',
                                   color: '',
-                                  chapter: undefined,
+                                  chapter: [],
                               } })}
                       />
                   </div>} />
@@ -115,7 +115,7 @@ class App extends Component {
                                   dateTo: new Date(this.datefrom.getFullYear() - 20, this.datefrom.getMonth()),
                                   zip: '',
                                   active: true,
-                                  chapter: undefined,
+                                  chapter: [],
                               }
                           })}
                       />
