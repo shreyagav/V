@@ -134,7 +134,7 @@ class MemberTRRInfo extends Component {
                             <MultiDropDown
                             ref={this.props.setAuthLevelDropDownRef}
                             list={this.props.roles}
-                                multiSelect={true}
+                                multiSelect={false}
                                 keyProperty='id'
                                 textProperty='name'
                                 defaultValue={this.props.member.roles}
