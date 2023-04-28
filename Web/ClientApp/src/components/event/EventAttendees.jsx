@@ -35,7 +35,7 @@ class EventAttendees extends Component {
             activeMembersOnlyChecked: true,
             selectedMembersOnlyChecked: false,
             attendeeFilter: '',
-            chapterOnlyMembers: true
+            chapterOnlyMembers: true,
         };
         console.log(this.state.eventId)
 
@@ -124,7 +124,6 @@ class EventAttendees extends Component {
         })
         this.setState({filteredList: filteredList})
     } 
-    
 
     renderZipCodeColumn(row, index, col) {
         let actualFilters = {};
@@ -172,7 +171,7 @@ class EventAttendees extends Component {
                 console.log(error)
             });
 
-        /*return (
+        return (
             <li
                 key={index}
                 className={col.className ? "table-content " + col.className : "table-content"}
@@ -180,10 +179,9 @@ class EventAttendees extends Component {
             >
                 <span style={{ "flex": "0 0 auto", "height": "1.5rem" }}> {zipcode} </span>
             </li>
-        );*/
+        );
         
     } 
-
 
     renderFullNameColumn(value, row, index, col) {
         return (
@@ -265,7 +263,7 @@ class EventAttendees extends Component {
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
             { title: "Phone", accesor: "phone" },
-            { title: "Zip", accesor: "zip", render: this.renderZipCodeColumn }, 
+            { title: "Zip", accesor: "zipCode" }, 
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {

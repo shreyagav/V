@@ -205,8 +205,13 @@ namespace Services
                     MemberTypeId = tempMemberType(),
                     Phone = u.User.PhoneNumber,
                     SiteId = u.User.SiteId,
-                    Attended = u.Attended.HasValue ? u.Attended.Value : false
+                    Attended = u.Attended.HasValue ? u.Attended.Value : false,
+                    ZipCode = u.User.Zip == null ? "00000" : u.User.Zip
                 }).ToArray();
+            var debug = _context.UserEvents
+                .Where(ue => ue.EventId == eventId)
+                .Include(e => e.User)
+                .Select(u => u).ToArray();
             return res;
         }
 

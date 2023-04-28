@@ -33,9 +33,6 @@ class Table extends Component {
                     return (
                         columns.map((col, index) => {
                             if (col.render) {
-                                if (col.accesor == "zip") {
-                                    return (col.render(element, index, col))
-                                }
                                 return (col.render(element[col.accesor], element, index, col))
                             } 
                             else return (
