@@ -439,7 +439,7 @@ class Member extends Component {
                                         searchParams={['group']}
                                     //searchMinCharacterCount = {5}
                                     />
-                                    {this.props.store.displayValidationErrors('siteId', this.validators)}
+                                    {this.props.store.displayValidationErrors('ethnicity', this.validators)}
                                 </div>
                             </li>
                         <li>
