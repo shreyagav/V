@@ -8,9 +8,9 @@ const memberValidators = (isNew) => {
         { 'name': 'gender', 'typeFunction': 'gender', 'text': 'gender' },
         { 'name': 'zip', 'typeFunction': 'zip', 'text': 'zip' }
     ];
-    if (!isNew) {
-        array.push({ 'name': 'email', 'typeFunction': 'email', 'text': 'Email' });
-    }
+ //   if (!isNew) {
+ //      array.push({ 'name': 'email', 'typeFunction': 'email', 'text': 'Email' });
+ //   }
 
     return createValidators(array);
 }
