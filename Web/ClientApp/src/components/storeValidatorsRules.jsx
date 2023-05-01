@@ -70,6 +70,12 @@ const storeValidatorsRules = {
             { test: (value) => { return value > 0 }, message: message1 },
         ];
     },
+    dropDownEthnicityValue: (text) => {
+        let message1 = 'Please select the ' + text;
+        return [
+            { test: (value) => { return value !== "" }, message: message1 },
+        ];
+    },
     zip: (text) => {
         let message1 = text + ' is not valid';
         return [ 
@@ -103,7 +109,7 @@ const storeValidatorsRules = {
     gender: (text) => {
         let message = 'Please choose ' + text;
         return [
-            { test: (value) => { return (value === 'M' || value === 'F') }, message: message },
+            { test: (value) => { return (value === 'M' || value === 'F' || value === 'Other') }, message: message },
         ];
     },
 };

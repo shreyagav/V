@@ -401,7 +401,7 @@ class Member extends Component {
                                         style={{ "marginRight": "0.75rem" }}
                                         radioGroupElement = {this.state.member.gender}
                                         radioButtonValue = 'F'
-                                        onClick = {(value) => {
+                                            onClick = {(value) => {                                            
                                             this.props.store.updateValidators("gender", value, this.validators);
                                             this.updateMemberProperty("gender", value);
                                         }}
@@ -424,7 +424,7 @@ class Member extends Component {
                             </li>
                             <li>
                                 <p>* Ethnicity:</p>
-                                <div className={this.props.store.checkIfShowError('siteId', this.validators) ? 'error-input-wrapper' : ""}>
+                                <div className={this.props.store.checkIfShowError('ethnicity', this.validators) ? 'error-input-wrapper' : ""}>
                                     <MultiDropDown
                                         ref={el => this.stateDropDownRef = el}
                                         list={ethnicityList}
@@ -434,7 +434,10 @@ class Member extends Component {
                                         defaultValue={this.state.member.ethnicity}
                                         placeholder="Ethnicity"
                                         textPropertyRender={(element, textProperty) => this.stateEthnicityRender(element, textProperty)}
-                                        onDropDownValueChange={value => this.updateMemberProperty("ethnicity", value)}
+                                        onDropDownValueChange={value => {
+                                            this.props.store.updateValidators("ethnicity", value, this.validators);
+                                            this.updateMemberProperty("ethnicity", value);
+                                        }}
                                         search={this.filterList}
                                         searchParams={['group']}
                                     //searchMinCharacterCount = {5}

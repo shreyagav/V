@@ -7,7 +7,7 @@ const memberValidators = (isNew) => {
         { 'name': 'siteId', 'typeFunction': 'dropDownValue', 'text': 'Chapter' },
         { 'name': 'gender', 'typeFunction': 'gender', 'text': 'Gender' },
         { 'name': 'zip', 'typeFunction': 'zip', 'text': 'Zip' },
-        { 'name': 'ethnicity', 'typeFunction': 'dropDownValue', 'text': 'Enthicity' },
+        { 'name': 'ethnicity', 'typeFunction': 'dropDownEthnicityValue', 'text': 'Ethnicity' },
     ];
  //   if (!isNew) {
  //      array.push({ 'name': 'email', 'typeFunction': 'email', 'text': 'Email' });
