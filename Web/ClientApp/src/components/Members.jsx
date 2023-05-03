@@ -25,9 +25,9 @@ class Members extends Component {
     updateList(props) {
         let actualFilters = {};
         this.setState({ loadData: true });
-        console.log(props.filters);
+        //console.log(props.filters);
         props.filters.forEach(a => {
-            console.log(typeof (a.value), a.value, a.name);
+            //console.log(typeof (a.value), a.value, a.name);
             if (Array.isArray(a.value) && a.value.length > 0) {
                 actualFilters[a.name] = a.value;
             } else if (typeof (a.value) == "string" && a.value != "") {
