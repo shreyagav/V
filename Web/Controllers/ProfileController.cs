@@ -212,6 +212,24 @@ namespace Web.Controllers
         }
 
         [HttpPost("[action]")]
+        public Boolean CheckDuplicate(DuplicateCheckerDto userInfo)
+        {
+            ProfileFilterDto filter = new ProfileFilterDto();
+            filter.Name = userInfo.LastName;
+            filter.DateFrom = userInfo.DateFrom;
+            filter.DateTo = userInfo.DateTo;
+            filter.Active = true;
+
+            UserProfileDto[] activeMembers = GetFiltered(filter);
+
+            filter.Active = false;
+            UserProfileDto[] nonactiveMembers = GetFiltered(filter);
+
+            //We already know the birthday is the same since we query between two days one day apart (non-inclusive)
+            return activeMembers.Any(m => m.LastName.ToLower() == userInfo.LastName.ToLower()) || nonactiveMembers.Any(m => m.LastName.ToLower() == userInfo.LastName.ToLower());
+        }
+
+        [HttpPost("[action]")]
         public async Task<dynamic> Delete(UserProfileDto data)
         {
             var user = await _userManager.FindByIdAsync(data.Id);

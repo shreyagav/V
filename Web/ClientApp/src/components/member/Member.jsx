@@ -87,7 +87,7 @@ class Member extends Component {
         this.authLevelDropDownRef = null;
         this.userTypeDropDownRef = null;
 
-        this.saveMemberDuplicationCheck = this.saveMemberDuplicationCheck.bind(this);
+        this.duplicateMemberCheck = this.duplicateMemberCheck.bind(this);
         this.saveMemberInfo = this.saveMemberInfo.bind(this);
         this.onContactInputValueChange = this.onContactInputValueChange.bind(this);
         this.close = this.close.bind(this);
@@ -140,55 +140,30 @@ class Member extends Component {
 
     close() { this.props.history.goBack(); }
 
-    async saveMemberDuplicationCheck() { 
-        if (this.props.match.path == '/new-member' && this.state.member.dateOfBirth) {
-            let matchedMembers = [];
-            //console.log(this.state.member);
+    async duplicateMemberCheck() {
+        if (this.props.match.path == '/new-member' && this.state.member.dateOfBirth) { //If DOB exists, we check it. If it doesn't we just move on.
+            let userInfo = {};
+            userInfo["LastName"] = this.state.member.lastName;
 
-            let lastName = this.state.member.lastName;
-            let actualFilters = {};
-            actualFilters["name"] = this.state.member.lastName;
-
-            const today = this.state.member.dateOfBirth
+            const today = this.state.member.dateOfBirth;
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1);
             const tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
 
-            //console.log(today);
-            //console.log(yesterday);
-            //console.log(tomorrow);
-            actualFilters["dateFrom"] = yesterday;
-            actualFilters["dateTo"] = tomorrow;
+            userInfo["DateFrom"] = yesterday;
+            userInfo["DateTo"] = tomorrow;
 
-            let matches1 = await Service.getFilteredMembers(actualFilters);//check both active and non-active accounts
-            matchedMembers = [...matchedMembers, ...matches1];
+            let hasDuplicate = await Service.checkDuplicateMembers(userInfo);
 
-            actualFilters["active"] = true;
-            let matches2 = await Service.getFilteredMembers(actualFilters);
-            matchedMembers = [...matchedMembers, ...matches2];
-
-            //console.log(matchedMembers);
-
-            let matchFlag = false;
-
-            matchedMembers.forEach(function (member) {//see if there's any matches
-                let otherDate = new Date(member["dateOfBirth"]);
-                if (member["lastName"].toLowerCase() == lastName.toLowerCase() &&
-                    today.getFullYear() === otherDate.getFullYear() &&
-                    today.getMonth() === otherDate.getMonth() &&
-                    today.getDate() === otherDate.getDate()) {
-
-                    matchFlag = true;
-                    console.log("Same Last Name and DOB");
-
-                }
-            })
-
-            if (matchFlag) {
+            //Show Error Popup Warning
+            if (hasDuplicate) {
                 this.setState({ dupe: true });
-                //Show Error Popup Warning
             }
+            else {
+                this.saveMemberInfo();
+            }
+
         }
         else {
             this.saveMemberInfo();
@@ -315,7 +290,7 @@ class Member extends Component {
                             </button>
                             <button
                                 className='round-button medium-round-button outline-on-hover'
-                                onClick={() => this.performIfValid(this.saveMemberInfo)}
+                                onClick={() => this.performIfValid(this.duplicateMemberCheck)}
                             >
                                 <SaveUpSVG />
                                 <span>Save</span>

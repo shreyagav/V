@@ -35,7 +35,7 @@ class SignUp extends Component {
         this.passwordInputRef = null;
 
         this.handleTextChange = this.handleTextChange.bind(this);
-        this.submitSignUpConfirmation = this.submitSignUpConfirmation.bind(this);
+        this.duplicateMemberCheck = this.duplicateMemberCheck.bind(this);
         this.submitSignUp = this.submitSignUp.bind(this);
         this.onChange = this.onChange.bind(this);
         this.checkIfMatches = this.checkIfMatches.bind(this);
@@ -71,7 +71,7 @@ class SignUp extends Component {
 
     }
 
-    submitSignUpConfirmation() {
+    submitSignUp() {
         this.setState({ loading: true });
         fetch('/api/account/signup', {
             headers: {
@@ -92,14 +92,10 @@ class SignUp extends Component {
             .catch(err => this.setState({ loading: false, error: err }));
     }
 
-    async submitSignUp() {
+    async duplicateMemberCheck() {
         if (this.state.signUpInfo.dateOfBirth) { //If DOB exists, we check it. If it doesn't we just move on.
-            let matchedMembers = [];
-            //console.log(this.state.signUpInfo);
-
-            let lastName = this.state.signUpInfo.LastName;
-            let actualFilters = {};
-            actualFilters["name"] = this.state.signUpInfo.LastName;
+            let userInfo = {};
+            userInfo["LastName"] = this.state.signUpInfo.LastName;
 
             const today = this.state.signUpInfo.dateOfBirth
             const yesterday = new Date(today);
@@ -107,46 +103,23 @@ class SignUp extends Component {
             const tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
 
-            //console.log(today);
-            //console.log(yesterday);
-            //console.log(tomorrow);
-            actualFilters["dateFrom"] = yesterday;
-            actualFilters["dateTo"] = tomorrow;
+            userInfo["DateFrom"] = yesterday;
+            userInfo["DateTo"] = tomorrow;
 
-            let matches1 = await Service.getFilteredMembers(actualFilters);//check both active and non-active accounts
-            matchedMembers = [...matchedMembers, ...matches1];
+            let hasDuplicate = await Service.checkDuplicateMembers(userInfo);
 
-            actualFilters["active"] = true;
-            let matches2 = await Service.getFilteredMembers(actualFilters);
-            matchedMembers = [...matchedMembers, ...matches2];
-
-            //console.log(matchedMembers);
-
-            let matchFlag = false;
-
-            matchedMembers.forEach(function (member) {//see if there's any matches
-                let otherDate = new Date(member["dateOfBirth"]);
-                if (member["lastName"].toLowerCase() == lastName.toLowerCase() &&
-                    today.getFullYear() === otherDate.getFullYear() &&
-                    today.getMonth() === otherDate.getMonth() &&
-                    today.getDate() === otherDate.getDate()) {
-
-                    matchFlag = true;
-                    console.log("Same Last Name and DOB");
-
-                }
-            })
-
-            if (matchFlag) {
+            //Show Error Popup Warning
+            if (hasDuplicate) {
                 this.setState({ dupe: true });
-                //Show Error Popup Warning
+            }
+            else {
+                this.submitSignUp();
             }
 
         }
         else {
-            this.submitSignUpConfirmation();
+            this.submitSignUp();
         }
-        
         
     }
 
@@ -335,7 +308,7 @@ class SignUp extends Component {
                     <div className='flex-wrap justify-center mt-1 mb-2'>
                         <button 
                             className='medium-static-button static-button' 
-                            onClick={() => this.props.store.performIfValid(this.state.signUpInfo, this.validators, this.submitSignUp, this.showError)}
+                            onClick={() => this.props.store.performIfValid(this.state.signUpInfo, this.validators, this.duplicateMemberCheck, this.showError)}
                         >Submit</button>
                         <button className='medium-static-button static-button default-button' onClick={() => this.props.history.push('/')}>Home</button>
                     </div>
@@ -357,7 +330,7 @@ class SignUp extends Component {
                         children={"Would you like to create another account with the same LAST NAME and DOB?"}
                         mode="warning"
                         onClose={() => this.setState({ dupe: null })}
-                        onOkButtonClick={this.submitSignUpConfirmation}
+                        onOkButtonClick={this.submitSignUp}
                         onCancelButtonClick={() => this.setState({ dupe: null })}
                         showOkCancelButtons={true}
                         okButtonText={"Yes"}

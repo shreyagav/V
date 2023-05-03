@@ -102,6 +102,11 @@ export class Service {
     static getProfileById(id) {
         return Service.__get(host + '/api/Profile/GetById/'+id);
     }
+
+    static checkDuplicateMembers(userInfo) {
+        return Service.__post(host + '/api/Profile/CheckDuplicate', userInfo);
+    }
+
     static deleteProfile(info) {
         return Service.__post(host + '/api/Profile/Delete', info);
     }
