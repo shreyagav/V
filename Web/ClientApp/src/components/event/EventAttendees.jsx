@@ -37,7 +37,6 @@ class EventAttendees extends Component {
             attendeeFilter: '',
             chapterOnlyMembers: true,
         };
-        console.log(this.state.eventId)
 
         this.substractHeightElRef = null;
         this.modalWindowRef = null;
@@ -125,63 +124,7 @@ class EventAttendees extends Component {
         this.setState({filteredList: filteredList})
     } 
 
-    renderZipCodeColumn(row, index, col) {
-        let actualFilters = {};
-        let matchedMembers = [];
-       
-        console.log("getting site member here")
-        const member_firstName = row['firstName']
-        const member_id = row['id']
-        console.log(member_id)
-        actualFilters["name"] = member_firstName
-        let zipcode = "00000"
-        console.log(actualFilters)
-
-        Service.getFilteredMembers(actualFilters)
-            .then(matches2 => {
-                actualFilters["active"] = true
-                 
-                Service.getFilteredMembers(actualFilters)
-                    .then(matches3 => {
-                        let matches4 = [...matches2, ...matches3]
-
-                        let filtered = matches4.filter(member => member.id === member_id);
-                        if (filtered.length > 0) {
-                            zipcode = filtered[0]['zip']
-                        }
-
-                    }).then(zipcodeElement => {
-                        zipcode = row.zipCode || zipcode;
-                        // render the element
-                        return (
-                            <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
-                                <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
-                                    
-                                    {zipcode}
-                                </span>
-                            </li>
-                        )
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    }); 
-
-            })
-            .catch(error => {
-                console.log(error)
-            });
-
-        return (
-            <li
-                key={index}
-                className={col.className ? "table-content " + col.className : "table-content"}
-                style={{ "display": "flex", "alignItems": "center" }}
-            >
-                <span style={{ "flex": "0 0 auto", "height": "1.5rem" }}> {zipcode} </span>
-            </li>
-        );
-        
-    } 
+    
 
     renderFullNameColumn(value, row, index, col) {
         return (
@@ -231,7 +174,6 @@ class EventAttendees extends Component {
     }
 
     renderToggler(value, row, index, col) {
-        console.log(value);
         return (<li className="table-content"><TabComponent
             style={{ 'fontSize': '0.85rem', 'height': '24px' }}
             tabList={["yes", "no"]}
