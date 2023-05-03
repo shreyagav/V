@@ -446,14 +446,17 @@ class Member extends Component {
                                 </div>
                             </li>
                         <li>
-                            <p className='mark-optional'>Date of Birth:</p>
+                                <p>* Date of Birth:</p>
+                                <div className={this.props.store.checkIfShowError('dateOfBirth', this.validators) ? 'error-input-wrapper' : ""}>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
                                 value={this.state.member.dateOfBirth}
                                 onSelect={value => {
                                     this.updateMemberProperty("dateOfBirth", value);
                                 }}
-                            />
+                                    />
+                                    {this.props.store.displayValidationErrors('dateOfBirth', this.validators)}
+                            </div>
                     </li>
                     {/*<li>
                         <p className='mark-optional'>Injury Date:</p>
