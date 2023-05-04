@@ -53,16 +53,16 @@ class App extends Component {
             typeOfEvent: '',
             status: '',
             color: '',
-            chapter: undefined,
+            chapter: [],
         },
         memberFilter: {
             name: [],
             role: 0,
-            dateFrom: new Date(this.datefrom.getFullYear() - 60, this.datefrom.getMonth()),
-            dateTo: new Date(this.datefrom.getFullYear() - 20, this.datefrom.getMonth()),
+            dateFrom: null,
+            dateTo: null,
             zip: '',
             active: true,
-            chapter: undefined,
+            chapter: [],
         }
     };
   }
@@ -97,7 +97,7 @@ class App extends Component {
                                   typeOfEvent: '',
                                   status: '',
                                   color: '',
-                                  chapter: undefined,
+                                  chapter: [],
                               } })}
                       />
                   </div>} />
@@ -111,11 +111,11 @@ class App extends Component {
                               memberFilter: {
                                   name: [],
                                   role: 0,
-                                  dateFrom: new Date(this.datefrom.getFullYear() - 60, this.datefrom.getMonth()),
-                                  dateTo: new Date(this.datefrom.getFullYear() - 20, this.datefrom.getMonth()),
+                                  dateFrom: null,
+                                  dateTo: null,
                                   zip: '',
                                   active: true,
-                                  chapter: undefined,
+                                  chapter: [],
                               }
                           })}
                       />

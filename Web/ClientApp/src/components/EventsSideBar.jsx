@@ -90,6 +90,8 @@ class EventsSideBar extends Component {
         let initialTypeOfEvent = clear ? '' : this.props.eventFilter.typeOfEvent;
         let initialStatus = clear ? '' : this.props.eventFilter.status;
         let initialColor = '';
+        let initialChapters = clear ? [] : this.props.eventFilter.chapter;
+
         filters.splice(0, filters.length);
         filters.push({name: "title", value: initialTitle});
         filters.push({name: "dateFrom", value: initialDateFrom});
@@ -98,7 +100,7 @@ class EventsSideBar extends Component {
         filters.push({name: "timeTo", value: initialTimeTo});
         filters.push({name: "typeOfEvent", value: initialTypeOfEvent});
         filters.push({name: "status", value: initialStatus});
-        filters.push({ name: "chapters", value: [] });
+        filters.push({ name: "chapters", value: initialChapters });
 
         let initialState = {
             title: initialTitle, 
