@@ -107,7 +107,10 @@ class Member extends Component {
     fixData(data) {
         if (data.dateOfBirth != null) {
             data.dateOfBirth = new Date(data.dateOfBirth);
+        } else {
+            data.dateOfBirth = new Date(9999, 11, 31)
         }
+
         if (data.injuryDate != null) {
             data.injuryDate = new Date(data.injuryDate);
         }
@@ -357,19 +360,13 @@ class Member extends Component {
                         </li>
                         <li className='input-wrapper' >
                             <p className='mark-optional'>Email:</p>
-                            <div className={this.state.member.id != "" && this.props.store.checkIfShowError('email', this.validators) ? 'error-input-wrapper' : ""}>
                                 <input type='text' 
                                     placeholder='Email'
                                     value = {this.state.member.email}
                                     onChange={e => {
-                                        if (this.state.member.id != "") {
-                                            this.props.store.updateValidators("email", e.target.value, this.validators);
-                                        }
                                         this.updateMemberProperty("email", e.target.value);
                                     }}
                                 />
-                                {this.state.member.id != "" && this.props.store.displayValidationErrors('email', this.validators) }
-                            </div>
                         </li>
                         <li className='input-wrapper'>
                             <p className='mark-optional'>Phone #:</p>
@@ -432,7 +429,7 @@ class Member extends Component {
                                         keyProperty='group'
                                         textProperty='group'
                                         defaultValue={this.state.member.ethnicity}
-                                        placeholder="Ethnicity"
+                                        placeholder="Select ethnicity"
                                         textPropertyRender={(element, textProperty) => this.stateEthnicityRender(element, textProperty)}
                                         onDropDownValueChange={value => {
                                             this.props.store.updateValidators("ethnicity", value, this.validators);
@@ -440,6 +437,7 @@ class Member extends Component {
                                         }}
                                         search={this.filterList}
                                         searchParams={['group']}
+                                        isNew={this.state.userId === "" && this.props.match.path !== '/profile'}
                                     //searchMinCharacterCount = {5}
                                     />
                                     {this.props.store.displayValidationErrors('ethnicity', this.validators)}
@@ -450,10 +448,13 @@ class Member extends Component {
                                 <div className={this.props.store.checkIfShowError('dateOfBirth', this.validators) ? 'error-input-wrapper' : ""}>
                             <DatePicker 
                                 ref={el => this.dateOfBirthDropDownRef = el}
-                                value={this.state.member.dateOfBirth}
+                                value={ this.state.member.dateOfBirth }
                                 onSelect={value => {
+                                    this.emptyStartDate = false;
+                                    this.props.store.updateValidators("dateOfBirth", value, this.validators);
                                     this.updateMemberProperty("dateOfBirth", value);
                                 }}
+                                isNew={this.state.userId === "" && this.props.match.path !== '/profile'}
                                     />
                                     {this.props.store.displayValidationErrors('dateOfBirth', this.validators)}
                             </div>

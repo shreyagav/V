@@ -465,6 +465,17 @@ class MultiDropDown extends React.Component {
         if(list.length > 0) return list[0].parentElement[this.props.textProperty]
         else return ""
     }
+    getValue() {
+        if (this.props.placeholder === "Select ethnicity") {
+            if ((this.props.isNew !== null && this.props.isNew === false) && (this.props.value === null || this.props.value === undefined)) {
+                return "Unknown"
+            } else {
+                return this.state.search;
+            }
+        } else {
+            return this.state.search;
+        }
+    }
 
     render() {
         const setStyle = () => {
@@ -535,7 +546,7 @@ class MultiDropDown extends React.Component {
                                         }
                                     </li>
                                 })
-                            }
+                                }
                             {this.thereIsSearchInput && 
                                 <li 
                                     className={this.props.multiSelect || this.props.expandedMultiSelect ? 'liSearchWrapper liSearchWrapperMultiSelect' : 'liSearchWrapper'} 
@@ -547,7 +558,7 @@ class MultiDropDown extends React.Component {
                                         dynamicWidth={true}
                                         placeholder={this.props.placeholder}
                                         autocompleteOff={true}
-                                        value={this.state.search}
+                                        value={this.getValue()}
                                         inputKeyDownHandler={(e) => this.walkDownTheList(e)}
                                         //onWrapperClick={(e) => this.onSearchInputWrapperClick(e)}
                                         onInputClick={this.onInputClick}

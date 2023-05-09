@@ -8,7 +8,7 @@ const memberValidators = (isNew) => {
         { 'name': 'gender', 'typeFunction': 'gender', 'text': 'Gender' },
         { 'name': 'zip', 'typeFunction': 'zip', 'text': 'Zip' },
         { 'name': 'ethnicity', 'typeFunction': 'dropDownEthnicityValue', 'text': 'Ethnicity' },
-        { 'name': 'dateOfBirth', 'typeFunction': 'dropDownValue', 'text': 'DOB' }, 
+        { 'name': 'dateOfBirth', 'typeFunction': 'datePickerValue', 'text': 'DOB' }, 
     ];
  //   if (!isNew) {
  //      array.push({ 'name': 'email', 'typeFunction': 'email', 'text': 'Email' });
