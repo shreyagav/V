@@ -202,11 +202,13 @@ namespace Services
                     FirstName = u.User.FirstName,
                     LastName = u.User.LastName,
                     Email = u.User.Email,
-                    MemberTypeId = tempMemberType(),
+                    MemberTypeId = u.User.OldType,
                     Phone = u.User.PhoneNumber,
                     SiteId = u.User.SiteId,
-                    Attended = u.Attended.HasValue ? u.Attended.Value : false
+                    Attended = u.Attended.HasValue ? u.Attended.Value : false,
+                    ZipCode = u.User.Zip == null ? "00000" : u.User.Zip
                 }).ToArray();
+            
             return res;
         }
 

@@ -15,5 +15,6 @@ namespace Models.Dto
         public int MemberTypeId { get; set; }
         public bool Active { get; set; }
         public bool Attended { get; set; }
+        public string ZipCode { get; set; }
     }
 }

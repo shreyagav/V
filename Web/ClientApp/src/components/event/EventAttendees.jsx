@@ -7,6 +7,7 @@ import EditUpSVG from '../../svg/EditUpSVG'
 import Table from '../Table'
 import VolunteerUpSVG from '../../svg/VolunteerUpSVG'
 import VeteranUpSVG from '../../svg/VeteranUpSVG'
+import PaddlerUpSVG from '../../svg/PaddlerUpSVG'
 import Loader from '../Loader'
 import { Service } from '../ApiService'
 import FixedWrapper from '../FixedWrapper'
@@ -15,6 +16,9 @@ import CheckBox from '../CheckBox'
 import SearchInput from '../SearchInput'
 import Alert from '../Alert'
 import TabComponent from '../TabComponent';
+import CaregiverUpSVG from '../../svg/CaregiverUpSVG'
+
+
 
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
@@ -33,8 +37,9 @@ class EventAttendees extends Component {
             activeMembersOnlyChecked: true,
             selectedMembersOnlyChecked: false,
             attendeeFilter: '',
-            chapterOnlyMembers: true
+            chapterOnlyMembers: true,
         };
+
         this.substractHeightElRef = null;
         this.modalWindowRef = null;
         this.membersDropDownRef = null;
@@ -46,6 +51,7 @@ class EventAttendees extends Component {
         this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
         this.filterMemberList = this.filterMemberList.bind(this);
         this.renderToggler = this.renderToggler.bind(this);
+
     }
 
     submitMembersToEvent() {
@@ -120,11 +126,13 @@ class EventAttendees extends Component {
         this.setState({filteredList: filteredList})
     } 
 
+    
+
     renderFullNameColumn(value, row, index, col) {
-        return (
+        return ( 
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
-                <span style={{"flex":"0 0 auto","height":"1.2rem"}}>
-                    {row['memberTypeId'] === '1' ? <VeteranUpSVG /> : <VolunteerUpSVG />}
+                <span style={{ "flex": "0 0 auto", "height": "1.2rem" }}>
+                    {row['memberTypeId'] === 53 ? <VolunteerUpSVG /> : (row['memberTypeId'] === 55 ? <CaregiverUpSVG /> : <PaddlerUpSVG />)}
                 </span>
                 <span style={{"flex":"1 1 auto"}} className="big-bold">{row['firstName'] + ' ' + row['lastName']}</span>
                 {this.props.editsPermitted !== false &&
@@ -168,7 +176,6 @@ class EventAttendees extends Component {
     }
 
     renderToggler(value, row, index, col) {
-        console.log(value);
         return (<li className="table-content"><TabComponent
             style={{ 'fontSize': '0.85rem', 'height': '24px' }}
             tabList={["yes", "no"]}
@@ -197,17 +204,17 @@ class EventAttendees extends Component {
 
     render() {
         const members = this.state.members;
-        console.log(members);
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
-            {title:"Phone", accesor:"phone"},
+            { title: "Phone", accesor: "phone" },
+            { title: "Zip", accesor: "zipCode" }, 
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {
             //columns.push({ title: "Attended", accessor: "attended", render: this.renderToggler });
         }
         return (
-            <div className='w-100 prpl-0'>
+            <div className='w-100 prpl-0'>         
                 {this.state.loading && <Loader />}
                 {this.state.addingExistingMembers &&
                     <FixedWrapper maxWidth={"600px"} noPadding={true}>
@@ -329,7 +336,7 @@ class EventAttendees extends Component {
                     >
                        {this.dialogContent}
                     </Alert>
-                }
+                }      
             </div>
         );
     }
