@@ -18,6 +18,8 @@ import Alert from '../Alert'
 import TabComponent from '../TabComponent';
 import CaregiverUpSVG from '../../svg/CaregiverUpSVG'
 
+
+
 class EventAttendees extends Component {
     static displayName = EventAttendees.name;
 
@@ -35,8 +37,9 @@ class EventAttendees extends Component {
             activeMembersOnlyChecked: true,
             selectedMembersOnlyChecked: false,
             attendeeFilter: '',
-            chapterOnlyMembers: true
+            chapterOnlyMembers: true,
         };
+
         this.substractHeightElRef = null;
         this.modalWindowRef = null;
         this.membersDropDownRef = null;
@@ -48,6 +51,7 @@ class EventAttendees extends Component {
         this.submitMembersToEvent = this.submitMembersToEvent.bind(this);
         this.filterMemberList = this.filterMemberList.bind(this);
         this.renderToggler = this.renderToggler.bind(this);
+
     }
 
     submitMembersToEvent() {
@@ -122,6 +126,8 @@ class EventAttendees extends Component {
         this.setState({filteredList: filteredList})
     } 
 
+    
+
     renderFullNameColumn(value, row, index, col) {
         return ( 
             <li key={index} className={col.className ? "table-content " + col.className : "table-content"}>
@@ -170,7 +176,6 @@ class EventAttendees extends Component {
     }
 
     renderToggler(value, row, index, col) {
-        console.log(value);
         return (<li className="table-content"><TabComponent
             style={{ 'fontSize': '0.85rem', 'height': '24px' }}
             tabList={["yes", "no"]}
@@ -199,10 +204,10 @@ class EventAttendees extends Component {
 
     render() {
         const members = this.state.members;
-        console.log(members);
         const columns=[
             {title:"Attendee", accesor:"name", className:"borders-when-display-block", render: this.renderFullNameColumn},
-            {title:"Phone", accesor:"phone"},
+            { title: "Phone", accesor: "phone" },
+            { title: "Zip", accesor: "zipCode" }, 
             { title: "Email", accesor: "email", className: 'word-break' }
         ];
         if (this.props.showAttended) {

@@ -205,8 +205,10 @@ namespace Services
                     MemberTypeId = u.User.OldType,
                     Phone = u.User.PhoneNumber,
                     SiteId = u.User.SiteId,
-                    Attended = u.Attended.HasValue ? u.Attended.Value : false
-                }).ToArray();             
+                    Attended = u.Attended.HasValue ? u.Attended.Value : false,
+                    ZipCode = u.User.Zip == null ? "00000" : u.User.Zip
+                }).ToArray();
+            
             return res;
         }
 
