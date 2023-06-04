@@ -141,8 +141,6 @@ class Member extends Component {
 
         this.setState({ loading: true });
 
-        this.state.member.roles = [this.state.member.roles]
-
         Service.setProfile(this.state.member).then(data => {
             if(data === undefined) {this.setState({ loading: false, showErrorSaveDialog: true })}
             else {
@@ -151,7 +149,6 @@ class Member extends Component {
             }
         }).catch(er => {
             var mess = 'Something went wrong.';
-            //console.log(typeof (er));
             if (Array.isArray(er)) {
                 mess.forEach(a => { mess += '; ' + a; });
             } 

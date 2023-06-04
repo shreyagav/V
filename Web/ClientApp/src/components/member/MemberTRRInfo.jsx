@@ -8,7 +8,10 @@ import { filterSearch } from '../filterSearch'
 
 class MemberTRRInfo extends Component {
 
+
+
     render() {
+
         return (
             <div>
                 <CheckBox 
@@ -134,12 +137,12 @@ class MemberTRRInfo extends Component {
                             <MultiDropDown
                             ref={this.props.setAuthLevelDropDownRef}
                             list={this.props.roles}
-                                multiSelect={false}
-                                keyProperty='id'
-                                textProperty='name'
-                                defaultValue={this.props.member.roles}
-                                placeholder="Select Authentification Level"
-                            onDropDownValueChange={value => this.props.updateMemberProperty("roles", value)}
+                            multiSelect={false}
+                            keyProperty='id'
+                            textProperty='name'
+                            defaultValue={this.props.member.roles[0]}
+                            placeholder="Select Authentification Level"
+                            onDropDownValueChange={value => { console.log(value); this.props.updateMemberProperty("roles", [value]) }}
                             />
                         </li>
                         <li>
