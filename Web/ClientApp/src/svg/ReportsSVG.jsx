@@ -1,26 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class ReportsSVG extends React.Component {
-    render() {
-        return (
-            <div className='round-button big-round-button grey-outline-button'>
-                <svg
-                    style={{'height' : '100%'}} 
-                    version="1.1" 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    x="0px" y="0px" viewBox="0 0 25 25" 
-                >
-                    <path className="svg" d="M21.6,24.5H3.4c-0.5,0-0.9-0.4-0.9-0.9V1.4c0-0.5,0.4-0.9,0.9-0.9h18.2c0.5,0,0.9,0.4,0.9,0.9v22.2
+  render() {
+    return (
+      <div className="round-button big-round-button grey-outline-button">
+        <svg
+          style={{ height: "100%" }}
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 25 25"
+        >
+          <path
+            className="svg"
+            d="M21.6,24.5H3.4c-0.5,0-0.9-0.4-0.9-0.9V1.4c0-0.5,0.4-0.9,0.9-0.9h18.2c0.5,0,0.9,0.4,0.9,0.9v22.2
 	C22.5,24.1,22.1,24.5,21.6,24.5z M8.5,3.4h-1c-0.5,0-0.9,0.4-0.9,0.9v1c0,0.5,0.4,0.9,0.9,0.9h1c0.5,0,0.9-0.4,0.9-0.9v-1
 	C9.3,3.8,8.9,3.4,8.5,3.4z M17.7,3.4H12c-0.5,0-0.9,0.4-0.9,0.9v1c0,0.5,0.4,0.9,0.9,0.9h5.7c0.5,0,0.9-0.4,0.9-0.9v-1
 	C18.5,3.8,18.2,3.4,17.7,3.4z M17.9,7.4H7.2c-0.4,0-0.7,0.3-0.7,0.7v0c0,0.4,0.3,0.7,0.7,0.7h10.6c0.4,0,0.7-0.3,0.7-0.7v0
 	C18.5,7.7,18.2,7.4,17.9,7.4z M17.9,9.8H7.2c-0.4,0-0.7,0.3-0.7,0.7v0c0,0.4,0.3,0.7,0.7,0.7h10.6c0.4,0,0.7-0.3,0.7-0.7v0
 	C18.5,10.1,18.2,9.8,17.9,9.8z M17.9,12.2H7.2c-0.4,0-0.7,0.3-0.7,0.7v0c0,0.4,0.3,0.7,0.7,0.7h10.6c0.4,0,0.7-0.3,0.7-0.7v0
-	C18.5,12.5,18.2,12.2,17.9,12.2z"/>
-                </svg>
-            </div>
-        );
-    }
+	C18.5,12.5,18.2,12.2,17.9,12.2z"
+          />
+        </svg>
+      </div>
+    );
+  }
 }
 
 export default ReportsSVG;

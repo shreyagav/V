@@ -1,14 +1,110 @@
 [
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Draft", "color":"#0099cc"},
-    {"name":"Kayak Pool Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Flat or White Water Session", "status":"Published", "color":"#ff9933"},
-    {"name":"Pool Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Closed", "color":"#669933"},
-    {"name":"Pool Paddle at Fike Recreation C", "chapter": "South Alabama", "date": "02/12/2019",  "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Deleted", "color":"#9252a0"},
-    {"name":"Aqua Paddle", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Cancelled", "color":"#666666"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Published", "color":"#33cc99"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Published", "color":"#33cc99"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Published", "color":"#9252a0"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Flat or White Water Session", "status":"Published", "color":"#9252a0"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Published", "color":"#666666"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Published", "color":"#ff9933"},
-    {"name":"YMCA Springfield Paddle Session", "chapter": "South Alabama", "date": "02/12/2019", "time":"08:00 AM - 09:00 AM", "type":"Pool Session", "status":"Published", "color":"#9252a0"}
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Draft",
+    "color": "#0099cc"
+  },
+  {
+    "name": "Kayak Pool Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Flat or White Water Session",
+    "status": "Published",
+    "color": "#ff9933"
+  },
+  {
+    "name": "Pool Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Closed",
+    "color": "#669933"
+  },
+  {
+    "name": "Pool Paddle at Fike Recreation C",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Deleted",
+    "color": "#9252a0"
+  },
+  {
+    "name": "Aqua Paddle",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Cancelled",
+    "color": "#666666"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Published",
+    "color": "#33cc99"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Published",
+    "color": "#33cc99"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Published",
+    "color": "#9252a0"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Flat or White Water Session",
+    "status": "Published",
+    "color": "#9252a0"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Published",
+    "color": "#666666"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Published",
+    "color": "#ff9933"
+  },
+  {
+    "name": "YMCA Springfield Paddle Session",
+    "chapter": "South Alabama",
+    "date": "02/12/2019",
+    "time": "08:00 AM - 09:00 AM",
+    "type": "Pool Session",
+    "status": "Published",
+    "color": "#9252a0"
+  }
 ]

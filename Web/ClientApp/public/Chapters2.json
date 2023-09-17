@@ -1,36 +1,286 @@
 [
-    {"state": "Alabama", "id":1, "checked":false, "chapters": [{"name":"South Alabama", "checked":false}]},
-    {"state": "California", "id":2, "checked":false, "chapters": [{"name":"American River", "checked":false}, {"name":"Palo Alto", "checked":false}, {"name":"San Diego", "checked":false}]},
-    {"state": "Colorado", "id":3, "checked":false, "chapters": [{"name":"Denver", "checked":false}, {"name":"Ft. Carson/Colorado Springs","checked":false},{"name":"Fort Collins","checked":false},{"name":"Grand Junction","checked":false},{"name":"Montrose", "checked":false}]},
-    {"state": "District of Columbia", "id":4, "checked":false, "chapters": [{"name":"Washington, DC", "checked":false}]},
-    {"state": "Florida", "id":5, "checked":false, "chapters": [{"name":"St. Cloud","checked":false},{"name":"St. Augustine","checked":false},{"name":"Tampa Bay","checked":false}]},
-    {"state": "Georgia", "id":6, "checked":false, "chapters": [{"name":"Atlanta","checked":false},{"name":"Savannah – Ft. Stewart", "checked":false}]},
-    {"state":"Idaho", "id":6, "checked":false, "chapters": [{"name":"Boise", "checked":false}]},
-    {"state":"Illinois", "id":6, "checked":false, "chapters": [{"name":"Decatur", "checked":false}]},
-    {"state":"Indiana", "id":6, "checked":false, "chapters": [{"name":"Northwest Indiana","checked":false},{"name":"Indiana State","checked":false},{"name":"Indianapolis", "checked":false}]},
-    {"state":"Iowa", "id":6, "checked":false, "chapters": [{"name":"Des Moines", "checked":false}]},
-    {"state":"Kentucky", "id":6, "checked":false, "chapters": [{"name":"Ft. Campbell","checked":false},{"name":"Lexington","checked":false}]},
-    {"state":"Maine", "id":6, "checked":false, "chapters": [{"name":"Maine", "checked":false}]},
-    {"state":"Maryland", "id":6, "checked":false, "chapters": [{"name":"Walter Reed National Military Medical Center","checked":false},{"name":"Perry Point VA","checked":false},{"name":"Southern Maryland", "checked":false},{"name":"University of Maryland", "checked":false}]},
-    {"state":"Massachusetts", "id":6, "checked":false, "chapters": [{"name":"Boston", "checked":false}]},
-    {"state":"Michigan", "id":6, "checked":false, "chapters": [{"name":"Battle Creek", "checked":false}]},
-    {"state":"Minnesota", "id":6, "checked":false, "chapters": [{"name":"Minneapolis", "checked":false}]},
-    {"state":"Missouri", "id":6, "checked":false, "chapters": [{"name":"St. Louis","checked":false},{"name":"Springfield – Missouri State University","checked":false}]},
-    {"state":"Montana", "id":6, "checked":false, "chapters": [{"name":"Bozeman", "checked":false}]},
-    {"state":"North Carolina", "id":6, "checked":false, "chapters": [{"name":"Asheville","checked":false},{"name":"Charlotte","checked":false},{"name":"Raleigh-Durham","checked":false},{"name":"Winston Salem, Greensboro, High Point", "checked":false}]},
-    {"state":"New Hampshire", "id":6, "checked":false, "chapters": [{"name":"NEHSA", "checked":false}]},
-    {"state":"Nevada", "id":6, "checked":false, "chapters": [{"name":"Reno", "checked":false}]},
-    {"state":"New York", "id":6, "checked":false, "chapters": [{"name":"Northport VA","checked":false}, {"name":"Buffalo", "checked":false}]},
-    {"state":"Ohio", "id":6, "checked":false, "chapters": [{"name":"Cincinnati", "checked":false},{"name":"Ironton","checked":false},{"name":"North East & Central Ohio", "checked":false}]},
-    {"state":"Oregon", "id":6, "checked":false, "chapters": [{"name":"Portland", "checked":false}]},
-    {"state":"Pennsylvania", "id":6, "checked":false, "chapters": [{"name":"Butler","checked":false},{"name":"Lehigh Valley","checked":false},{"name":"Ohiopyle","checked":false},{"name":"Southeast PA","checked":false},{"name":"Susquehanna Valley", "checked":false}]},
-    {"state":"South Carolina", "id":6, "checked":false, "chapters": [{"name":"Columbia","checked":false},{"name":"Charleston","checked":false},{"name":"Clemson", "checked":false}]},
-    {"state":"Tennessee", "id":6, "checked":false, "chapters": [{"name":"Austin Peay State University","checked":false},{"name":"Chattanooga","checked":false},{"name":"Johnson City/Tricities Northern TN","checked":false},{"name":"Memphis","checked":false},{"name":"Nashville", "checked":false}]},
-    {"state":"Texas", "id":6, "checked":false, "chapters": [{"name":"San Antonio","checked":false}, {"name":"Houston", "checked":false}]},
-    {"state":"Utah", "id":6, "checked":false, "chapters": [{"name":"Salt Lake City", "checked":false}]},
-    {"state":"Virginia", "id":6, "checked":false, "chapters": [{"name":"Blue Ridge","checked":false},{"name":"Fort Belvoir","checked":false},{"name":"Richmond","checked":false},{"name":"Fredericksburg", "checked":false}]},
-    {"state":"Washington", "id":6, "checked":false, "chapters": [{"name":"Seattle","checked":false}, {"name":"Spokane", "checked":false}]},
-    {"state":"West Virginia", "id":6, "checked":false, "chapters": [{"name":"Beckley","checked":false}, {"name":"Shepherd","checked":false}]},
-    {"state":"Wisconsin", "id":6, "checked":false, "chapters": [{"name":"Green Bay","checked":false}, {"name":"Milwaukee", "checked":false}]},
-    {"state":"International", "id":6, "checked":false, "chapters": [{"name":"Italy – Camp Ederle", "checked":false}]}
+  {
+    "state": "Alabama",
+    "id": 1,
+    "checked": false,
+    "chapters": [{ "name": "South Alabama", "checked": false }]
+  },
+  {
+    "state": "California",
+    "id": 2,
+    "checked": false,
+    "chapters": [
+      { "name": "American River", "checked": false },
+      { "name": "Palo Alto", "checked": false },
+      { "name": "San Diego", "checked": false }
+    ]
+  },
+  {
+    "state": "Colorado",
+    "id": 3,
+    "checked": false,
+    "chapters": [
+      { "name": "Denver", "checked": false },
+      { "name": "Ft. Carson/Colorado Springs", "checked": false },
+      { "name": "Fort Collins", "checked": false },
+      { "name": "Grand Junction", "checked": false },
+      { "name": "Montrose", "checked": false }
+    ]
+  },
+  {
+    "state": "District of Columbia",
+    "id": 4,
+    "checked": false,
+    "chapters": [{ "name": "Washington, DC", "checked": false }]
+  },
+  {
+    "state": "Florida",
+    "id": 5,
+    "checked": false,
+    "chapters": [
+      { "name": "St. Cloud", "checked": false },
+      { "name": "St. Augustine", "checked": false },
+      { "name": "Tampa Bay", "checked": false }
+    ]
+  },
+  {
+    "state": "Georgia",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Atlanta", "checked": false },
+      { "name": "Savannah – Ft. Stewart", "checked": false }
+    ]
+  },
+  {
+    "state": "Idaho",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Boise", "checked": false }]
+  },
+  {
+    "state": "Illinois",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Decatur", "checked": false }]
+  },
+  {
+    "state": "Indiana",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Northwest Indiana", "checked": false },
+      { "name": "Indiana State", "checked": false },
+      { "name": "Indianapolis", "checked": false }
+    ]
+  },
+  {
+    "state": "Iowa",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Des Moines", "checked": false }]
+  },
+  {
+    "state": "Kentucky",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Ft. Campbell", "checked": false },
+      { "name": "Lexington", "checked": false }
+    ]
+  },
+  {
+    "state": "Maine",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Maine", "checked": false }]
+  },
+  {
+    "state": "Maryland",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      {
+        "name": "Walter Reed National Military Medical Center",
+        "checked": false
+      },
+      { "name": "Perry Point VA", "checked": false },
+      { "name": "Southern Maryland", "checked": false },
+      { "name": "University of Maryland", "checked": false }
+    ]
+  },
+  {
+    "state": "Massachusetts",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Boston", "checked": false }]
+  },
+  {
+    "state": "Michigan",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Battle Creek", "checked": false }]
+  },
+  {
+    "state": "Minnesota",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Minneapolis", "checked": false }]
+  },
+  {
+    "state": "Missouri",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "St. Louis", "checked": false },
+      { "name": "Springfield – Missouri State University", "checked": false }
+    ]
+  },
+  {
+    "state": "Montana",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Bozeman", "checked": false }]
+  },
+  {
+    "state": "North Carolina",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Asheville", "checked": false },
+      { "name": "Charlotte", "checked": false },
+      { "name": "Raleigh-Durham", "checked": false },
+      { "name": "Winston Salem, Greensboro, High Point", "checked": false }
+    ]
+  },
+  {
+    "state": "New Hampshire",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "NEHSA", "checked": false }]
+  },
+  {
+    "state": "Nevada",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Reno", "checked": false }]
+  },
+  {
+    "state": "New York",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Northport VA", "checked": false },
+      { "name": "Buffalo", "checked": false }
+    ]
+  },
+  {
+    "state": "Ohio",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Cincinnati", "checked": false },
+      { "name": "Ironton", "checked": false },
+      { "name": "North East & Central Ohio", "checked": false }
+    ]
+  },
+  {
+    "state": "Oregon",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Portland", "checked": false }]
+  },
+  {
+    "state": "Pennsylvania",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Butler", "checked": false },
+      { "name": "Lehigh Valley", "checked": false },
+      { "name": "Ohiopyle", "checked": false },
+      { "name": "Southeast PA", "checked": false },
+      { "name": "Susquehanna Valley", "checked": false }
+    ]
+  },
+  {
+    "state": "South Carolina",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Columbia", "checked": false },
+      { "name": "Charleston", "checked": false },
+      { "name": "Clemson", "checked": false }
+    ]
+  },
+  {
+    "state": "Tennessee",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Austin Peay State University", "checked": false },
+      { "name": "Chattanooga", "checked": false },
+      { "name": "Johnson City/Tricities Northern TN", "checked": false },
+      { "name": "Memphis", "checked": false },
+      { "name": "Nashville", "checked": false }
+    ]
+  },
+  {
+    "state": "Texas",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "San Antonio", "checked": false },
+      { "name": "Houston", "checked": false }
+    ]
+  },
+  {
+    "state": "Utah",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Salt Lake City", "checked": false }]
+  },
+  {
+    "state": "Virginia",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Blue Ridge", "checked": false },
+      { "name": "Fort Belvoir", "checked": false },
+      { "name": "Richmond", "checked": false },
+      { "name": "Fredericksburg", "checked": false }
+    ]
+  },
+  {
+    "state": "Washington",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Seattle", "checked": false },
+      { "name": "Spokane", "checked": false }
+    ]
+  },
+  {
+    "state": "West Virginia",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Beckley", "checked": false },
+      { "name": "Shepherd", "checked": false }
+    ]
+  },
+  {
+    "state": "Wisconsin",
+    "id": 6,
+    "checked": false,
+    "chapters": [
+      { "name": "Green Bay", "checked": false },
+      { "name": "Milwaukee", "checked": false }
+    ]
+  },
+  {
+    "state": "International",
+    "id": 6,
+    "checked": false,
+    "chapters": [{ "name": "Italy – Camp Ederle", "checked": false }]
+  }
 ]

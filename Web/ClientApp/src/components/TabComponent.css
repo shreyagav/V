@@ -1,84 +1,88 @@
 /* Tab Component */
 
 ul.tab-component {
-    max-width: 100%;
-    font-size: 1rem;
-    border: 1px solid #666666;
-    border-radius:999px;
-    background-color: inherit;
-    color: inherit;
-    display: flex;
-    justify-content: stretch;
-    flex-wrap: nowrap;
-    text-transform: uppercase;
-    position: relative; 
-    height: 3rem;
+  max-width: 100%;
+  font-size: 1rem;
+  border: 1px solid #666666;
+  border-radius: 999px;
+  background-color: inherit;
+  color: inherit;
+  display: flex;
+  justify-content: stretch;
+  flex-wrap: nowrap;
+  text-transform: uppercase;
+  position: relative;
+  height: 3rem;
 
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, supported by Chrome and Opera */
 }
 
 ul.tab-component > li {
-    font-size:inherit;
-    margin: -1px;
-    padding: 0.4em 0.85em;
-    border-radius:999px;
-    flex: 0 1 auto;
-    text-align: center;
-    white-space: nowrap; 
-    font-weight: 600;
-    font-size: inherit;;
-    width: auto;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  font-size: inherit;
+  margin: -1px;
+  padding: 0.4em 0.85em;
+  border-radius: 999px;
+  flex: 0 1 auto;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: inherit;
+  width: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 ul.tab-component > li:not(:first-child) {
-    margin-left: -0.2em;
+  margin-left: -0.2em;
 }
 
 ul.tab-component > li:hover:not(.selected),
 ul.tab-component > li:focus:not(.selected) {
-    color: #0099cc;
-    cursor: pointer;
+  color: #0099cc;
+  cursor: pointer;
 }
 
 ul.tab-component > li.selected {
-    background-color: #666666;
-    color: #ffffff;
+  background-color: #666666;
+  color: #ffffff;
 }
 
-ul.tab-component > li.selected:focus::after, 
-.round-button:focus::after{
-    content: '';
-    display: block;
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: -3px;
-    right: -3px;
-    border-radius: 999px;
-    border: 3px solid #0099cc;
-    opacity: 0.5;
+ul.tab-component > li.selected:focus::after,
+.round-button:focus::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -3px;
+  right: -3px;
+  border-radius: 999px;
+  border: 3px solid #0099cc;
+  opacity: 0.5;
 }
 
 ul.tab-component > li > p {
-    box-sizing: border-box;
-    font-size: inherit;
-    line-height: 1;
-    padding-bottom: 0.05em;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  box-sizing: border-box;
+  font-size: inherit;
+  line-height: 1;
+  padding-bottom: 0.05em;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media screen and (max-width: 600px) {
-    ul.tab-component {height: 8vw;} 
-    ul.tab-component:not(.not-shrinkable-font) > li {font-size: 2.67vw;}
+  ul.tab-component {
+    height: 8vw;
+  }
+  ul.tab-component:not(.not-shrinkable-font) > li {
+    font-size: 2.67vw;
+  }
 }

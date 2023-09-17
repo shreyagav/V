@@ -1,21 +1,21 @@
 .image-gallery {
-    width: 100%;
-} 
+  width: 100%;
+}
 
 .image-gallery li {
-    width: 100%;
-    height: auto;
-    display: flex;
-    flex-flow: row nowrap;
-    align-content: stretch;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-flow: row nowrap;
+  align-content: stretch;
 }
 
 .image-gallery li > div {
-    display: block;
-    overflow: hidden;
+  display: block;
+  overflow: hidden;
 }
 
 .image-gallery li > div > img {
-    width: 100%;
-    display: block;
+  width: 100%;
+  display: block;
 }

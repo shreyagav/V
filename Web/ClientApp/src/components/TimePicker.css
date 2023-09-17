@@ -1,10 +1,10 @@
 .time-picker {
-    min-width: 160px;
+  min-width: 160px;
 }
 
 .number-picker {
-    min-width: 80px;
-    max-width: 80px;
+  min-width: 80px;
+  max-width: 80px;
 }
 
 /*
@@ -13,51 +13,71 @@
 }
 */
 
-.time-picker input, .number-picker input {
-    border: 0px solid;
-    background-color: inherit;
+.time-picker input,
+.number-picker input {
+  border: 0px solid;
+  background-color: inherit;
 }
 
 .time-number-picker-drop-down {
-    display: flex;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    margin: 0px;
-    box-sizing: border-box;
-    border: 1px solid #0099cc;
-    box-shadow:  0em 1em 2em #ffffff, 0em 0.25em 0.25em rgba(0, 0, 0, 0.19);
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  margin: 0px;
+  box-sizing: border-box;
+  border: 1px solid #0099cc;
+  box-shadow:
+    0em 1em 2em #ffffff,
+    0em 0.25em 0.25em rgba(0, 0, 0, 0.19);
 }
 
-.number-picker button, .time-picker button {font-size: inherit; width: 2.5em;}
+.number-picker button,
+.time-picker button {
+  font-size: inherit;
+  width: 2.5em;
+}
 
-.time-picker:hover, .number-picker:hover {cursor: pointer;}
-.time-picker:focus, .number-picker:focus {border: 1px solid #0099cc;}
+.time-picker:hover,
+.number-picker:hover {
+  cursor: pointer;
+}
+.time-picker:focus,
+.number-picker:focus {
+  border: 1px solid #0099cc;
+}
 /*.time-picker:focus .drop-down-header-button svg,
 .number-picker:focus .drop-down-header-button svg {fill: #0099cc;}*/
 
 .time-number-picker-drop-down > div {
-    display: flex;
-    flex-flow: column;
-    align-content: center;
+  display: flex;
+  flex-flow: column;
+  align-content: center;
 }
 
 .time-number-picker-drop-down span {
-    text-align: center;
-    font-size: 1.5em;
+  text-align: center;
+  font-size: 1.5em;
 }
 
 .time-number-picker-drop-down span:hover,
 .time-number-picker-drop-down span:focus {
-    color: #0099cc;
+  color: #0099cc;
 }
 
 .time-number-picker-drop-down > div:last-child:not(:only-child) {
-    margin-left: 0.5rem;
+  margin-left: 0.5rem;
 }
 
-@media screen and (min-width: 561px){
-    .time-fields > :first-child, .time-fields > :last-child {flex: 1 1 160px;}
-    .time-fields > :nth-child(2) {flex: 0 0 auto;}
-    .time-fields > :nth-child(2) > p {margin-left: 1rem;}
+@media screen and (min-width: 561px) {
+  .time-fields > :first-child,
+  .time-fields > :last-child {
+    flex: 1 1 160px;
+  }
+  .time-fields > :nth-child(2) {
+    flex: 0 0 auto;
+  }
+  .time-fields > :nth-child(2) > p {
+    margin-left: 1rem;
+  }
 }

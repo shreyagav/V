@@ -1,11 +1,11 @@
 [
-    {"url":"/images/photo1.jpg", "width":1024, "height":683},
-    {"url":"/images/photo2.jpg", "width":1200, "height":802},
-    {"url":"/images/photo3.jpg", "width":960, "height":720},
-    {"url":"/images/photo4.jpg", "width":2048, "height":1365},
-    {"url":"/images/photo5.jpg", "width":2048, "height":1152},
-    {"url":"/images/photo6.jpg", "width":1365, "height":2048},
-    {"url":"/images/photo7.jpg", "width":2048, "height":1365},
-    {"url":"/images/photo8.jpg", "width":2048, "height":1365},
-    {"url":"/images/photo9.jpg", "width":1365, "height":2048}
+  { "url": "/images/photo1.jpg", "width": 1024, "height": 683 },
+  { "url": "/images/photo2.jpg", "width": 1200, "height": 802 },
+  { "url": "/images/photo3.jpg", "width": 960, "height": 720 },
+  { "url": "/images/photo4.jpg", "width": 2048, "height": 1365 },
+  { "url": "/images/photo5.jpg", "width": 2048, "height": 1152 },
+  { "url": "/images/photo6.jpg", "width": 1365, "height": 2048 },
+  { "url": "/images/photo7.jpg", "width": 2048, "height": 1365 },
+  { "url": "/images/photo8.jpg", "width": 2048, "height": 1365 },
+  { "url": "/images/photo9.jpg", "width": 1365, "height": 2048 }
 ]

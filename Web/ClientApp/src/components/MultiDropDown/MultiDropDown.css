@@ -1,310 +1,421 @@
 .drop-down {
-    font-weight: 600;
-    font-size: inherit;
-    position: relative;
-    min-height: 2.5em;
-    /*height: 100%;*/
-    width: 100%;
+  font-weight: 600;
+  font-size: inherit;
+  position: relative;
+  min-height: 2.5em;
+  /*height: 100%;*/
+  width: 100%;
 }
 
-.drop-down button {background-color: transparent !important;}
+.drop-down button {
+  background-color: transparent !important;
+}
 
-.drop-down div, .drop-down ul, .drop-down li, .drop-down span, .drop-down button {font-size: inherit;}
+.drop-down div,
+.drop-down ul,
+.drop-down li,
+.drop-down span,
+.drop-down button {
+  font-size: inherit;
+}
 
 .drop-down-header {
-    background-color: #ffffff;
-    border: 1px solid #999999;
-    display: flex;
-    align-items: stretch;
-    border-radius: 0px;
-    overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #999999;
+  display: flex;
+  align-items: stretch;
+  border-radius: 0px;
+  overflow: hidden;
 }
 
-.drop-down-header input, .drop-down-header .fake-input {
-    border: 0px solid;
-    padding-right: 0em;
-    margin-left: 0px;
-    background-color: transparent;
-    cursor: inherit;
+.drop-down-header input,
+.drop-down-header .fake-input {
+  border: 0px solid;
+  padding-right: 0em;
+  margin-left: 0px;
+  background-color: transparent;
+  cursor: inherit;
 }
 
-div.drop-down-disabled > .drop-down-header {background-color: #efefef;}
-div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {cursor: pointer;}
-.drop-down-header:focus, .ddhOnFocus, 
-div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {border: 1px solid #0099cc;}
+div.drop-down-disabled > .drop-down-header {
+  background-color: #efefef;
+}
+div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {
+  cursor: pointer;
+}
+.drop-down-header:focus,
+.ddhOnFocus,
+div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover {
+  border: 1px solid #0099cc;
+}
 
 .drop-down-header:focus button.onFocusWithDDH .svg,
-.drop-down-header:hover button.onFocusWithDDH .svg {fill: #0099cc !important;}
+.drop-down-header:hover button.onFocusWithDDH .svg {
+  fill: #0099cc !important;
+}
 
 .drop-down-header:focus > div > button.onFocusWithDDH .svg,
 .ddhOnFocus > div > button.onFocusWithDDH .svg,
-div.drop-down:not(.drop-down-disabled) > .drop-down-header:hover> div > button.onFocusWithDDH .svg {fill: #0099cc !important;}
+div.drop-down:not(.drop-down-disabled)
+  > .drop-down-header:hover
+  > div
+  > button.onFocusWithDDH
+  .svg {
+  fill: #0099cc !important;
+}
 
 .drop-down-header ul {
-    display: flex;
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    max-width: 100%;
-    align-self: center;
-    align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  max-width: 100%;
+  align-self: center;
+  align-items: center;
 }
 
 .drop-down-header > :last-child:not(:only-child) {
-    flex: 0 0 2.5em;
+  flex: 0 0 2.5em;
 }
 
-.drop-down-header > span:first-child {  
-    /*  ??????????????????????  */
-    padding: 0px 0px 3px 0.75em;
-    text-transform: uppercase;
+.drop-down-header > span:first-child {
+  /*  ??????????????????????  */
+  padding: 0px 0px 3px 0.75em;
+  text-transform: uppercase;
 }
 
 .drop-down-header ul > li {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .liSearchWrapperMultiSelect {
-    padding: 0.15em 0em 0.15em 0.35em;
-    margin: 0.15em 0em 0.15em 0.15em;
+  padding: 0.15em 0em 0.15em 0.35em;
+  margin: 0.15em 0em 0.15em 0.15em;
 }
 
-.liSearchWrapperMultiSelect input, .liSearchWrapperMultiSelect .fake-input {
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
-    height: auto !important;
+.liSearchWrapperMultiSelect input,
+.liSearchWrapperMultiSelect .fake-input {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  height: auto !important;
 }
 
-ul.multi-level-list {margin: calc(0.35em - 1px) !important; margin-right: 0em !important;}
+ul.multi-level-list {
+  margin: calc(0.35em - 1px) !important;
+  margin-right: 0em !important;
+}
 .drop-down-header ul.multi-level-list > li:not(.liSearchWrapper) {
-    border: 1px solid #dddddd;
-    background-color: #dddddd;
-    border-radius: 10px;
-    padding: 0.15em 0.25em 0.15em 0.35em;
-    margin: 0.15em;
-    cursor: default;
+  border: 1px solid #dddddd;
+  background-color: #dddddd;
+  border-radius: 10px;
+  padding: 0.15em 0.25em 0.15em 0.35em;
+  margin: 0.15em;
+  cursor: default;
 }
 
-.drop-down-header ul.multi-level-list > li button .svg {fill: #999999;}
+.drop-down-header ul.multi-level-list > li button .svg {
+  fill: #999999;
+}
 
 .drop-down-header ul.multi-level-list > li button:hover,
 .drop-down-header ul.multi-level-list > li button:focus {
-    background-color: #0099cc !important; 
-    border-radius: 10px !important; 
+  background-color: #0099cc !important;
+  border-radius: 10px !important;
 }
 .drop-down-header ul.multi-level-list > li button:hover .svg,
-.drop-down-header ul.multi-level-list > li button:focus .svg { fill: #cccccc; }
+.drop-down-header ul.multi-level-list > li button:focus .svg {
+  fill: #cccccc;
+}
 
 .simple-list {
-    margin-left: 0.7em !important;
-    color: #666666;
-    /*text-transform: uppercase;*/
-    font-weight: 600;
-    /*line-height: 1;*/
-    text-align: left;
+  margin-left: 0.7em !important;
+  color: #666666;
+  /*text-transform: uppercase;*/
+  font-weight: 600;
+  /*line-height: 1;*/
+  text-align: left;
 }
 
 .simple-list > li:not(:last-child) {
-    padding-right: 0.5em;
+  padding-right: 0.5em;
 }
 
 .drop-down-header ul > li.inverted {
-    background-color: #666666;
-    border-color: #666666;
-    color: #ffffff;
+  background-color: #666666;
+  border-color: #666666;
+  color: #ffffff;
 }
 
 .drop-down-header ul > li > span {
-    /*line-height: 1;*/
-    white-space: pre-wrap;
-    /*padding: 0 0 2px 0; do not return it! it messes with search input! */
-    font-weight: 500;
-    color: inherit;
+  /*line-height: 1;*/
+  white-space: pre-wrap;
+  /*padding: 0 0 2px 0; do not return it! it messes with search input! */
+  font-weight: 500;
+  color: inherit;
 }
 
 ul.multi-level-list > li > span {
-    margin-top: -0.1em;
-    text-transform: uppercase;
-    font-size: 0.85em;
+  margin-top: -0.1em;
+  text-transform: uppercase;
+  font-size: 0.85em;
 }
 
 .drop-down-header ul > li > span:not(:only-child) {
-    margin-right: 0.25em;
+  margin-right: 0.25em;
 }
 
 .unselectButton {
-    height: 1em;
-    width: 1em;
-    padding: 0.15em;
-    border: 0px solid !important;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -ms-flex-align: center;
-    align-items: center;
-    }
+  height: 1em;
+  width: 1em;
+  padding: 0.15em;
+  border: 0px solid !important;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
 
 /* list of Chapters */
 .drop-down-list-wrapper {
-    position: absolute; 
-    display: block; 
-    box-sizing: content-box;
-    left: 0px; 
-    right: 0px; 
-    background: #ffffff; 
-    z-index: 1070; 
-    border: 1px solid #0099cc;
+  position: absolute;
+  display: block;
+  box-sizing: content-box;
+  left: 0px;
+  right: 0px;
+  background: #ffffff;
+  z-index: 1070;
+  border: 1px solid #0099cc;
 }
 
-ul.drop-down-list {padding: 0em 0.75em 0em 0.5em;}
-ul.drop-down-list li {/*margin-right: 0.9em; margin-left: 0.9em;*/ text-transform: uppercase;}
+ul.drop-down-list {
+  padding: 0em 0.75em 0em 0.5em;
+}
+ul.drop-down-list li {
+  /*margin-right: 0.9em; margin-left: 0.9em;*/
+  text-transform: uppercase;
+}
 /*ul.drop-down-list li ul.drop-down-list > li {margin-right: 0em; margin-left: 0em;} */
 ul.drop-down-list li > div,
 ul.drop-down-list li ul.drop-down-list > li {
-    display: flex; 
-    justify-content: left;
-    align-items: center;
-    min-height: 2.75em;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  min-height: 2.75em;
 }
 
 ul.drop-down-list li > div {
-    display: flex;
-    text-overflow: ellipsis;
+  display: flex;
+  text-overflow: ellipsis;
 }
 
-ul.drop-down-list li > div, ul.drop-down-list li > div > button {flex: 1 1 auto;}
-ul.drop-down-list li > div > button > span {flex: 1 1 auto}
+ul.drop-down-list li > div,
+ul.drop-down-list li > div > button {
+  flex: 1 1 auto;
+}
+ul.drop-down-list li > div > button > span {
+  flex: 1 1 auto;
+}
 ul.drop-down-list li > div > button > span.drop-down-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 ul.drop-down-list li span {
-    font-size: inherit;
-    display: block;
-    color: #666666;
-    /*text-transform: uppercase;*/
-    font-weight: 600;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: inherit;
+  display: block;
+  color: #666666;
+  /*text-transform: uppercase;*/
+  font-weight: 600;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .drop-down-text {
-    line-height: 1;
-    margin-top: 0.125em; 
-    padding-bottom: 0.125em; /* need this because of line -height 1*/
+  line-height: 1;
+  margin-top: 0.125em;
+  padding-bottom: 0.125em; /* need this because of line -height 1*/
 }
 
-ul.drop-down-list li label{
-    position: relative;
-    margin-right: 0.5em;
-    margin-left: 0.25em;
+ul.drop-down-list li label {
+  position: relative;
+  margin-right: 0.5em;
+  margin-left: 0.25em;
 }
-ul.drop-down-list li label:hover {cursor: pointer;}
+ul.drop-down-list li label:hover {
+  cursor: pointer;
+}
 ul.drop-down-list li label:hover svg,
 ul.drop-down-list li label:focus-within svg {
-    border-color: #0099cc !important;
+  border-color: #0099cc !important;
 }
 
-ul.drop-down-list li > div:focus span, ul.drop-down-list li > div.onFocus span {color: #0099cc !important;}
-ul.drop-down-list li > div:focus label > svg, 
+ul.drop-down-list li > div:focus span,
+ul.drop-down-list li > div.onFocus span {
+  color: #0099cc !important;
+}
+ul.drop-down-list li > div:focus label > svg,
 ul.drop-down-list li > div.onFocus label > svg,
-ul.drop-down-list li > div:hover label > svg {border-color: #0099cc !important;}
-ul.drop-down-list li > div:focus > button > svg > .svg, 
-ul.drop-down-list li > div.onFocus > button > svg > .svg {fill: #0099cc !important;}
-
-ul.drop-down-list li label:focus-within::after{
-    content: '';
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: -3px;
-    right: -3px;
-    display: block;
-    border: 3px solid #0099cc;
-    opacity: 0.5;
+ul.drop-down-list li > div:hover label > svg {
+  border-color: #0099cc !important;
+}
+ul.drop-down-list li > div:focus > button > svg > .svg,
+ul.drop-down-list li > div.onFocus > button > svg > .svg {
+  fill: #0099cc !important;
 }
 
-ul.drop-down-list li label:hover::after{
-    content: '';
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: -3px;
-    right: -3px;
-    display: block;
-    border: 3px solid #0099cc;
-    opacity: 0.5;
+ul.drop-down-list li label:focus-within::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -3px;
+  right: -3px;
+  display: block;
+  border: 3px solid #0099cc;
+  opacity: 0.5;
+}
+
+ul.drop-down-list li label:hover::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -3px;
+  right: -3px;
+  display: block;
+  border: 3px solid #0099cc;
+  opacity: 0.5;
 }
 
 ul.drop-down-list li > div:hover label::after,
 ul.drop-down-list li > div:focus label::after,
-ul.drop-down-list li > div.onFocus label::after{
-    content: '';
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: -3px;
-    right: -3px;
-    display: block;
-    border: 3px solid #0099cc;
-    opacity: 0.5;
+ul.drop-down-list li > div.onFocus label::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -3px;
+  right: -3px;
+  display: block;
+  border: 3px solid #0099cc;
+  opacity: 0.5;
 }
 
 /* workaround for EDGE */
 
 ul.drop-down-list li label:hover > svg,
 ul.drop-down-list input:focus + svg {
-    border: 1px solid #0099cc;
+  border: 1px solid #0099cc;
 }
 /* woraround for EDGE ends */
 
-ul.drop-down-list li.openChapter span {color: #666666;}
-ul.drop-down-list li.openChapter svg {border-color: #999999;}
-ul.drop-down-list li.openChapter input[type=checkbox]:checked + svg > .svg {fill: #666666 !important;}
-li.openChapter {padding-top: 0px !important; padding-bottom: 0px !important;} 
-ul.drop-down-list ul.drop-down-list > li span {color: #666666; line-height: 1; overflow: hidden; text-overflow: ellipsis;}
-ul.drop-down-list li:not(:last-child) {border-bottom: 1px solid #cccccc;}
-ul.drop-down-list li{
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
+ul.drop-down-list li.openChapter span {
+  color: #666666;
+}
+ul.drop-down-list li.openChapter svg {
+  border-color: #999999;
+}
+ul.drop-down-list li.openChapter input[type="checkbox"]:checked + svg > .svg {
+  fill: #666666 !important;
+}
+li.openChapter {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+ul.drop-down-list ul.drop-down-list > li span {
+  color: #666666;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ul.drop-down-list li:not(:last-child) {
+  border-bottom: 1px solid #cccccc;
+}
+ul.drop-down-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
 }
 
-ul.drop-down-list li:hover > div, ul.drop-down-list li:hover > div > span,
-ul.drop-down-list li:focus > div, ul.drop-down-list li:focus > div > span {cursor: pointer; color: #0099cc;}
-ul.drop-down-list li:focus > div {color: #0099cc;}
-ul.drop-down-list li > div > :last-child {flex: 1 1 auto; align-self: stretch; display: flex; align-items: center; text-overflow: ellipsis;}
-ul.drop-down-list li > div > :last-child > button:last-child {flex: 0 0 0.8em;}
-ul.drop-down-list li > div > button:last-child > svg {flex: 0 0 0.8em; height: 0.8em; margin-left: 0.25em; margin-right: 0.25em;}
-ul.drop-down-list li ul.drop-down-list {border-top: 1px solid #ededed; padding-left: 1.25em;}
+ul.drop-down-list li:hover > div,
+ul.drop-down-list li:hover > div > span,
+ul.drop-down-list li:focus > div,
+ul.drop-down-list li:focus > div > span {
+  cursor: pointer;
+  color: #0099cc;
+}
+ul.drop-down-list li:focus > div {
+  color: #0099cc;
+}
+ul.drop-down-list li > div > :last-child {
+  flex: 1 1 auto;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  text-overflow: ellipsis;
+}
+ul.drop-down-list li > div > :last-child > button:last-child {
+  flex: 0 0 0.8em;
+}
+ul.drop-down-list li > div > button:last-child > svg {
+  flex: 0 0 0.8em;
+  height: 0.8em;
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+}
+ul.drop-down-list li ul.drop-down-list {
+  border-top: 1px solid #ededed;
+  padding-left: 1.25em;
+}
 ul.drop-down-list > li ul.drop-down-list > li {
-    display: block;
+  display: block;
 }
-ul.drop-down-list > li ul.drop-down-list > li:not(:last-child) {border-bottom: 1px solid #ededed;}
-ul.drop-down-list button:focus {border-color:transparent;}
-ul.drop-down-list button:focus .svg, ul.drop-down-list button:hover .svg {fill: #0099cc;}
+ul.drop-down-list > li ul.drop-down-list > li:not(:last-child) {
+  border-bottom: 1px solid #ededed;
+}
+ul.drop-down-list button:focus {
+  border-color: transparent;
+}
+ul.drop-down-list button:focus .svg,
+ul.drop-down-list button:hover .svg {
+  fill: #0099cc;
+}
 
-ul.drop-down-list button .svg {fill: #cccccc;}
-ul.drop-down-list button:hover > span, ul.drop-down-list button:focus > span {color: #0099cc !important;}
+ul.drop-down-list button .svg {
+  fill: #cccccc;
+}
+ul.drop-down-list button:hover > span,
+ul.drop-down-list button:focus > span {
+  color: #0099cc !important;
+}
 
-.drop-down-icon {flex: 0 0 auto !important; margin: 0 0.5em 0 0 !important;}
-.drop-down-icon svg {height: 1.2rem !important;}
-.drop-down-icon .svg {fill: #666666 !important;}
-div:hover > button .drop-down-icon .svg, 
+.drop-down-icon {
+  flex: 0 0 auto !important;
+  margin: 0 0.5em 0 0 !important;
+}
+.drop-down-icon svg {
+  height: 1.2rem !important;
+}
+.drop-down-icon .svg {
+  fill: #666666 !important;
+}
+div:hover > button .drop-down-icon .svg,
 div:focus > button .drop-down-icon .svg,
-div.onFocus > button .drop-down-icon .svg {fill: #0099cc !important;}
+div.onFocus > button .drop-down-icon .svg {
+  fill: #0099cc !important;
+}
 
 .colorIndicator {
-    flex: 0 0 1em !important;
-    height: 1em;
+  flex: 0 0 1em !important;
+  height: 1em;
 }
 
 .colorIndicator:only-child {
-    flex: 1 0 1em !important;
-    max-width: 3em;
-    margin: 0px !important;
+  flex: 1 0 1em !important;
+  max-width: 3em;
+  margin: 0px !important;
 }

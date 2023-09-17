@@ -1,22 +1,27 @@
 .pagination button {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 0px solid #666666;
-    border-radius: 0px;
-    background: inherit;
-    font-weight: 600;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0px solid #666666;
+  border-radius: 0px;
+  background: inherit;
+  font-weight: 600;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pagination button > svg {
-    font-size: inherit;
-    width: 100%;
-    height: 100%;
-    padding: 0.5em;
+  font-size: inherit;
+  width: 100%;
+  height: 100%;
+  padding: 0.5em;
 }
 
-.pagination button .svg {fill: #666666;}
-.pagination button:hover .svg, .pagination button:focus .svg {fill: #0099cc;}
+.pagination button .svg {
+  fill: #666666;
+}
+.pagination button:hover .svg,
+.pagination button:focus .svg {
+  fill: #0099cc;
+}
